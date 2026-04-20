@@ -1,0 +1,77 @@
+<!--
+  Component: loading_test_001
+  Type: loading
+  Aesthetic: minimal
+  Obsession: general
+  Tone: cinematic, mysterious
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<div class="loading-test-001" id="loadingScreen">
+  <style>
+    .loading-test-001 {
+      position: fixed;
+      inset: 0;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      gap: clamp(1rem, 3vw, 2rem);
+    }
+    .loading-test-001 .l-name {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(2rem, 6vw, 4rem);
+      color: var(--text, #ffffff);
+      letter-spacing: 0.1em;
+    }
+    .loading-test-001 .l-line {
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: var(--accent, #e63946);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+    .loading-test-001 .l-bar-wrap {
+      width: clamp(120px, 30vw, 200px);
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .loading-test-001 .l-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent, #e63946);
+    }
+  </style>
+
+  <div class="l-name">--RECIPIENT_NAME--</div>
+  <div class="l-line">--LOADING_LINE--</div>
+  <div class="l-bar-wrap">
+    <div class="l-bar" id="loadBar"></div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.loading-test-001 .l-name', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' })
+      gsap.fromTo('.loading-test-001 .l-line', { opacity: 0 }, { opacity: 1, duration: 1, delay: 0.4 })
+      gsap.to('#loadBar', {
+        width: '100%',
+        duration: 2.5,
+        ease: 'power2.inOut',
+        delay: 0.5,
+        onComplete: function() {
+          gsap.to('.loading-test-001', {
+            opacity: 0,
+            duration: 0.6,
+            delay: 0.3,
+            onComplete: function() {
+              document.getElementById('loadingScreen').style.display = 'none'
+              document.dispatchEvent(new CustomEvent('glitch:sectionReady'))
+            }
+          })
+        }
+      })
+    })()
+  </script>
+</div>

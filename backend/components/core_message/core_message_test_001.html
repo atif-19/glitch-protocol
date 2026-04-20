@@ -1,0 +1,63 @@
+<!--
+  Component: core_message_test_001
+  Type: core_message
+  Aesthetic: minimal
+  Obsession: general
+  Tone: emotional, cinematic
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --MESSAGE_MAIN-- --MESSAGE_LINE_2-- --MESSAGE_LINE_3--
+-->
+<section class="cm-test-001">
+  <style>
+    .cm-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .cm-test-001 .cm-name {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .cm-test-001 .cm-main {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.5rem, 4.5vw, 3rem);
+      color: var(--text, #ffffff);
+      max-width: 800px;
+      line-height: 1.4;
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .cm-test-001 .cm-line {
+      font-size: clamp(0.9rem, 2.2vw, 1.15rem);
+      color: var(--primary, #aaaaaa);
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+  </style>
+
+  <div class="cm-name">For --RECIPIENT_NAME--</div>
+  <div class="cm-main">--MESSAGE_MAIN--</div>
+  <div class="cm-line">--MESSAGE_LINE_2--</div>
+  <div class="cm-line">--MESSAGE_LINE_3--</div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.cm-test-001 .cm-main', { opacity: 0, y: 40 }, {
+        opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: '.cm-test-001', start: 'top 70%' }
+      })
+      gsap.fromTo('.cm-test-001 .cm-line', { opacity: 0 }, {
+        opacity: 1, duration: 1, stagger: 0.3, delay: 0.5,
+        scrollTrigger: { trigger: '.cm-test-001', start: 'top 60%' }
+      })
+    })()
+  </script>
+</section>

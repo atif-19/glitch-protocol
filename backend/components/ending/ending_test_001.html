@@ -1,0 +1,70 @@
+<!--
+  Component: ending_test_001
+  Type: ending
+  Aesthetic: minimal
+  Obsession: general
+  Tone: warm, closing
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME--
+-->
+<section class="end-test-001">
+  <style>
+    .end-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .end-test-001 .end-line {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.5rem, 4.5vw, 3rem);
+      color: var(--text, #ffffff);
+      max-width: 700px;
+      line-height: 1.5;
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    }
+    .end-test-001 .end-song {
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: 0.5rem;
+    }
+    .end-test-001 .end-name {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      color: var(--primary, #555555);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+    .end-test-001 .end-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent, #e63946);
+      margin: clamp(2rem, 5vw, 3rem) auto 0;
+    }
+  </style>
+
+  <div class="end-line">--ENDING_LINE--</div>
+  <div class="end-song">🎵 --SONG_NAME--</div>
+  <div class="end-name">Made for --RECIPIENT_NAME--</div>
+  <div class="end-dot"></div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.end-test-001 .end-line', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: '.end-test-001', start: 'top 70%' }
+      })
+      gsap.fromTo('.end-test-001 .end-song', { opacity: 0 }, {
+        opacity: 1, duration: 1, delay: 0.6,
+        scrollTrigger: { trigger: '.end-test-001', start: 'top 65%' }
+      })
+      document.dispatchEvent(new CustomEvent('glitch:ended'))
+    })()
+  </script>
+</section>

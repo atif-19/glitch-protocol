@@ -1,0 +1,71 @@
+<!--
+  Component: hero_test_001
+  Type: hero
+  Aesthetic: minimal
+  Obsession: general
+  Tone: cinematic, bold
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<section class="hero-test-001">
+  <style>
+    .hero-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(2rem, 8vw, 6rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-test-001 .h-accent {
+      font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+      opacity: 0;
+    }
+    .hero-test-001 .h-name {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(3rem, 12vw, 9rem);
+      color: var(--text, #ffffff);
+      line-height: 1;
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+      opacity: 0;
+    }
+    .hero-test-001 .h-title {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--primary, #cccccc);
+      margin-bottom: clamp(0.5rem, 2vw, 1rem);
+      opacity: 0;
+    }
+    .hero-test-001 .h-subtitle {
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      color: var(--primary, #888888);
+      max-width: 500px;
+      line-height: 1.7;
+      opacity: 0;
+    }
+  </style>
+
+  <div class="h-accent">--ACCENT_WORD--</div>
+  <div class="h-name">--RECIPIENT_NAME--</div>
+  <div class="h-title">--TITLE--</div>
+  <div class="h-subtitle">--SUBTITLE--</div>
+
+  <script>
+    (function() {
+      document.addEventListener('glitch:sectionReady', function() {
+        gsap.to('.hero-test-001 .h-accent', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+        gsap.fromTo('.hero-test-001 .h-name', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1.2, delay: 0.2, ease: 'power3.out' })
+        gsap.to('.hero-test-001 .h-title', { opacity: 1, duration: 1, delay: 0.6 })
+        gsap.to('.hero-test-001 .h-subtitle', { opacity: 1, duration: 1, delay: 0.9 })
+      })
+    })()
+  </script>
+</section>

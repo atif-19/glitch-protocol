@@ -1,0 +1,87 @@
+<!--
+  Component: memories_test_001
+  Type: memories
+  Aesthetic: minimal
+  Obsession: general
+  Tone: nostalgic, warm
+  Occasion: birthday, apology
+  Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2--
+-->
+<section class="mem-test-001">
+  <style>
+    .mem-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+    }
+    .mem-test-001 .mem-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+      text-align: center;
+    }
+    .mem-test-001 .mem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: clamp(1rem, 3vw, 2rem);
+      max-width: 900px;
+      width: 100%;
+    }
+    .mem-test-001 .mem-card {
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: clamp(1.5rem, 4vw, 2rem);
+      background: rgba(255,255,255,0.02);
+    }
+    .mem-test-001 .mem-number {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--accent, #e63946);
+      margin-bottom: 0.75rem;
+    }
+    .mem-test-001 .mem-text {
+      color: var(--text, #ffffff);
+      font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+      line-height: 1.7;
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+    }
+    .mem-test-001 .mem-caption {
+      color: var(--primary, #666666);
+      font-size: 0.75rem;
+      margin-top: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+
+  <div class="mem-label">Moments</div>
+  <div class="mem-grid">
+    <div class="mem-card">
+      <div class="mem-number">01</div>
+      <div class="mem-text">--MEMORY_1--</div>
+      <div class="mem-caption">--MEMORY_CAPTION_1--</div>
+    </div>
+    <div class="mem-card">
+      <div class="mem-number">02</div>
+      <div class="mem-text">--MEMORY_2--</div>
+      <div class="mem-caption">--MEMORY_CAPTION_2--</div>
+    </div>
+    <div class="mem-card">
+      <div class="mem-number">03</div>
+      <div class="mem-text">--MEMORY_3--</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.mem-test-001 .mem-card', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 0.8, stagger: 0.2,
+        scrollTrigger: { trigger: '.mem-test-001', start: 'top 70%' }
+      })
+    })()
+  </script>
+</section>

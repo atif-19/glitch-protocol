@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Something made for you</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #301934;
+      --accent: #6A0DAD;
+      --bg: #0a0a0a;
+      --text: #ffffff;
+      --font-heading: 'Playfair Display';
+      --font-body: 'Merriweather';
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body), 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+<body>
+
+<!--
+  Component: loading_test_001
+  Type: loading
+  Aesthetic: minimal
+  Obsession: general
+  Tone: cinematic, mysterious
+  Occasion: birthday, apology
+  Variables: Zara Initializing Ravenclaw protocols. Acknowledging presence...
+-->
+<div class="loading-test-001" id="loadingScreen">
+  <style>
+    .loading-test-001 {
+      position: fixed;
+      inset: 0;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      gap: clamp(1rem, 3vw, 2rem);
+    }
+    .loading-test-001 .l-name {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(2rem, 6vw, 4rem);
+      color: var(--text, #ffffff);
+      letter-spacing: 0.1em;
+    }
+    .loading-test-001 .l-line {
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: var(--accent, #e63946);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+    .loading-test-001 .l-bar-wrap {
+      width: clamp(120px, 30vw, 200px);
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .loading-test-001 .l-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent, #e63946);
+    }
+  </style>
+
+  <div class="l-name">Zara</div>
+  <div class="l-line">Initializing Ravenclaw protocols. Acknowledging presence...</div>
+  <div class="l-bar-wrap">
+    <div class="l-bar" id="loadBar"></div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.loading-test-001 .l-name', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' })
+      gsap.fromTo('.loading-test-001 .l-line', { opacity: 0 }, { opacity: 1, duration: 1, delay: 0.4 })
+      gsap.to('#loadBar', {
+        width: '100%',
+        duration: 2.5,
+        ease: 'power2.inOut',
+        delay: 0.5,
+        onComplete: function() {
+          gsap.to('.loading-test-001', {
+            opacity: 0,
+            duration: 0.6,
+            delay: 0.3,
+            onComplete: function() {
+              document.getElementById('loadingScreen').style.display = 'none'
+              document.dispatchEvent(new CustomEvent('glitch:sectionReady'))
+            }
+          })
+        }
+      })
+    })()
+  </script>
+</div>
+
+<!--
+  Component: hero_test_001
+  Type: hero
+  Aesthetic: minimal
+  Obsession: general
+  Tone: cinematic, bold
+  Occasion: birthday, apology
+  Variables: Zara A Spell Gone Wrong An Apology to My Favorite Witch Hogwarts
+-->
+<section class="hero-test-001">
+  <style>
+    .hero-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(2rem, 8vw, 6rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-test-001 .h-accent {
+      font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+      opacity: 0;
+    }
+    .hero-test-001 .h-name {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(3rem, 12vw, 9rem);
+      color: var(--text, #ffffff);
+      line-height: 1;
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+      opacity: 0;
+    }
+    .hero-test-001 .h-title {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--primary, #cccccc);
+      margin-bottom: clamp(0.5rem, 2vw, 1rem);
+      opacity: 0;
+    }
+    .hero-test-001 .h-subtitle {
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      color: var(--primary, #888888);
+      max-width: 500px;
+      line-height: 1.7;
+      opacity: 0;
+    }
+  </style>
+
+  <div class="h-accent">Hogwarts</div>
+  <div class="h-name">Zara</div>
+  <div class="h-title">A Spell Gone Wrong</div>
+  <div class="h-subtitle">An Apology to My Favorite Witch</div>
+
+  <script>
+    (function() {
+      document.addEventListener('glitch:sectionReady', function() {
+        gsap.to('.hero-test-001 .h-accent', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+        gsap.fromTo('.hero-test-001 .h-name', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1.2, delay: 0.2, ease: 'power3.out' })
+        gsap.to('.hero-test-001 .h-title', { opacity: 1, duration: 1, delay: 0.6 })
+        gsap.to('.hero-test-001 .h-subtitle', { opacity: 1, duration: 1, delay: 0.9 })
+      })
+    })()
+  </script>
+</section>
+
+<!--
+  Component: who_she_is_test_001
+  Type: who_she_is
+  Aesthetic: minimal
+  Obsession: general
+  Tone: warm, intimate
+  Occasion: birthday, apology
+  Variables: Zara You notice the quiet hums, the shared glances. You see the magic in the mundane. --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<section class="wsi-test-001">
+  <style>
+    .wsi-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .wsi-test-001 .wsi-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+    }
+    .wsi-test-001 .wsi-personality {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.4rem, 4vw, 2.5rem);
+      color: var(--text, #ffffff);
+      max-width: 700px;
+      line-height: 1.4;
+      margin-bottom: clamp(2rem, 6vw, 4rem);
+    }
+    .wsi-test-001 .wsi-details {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1rem, 2.5vw, 1.5rem);
+      max-width: 500px;
+      width: 100%;
+    }
+    .wsi-test-001 .wsi-detail {
+      border-left: 2px solid var(--accent, #e63946);
+      padding-left: clamp(1rem, 3vw, 1.5rem);
+      text-align: left;
+      color: var(--primary, #aaaaaa);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      line-height: 1.6;
+    }
+  </style>
+
+  <div class="wsi-label">Who she is</div>
+  <div class="wsi-personality">You notice the quiet hums, the shared glances. You see the magic in the mundane.</div>
+  <div class="wsi-details">
+    <div class="wsi-detail">--DETAIL_1--</div>
+    <div class="wsi-detail">--DETAIL_2--</div>
+    <div class="wsi-detail">--DETAIL_3--</div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.wsi-test-001', { opacity: 0 }, {
+        opacity: 1, duration: 1,
+        scrollTrigger: { trigger: '.wsi-test-001', start: 'top 80%' }
+      })
+      gsap.fromTo('.wsi-test-001 .wsi-personality', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1, delay: 0.2,
+        scrollTrigger: { trigger: '.wsi-test-001', start: 'top 70%' }
+      })
+      gsap.fromTo('.wsi-test-001 .wsi-detail', { opacity: 0, x: -20 }, {
+        opacity: 1, x: 0, duration: 0.8, stagger: 0.2, delay: 0.4,
+        scrollTrigger: { trigger: '.wsi-test-001 .wsi-details', start: 'top 75%' }
+      })
+    })()
+  </script>
+</section>
+
+<!--
+  Component: memories_test_001
+  Type: memories
+  Aesthetic: minimal
+  Obsession: general
+  Tone: nostalgic, warm
+  Occasion: birthday, apology
+  Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2--
+-->
+<section class="mem-test-001">
+  <style>
+    .mem-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+    }
+    .mem-test-001 .mem-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+      text-align: center;
+    }
+    .mem-test-001 .mem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: clamp(1rem, 3vw, 2rem);
+      max-width: 900px;
+      width: 100%;
+    }
+    .mem-test-001 .mem-card {
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: clamp(1.5rem, 4vw, 2rem);
+      background: rgba(255,255,255,0.02);
+    }
+    .mem-test-001 .mem-number {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--accent, #e63946);
+      margin-bottom: 0.75rem;
+    }
+    .mem-test-001 .mem-text {
+      color: var(--text, #ffffff);
+      font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+      line-height: 1.7;
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+    }
+    .mem-test-001 .mem-caption {
+      color: var(--primary, #666666);
+      font-size: 0.75rem;
+      margin-top: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+
+  <div class="mem-label">Moments</div>
+  <div class="mem-grid">
+    <div class="mem-card">
+      <div class="mem-number">01</div>
+      <div class="mem-text">--MEMORY_1--</div>
+      <div class="mem-caption">--MEMORY_CAPTION_1--</div>
+    </div>
+    <div class="mem-card">
+      <div class="mem-number">02</div>
+      <div class="mem-text">--MEMORY_2--</div>
+      <div class="mem-caption">--MEMORY_CAPTION_2--</div>
+    </div>
+    <div class="mem-card">
+      <div class="mem-number">03</div>
+      <div class="mem-text">--MEMORY_3--</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.mem-test-001 .mem-card', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 0.8, stagger: 0.2,
+        scrollTrigger: { trigger: '.mem-test-001', start: 'top 70%' }
+      })
+    })()
+  </script>
+</section>
+
+<!--
+  Component: core_message_test_001
+  Type: core_message
+  Aesthetic: minimal
+  Obsession: general
+  Tone: emotional, cinematic
+  Occasion: birthday, apology
+  Variables: Zara The silence after I blocked you felt like a misplaced charm. A spell I didn't intend. My mistake, Zara. A clumsy, accidental curse. --MESSAGE_LINE_2-- --MESSAGE_LINE_3--
+-->
+<section class="cm-test-001">
+  <style>
+    .cm-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .cm-test-001 .cm-name {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .cm-test-001 .cm-main {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.5rem, 4.5vw, 3rem);
+      color: var(--text, #ffffff);
+      max-width: 800px;
+      line-height: 1.4;
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .cm-test-001 .cm-line {
+      font-size: clamp(0.9rem, 2.2vw, 1.15rem);
+      color: var(--primary, #aaaaaa);
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+  </style>
+
+  <div class="cm-name">For Zara</div>
+  <div class="cm-main">The silence after I blocked you felt like a misplaced charm. A spell I didn't intend. My mistake, Zara. A clumsy, accidental curse.</div>
+  <div class="cm-line">--MESSAGE_LINE_2--</div>
+  <div class="cm-line">--MESSAGE_LINE_3--</div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.cm-test-001 .cm-main', { opacity: 0, y: 40 }, {
+        opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: '.cm-test-001', start: 'top 70%' }
+      })
+      gsap.fromTo('.cm-test-001 .cm-line', { opacity: 0 }, {
+        opacity: 1, duration: 1, stagger: 0.3, delay: 0.5,
+        scrollTrigger: { trigger: '.cm-test-001', start: 'top 60%' }
+      })
+    })()
+  </script>
+</section>
+
+<!--
+  Component: the_moment_test_001
+  Type: the_moment
+  Aesthetic: minimal
+  Obsession: general
+  Tone: honest, direct
+  Occasion: birthday, apology
+  Variables: Zara That moment? Pure accident. A digital misstep. My clumsy fingers, a world away. Not a reflection of you. Never you. Can we rewrite this chapter?
+-->
+<section class="tm-test-001">
+  <style>
+    .tm-test-001 {
+      min-height: 100vh;
+      background: var(--primary, #0f0f1a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .tm-test-001 .tm-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .tm-test-001 .tm-copy {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.2rem, 3.5vw, 2rem);
+      color: var(--text, #ffffff);
+      max-width: 700px;
+      line-height: 1.6;
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    }
+    .tm-test-001 .tm-cta {
+      border: 1px solid var(--accent, #e63946);
+      color: var(--accent, #e63946);
+      padding: clamp(0.8rem, 2.5vw, 1rem) clamp(2rem, 5vw, 3rem);
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: default;
+    }
+  </style>
+
+  <div class="tm-label">The moment</div>
+  <div class="tm-copy">That moment? Pure accident. A digital misstep. My clumsy fingers, a world away. Not a reflection of you. Never you.</div>
+  <div class="tm-cta">Can we rewrite this chapter?</div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.tm-test-001 .tm-copy', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '.tm-test-001', start: 'top 70%' }
+      })
+      gsap.fromTo('.tm-test-001 .tm-cta', { opacity: 0, scale: 0.95 }, {
+        opacity: 1, scale: 1, duration: 0.8, delay: 0.4,
+        scrollTrigger: { trigger: '.tm-test-001', start: 'top 65%' }
+      })
+    })()
+  </script>
+</section>
+
+<!--
+  Component: reveal_test_001
+  Type: reveal
+  Aesthetic: minimal
+  Obsession: general
+  Tone: intimate, mysterious
+  Occasion: birthday, apology
+  Variables: Zara I see everything too. Especially you. Tap the locket.
+-->
+<section class="rv-test-001">
+  <style>
+    .rv-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .rv-test-001 .rv-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: 1rem;
+    }
+    .rv-test-001 .rv-instruction {
+      color: var(--primary, #666666);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+    }
+    .rv-test-001 .rv-box {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: clamp(2rem, 6vw, 4rem) clamp(2rem, 6vw, 5rem);
+      cursor: pointer;
+      position: relative;
+      max-width: 600px;
+      width: 100%;
+      transition: border-color 0.3s;
+    }
+    .rv-test-001 .rv-box:hover { border-color: var(--accent, #e63946); }
+    .rv-test-001 .rv-blur {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.2rem, 3.5vw, 2rem);
+      color: var(--text, #ffffff);
+      filter: blur(8px);
+      transition: filter 0.8s ease;
+      line-height: 1.5;
+      user-select: none;
+    }
+    .rv-test-001 .rv-box.revealed .rv-blur { filter: blur(0px); }
+    .rv-test-001 .rv-tap {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--accent, #e63946);
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+      transition: opacity 0.5s;
+    }
+    .rv-test-001 .rv-box.revealed .rv-tap { opacity: 0; }
+  </style>
+
+  <div class="rv-label">For Zara only</div>
+  <div class="rv-instruction">Tap the locket.</div>
+  <div class="rv-box" id="revealBox" onclick="revealMessage()">
+    <div class="rv-blur" id="revealText">I see everything too. Especially you.</div>
+    <div class="rv-tap">Tap to reveal</div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.rv-test-001 .rv-box', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1,
+        scrollTrigger: { trigger: '.rv-test-001', start: 'top 70%' }
+      })
+    })()
+
+    function revealMessage() {
+      const box = document.getElementById('revealBox')
+      if (!box.classList.contains('revealed')) {
+        box.classList.add('revealed')
+        document.dispatchEvent(new CustomEvent('glitch:revealed'))
+      }
+    }
+  </script>
+</section>
+
+<!--
+  Component: ending_test_001
+  Type: ending
+  Aesthetic: minimal
+  Obsession: general
+  Tone: warm, closing
+  Occasion: birthday, apology
+  Variables: Zara Until the next chapter, then. Cornelia Street by Taylor Swift
+-->
+<section class="end-test-001">
+  <style>
+    .end-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .end-test-001 .end-line {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.5rem, 4.5vw, 3rem);
+      color: var(--text, #ffffff);
+      max-width: 700px;
+      line-height: 1.5;
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    }
+    .end-test-001 .end-song {
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: 0.5rem;
+    }
+    .end-test-001 .end-name {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      color: var(--primary, #555555);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+    .end-test-001 .end-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent, #e63946);
+      margin: clamp(2rem, 5vw, 3rem) auto 0;
+    }
+  </style>
+
+  <div class="end-line">Until the next chapter, then.</div>
+  <div class="end-song">🎵 Cornelia Street by Taylor Swift</div>
+  <div class="end-name">Made for Zara</div>
+  <div class="end-dot"></div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.end-test-001 .end-line', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: '.end-test-001', start: 'top 70%' }
+      })
+      gsap.fromTo('.end-test-001 .end-song', { opacity: 0 }, {
+        opacity: 1, duration: 1, delay: 0.6,
+        scrollTrigger: { trigger: '.end-test-001', start: 'top 65%' }
+      })
+      document.dispatchEvent(new CustomEvent('glitch:ended'))
+    })()
+  </script>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+// globalEvents.js — inline in skeleton
+// Any component can fire these events and any other component can listen
+// This lets components talk to each other without knowing each other exists
+window.glitchEvents = {
+  sectionReady: () => document.dispatchEvent(new CustomEvent('glitch:sectionReady')),
+  revealed: () => document.dispatchEvent(new CustomEvent('glitch:revealed')),
+  ended: () => document.dispatchEvent(new CustomEvent('glitch:ended'))
+}
+</script>
+
+</body>
+</html>

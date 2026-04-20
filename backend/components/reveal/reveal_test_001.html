@@ -1,0 +1,88 @@
+<!--
+  Component: reveal_test_001
+  Type: reveal
+  Aesthetic: minimal
+  Obsession: general
+  Tone: intimate, mysterious
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --HIDDEN_MESSAGE-- --REVEAL_INSTRUCTION--
+-->
+<section class="rv-test-001">
+  <style>
+    .rv-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .rv-test-001 .rv-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: 1rem;
+    }
+    .rv-test-001 .rv-instruction {
+      color: var(--primary, #666666);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+    }
+    .rv-test-001 .rv-box {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: clamp(2rem, 6vw, 4rem) clamp(2rem, 6vw, 5rem);
+      cursor: pointer;
+      position: relative;
+      max-width: 600px;
+      width: 100%;
+      transition: border-color 0.3s;
+    }
+    .rv-test-001 .rv-box:hover { border-color: var(--accent, #e63946); }
+    .rv-test-001 .rv-blur {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.2rem, 3.5vw, 2rem);
+      color: var(--text, #ffffff);
+      filter: blur(8px);
+      transition: filter 0.8s ease;
+      line-height: 1.5;
+      user-select: none;
+    }
+    .rv-test-001 .rv-box.revealed .rv-blur { filter: blur(0px); }
+    .rv-test-001 .rv-tap {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--accent, #e63946);
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+      transition: opacity 0.5s;
+    }
+    .rv-test-001 .rv-box.revealed .rv-tap { opacity: 0; }
+  </style>
+
+  <div class="rv-label">For --RECIPIENT_NAME-- only</div>
+  <div class="rv-instruction">--REVEAL_INSTRUCTION--</div>
+  <div class="rv-box" id="revealBox" onclick="revealMessage()">
+    <div class="rv-blur" id="revealText">--HIDDEN_MESSAGE--</div>
+    <div class="rv-tap">Tap to reveal</div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.rv-test-001 .rv-box', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1,
+        scrollTrigger: { trigger: '.rv-test-001', start: 'top 70%' }
+      })
+    })()
+
+    function revealMessage() {
+      const box = document.getElementById('revealBox')
+      if (!box.classList.contains('revealed')) {
+        box.classList.add('revealed')
+        document.dispatchEvent(new CustomEvent('glitch:revealed'))
+      }
+    }
+  </script>
+</section>

@@ -1,0 +1,78 @@
+<!--
+  Component: who_she_is_test_001
+  Type: who_she_is
+  Aesthetic: minimal
+  Obsession: general
+  Tone: warm, intimate
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --PERSONALITY-- --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<section class="wsi-test-001">
+  <style>
+    .wsi-test-001 {
+      min-height: 100vh;
+      background: var(--bg, #0a0a0a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      text-align: center;
+    }
+    .wsi-test-001 .wsi-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent, #e63946);
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+    }
+    .wsi-test-001 .wsi-personality {
+      font-family: var(--font-heading, 'Playfair Display'), serif;
+      font-size: clamp(1.4rem, 4vw, 2.5rem);
+      color: var(--text, #ffffff);
+      max-width: 700px;
+      line-height: 1.4;
+      margin-bottom: clamp(2rem, 6vw, 4rem);
+    }
+    .wsi-test-001 .wsi-details {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1rem, 2.5vw, 1.5rem);
+      max-width: 500px;
+      width: 100%;
+    }
+    .wsi-test-001 .wsi-detail {
+      border-left: 2px solid var(--accent, #e63946);
+      padding-left: clamp(1rem, 3vw, 1.5rem);
+      text-align: left;
+      color: var(--primary, #aaaaaa);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      line-height: 1.6;
+    }
+  </style>
+
+  <div class="wsi-label">Who she is</div>
+  <div class="wsi-personality">--PERSONALITY--</div>
+  <div class="wsi-details">
+    <div class="wsi-detail">--DETAIL_1--</div>
+    <div class="wsi-detail">--DETAIL_2--</div>
+    <div class="wsi-detail">--DETAIL_3--</div>
+  </div>
+
+  <script>
+    (function() {
+      gsap.fromTo('.wsi-test-001', { opacity: 0 }, {
+        opacity: 1, duration: 1,
+        scrollTrigger: { trigger: '.wsi-test-001', start: 'top 80%' }
+      })
+      gsap.fromTo('.wsi-test-001 .wsi-personality', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1, delay: 0.2,
+        scrollTrigger: { trigger: '.wsi-test-001', start: 'top 70%' }
+      })
+      gsap.fromTo('.wsi-test-001 .wsi-detail', { opacity: 0, x: -20 }, {
+        opacity: 1, x: 0, duration: 0.8, stagger: 0.2, delay: 0.4,
+        scrollTrigger: { trigger: '.wsi-test-001 .wsi-details', start: 'top 75%' }
+      })
+    })()
+  </script>
+</section>
