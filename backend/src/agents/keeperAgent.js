@@ -31,8 +31,9 @@ async function run(html, profile, componentIds) {
   await page.save()
 
   // Step 4 — Build and return the URL
-  const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
-  const url = `${baseUrl}/r/${slug}`
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000'
+    const url = `${backendUrl}/api/og/${slug}`
 
   return { slug, url }
 }

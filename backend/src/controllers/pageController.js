@@ -50,7 +50,62 @@ async function getPage(req, res) {
     res.status(500).json({ success: false, error: 'Failed to load experience.' })
   }
 }
+async function getPageOG(req, res) {
+  const { slug } = req.params
+  const userAgent = req.headers['user-agent'] || ''
 
+  // Check if this is a social media crawler
+  const isCrawler = 
+    userAgent.includes('facebookexternalhit') ||
+    userAgent.includes('WhatsApp') ||
+    userAgent.includes('Twitterbot') ||
+    userAgent.includes('LinkedInBot') ||
+    userAgent.includes('TelegramBot') ||
+    userAgent.includes('Slackbot')
+
+  if (!isCrawler) {
+    // Real user — redirect to the React app
+    return res.redirect(`${process.env.FRONTEND_URL}/r/${slug}`)
+  }
+
+  try {
+    const page = await Page.findOne({ slug }).select('recipient_name occasion obsession slug')
+
+    if (!page) {
+      return res.status(404).send('Not found')
+    }
+
+    const name = page.recipient_name || 'Someone special'
+    const occasion = page.occasion === 'birthday' ? 'Birthday' : 'Apology'
+    const title = `Something made for ${name}`
+    const description = `A cinematic ${occasion.toLowerCase()} experience. Built with The Glitch Protocol.`
+    const url = `${process.env.FRONTEND_URL}/r/${slug}`
+
+    // Return minimal HTML with OG tags only
+    res.send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>${title}</title>
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:url" content="${url}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Glitch Protocol" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+</head>
+<body>
+  <script>window.location.href = "${url}"</script>
+</body>
+</html>`)
+
+  } catch (err) {
+    console.error('OG error:', err.message)
+    res.status(500).send('Error')
+  }
+}
 // Sender checks if recipient has opened the link
 async function getPageMeta(req, res) {
   const { slug } = req.params
@@ -99,4 +154,4 @@ async function updateSettings(req, res) {
     res.status(500).json({ success: false, error: 'Failed to save settings' })
   }
 }
-module.exports = { getPage, getPageMeta, updateSettings }
+module.exports = { getPage, getPageMeta, updateSettings, getPageOG }
