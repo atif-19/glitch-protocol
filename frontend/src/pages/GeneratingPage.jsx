@@ -32,26 +32,32 @@ export default function GeneratingPage() {
   }, [])
 
   // Call the backend as soon as this page loads
-  useEffect(() => {
-    if (!occasion) return
+useEffect(() => {
+  if (!occasion) return
 
-    const allAnswers = { ...answers, occasion }
+  const allAnswers = { ...answers, occasion }
 
-    api.post('/api/generate', { answers: allAnswers })
-      .then(res => {
-        if (res.data.success) {
-          setGeneratedUrl(res.data.url)
-          setGeneratedSlug(res.data.slug)
-          setApiDone(true)
-        } else {
-          setError('Something went wrong. Please try again.')
-        }
-      })
-      .catch(err => {
-        console.error('Generation failed:', err)
-        setError('Generation failed. Please try again.')
-      })
-  }, [])
+  api.post('/api/generate', { answers: allAnswers })
+    .then(res => {
+      if (res.data.success) {
+        setGeneratedUrl(res.data.url)
+        setGeneratedSlug(res.data.slug)
+        setApiDone(true)
+      } else {
+        setError(res.data.debug || 'Something went wrong. You can retry or edit your answers.')
+      }
+    })
+    .catch(err => {
+      const msg = err.response?.data?.debug || err.message
+      if (msg?.includes('quota') || msg?.includes('rate')) {
+        setError('AI quota exceeded. Wait 60 seconds and try again.')
+      } else if (msg?.includes('timeout')) {
+        setError('Request timed out. The AI took too long. Please retry.')
+      } else {
+        setError('Generation failed. You can retry — your answers are saved.')
+      }
+    })
+}, [])
 
   // Animate agents progressing — independent of API
   // This gives the user something to watch while the backend works
@@ -73,19 +79,60 @@ export default function GeneratingPage() {
     }
   }, [apiDone, activeAgent])
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-6">
-        <p className="text-red-400 text-lg">{error}</p>
-        <button
-          onClick={() => navigate('/questions')}
-          className="border border-zinc-700 text-white px-8 py-3 hover:border-white transition-colors"
+if (error) {
+  return (
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-6 px-6">
+      <motion.div
+        className="text-center max-w-md"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="text-4xl mb-6">⚠</div>
+        <h2
+          className="text-2xl font-bold mb-3"
+          style={{ fontFamily: 'Playfair Display, serif' }}
         >
-          ← Go Back
-        </button>
-      </div>
-    )
-  }
+          A glitch in the protocol.
+        </h2>
+        <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
+          {error}
+        </p>
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={() => {
+              setError(null)
+              setActiveAgent(0)
+              setDoneAgents([])
+              setApiDone(false)
+              // Retry the API call
+              const allAnswers = { ...answers, occasion }
+              api.post('/api/generate', { answers: allAnswers })
+                .then(res => {
+                  if (res.data.success) {
+                    setGeneratedUrl(res.data.url)
+                    setGeneratedSlug(res.data.slug)
+                    setApiDone(true)
+                  } else {
+                    setError('Generation failed again. Please go back and try.')
+                  }
+                })
+                .catch(() => setError('Generation failed again. Please go back and try.'))
+            }}
+            className="bg-white text-black px-8 py-3 font-semibold hover:bg-zinc-200 transition-colors"
+          >
+            Try Again
+          </button>
+          <button
+            onClick={() => navigate('/questions')}
+            className="border border-zinc-700 text-white px-8 py-3 hover:border-white transition-colors text-sm"
+          >
+            ← Edit Answers
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6">
