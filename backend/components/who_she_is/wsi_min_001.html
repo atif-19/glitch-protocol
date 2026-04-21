@@ -1,0 +1,317 @@
+<!--
+  Component: wsi-minimal-001
+  Type: who_she_is
+  Aesthetic: minimal
+  Obsession: clean lines
+  Tone: intimate, editorial, quiet
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --PERSONALITY-- --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<style>
+  #wsi-minimal-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+
+  #wsi-minimal-001 .wsi-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    grid-template-rows: auto;
+    gap: 0;
+    width: min(900px, 90vw);
+    align-items: start;
+  }
+
+  #wsi-minimal-001 .wsi-left {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.4rem, 3vw, 2.4rem);
+    padding-right: clamp(2rem, 5vw, 5rem);
+  }
+
+  #wsi-minimal-001 .wsi-divider-v {
+    width: 1px;
+    height: clamp(260px, 45vh, 420px);
+    background: color-mix(in srgb, var(--primary) 22%, transparent);
+    align-self: center;
+    transform-origin: top center;
+    transform: scaleY(0);
+  }
+
+  #wsi-minimal-001 .wsi-right {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.8rem, 3.5vw, 3rem);
+    padding-left: clamp(2rem, 5vw, 5rem);
+  }
+
+  #wsi-minimal-001 .wsi-eyebrow {
+    font-size: clamp(0.55rem, 1.1vw, 0.68rem);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    font-family: var(--font-body);
+  }
+
+  #wsi-minimal-001 .wsi-name {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 7vw, 5.5rem);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    opacity: 0;
+  }
+
+  #wsi-minimal-001 .wsi-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  #wsi-minimal-001 .wsi-personality {
+    font-family: var(--font-body);
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    color: color-mix(in srgb, var(--text) 55%, transparent);
+    line-height: 1.75;
+    font-style: italic;
+    max-width: 32ch;
+    opacity: 0;
+  }
+
+  #wsi-minimal-001 .wsi-h-rule {
+    width: 0%;
+    height: 1px;
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  #wsi-minimal-001 .wsi-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  #wsi-minimal-001 .wsi-detail-num {
+    font-size: clamp(0.5rem, 0.9vw, 0.6rem);
+    letter-spacing: 0.3em;
+    color: color-mix(in srgb, var(--accent) 60%, transparent);
+    font-family: var(--font-body);
+    text-transform: uppercase;
+  }
+
+  #wsi-minimal-001 .wsi-detail-text {
+    font-family: var(--font-heading);
+    font-size: clamp(0.95rem, 2.1vw, 1.35rem);
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+  }
+
+  #wsi-minimal-001 .wsi-detail-line {
+    width: 0%;
+    height: 0.5px;
+    background: color-mix(in srgb, var(--primary) 25%, transparent);
+    margin-top: 2px;
+  }
+
+  #wsi-minimal-001 .wsi-cta {
+    position: absolute;
+    bottom: clamp(1.8rem, 4vh, 3rem);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.55rem, 1vw, 0.65rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 28%, transparent);
+    opacity: 0;
+    z-index: 10;
+    white-space: nowrap;
+  }
+
+  #wsi-minimal-001 .wsi-bg-char {
+    position: absolute;
+    font-family: var(--font-heading);
+    font-size: clamp(28vw, 40vw, 52vw);
+    font-weight: 400;
+    color: color-mix(in srgb, var(--primary) 5%, transparent);
+    line-height: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1;
+    user-select: none;
+    letter-spacing: -0.05em;
+    opacity: 0;
+  }
+
+  @media (max-width: 600px) {
+    #wsi-minimal-001 .wsi-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      gap: clamp(1.8rem, 5vw, 2.8rem);
+    }
+    #wsi-minimal-001 .wsi-divider-v {
+      display: none;
+    }
+    #wsi-minimal-001 .wsi-left {
+      padding-right: 0;
+    }
+    #wsi-minimal-001 .wsi-right {
+      padding-left: 0;
+    }
+  }
+</style>
+<section id="wsi-minimal-001">
+  <div class="wsi-bg-char" id="wsi-bg-char">S</div>
+  <div class="wsi-grid"><div class="wsi-left">
+  <div class="wsi-eyebrow" id="wsi-eyebrow">She is</div>
+  <h2 class="wsi-name" id="wsi-name">--RECIPIENT_NAME--</h2>
+  <div class="wsi-h-rule" id="wsi-hrule"></div>
+  <p class="wsi-personality" id="wsi-personality">--PERSONALITY--</p>
+</div>
+
+<div class="wsi-divider-v" id="wsi-divider-v"></div>
+
+<div class="wsi-right">
+  <div class="wsi-detail-item" id="wsi-d1">
+    <span class="wsi-detail-num">01</span>
+    <span class="wsi-detail-text">--DETAIL_1--</span>
+    <div class="wsi-detail-line" id="wsi-dl1"></div>
+  </div>
+  <div class="wsi-detail-item" id="wsi-d2">
+    <span class="wsi-detail-num">02</span>
+    <span class="wsi-detail-text">--DETAIL_2--</span>
+    <div class="wsi-detail-line" id="wsi-dl2"></div>
+  </div>
+  <div class="wsi-detail-item" id="wsi-d3">
+    <span class="wsi-detail-num">03</span>
+    <span class="wsi-detail-text">--DETAIL_3--</span>
+    <div class="wsi-detail-line" id="wsi-dl3"></div>
+  </div>
+</div></div>
+  <div class="wsi-cta" id="wsi-cta">Tap to continue</div>
+</section>
+<script>
+(function () {
+  const INDEX = 2;
+
+  function enterSection() {
+
+    // seed bg char from first letter of name
+    const nameEl = document.getElementById('wsi-name');
+    const bgChar = document.getElementById('wsi-bg-char');
+    const firstChar = (nameEl.textContent.trim()[0] || 'S').toUpperCase();
+    bgChar.textContent = firstChar;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // bg character drifts in
+    tl.to('#wsi-bg-char', {
+      opacity: 1,
+      duration: 1.6,
+      ease: 'power2.out'
+    }, 0);
+
+    gsap.to('#wsi-bg-char', {
+      y: -18,
+      duration: 12,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+
+    // left side
+    tl.to('#wsi-eyebrow', { opacity: 1, y: 0, duration: 0.7 }, 0.3);
+    gsap.set('#wsi-eyebrow', { y: 8 });
+
+    tl.to('#wsi-name', { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' }, 0.55);
+    gsap.set('#wsi-name', { y: 22 });
+
+    tl.to('#wsi-hrule', { width: '100%', duration: 0.9, ease: 'power2.inOut' }, 0.95);
+
+    tl.to('#wsi-personality', { opacity: 1, y: 0, duration: 0.8 }, 1.2);
+    gsap.set('#wsi-personality', { y: 10 });
+
+    // vertical divider
+    tl.to('#wsi-divider-v', { scaleY: 1, duration: 1.1, ease: 'power2.inOut' }, 0.7);
+
+    // right side details stagger
+    ['#wsi-d1', '#wsi-d2', '#wsi-d3'].forEach(function (sel, i) {
+      tl.to(sel, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 1.0 + i * 0.22);
+      tl.to(sel.replace('d', 'dl'), { width: '100%', duration: 0.6, ease: 'power1.inOut' }, 1.15 + i * 0.22);
+    });
+
+    tl.to('#wsi-cta', { opacity: 1, duration: 0.8 }, 2.2);
+
+    // ambient: name subtle breathe
+    gsap.to('#wsi-name', {
+      opacity: 0.88,
+      duration: 3.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2.5
+    });
+  }
+
+  // interaction: hover detail items reveal accent underline
+  ['wsi-d1', 'wsi-d2', 'wsi-d3'].forEach(function (id, i) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('mouseenter', function () {
+      gsap.to(el.querySelector('.wsi-detail-text'), {
+        color: 'var(--accent)',
+        duration: 0.35,
+        ease: 'power1.out'
+      });
+      gsap.to(el.querySelector('.wsi-detail-line'), {
+        background: 'var(--accent)',
+        duration: 0.35
+      });
+    });
+    el.addEventListener('mouseleave', function () {
+      gsap.to(el.querySelector('.wsi-detail-text'), {
+        color: 'var(--text)',
+        duration: 0.4
+      });
+      gsap.to(el.querySelector('.wsi-detail-line'), {
+        background: 'color-mix(in srgb, var(--primary) 25%, transparent)',
+        duration: 0.4
+      });
+    });
+  });
+
+  // advance on click
+  document.getElementById('wsi-minimal-001').addEventListener('click', function () {
+    gsap.to('#wsi-minimal-001', {
+      opacity: 0,
+      duration: 0.75,
+      ease: 'power2.in',
+      onComplete: function () {
+        if (window.glitchEvents) window.glitchEvents.advance();
+      }
+    });
+  });
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== INDEX) return;
+    enterSection();
+  });
+
+})();
+</script>

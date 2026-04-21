@@ -1,0 +1,557 @@
+<!--
+  Component: reveal-typewriter-001
+  Type: reveal
+  Aesthetic: minimal
+  Obsession: mechanic
+  Tone: tense, intimate, rewarding
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --HIDDEN_MESSAGE-- --REVEAL_INSTRUCTION--
+-->
+<style>
+  #reveal-typewriter-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: var(--font-body);
+  }
+
+  #reveal-typewriter-001 .rtw-wrap {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.4rem, 3vw, 2.2rem);
+    width: min(640px, 90vw);
+    text-align: center;
+  }
+
+  #reveal-typewriter-001 .rtw-instruction {
+    font-size: clamp(0.55rem, 1.1vw, 0.68rem);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  #reveal-typewriter-001 .rtw-input-row {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #reveal-typewriter-001 .rtw-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 28%, transparent);
+    outline: none;
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 5.5vw, 3.8rem);
+    font-weight: 400;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: 0.08em;
+    padding: clamp(0.4rem, 1vw, 0.7rem) 0;
+    caret-color: var(--accent);
+    opacity: 0;
+    transition: border-color 0.3s ease;
+  }
+
+  #reveal-typewriter-001 .rtw-input::placeholder {
+    color: color-mix(in srgb, var(--text) 18%, transparent);
+    font-style: italic;
+    font-size: clamp(1rem, 3vw, 2rem);
+    letter-spacing: 0.12em;
+  }
+
+  #reveal-typewriter-001 .rtw-input:focus {
+    border-bottom-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  #reveal-typewriter-001 .rtw-underline-fill {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 1px;
+    width: 0%;
+    background: var(--accent);
+    pointer-events: none;
+    transition: none;
+  }
+
+  #reveal-typewriter-001 .rtw-hint-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 1.2vw, 0.9rem);
+    opacity: 0;
+  }
+
+  #reveal-typewriter-001 .rtw-hint-line {
+    height: 0.5px;
+    width: clamp(24px, 4vw, 44px);
+    background: color-mix(in srgb, var(--primary) 22%, transparent);
+  }
+
+  #reveal-typewriter-001 .rtw-hint-text {
+    font-size: clamp(0.58rem, 1vw, 0.68rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 32%, transparent);
+  }
+
+  #reveal-typewriter-001 .rtw-char-row {
+    display: flex;
+    gap: clamp(4px, 0.8vw, 8px);
+    align-items: flex-end;
+    min-height: clamp(10px, 2vw, 16px);
+    opacity: 0;
+  }
+
+  #reveal-typewriter-001 .rtw-char-dot {
+    width: clamp(5px, 0.9vw, 8px);
+    height: clamp(5px, 0.9vw, 8px);
+    border-radius: 50%;
+    border: 0.5px solid color-mix(in srgb, var(--primary) 35%, transparent);
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  #reveal-typewriter-001 .rtw-char-dot.rtw-dot-filled {
+    background: color-mix(in srgb, var(--accent) 70%, transparent);
+    border-color: var(--accent);
+    transform: scale(1.35);
+  }
+
+  #reveal-typewriter-001 .rtw-char-dot.rtw-dot-correct {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.5);
+  }
+
+  #reveal-typewriter-001 .rtw-char-dot.rtw-dot-wrong {
+    background: color-mix(in srgb, #ff4d4d 60%, transparent);
+    border-color: #ff4d4d;
+    transform: scale(1.2);
+  }
+
+  /* revealed message */
+  #reveal-typewriter-001 .rtw-message-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.2rem, 3vw, 2rem);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    padding: clamp(1.5rem, 5vw, 3rem);
+  }
+
+  #reveal-typewriter-001 .rtw-message-eyebrow {
+    font-size: clamp(0.55rem, 1vw, 0.65rem);
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  #reveal-typewriter-001 .rtw-message-text {
+    font-family: var(--font-heading);
+    font-size: clamp(1.3rem, 4vw, 3rem);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    max-width: min(680px, 88vw);
+    text-align: center;
+    opacity: 0;
+  }
+
+  #reveal-typewriter-001 .rtw-message-line {
+    width: 0%;
+    height: 1px;
+    background: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  #reveal-typewriter-001 .rtw-message-cta {
+    font-size: clamp(0.55rem, 1vw, 0.65rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 30%, transparent);
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  /* unlock flash overlay */
+  #reveal-typewriter-001 .rtw-flash {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+  }
+
+  /* shake keyframe */
+  @keyframes rtw-shake {
+    0%,100% { transform: translateX(0); }
+    20%      { transform: translateX(-7px); }
+    40%      { transform: translateX(7px); }
+    60%      { transform: translateX(-5px); }
+    80%      { transform: translateX(5px); }
+  }
+
+  #reveal-typewriter-001 .rtw-input.rtw-shake {
+    animation: rtw-shake 0.38s ease;
+  }
+
+  /* particle canvas */
+  #reveal-typewriter-001 .rtw-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+  }
+</style>
+<section id="reveal-typewriter-001">
+<canvas class="rtw-canvas" id="rtw-canvas"></canvas>
+  <div class="rtw-flash" id="rtw-flash"></div>
+  <div class="rtw-wrap" id="rtw-wrap">
+    <div class="rtw-instruction" id="rtw-instruction">--REVEAL_INSTRUCTION--</div><div class="rtw-input-row">
+  <input
+    class="rtw-input"
+    id="rtw-input"
+    type="text"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+    placeholder="her name…"
+  />
+  <div class="rtw-underline-fill" id="rtw-underline-fill"></div>
+</div>
+
+<div class="rtw-char-row" id="rtw-char-row"></div>
+
+<div class="rtw-hint-row" id="rtw-hint-row">
+  <div class="rtw-hint-line"></div>
+  <div class="rtw-hint-text">Type exactly as written</div>
+  <div class="rtw-hint-line"></div>
+</div></div>
+  <div class="rtw-message-wrap" id="rtw-message-wrap">
+    <div class="rtw-message-eyebrow">Unlocked for you</div>
+    <div class="rtw-message-line" id="rtw-msg-line-top"></div>
+    <div class="rtw-message-text" id="rtw-message-text">--HIDDEN_MESSAGE--</div>
+    <div class="rtw-message-line" id="rtw-msg-line-bot"></div>
+    <div class="rtw-message-cta" id="rtw-msg-cta">Tap to continue</div>
+  </div>
+</section>
+<script>
+(function () {
+  const INDEX = 6;
+
+  // ── Helpers ───────────────────────────────────────────────────
+  function normalize(s) {
+    return s.trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  // ── Particle burst on unlock ───────────────────────────────────
+  const canvas = document.getElementById('rtw-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resizeCanvas() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  let burstPts = [];
+  let burstRunning = false;
+
+  function spawnBurst() {
+    burstPts = [];
+    const cx = W / 2, cy = H / 2;
+    for (let i = 0; i < 72; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = Math.random() * 5 + 1.5;
+      burstPts.push({
+        x: cx, y: cy,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd - Math.random() * 2,
+        r: Math.random() * 2.5 + 0.8,
+        op: 1,
+        decay: Math.random() * 0.018 + 0.01
+      });
+    }
+  }
+
+  function burstTick() {
+    ctx.clearRect(0, 0, W, H);
+    let alive = false;
+    burstPts.forEach(function (p) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.07;
+      p.op -= p.decay;
+      if (p.op <= 0) return;
+      alive = true;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fillStyle = 'rgba(178,140,255,' + p.op.toFixed(3) + ')';
+      ctx.fill();
+    });
+    if (alive && burstRunning) requestAnimationFrame(burstTick);
+    else {
+      ctx.clearRect(0, 0, W, H);
+      gsap.to(canvas, { opacity: 0, duration: 0.4 });
+    }
+  }
+
+  // ── Build dot indicators ───────────────────────────────────────
+  let targetName = '';
+  let dotEls = [];
+
+  function buildDots(name) {
+    const row = document.getElementById('rtw-char-row');
+    row.innerHTML = '';
+    dotEls = [];
+    const clean = normalize(name);
+    for (let i = 0; i < clean.length; i++) {
+      if (clean[i] === ' ') {
+        const sp = document.createElement('div');
+        sp.style.width = clamp_val(8, 1.5, 14) + 'px';
+        row.appendChild(sp);
+        dotEls.push(null);
+        continue;
+      }
+      const d = document.createElement('div');
+      d.className = 'rtw-char-dot';
+      row.appendChild(d);
+      dotEls.push(d);
+    }
+  }
+
+  function clamp_val(min, vw, max) {
+    const vwPx = window.innerWidth * vw / 100;
+    return Math.min(max, Math.max(min, vwPx));
+  }
+
+  function updateDots(typed) {
+    const tNorm = normalize(typed);
+    const gNorm = normalize(targetName);
+    let dotIdx = 0;
+    for (let i = 0; i < gNorm.length; i++) {
+      if (gNorm[i] === ' ') { dotIdx++; continue; }
+      const dot = dotEls[dotIdx];
+      if (!dot) { dotIdx++; continue; }
+      if (i < tNorm.length) {
+        if (tNorm[i] === gNorm[i]) {
+          dot.className = 'rtw-char-dot rtw-dot-correct';
+        } else {
+          dot.className = 'rtw-char-dot rtw-dot-wrong';
+        }
+      } else {
+        dot.className = 'rtw-char-dot rtw-dot-filled';
+      }
+      dotIdx++;
+    }
+    // reset dots beyond typed length
+    for (let i = tNorm.length; i < gNorm.length; i++) {
+      if (gNorm[i] === ' ') continue;
+      const dot = dotEls[i > 0 ? dotEls.indexOf(dotEls[i]) : 0];
+    }
+    // simpler reset pass
+    let di = 0;
+    for (let i = 0; i < gNorm.length; i++) {
+      if (gNorm[i] === ' ') { di++; continue; }
+      const dot = dotEls[di];
+      if (dot && i >= tNorm.length) {
+        dot.className = 'rtw-char-dot';
+      }
+      di++;
+    }
+    // underline fill progress
+    const progress = Math.min(tNorm.length / gNorm.length, 1) * 100;
+    document.getElementById('rtw-underline-fill').style.width = progress + '%';
+  }
+
+  // ── Unlock sequence ────────────────────────────────────────────
+  let unlocked = false;
+
+  function doUnlock() {
+    if (unlocked) return;
+    unlocked = true;
+
+    const input = document.getElementById('rtw-input');
+    input.blur();
+    input.disabled = true;
+
+    // flash
+    gsap.to('#rtw-flash', {
+      opacity: 0.12,
+      duration: 0.12,
+      yoyo: true,
+      repeat: 1,
+      ease: 'power2.out'
+    });
+
+    // burst
+    gsap.set(canvas, { opacity: 1 });
+    burstRunning = true;
+    spawnBurst();
+    requestAnimationFrame(burstTick);
+
+    // hide input wrap
+    gsap.to('#rtw-wrap', {
+      opacity: 0,
+      scale: 0.96,
+      duration: 0.55,
+      ease: 'power2.in'
+    });
+
+    // show message
+    const msgWrap = document.getElementById('rtw-message-wrap');
+    msgWrap.style.pointerEvents = 'auto';
+
+    gsap.to(msgWrap, { opacity: 1, duration: 0.1, delay: 0.4 });
+
+    const tl = gsap.timeline({ delay: 0.5, defaults: { ease: 'power3.out' } });
+    tl.to('#rtw-msg-line-top', { width: '100%', duration: 0.7 }, 0)
+      .to('#rtw-message-text', { opacity: 1, y: 0, duration: 0.9 }, 0.3)
+      .to('#rtw-msg-line-bot', { width: '100%', duration: 0.7 }, 0.6)
+      .to('#rtw-msg-cta', { opacity: 1, duration: 0.7 }, 1.1);
+
+    gsap.set('#rtw-message-text', { y: 18 });
+
+    document.dispatchEvent(new CustomEvent('glitch:revealed'));
+  }
+
+  // ── Wrong answer shake ─────────────────────────────────────────
+  let lastWrong = 0;
+
+  function doWrong() {
+    const now = Date.now();
+    if (now - lastWrong < 700) return;
+    lastWrong = now;
+    const inp = document.getElementById('rtw-input');
+    inp.classList.remove('rtw-shake');
+    void inp.offsetWidth;
+    inp.classList.add('rtw-shake');
+    setTimeout(function () { inp.classList.remove('rtw-shake'); }, 400);
+    gsap.to('#rtw-underline-fill', {
+      background: '#ff4d4d',
+      duration: 0.2,
+      yoyo: true,
+      repeat: 1,
+      onComplete: function () {
+        document.getElementById('rtw-underline-fill').style.background = 'var(--accent)';
+      }
+    });
+  }
+
+  // ── Input listener ─────────────────────────────────────────────
+  function bindInput() {
+    const inp = document.getElementById('rtw-input');
+
+    inp.addEventListener('input', function () {
+      const typed = inp.value;
+      updateDots(typed);
+
+      const tNorm = normalize(typed);
+      const gNorm = normalize(targetName);
+
+      if (tNorm === gNorm) {
+        doUnlock();
+      } else if (typed.length >= targetName.length + 3) {
+        doWrong();
+      }
+    });
+
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const tNorm = normalize(inp.value);
+        const gNorm = normalize(targetName);
+        if (tNorm === gNorm) {
+          doUnlock();
+        } else {
+          doWrong();
+        }
+      }
+    });
+  }
+
+  // ── Entrance sequence ─────────────────────────────────────────
+  function enterSection() {
+    // extract target name from the DOM
+    const inp = document.getElementById('rtw-input');
+    // the backend fills the recipient name elsewhere; we read it from the hidden message wrapper
+    // fallback: read from a sibling section's name element if available
+    const nameSource =
+      document.querySelector('[id^="hero-"] .hhp-name') ||
+      document.querySelector('[id^="wsi-"] .wsi-name');
+    if (nameSource) {
+      targetName = nameSource.textContent.trim();
+    } else {
+      // derive from the HIDDEN_MESSAGE placeholder sibling — last resort use accent text
+      targetName = (document.querySelector('.hhp-name, .wsi-name, [data-recipient]') || {}).textContent || 'her name';
+    }
+
+    buildDots(targetName);
+
+    gsap.set(['#rtw-instruction', '#rtw-input', '#rtw-char-row', '#rtw-hint-row'], { opacity: 0, y: 12 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.to('#rtw-instruction', { opacity: 1, y: 0, duration: 0.7 }, 0.3)
+      .to('#rtw-input',       { opacity: 1, y: 0, duration: 0.8 }, 0.6)
+      .to('#rtw-char-row',    { opacity: 1, y: 0, duration: 0.6 }, 0.9)
+      .to('#rtw-hint-row',    { opacity: 1, y: 0, duration: 0.6 }, 1.05)
+      .call(function () {
+        document.getElementById('rtw-input').focus();
+        bindInput();
+      }, [], 1.2);
+
+    // ambient: instruction letter-spacing breathe
+    gsap.to('#rtw-instruction', {
+      opacity: 0.6,
+      duration: 2.8,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2
+    });
+  }
+
+  // ── Advance on message tap ────────────────────────────────────
+  document.getElementById('rtw-message-wrap').addEventListener('click', function () {
+    gsap.to('#reveal-typewriter-001', {
+      opacity: 0,
+      duration: 0.75,
+      ease: 'power2.in',
+      onComplete: function () {
+        burstRunning = false;
+        if (window.glitchEvents) window.glitchEvents.advance();
+      }
+    });
+  });
+
+  // ── glitch:enter ──────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== INDEX) return;
+    enterSection();
+  });
+
+})();
+</script>

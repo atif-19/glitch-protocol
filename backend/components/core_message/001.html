@@ -1,0 +1,382 @@
+<!--
+  Component: cm-soft-001
+  Type: core_message
+  Aesthetic: soft romantic
+  Obsession: centered poetry
+  Tone: tender, poetic, intimate
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --MESSAGE_MAIN-- --MESSAGE_LINE_2-- --MESSAGE_LINE_3--
+-->
+<style>
+  #cm-soft-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+
+  #cm-soft-001 .cms-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #cm-soft-001 .cms-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 55% at 50% 50%,
+        color-mix(in srgb, var(--primary) 16%, transparent), transparent 65%),
+      radial-gradient(ellipse 28% 28% at 22% 80%,
+        color-mix(in srgb, var(--accent) 8%, transparent), transparent 55%),
+      radial-gradient(ellipse 22% 22% at 80% 18%,
+        color-mix(in srgb, var(--primary) 7%, transparent), transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #cm-soft-001 .cms-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 100% 100% at 50% 50%,
+      transparent 30%,
+      color-mix(in srgb, var(--bg) 88%, transparent) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  #cm-soft-001 .cms-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    max-width: min(700px, 90vw);
+  }
+
+  #cm-soft-001 .cms-to {
+    font-size: clamp(0.52rem, 1vw, 0.64rem);
+    letter-spacing: 0.44em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: clamp(1.4rem, 3vw, 2.2rem);
+  }
+
+  #cm-soft-001 .cms-name {
+    font-family: var(--font-heading);
+    font-size: clamp(0.9rem, 2.2vw, 1.4rem);
+    font-weight: 400;
+    color: color-mix(in srgb, var(--text) 50%, transparent);
+    letter-spacing: 0.16em;
+    opacity: 0;
+    margin-bottom: clamp(1.8rem, 4vw, 3rem);
+    font-style: italic;
+  }
+
+  #cm-soft-001 .cms-poem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.1rem, 2.5vw, 1.9rem);
+    margin-bottom: clamp(2rem, 4.5vw, 3.5rem);
+  }
+
+  #cm-soft-001 .cms-line {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  #cm-soft-001 .cms-line-main {
+    font-size: clamp(1.6rem, 5.5vw, 4rem);
+    letter-spacing: -0.01em;
+  }
+
+  #cm-soft-001 .cms-line-two {
+    font-size: clamp(1.1rem, 3.2vw, 2.4rem);
+    color: color-mix(in srgb, var(--text) 80%, transparent);
+    font-style: italic;
+  }
+
+  #cm-soft-001 .cms-line-three {
+    font-size: clamp(0.88rem, 2.2vw, 1.6rem);
+    color: color-mix(in srgb, var(--text) 55%, transparent);
+    font-style: italic;
+    letter-spacing: 0.04em;
+  }
+
+  #cm-soft-001 .cms-accent-word {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  #cm-soft-001 .cms-ornament {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.7rem, 1.5vw, 1.2rem);
+    opacity: 0;
+    margin-bottom: clamp(1.8rem, 4vw, 3rem);
+  }
+
+  #cm-soft-001 .cms-orn-line {
+    height: 0.5px;
+    width: clamp(32px, 6vw, 60px);
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+
+  #cm-soft-001 .cms-orn-diamond {
+    width: clamp(5px, 0.8vw, 7px);
+    height: clamp(5px, 0.8vw, 7px);
+    background: var(--accent);
+    transform: rotate(45deg);
+    opacity: 0.7;
+  }
+
+  #cm-soft-001 .cms-orn-dot {
+    width: clamp(3px, 0.45vw, 4px);
+    height: clamp(3px, 0.45vw, 4px);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  #cm-soft-001 .cms-cta {
+    font-size: clamp(0.52rem, 0.95vw, 0.62rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 26%, transparent);
+    opacity: 0;
+  }
+
+  #cm-soft-001 .cms-bg-word {
+    position: absolute;
+    font-family: var(--font-heading);
+    font-size: clamp(22vw, 32vw, 42vw);
+    font-weight: 400;
+    color: color-mix(in srgb, var(--primary) 4%, transparent);
+    line-height: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1;
+    user-select: none;
+    white-space: nowrap;
+    letter-spacing: -0.04em;
+    opacity: 0;
+  }
+
+  #cm-soft-001 .cms-side-rule {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 0.5px;
+    height: clamp(120px, 25vh, 220px);
+    background: linear-gradient(180deg,
+      transparent,
+      color-mix(in srgb, var(--primary) 20%, transparent) 40%,
+      color-mix(in srgb, var(--primary) 20%, transparent) 60%,
+      transparent);
+    transform-origin: center top;
+    z-index: 3;
+  }
+
+  #cm-soft-001 .cms-side-rule-left  { left: clamp(1.5rem, 4vw, 4rem); }
+  #cm-soft-001 .cms-side-rule-right { right: clamp(1.5rem, 4vw, 4rem); }
+</style>
+<section id="cm-soft-001">
+  <div class="cms-glow"></div>
+  <div class="cms-vignette"></div>
+  <canvas class="cms-canvas" id="cms-canvas"></canvas>
+  <div class="cms-bg-word" id="cms-bg-word">love</div>
+  <div class="cms-side-rule cms-side-rule-left"  id="cms-rule-l"></div>
+  <div class="cms-side-rule cms-side-rule-right" id="cms-rule-r"></div>
+  <div class="cms-center"><div class="cms-to" id="cms-to">A message for</div>
+
+<div class="cms-name" id="cms-name">--RECIPIENT_NAME--</div>
+
+<div class="cms-poem">
+  <div class="cms-line cms-line-main"  id="cms-l1">--MESSAGE_MAIN--</div>
+  <div class="cms-line cms-line-two"   id="cms-l2">--MESSAGE_LINE_2--</div>
+  <div class="cms-line cms-line-three" id="cms-l3">--MESSAGE_LINE_3--</div>
+</div>
+
+<div class="cms-ornament" id="cms-ornament">
+  <div class="cms-orn-dot"></div>
+  <div class="cms-orn-line"></div>
+  <div class="cms-orn-diamond"></div>
+  <div class="cms-orn-line"></div>
+  <div class="cms-orn-dot"></div>
+</div>
+
+<div class="cms-cta" id="cms-cta">Tap to continue</div></div>
+</section>
+<script>
+(function () {
+  const INDEX = 4;
+
+  // ── Soft particle mist ─────────────────────────────────────────
+  const canvas = document.getElementById('cms-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const TOTAL = 90;
+  const pool  = [];
+
+  function mkPt(boot) {
+    return {
+      x:  Math.random() * (W || 800),
+      y:  boot ? Math.random() * (H || 800) : (H || 800) + 8,
+      r:  Math.random() * 1.8 + 0.25,
+      vx: (Math.random() - 0.5) * 0.12,
+      vy: -(Math.random() * 0.18 + 0.03),
+      op: Math.random() * 0.38 + 0.06,
+      ts: Math.random() * 0.011 + 0.004,
+      tp: Math.random() * Math.PI * 2
+    };
+  }
+
+  for (let i = 0; i < TOTAL; i++) pool.push(mkPt(true));
+
+  let running = false;
+
+  function dust() {
+    ctx.clearRect(0, 0, W, H);
+    const t = performance.now() * 0.001;
+    for (let i = 0; i < pool.length; i++) {
+      const p = pool[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y < -8) { pool[i] = mkPt(false); continue; }
+      const fl = 0.4 + 0.6 * Math.sin(t * p.ts * 60 + p.tp);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fillStyle = 'rgba(200,160,255,' + (p.op * fl).toFixed(3) + ')';
+      ctx.fill();
+    }
+    if (running) requestAnimationFrame(dust);
+  }
+
+  // ── Entrance ───────────────────────────────────────────────────
+  function enterSection() {
+    running = true;
+    dust();
+
+    gsap.set(['#cms-to', '#cms-name', '#cms-l1', '#cms-l2', '#cms-l3', '#cms-ornament', '#cms-cta'], {
+      opacity: 0, y: 14
+    });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#cms-bg-word', { opacity: 1, duration: 2.2, ease: 'power1.out' }, 0)
+      .to(['#cms-rule-l', '#cms-rule-r'], {
+          scaleY: 1,
+          duration: 1.1,
+          ease: 'power2.inOut',
+          stagger: 0.08
+        }, 0.3)
+      .to('#cms-to',   { opacity: 1, y: 0, duration: 0.7 }, 0.5)
+      .to('#cms-name', { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }, 0.8)
+      .to('#cms-l1',   { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' }, 1.15)
+      .to('#cms-l2',   { opacity: 1, y: 0, duration: 0.85 }, 1.5)
+      .to('#cms-l3',   { opacity: 1, y: 0, duration: 0.8  }, 1.78)
+      .to('#cms-ornament', { opacity: 1, y: 0, duration: 0.7 }, 2.1)
+      .to('#cms-cta',      { opacity: 1, y: 0, duration: 0.7 }, 2.45);
+
+    // ambient: bg word slow drift
+    gsap.to('#cms-bg-word', {
+      y: -24,
+      duration: 14,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+
+    // ambient: main line breathe
+    gsap.to('#cms-l1', {
+      opacity: 0.82,
+      duration: 3.8,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 3
+    });
+
+    // ambient: side rules pulse
+    gsap.to(['#cms-rule-l', '#cms-rule-r'], {
+      opacity: 0.4,
+      duration: 3.2,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2,
+      stagger: 0.4
+    });
+
+    // ambient: ornament diamond rotate
+    gsap.to('.cms-orn-diamond', {
+      rotation: 225,
+      duration: 6,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2.5
+    });
+  }
+
+  // ── Interaction: hover lines lift ─────────────────────────────
+  ['#cms-l1', '#cms-l2', '#cms-l3'].forEach(function (sel, i) {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    el.style.cursor = 'default';
+    el.addEventListener('mouseenter', function () {
+      gsap.to(el, { y: -4, opacity: 1, duration: 0.4, ease: 'power2.out' });
+    });
+    el.addEventListener('mouseleave', function () {
+      gsap.to(el, { y: 0, duration: 0.5, ease: 'power1.out' });
+    });
+  });
+
+  // ── Advance ────────────────────────────────────────────────────
+  document.getElementById('cm-soft-001').addEventListener('click', function () {
+    gsap.to('#cm-soft-001', {
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.in',
+      onComplete: function () {
+        running = false;
+        if (window.glitchEvents) window.glitchEvents.advance();
+      }
+    });
+  });
+
+  // ── glitch:enter ──────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== INDEX) return;
+    enterSection();
+  });
+
+})();
+</script>

@@ -1,0 +1,412 @@
+<!--
+  Component: ending-dreamy-001
+  Type: ending
+  Aesthetic: dreamy
+  Obsession: floating particles fade
+  Tone: tender, cinematic, closing
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME--
+-->
+<style>
+  #ending-dreamy-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: var(--font-body);
+  }#ending-dreamy-001 .ed-canvas {
+position: absolute;
+inset: 0;
+z-index: 1;
+pointer-events: none;
+}#ending-dreamy-001 .ed-glow {
+position: absolute;
+inset: 0;
+background:
+radial-gradient(ellipse 55% 45% at 50% 52%,
+color-mix(in srgb, var(--primary) 20%, transparent), transparent 68%),
+radial-gradient(ellipse 25% 30% at 18% 72%,
+color-mix(in srgb, var(--accent) 9%, transparent), transparent 55%),
+radial-gradient(ellipse 20% 25% at 82% 24%,
+color-mix(in srgb, var(--primary) 7%, transparent), transparent 55%);
+pointer-events: none;
+z-index: 0;
+}#ending-dreamy-001 .ed-vignette {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse 100% 100% at 50% 50%,
+transparent 25%,
+color-mix(in srgb, var(--bg) 92%, transparent) 100%);
+pointer-events: none;
+z-index: 2;
+}#ending-dreamy-001 .ed-center {
+position: relative;
+z-index: 10;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+gap: clamp(1rem, 2.5vw, 1.8rem);
+padding: clamp(1.5rem, 5vw, 3rem);
+max-width: min(720px, 90vw);
+}#ending-dreamy-001 .ed-eyebrow {
+font-size: clamp(0.52rem, 1vw, 0.64rem);
+letter-spacing: 0.44em;
+text-transform: uppercase;
+color: var(--accent);
+opacity: 0;
+}#ending-dreamy-001 .ed-name {
+font-family: var(--font-heading);
+font-size: clamp(3rem, 10vw, 7.5rem);
+font-weight: 400;
+color: var(--text);
+line-height: 0.92;
+letter-spacing: -0.01em;
+opacity: 0;
+}#ending-dreamy-001 .ed-rule {
+width: 0%;
+height: 1px;
+background: linear-gradient(90deg,
+transparent,
+color-mix(in srgb, var(--accent) 55%, transparent),
+transparent);
+align-self: stretch;
+}#ending-dreamy-001 .ed-ending-line {
+font-family: var(--font-body);
+font-size: clamp(0.82rem, 1.8vw, 1.1rem);
+color: color-mix(in srgb, var(--text) 62%, transparent);
+line-height: 1.7;
+font-style: italic;
+letter-spacing: 0.03em;
+max-width: 48ch;
+opacity: 0;
+}#ending-dreamy-001 .ed-song-wrap {
+display: flex;
+align-items: center;
+gap: clamp(0.6rem, 1.4vw, 1rem);
+opacity: 0;
+margin-top: clamp(0.4rem, 1vw, 0.8rem);
+}#ending-dreamy-001 .ed-song-icon {
+width: clamp(28px, 4vw, 38px);
+height: clamp(28px, 4vw, 38px);
+border-radius: 50%;
+border: 0.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+position: relative;
+overflow: hidden;
+}#ending-dreamy-001 .ed-song-icon svg {
+width: clamp(11px, 1.6vw, 15px);
+height: clamp(11px, 1.6vw, 15px);
+}#ending-dreamy-001 .ed-song-ring {
+position: absolute;
+inset: -1px;
+border-radius: 50%;
+border: 0.5px solid color-mix(in srgb, var(--accent) 25%, transparent);
+}#ending-dreamy-001 .ed-song-text {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+gap: 2px;
+}#ending-dreamy-001 .ed-song-label {
+font-size: clamp(0.48rem, 0.85vw, 0.58rem);
+letter-spacing: 0.32em;
+text-transform: uppercase;
+color: color-mix(in srgb, var(--accent) 65%, transparent);
+}#ending-dreamy-001 .ed-song-name {
+font-family: var(--font-heading);
+font-size: clamp(0.78rem, 1.6vw, 1rem);
+font-weight: 400;
+color: var(--text);
+letter-spacing: 0.04em;
+}#ending-dreamy-001 .ed-seal-wrap {
+margin-top: clamp(0.6rem, 1.5vw, 1.2rem);
+opacity: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: clamp(0.5rem, 1vw, 0.8rem);
+}#ending-dreamy-001 .ed-made-with {
+font-size: clamp(0.48rem, 0.85vw, 0.58rem);
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: color-mix(in srgb, var(--text) 22%, transparent);
+}#ending-dreamy-001 .ed-dots {
+display: flex;
+gap: clamp(5px, 0.8vw, 8px);
+align-items: center;
+}#ending-dreamy-001 .ed-dot {
+border-radius: 50%;
+background: color-mix(in srgb, var(--accent) 40%, transparent);
+}#ending-dreamy-001 .ed-dot-sm {
+width: clamp(3px, 0.45vw, 4px);
+height: clamp(3px, 0.45vw, 4px);
+}#ending-dreamy-001 .ed-dot-lg {
+width: clamp(4px, 0.65vw, 6px);
+height: clamp(4px, 0.65vw, 6px);
+background: var(--accent);
+}/* dissolve overlay for fade-out */
+#ending-dreamy-001 .ed-dissolve {
+position: absolute;
+inset: 0;
+background: var(--bg);
+opacity: 0;
+pointer-events: none;
+z-index: 30;
+}
+</style><section id="ending-dreamy-001">  <div class="ed-glow"></div>
+  <div class="ed-vignette"></div>
+  <canvas class="ed-canvas" id="ed-canvas"></canvas>
+  <div class="ed-dissolve" id="ed-dissolve"></div>  <div class="ed-center">
+    <div class="ed-eyebrow" id="ed-eyebrow">Always &amp; forever</div>
+
+<h2 class="ed-name" id="ed-name">--RECIPIENT_NAME--</h2>
+
+<div class="ed-rule" id="ed-rule"></div>
+
+<p class="ed-ending-line" id="ed-ending-line">--ENDING_LINE--</p>
+
+<div class="ed-song-wrap" id="ed-song-wrap">
+  <div class="ed-song-icon" id="ed-song-icon">
+    <div class="ed-song-ring" id="ed-song-ring"></div>
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="5.5" cy="12.5" r="2" stroke="none"
+        fill="color-mix(in srgb, var(--accent) 80%, transparent)"/>
+      <circle cx="12.5" cy="11" r="2" stroke="none"
+        fill="color-mix(in srgb, var(--accent) 55%, transparent)"/>
+      <path d="M7.5 12.5 L7.5 4 L14.5 2.5 L14.5 11"
+        stroke="color-mix(in srgb, var(--accent) 70%, transparent)"
+        stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <path d="M7.5 4 L14.5 2.5"
+        stroke="color-mix(in srgb, var(--accent) 50%, transparent)"
+        stroke-width="0.9" fill="none"/>
+    </svg>
+  </div>
+  <div class="ed-song-text">
+    <span class="ed-song-label">Your song</span>
+    <span class="ed-song-name" id="ed-song-name">--SONG_NAME--</span>
+  </div>
+</div>
+
+<div class="ed-seal-wrap" id="ed-seal-wrap">
+  <div class="ed-dots">
+    <div class="ed-dot ed-dot-sm"></div>
+    <div class="ed-dot ed-dot-lg"></div>
+    <div class="ed-dot ed-dot-sm"></div>
+  </div>
+  <div class="ed-made-with">Made with love · The Glitch Protocol</div>
+</div></div>
+</section>
+<script>
+(function () {
+  const INDEX = 7;
+
+  // ── Particle system ────────────────────────────────────────────
+  const canvas = document.getElementById('ed-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const TOTAL = 160;
+  const pool  = [];
+
+  function mkPt(boot) {
+    return {
+      x:    Math.random() * (W || 800),
+      y:    boot ? Math.random() * (H || 800) : (H || 800) + 10,
+      r:    Math.random() * 2.2 + 0.3,
+      vx:   (Math.random() - 0.5) * 0.16,
+      vy:   -(Math.random() * 0.28 + 0.04),
+      op:   Math.random() * 0.55 + 0.08,
+      ts:   Math.random() * 0.013 + 0.004,
+      tp:   Math.random() * Math.PI * 2,
+      warm: Math.random() > 0.62
+    };
+  }
+
+  for (let i = 0; i < TOTAL; i++) pool.push(mkPt(true));
+
+  let running = false;
+
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    const t = performance.now() * 0.001;
+    for (let i = 0; i < pool.length; i++) {
+      const p = pool[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y < -10) { pool[i] = mkPt(false); continue; }
+      const fl  = 0.4 + 0.6 * Math.sin(t * p.ts * 60 + p.tp);
+      const col = p.warm
+        ? 'rgba(255,210,180,' + (p.op * fl * 0.7).toFixed(3) + ')'
+        : 'rgba(178,140,255,' + (p.op * fl).toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fillStyle = col;
+      ctx.fill();
+    }
+    if (running) requestAnimationFrame(tick);
+  }
+
+  // ── Slow upward drift for larger particles (constellation feel) ─
+  function spawnDrifters() {
+    for (let i = 0; i < 18; i++) {
+      const p    = mkPt(true);
+      p.r        = Math.random() * 3.5 + 1.5;
+      p.op       = Math.random() * 0.28 + 0.06;
+      p.vy       = -(Math.random() * 0.12 + 0.02);
+      pool.push(p);
+    }
+  }
+
+  // ── Entrance sequence ──────────────────────────────────────────
+  function enterSection() {
+    running = true;
+    spawnDrifters();
+    tick();
+
+    gsap.set([
+      '#ed-eyebrow',
+      '#ed-name',
+      '#ed-ending-line',
+      '#ed-song-wrap',
+      '#ed-seal-wrap'
+    ], { opacity: 0, y: 18 });
+
+    gsap.set('#ed-rule', { width: '0%' });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#ed-eyebrow',     { opacity: 1, y: 0, duration: 0.8 },  0.3)
+      .to('#ed-name',        { opacity: 1, y: 0, duration: 1.1, ease: 'power4.out' }, 0.65)
+      .to('#ed-rule',        { width: '100%', duration: 1.0, ease: 'power2.inOut' }, 1.1)
+      .to('#ed-ending-line', { opacity: 1, y: 0, duration: 0.9 },  1.45)
+      .to('#ed-song-wrap',   { opacity: 1, y: 0, duration: 0.8 },  1.8)
+      .to('#ed-seal-wrap',   { opacity: 1, y: 0, duration: 0.7 },  2.15);
+
+    // ambient: name breathe
+    gsap.to('#ed-name', {
+      opacity: 0.82,
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 3
+    });
+
+    // ambient: song icon spin
+    gsap.to('#ed-song-ring', {
+      rotation: 360,
+      duration: 22,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%'
+    });
+
+    // ambient: rule pulse
+    gsap.to('#ed-rule', {
+      opacity: 0.45,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2.5
+    });
+
+    // after 1.8s start slow dissolve upward for all particles
+    gsap.delayedCall(5.5, function () {
+      startFinalDissolve();
+    });
+  }
+
+  // ── Final dissolve + dispatch ended ───────────────────────────
+  function startFinalDissolve() {
+    // particles fade away naturally by slowing vy
+    pool.forEach(function (p) { p.vy *= 0.3; });
+
+    gsap.to('#ed-dissolve', {
+      opacity: 1,
+      duration: 3.8,
+      ease: 'power1.inOut',
+      delay: 1.2,
+      onComplete: function () {
+        running = false;
+        document.dispatchEvent(new CustomEvent('glitch:ended'));
+      }
+    });
+
+    // text fades up and out
+    gsap.to('#ed-center, .ed-center', {
+      opacity: 0,
+      y: -22,
+      duration: 2.8,
+      ease: 'power1.inOut',
+      delay: 1.6
+    });
+
+    gsap.to('.ed-center', {
+      opacity: 0,
+      y: -22,
+      duration: 2.8,
+      ease: 'power1.inOut',
+      delay: 1.6
+    });
+  }
+
+  // ── Interaction: tap name to burst particles ───────────────────
+  document.getElementById('ed-name').addEventListener('click', function (e) {
+    e.stopPropagation();
+    const cx = W / 2, cy = H / 2;
+    for (let i = 0; i < 20; i++) {
+      const p    = mkPt(false);
+      p.x        = cx + (Math.random() - 0.5) * 120;
+      p.y        = cy + (Math.random() - 0.5) * 60;
+      p.vy       = -(Math.random() * 2.2 + 0.9);
+      p.vx       = (Math.random() - 0.5) * 1.4;
+      p.r        = Math.random() * 3 + 1;
+      p.op       = 0.7;
+      pool.push(p);
+      if (pool.length > TOTAL + 60) pool.shift();
+    }
+    gsap.to('#ed-name', {
+      scale: 1.04,
+      duration: 0.28,
+      ease: 'power2.out',
+      yoyo: true,
+      repeat: 1
+    });
+  });
+
+  // ── Song wrap hover ────────────────────────────────────────────
+  const songWrap = document.getElementById('ed-song-wrap');
+  songWrap.addEventListener('mouseenter', function () {
+    gsap.to('#ed-song-icon', { scale: 1.18, duration: 0.35, ease: 'back.out(2)' });
+    gsap.to('#ed-song-name', { opacity: 0.7, duration: 0.3 });
+  });
+  songWrap.addEventListener('mouseleave', function () {
+    gsap.to('#ed-song-icon', { scale: 1,    duration: 0.4,  ease: 'power1.out' });
+    gsap.to('#ed-song-name', { opacity: 1,  duration: 0.3 });
+  });
+
+  // ── glitch:enter ──────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== INDEX) return;
+    enterSection();
+  });
+
+})();
+</script>
