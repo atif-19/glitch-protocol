@@ -13,18 +13,7 @@ const app = express()
 
 // Middleware
 app.use(cors({
-  origin: function(origin, callback) {
-    const allowed = [
-      'http://localhost:5173',
-      process.env.FRONTEND_URL
-    ].filter(Boolean)
-    
-    if (!origin || allowed.includes(origin)) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
+  origin: true,
   credentials: true
 }))
 app.use(express.json({ limit: '10mb' })) // 10mb to handle base64 photo uploads
