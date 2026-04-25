@@ -23,7 +23,8 @@ const componentSchema = new mongoose.Schema({
   code: { type: String, required: true }, // the full HTML string
   embedding: [Number], // 768 numbers — the Gemini embedding vector
   created_at: { type: Date, default: Date.now },
-  quality_score: { type: Number, default: 5, min: 1, max: 10 }
+  quality_score: { type: Number, default: 5, min: 1, max: 10 }, 
+  usage_count: { type: Number, default: 0 }
 })
 
 // This index is what makes vector search work

@@ -1,14 +1,7 @@
-// vectorService.js
-// Temporarily fetching by type directly until vector index syncs on Atlas M0
-// Will switch back to vector search once index is confirmed working
-
 const Component = require('../models/Component')
 
 async function findBestComponent(embedding, sectionType, occasion) {
   try {
-    // Try vector search first
-    console.log('Embedding Shape:', Array.isArray(embedding), embedding.length);
-    console.log("embdding legth is Atif :",embedding.length)
     const vectorResults = await Component.aggregate([
       {
         $vectorSearch: {
@@ -16,8 +9,8 @@ async function findBestComponent(embedding, sectionType, occasion) {
           path: 'embedding',
           queryVector: embedding,
           numCandidates: 50,
-          limit: 10,
-          filter: { type: { $eq: sectionType } } // Add this!
+          limit: 5,
+          filter: { type: { $eq: sectionType } }
         }
       },
       {
@@ -30,38 +23,42 @@ async function findBestComponent(embedding, sectionType, occasion) {
           occasion: 1,
           variables: 1,
           code: 1,
+          usage_count: { $ifNull: ['$usage_count', 0] },
           score: { $meta: 'vectorSearchScore' }
         }
       }
     ])
 
-    // If vector search returns results, use them
     if (vectorResults && vectorResults.length > 0) {
       const typeMatches = vectorResults.filter(r => r.type === sectionType)
+
       if (typeMatches.length > 0) {
-        const occasionMatch = typeMatches.find(r => r.occasion.includes(occasion))
-        return occasionMatch || typeMatches[0]
+        const occasionMatches = typeMatches.filter(r => 
+  r.occasion.includes(occasion) || r.occasion.includes('both')
+)
+        const pool = occasionMatches.length > 0 ? occasionMatches : typeMatches
+
+        const selected = weightedRandomSelect(pool)
+
+        await Component.updateOne(
+          { _id: selected._id },
+          { $inc: { usage_count: 1 } }
+        )
+
+        console.log(`Agent 2: ${sectionType} → ${selected._id} (score: ${selected.score?.toFixed(3)}, used: ${selected.usage_count} times)`)
+        return selected
       }
     }
 
-    // Fallback — fetch directly by type from MongoDB
-    // This runs when vector index hasn't synced yet
+    // Fallback if vector search returns nothing
     console.log(`Vector search empty for ${sectionType} — using direct DB fetch`)
     const directResults = await Component.find({ type: sectionType })
-
-    if (!directResults || directResults.length === 0) {
-      console.warn(`No components found for type: ${sectionType}`)
-      return null
-    }
-
-    // Prefer occasion match
+    if (!directResults || directResults.length === 0) return null
     const occasionMatch = directResults.find(r => r.occasion.includes(occasion))
     return occasionMatch || directResults[0]
 
   } catch (err) {
-    console.error(`Vector search failed for ${sectionType} — trying direct fetch:`, err.message)
-
-    // If vector search throws entirely, fall back to direct fetch
+    console.error(`Vector search failed for ${sectionType}:`, err.message)
     try {
       const directResults = await Component.find({ type: sectionType })
       if (!directResults || directResults.length === 0) return null
@@ -72,6 +69,39 @@ async function findBestComponent(embedding, sectionType, occasion) {
       return null
     }
   }
+}
+
+function weightedRandomSelect(components) {
+  if (components.length === 1) return components[0]
+
+  const PROXIMITY_THRESHOLD = 0.05
+
+  const topScore = components[0].score
+  const bottomScore = components[components.length - 1].score
+  const scoreRange = topScore - bottomScore
+
+  const weights = components.map(c => {
+    const usagePenalty = 1 / (c.usage_count + 1)
+
+    if (scoreRange < PROXIMITY_THRESHOLD) {
+      // Scores are too close to matter — decide purely by who has been used less
+      return usagePenalty
+    }
+
+    // Scores are spread out — relevance matters but usage count still modulates it
+    const normalizedScore = (c.score - bottomScore) / scoreRange
+    return (0.4 + normalizedScore * 0.6) * usagePenalty
+  })
+
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0)
+  let rand = Math.random() * totalWeight
+
+  for (let i = 0; i < components.length; i++) {
+    rand -= weights[i]
+    if (rand <= 0) return components[i]
+  }
+
+  return components[0]
 }
 
 module.exports = { findBestComponent }

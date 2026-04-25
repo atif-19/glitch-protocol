@@ -54,7 +54,6 @@ async function run(profile) {
       throw new Error(`Agent 2: No component found for section type: ${sectionType}`)
     }
     components[sectionType] = component
-    console.log(`Agent 2: ${sectionType} → ${component._id} (score: ${component.score?.toFixed(3)})`)
   }
 
   return components // { loading: doc, hero: doc, ... }
