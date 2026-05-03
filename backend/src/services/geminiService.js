@@ -9,7 +9,7 @@ async function callGeminiJSON(systemPrompt, userMessage, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const completion = await groq.chat.completions.create({
-        model: 'openai/gpt-oss-120b',
+        model: 'qwen/qwen3-32b',
         messages: [
           { role: 'system', content: systemPrompt + '\nReturn ONLY valid JSON. No markdown. No explanation.' },
           { role: 'user', content: userMessage }
