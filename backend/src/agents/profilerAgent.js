@@ -13,7 +13,16 @@ const REQUIRED_FIELDS = [
 const REQUIRED_CSS_FIELDS = ['primary_color', 'accent_color', 'font_heading', 'font_body']
 
 async function run(formAnswers) {
-  const userMessage = `Extract structured data from these form answers: ${JSON.stringify(formAnswers)}`
+  const userMessage = `
+Form answers:
+${JSON.stringify(formAnswers)}
+
+CRITICAL for CSS derivation:
+- Her obsession is: ${formAnswers.obsession || formAnswers.question_3}
+- Her favorite color is: ${formAnswers.favorite_color || formAnswers.question_4 || 'not specified'}
+- The aesthetic she gravitates toward: ${formAnswers.aesthetic || 'derive from obsession'}
+
+Derive the CSS palette SPECIFICALLY from these two inputs combined.`
 
   const result = await callGeminiJSON(PROFILER_SYSTEM_PROMPT, userMessage)
 
