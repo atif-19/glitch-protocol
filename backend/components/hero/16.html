@@ -1,0 +1,810 @@
+<!--
+  Component: hero_ocean_001
+  Type: hero
+  Aesthetic: Coastal dreamy
+  Obsession: Ocean
+  Tone: serene, vast, emotional
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .hero-ocean-001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: none;
+    background: #020d1a;
+  }
+
+  .hero-ocean-001-sky {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+      180deg,
+      #020810 0%,
+      #061428 18%,
+      #0a2040 36%,
+      #0e3060 52%,
+      #1a4a7a 64%,
+      #2a6a9a 74%,
+      #4a9ab8 83%,
+      #8ac8d8 90%,
+      #c8e8f0 95%,
+      #f0f4e8 100%
+    );
+  }
+
+  .hero-ocean-001-stars-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-ocean-001-moon {
+    position: absolute;
+    top: clamp(3rem, 8vh, 7rem);
+    right: clamp(4rem, 12vw, 14rem);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .hero-ocean-001-moon-glow {
+    position: absolute;
+    width: clamp(120px, 18vw, 220px);
+    height: clamp(120px, 18vw, 220px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(220,235,255,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+  }
+
+  .hero-ocean-001-moon-body {
+    width: clamp(44px, 6vw, 72px);
+    height: clamp(44px, 6vw, 72px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #f5f0e0, #c8c0a0);
+    box-shadow: 0 0 clamp(20px,4vw,50px) clamp(8px,2vw,20px) rgba(200,220,255,0.18),
+                inset -4px -4px 12px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-ocean-001-ocean-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .hero-ocean-001-foam-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .hero-ocean-001-horizon-glow {
+    position: absolute;
+    bottom: 32%;
+    left: 0;
+    width: 100%;
+    height: 18vh;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(80,160,200,0.08) 40%,
+      rgba(100,180,220,0.14) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hero-ocean-001-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .hero-ocean-001-droplet {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(180, 220, 255, 0.7);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .hero-ocean-001-biolum {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(80, 200, 255, 0.8);
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: 0 0 6px 3px rgba(80,200,255,0.4);
+  }
+
+  .hero-ocean-001-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    pointer-events: none;
+    margin-top: clamp(-8rem, -14vh, -5rem);
+  }
+
+  .hero-ocean-001-eyebrow {
+    font-size: clamp(0.58rem, 1.1vw, 0.75rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: rgba(180, 230, 255, 0.7);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+  }
+
+  .hero-ocean-001-eyebrow-wave {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(180,230,255,0.6));
+    position: relative;
+  }
+
+  .hero-ocean-001-eyebrow-wave.right {
+    background: linear-gradient(to left, transparent, rgba(180,230,255,0.6));
+  }
+
+  .hero-ocean-001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.8rem, 8.5vw, 7.5rem);
+    line-height: 1.04;
+    color: #f0f8ff;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    text-shadow:
+      0 2px 40px rgba(80,180,255,0.3),
+      0 0 100px rgba(40,120,200,0.15);
+  }
+
+  .hero-ocean-001-accent {
+    color: var(--accent);
+    display: inline-block;
+    text-shadow:
+      0 0 30px var(--accent),
+      0 2px 60px rgba(80,180,255,0.35);
+  }
+
+  .hero-ocean-001-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+  }
+
+  .hero-ocean-001-divider-tide {
+    width: 40px;
+    height: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-ocean-001-divider-tide svg {
+    position: absolute;
+    top: 0; left: 0;
+  }
+
+  .hero-ocean-001-divider-drop {
+    width: 6px;
+    height: 6px;
+    background: rgba(180,230,255,0.55);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+  }
+
+  .hero-ocean-001-subtitle {
+    font-size: clamp(0.82rem, 2vw, 1.15rem);
+    color: rgba(220, 240, 255, 0.68);
+    opacity: 0;
+    letter-spacing: 0.03em;
+    max-width: 450px;
+    line-height: 1.8;
+  }
+
+  .hero-ocean-001-recipient {
+    margin-top: clamp(0.3rem, 0.8vw, 0.7rem);
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2.8vw, 1.9rem);
+    color: #f0f8ff;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    text-shadow: 0 2px 20px rgba(80,180,255,0.3);
+  }
+
+  .hero-ocean-001-recipient::before,
+  .hero-ocean-001-recipient::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: rgba(180,230,255,0.45);
+  }
+
+  .hero-ocean-001-depth-label {
+    position: absolute;
+    right: clamp(1.2rem, 3vw, 2.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+  }
+
+  .hero-ocean-001-depth-bar {
+    width: 1px;
+    height: clamp(80px, 14vh, 140px);
+    background: linear-gradient(to bottom, transparent, rgba(180,230,255,0.3), transparent);
+    position: relative;
+  }
+
+  .hero-ocean-001-depth-marker {
+    position: absolute;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .hero-ocean-001-depth-marker-line {
+    width: 8px;
+    height: 1px;
+    background: rgba(180,230,255,0.4);
+  }
+
+  .hero-ocean-001-depth-text {
+    font-size: clamp(0.45rem, 0.8vw, 0.58rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(180,230,255,0.4);
+  }
+
+  .hero-ocean-001-compass {
+    position: absolute;
+    left: clamp(1.2rem, 3vw, 2.5rem);
+    top: clamp(1.2rem, 3vh, 2rem);
+    z-index: 11;
+    opacity: 0;
+    width: clamp(36px, 5vw, 54px);
+    height: clamp(36px, 5vw, 54px);
+  }
+
+  .hero-ocean-001-hint {
+    position: absolute;
+    bottom: clamp(1.2rem, 3vh, 2.2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+  }
+
+  .hero-ocean-001-hint-text {
+    font-size: clamp(0.52rem, 1vw, 0.67rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(200, 235, 255, 0.35);
+  }
+
+  .hero-ocean-001-hint-tide {
+    width: 30px;
+    height: 12px;
+    opacity: 0.5;
+    animation: hero-ocean-001-tideflow 2.2s ease-in-out infinite;
+  }
+
+  @keyframes hero-ocean-001-tideflow {
+    0%,100% { transform: scaleX(0.7); opacity: 0.3; }
+    50% { transform: scaleX(1); opacity: 0.7; }
+  }
+
+  .hero-ocean-001-cursor {
+    position: fixed;
+    width: 26px;
+    height: 26px;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-ocean-001-cursor-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(180,230,255,0.6);
+    animation: hero-ocean-001-ripple-cursor 2s ease-out infinite;
+  }
+
+  .hero-ocean-001-cursor-ring-2 {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 0.5px solid rgba(180,230,255,0.2);
+    animation: hero-ocean-001-ripple-cursor 2s ease-out infinite 0.3s;
+  }
+
+  .hero-ocean-001-cursor-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(180,230,255,0.9);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    box-shadow: 0 0 8px 3px rgba(80,200,255,0.4);
+  }
+
+  @keyframes hero-ocean-001-ripple-cursor {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+</style>
+<div class="hero-ocean-001-root" id="hero-ocean-001-root">
+  <div class="hero-ocean-001-sky"></div>
+  <canvas class="hero-ocean-001-stars-canvas" id="hero-ocean-001-stars"></canvas>
+  <!-- Moon -->
+  <div class="hero-ocean-001-moon" id="hero-ocean-001-moon">
+    <div class="hero-ocean-001-moon-glow"></div>
+    <div class="hero-ocean-001-moon-body"></div>
+  </div>
+  <div class="hero-ocean-001-horizon-glow"></div>
+  <canvas class="hero-ocean-001-ocean-canvas" id="hero-ocean-001-ocean"></canvas>
+  <canvas class="hero-ocean-001-foam-canvas" id="hero-ocean-001-foam"></canvas>
+  <!-- Particles -->
+  <div class="hero-ocean-001-particles" id="hero-ocean-001-particles"></div>
+  <!-- Compass HUD -->
+<svg class="hero-ocean-001-compass" id="hero-ocean-001-compass"
+ viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+<circle cx="27" cy="27" r="25" fill="none" stroke="rgba(180,230,255,0.15)" stroke-width="0.8"/>
+<circle cx="27" cy="27" r="20" fill="none" stroke="rgba(180,230,255,0.08)" stroke-width="0.5"/>
+<line x1="27" y1="4" x2="27" y2="10" stroke="rgba(180,230,255,0.35)" stroke-width="0.8"/>
+<line x1="27" y1="44" x2="27" y2="50" stroke="rgba(180,230,255,0.2)" stroke-width="0.8"/>
+<line x1="4" y1="27" x2="10" y2="27" stroke="rgba(180,230,255,0.2)" stroke-width="0.8"/>
+<line x1="44" y1="27" x2="50" y2="27" stroke="rgba(180,230,255,0.2)" stroke-width="0.8"/>
+<text x="27" y="8" text-anchor="middle" font-size="4" fill="rgba(180,230,255,0.5)" font-family="sans-serif">N</text>
+<polygon points="27,13 24,27 27,24 30,27" fill="rgba(180,230,255,0.55)"/>
+<polygon points="27,41 24,27 27,30 30,27" fill="rgba(180,230,255,0.2)"/>
+<circle cx="27" cy="27" r="2" fill="rgba(180,230,255,0.4)"/>
+</svg>
+  <!-- Depth indicator -->
+  <div class="hero-ocean-001-depth-label" id="hero-ocean-001-depth">
+    <div class="hero-ocean-001-depth-bar">
+      <div class="hero-ocean-001-depth-marker" style="top:0">
+        <div class="hero-ocean-001-depth-marker-line"></div>
+        <span class="hero-ocean-001-depth-text">surface</span>
+      </div>
+      <div class="hero-ocean-001-depth-marker" style="top:40%">
+        <div class="hero-ocean-001-depth-marker-line"></div>
+        <span class="hero-ocean-001-depth-text">–200m</span>
+      </div>
+      <div class="hero-ocean-001-depth-marker" style="top:80%">
+        <div class="hero-ocean-001-depth-marker-line"></div>
+        <span class="hero-ocean-001-depth-text">–800m</span>
+      </div>
+    </div>
+  </div>
+  <!-- Main content -->
+  <div class="hero-ocean-001-content">
+    <div class="hero-ocean-001-eyebrow" id="hero-ocean-001-eyebrow">
+      <span class="hero-ocean-001-eyebrow-wave"></span>
+      Carried by the tide
+      <span class="hero-ocean-001-eyebrow-wave right"></span>
+    </div>
+    <div class="hero-ocean-001-title" id="hero-ocean-001-title">
+      --TITLE--<br/>
+      <span class="hero-ocean-001-accent">--ACCENT_WORD--</span>
+    </div>
+    <div class="hero-ocean-001-divider" id="hero-ocean-001-divider">
+      <div class="hero-ocean-001-divider-tide">
+        <svg viewBox="0 0 40 8" width="40" height="8">
+          <path d="M0 4 Q10 1 20 4 Q30 7 40 4" stroke="rgba(180,230,255,0.45)" stroke-width="1" fill="none"/>
+        </svg>
+      </div>
+      <div class="hero-ocean-001-divider-drop"></div>
+      <div class="hero-ocean-001-divider-tide">
+        <svg viewBox="0 0 40 8" width="40" height="8">
+          <path d="M0 4 Q10 7 20 4 Q30 1 40 4" stroke="rgba(180,230,255,0.45)" stroke-width="1" fill="none"/>
+        </svg>
+      </div>
+    </div>
+    <div class="hero-ocean-001-subtitle" id="hero-ocean-001-subtitle">--SUBTITLE--</div>
+    <div class="hero-ocean-001-recipient" id="hero-ocean-001-recipient">--RECIPIENT_NAME--</div>
+  </div>
+  <!-- Scroll hint -->
+  <div class="hero-ocean-001-hint" id="hero-ocean-001-hint">
+    <span class="hero-ocean-001-hint-text">Drift in</span>
+    <svg class="hero-ocean-001-hint-tide" viewBox="0 0 30 12">
+      <path d="M0 6 Q7.5 2 15 6 Q22.5 10 30 6" stroke="rgba(180,230,255,0.5)" stroke-width="1.2" fill="none"/>
+      <path d="M0 6 Q7.5 10 15 6 Q22.5 2 30 6" stroke="rgba(180,230,255,0.25)" stroke-width="0.8" fill="none"/>
+    </svg>
+  </div>
+  <!-- Cursor -->
+  <div class="hero-ocean-001-cursor" id="hero-ocean-001-cursor">
+    <div class="hero-ocean-001-cursor-ring"></div>
+    <div class="hero-ocean-001-cursor-ring-2"></div>
+    <div class="hero-ocean-001-cursor-dot"></div>
+  </div>
+</div>
+<script>
+(function () {
+
+  const root = document.getElementById('hero-ocean-001-root');
+  root.style.cursor = 'none';
+
+  let W = window.innerWidth;
+  let H = window.innerHeight;
+
+  // ─── Canvases ─────────────────────────────────────────────────────
+  const starCvs = document.getElementById('hero-ocean-001-stars');
+  const sCtx = starCvs.getContext('2d');
+  const oceanCvs = document.getElementById('hero-ocean-001-ocean');
+  const oCtx = oceanCvs.getContext('2d');
+  const foamCvs = document.getElementById('hero-ocean-001-foam');
+  const fCtx = foamCvs.getContext('2d');
+
+  function resize() {
+    W = window.innerWidth; H = window.innerHeight;
+    starCvs.width = oceanCvs.width = foamCvs.width = W;
+    starCvs.height = oceanCvs.height = foamCvs.height = H;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // ─── Stars ────────────────────────────────────────────────────────
+  const stars = Array.from({ length: 160 }, () => ({
+    x: Math.random(), y: Math.random() * 0.5,
+    r: Math.random() * 1.1 + 0.2,
+    a: Math.random() * 0.65 + 0.2,
+    phase: Math.random() * Math.PI * 2,
+    speed: Math.random() * 0.003 + 0.001
+  }));
+
+  function drawStars(t) {
+    sCtx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      const tw = s.a * (0.65 + 0.35 * Math.sin(t * s.speed * 60 + s.phase));
+      sCtx.beginPath();
+      sCtx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+      sCtx.fillStyle = `rgba(220,235,255,${tw})`;
+      sCtx.fill();
+    });
+
+    // Moon reflection path
+    const moonX = W * 0.88;
+    const reflY = H * 0.38;
+    const refGrad = sCtx.createLinearGradient(moonX - 40, reflY, moonX - 40, H * 0.68);
+    refGrad.addColorStop(0, 'rgba(220,235,255,0.09)');
+    refGrad.addColorStop(0.5, 'rgba(220,235,255,0.04)');
+    refGrad.addColorStop(1, 'transparent');
+    sCtx.fillStyle = refGrad;
+    sCtx.beginPath();
+    sCtx.moveTo(moonX - 12, reflY);
+    sCtx.lineTo(moonX - 40, H * 0.68);
+    sCtx.lineTo(moonX + 40, H * 0.68);
+    sCtx.lineTo(moonX + 12, reflY);
+    sCtx.closePath();
+    sCtx.fill();
+  }
+
+  // ─── Ocean waves ──────────────────────────────────────────────────
+  let waveT = 0;
+  const HORIZON = 0.38;
+  const SHORE   = 0.82;
+
+  function easeDepth(norm) {
+    return norm * norm;
+  }
+
+  function getWaveY(x, t, layer) {
+    const configs = [
+      { amp: 18, freq: 0.008, speed: 0.6, phase: 0 },
+      { amp: 12, freq: 0.013, speed: 0.9, phase: 1.2 },
+      { amp:  7, freq: 0.022, speed: 1.3, phase: 2.4 },
+      { amp:  4, freq: 0.035, speed: 1.7, phase: 0.8 }
+    ];
+    const c = configs[layer % configs.length];
+    return Math.sin(x * c.freq + t * c.speed + c.phase) * c.amp;
+  }
+
+  function drawOcean(t) {
+    oCtx.clearRect(0, 0, W, H);
+
+    const horizonY = H * HORIZON;
+    const shoreY   = H * SHORE;
+    const layers   = 7;
+
+    for (let li = 0; li < layers; li++) {
+      const norm = li / (layers - 1);
+      const baseY = horizonY + (shoreY - horizonY) * easeDepth(norm);
+      const nextNorm = (li + 1) / (layers - 1);
+      const nextY = horizonY + (shoreY - horizonY) * easeDepth(nextNorm);
+
+      const deepColor   = [8, 30, 60];
+      const shallowColor = [60, 140, 180];
+      const r = Math.round(deepColor[0] + (shallowColor[0] - deepColor[0]) * norm);
+      const g = Math.round(deepColor[1] + (shallowColor[1] - deepColor[1]) * norm);
+      const b = Math.round(deepColor[2] + (shallowColor[2] - deepColor[2]) * norm);
+
+      oCtx.beginPath();
+      oCtx.moveTo(0, H);
+      oCtx.lineTo(0, baseY + getWaveY(0, t, li));
+
+      for (let x = 1; x <= W; x += 4) {
+        const y = baseY + getWaveY(x, t, li);
+        oCtx.lineTo(x, y);
+      }
+
+      oCtx.lineTo(W, H);
+      oCtx.closePath();
+
+      const grad = oCtx.createLinearGradient(0, baseY, 0, nextY + 30);
+      grad.addColorStop(0, `rgba(${r},${g},${b},0.92)`);
+      grad.addColorStop(1, `rgba(${r - 4},${g - 8},${b - 10},0.96)`);
+      oCtx.fillStyle = grad;
+      oCtx.fill();
+    }
+
+    // Moonlight shimmer path on water
+    const mX = W * 0.88;
+    oCtx.save();
+    for (let i = 0; i < 6; i++) {
+      const shimY = horizonY + (shoreY - horizonY) * (0.1 + i * 0.12);
+      const shimW = 12 + i * 8 + Math.sin(t * 1.2 + i) * 4;
+      const shimX = mX - shimW * 0.5 + Math.sin(t * 0.8 + i * 1.3) * 10;
+      oCtx.beginPath();
+      oCtx.ellipse(shimX, shimY + getWaveY(mX, t, 2), shimW, 2.5, 0, 0, Math.PI * 2);
+      oCtx.fillStyle = `rgba(220,235,255,${0.12 - i * 0.015})`;
+      oCtx.fill();
+    }
+    oCtx.restore();
+  }
+
+  // ─── Foam / shoreline ─────────────────────────────────────────────
+  let foamPhase = 0;
+  const foamLines = Array.from({ length: 4 }, (_, i) => ({
+    y: 0.79 + i * 0.04,
+    phase: i * 0.8,
+    amp: 6 - i,
+    alpha: 0.18 - i * 0.03
+  }));
+
+  function drawFoam(t) {
+    fCtx.clearRect(0, 0, W, H);
+    foamLines.forEach(fl => {
+      const baseY = H * fl.y;
+      fCtx.beginPath();
+      fCtx.moveTo(0, baseY);
+      for (let x = 0; x <= W; x += 3) {
+        const y = baseY + Math.sin(x * 0.018 + t * 1.1 + fl.phase) * fl.amp
+                        + Math.sin(x * 0.031 + t * 0.7 + fl.phase + 1) * (fl.amp * 0.4);
+        fCtx.lineTo(x, y);
+      }
+      fCtx.strokeStyle = `rgba(255,255,255,${fl.alpha})`;
+      fCtx.lineWidth = 1.5;
+      fCtx.stroke();
+
+      // Foam dots
+      for (let x = 20; x < W; x += 28 + Math.random() * 10) {
+        const y = baseY + Math.sin(x * 0.018 + t * 1.1 + fl.phase) * fl.amp;
+        fCtx.beginPath();
+        fCtx.arc(x + Math.sin(t + x) * 6, y, 1.5 + Math.random(), 0, Math.PI * 2);
+        fCtx.fillStyle = `rgba(255,255,255,${fl.alpha * 0.8})`;
+        fCtx.fill();
+      }
+    });
+  }
+
+  // ─── Main loop ────────────────────────────────────────────────────
+  let running = false;
+  function loop(ts) {
+    waveT += 0.012;
+    drawStars(waveT);
+    drawOcean(waveT);
+    drawFoam(waveT);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // ─── Particle pool (spray + bioluminescence) ──────────────────────
+  const particlesEl = document.getElementById('hero-ocean-001-particles');
+  const DROPLET_COUNT = 20;
+  const BIOLUM_COUNT  = 18;
+  const dropPool = [];
+  const biolumPool = [];
+
+  for (let i = 0; i < DROPLET_COUNT; i++) {
+    const el = document.createElement('div');
+    el.className = 'hero-ocean-001-droplet';
+    const sz = Math.random() * 4 + 1.5;
+    el.style.width = sz + 'px'; el.style.height = sz + 'px';
+    particlesEl.appendChild(el);
+    dropPool.push({ el, busy: false });
+  }
+
+  for (let i = 0; i < BIOLUM_COUNT; i++) {
+    const el = document.createElement('div');
+    el.className = 'hero-ocean-001-biolum';
+    const sz = Math.random() * 5 + 2;
+    el.style.width = sz + 'px'; el.style.height = sz + 'px';
+    particlesEl.appendChild(el);
+    biolumPool.push({ el, busy: false });
+  }
+
+  function freeFrom(pool) { return pool.find(p => !p.busy) || null; }
+
+  function launchSpray() {
+    const s = freeFrom(dropPool);
+    if (!s) return;
+    s.busy = true;
+    const x = Math.random() * W;
+    const y = H * (0.75 + Math.random() * 0.1);
+    s.el.style.cssText = `left:${x}px;top:${y}px;opacity:0;`;
+    gsap.fromTo(s.el,
+      { opacity: 0.7, y: 0, x: 0 },
+      { opacity: 0, y: -(Math.random() * 30 + 10), x: (Math.random() - 0.5) * 20,
+        duration: 0.6 + Math.random() * 0.5, ease: 'power2.out',
+        onComplete: () => { s.busy = false; } }
+    );
+  }
+
+  function launchBiolum() {
+    const s = freeFrom(biolumPool);
+    if (!s) return;
+    s.busy = true;
+    const x = Math.random() * W;
+    const y = H * (0.45 + Math.random() * 0.35);
+    s.el.style.cssText = `left:${x}px;top:${y}px;opacity:0;`;
+    gsap.fromTo(s.el,
+      { opacity: 0, scale: 0.5 },
+      { opacity: 0.65, scale: 1, duration: 0.4, ease: 'power2.out',
+        onComplete: () => {
+          gsap.to(s.el, {
+            opacity: 0, y: -(Math.random() * 60 + 30), x: (Math.random() - 0.5) * 40,
+            scale: 0.2, duration: 1.8 + Math.random() * 1.2, ease: 'power1.inOut',
+            onComplete: () => { s.busy = false; }
+          });
+        }
+      }
+    );
+  }
+
+  let sprayInterval, biolumInterval;
+
+  function startParticles() {
+    sprayInterval  = setInterval(launchSpray,  180);
+    biolumInterval = setInterval(launchBiolum, 600);
+  }
+
+  // ─── Cursor ───────────────────────────────────────────────────────
+  const cursor = document.getElementById('hero-ocean-001-cursor');
+
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+    if (window.gsap) {
+      const dx = (e.clientX / W - 0.5) * 16;
+      const dy = (e.clientY / H - 0.5) * 10;
+      gsap.to('#hero-ocean-001-content',  { x: dx * 0.4, y: dy * 0.3, duration: 1.8, ease: 'power1.out' });
+      gsap.to('#hero-ocean-001-moon',     { x: dx * 0.6, y: dy * 0.4, duration: 2.4, ease: 'power1.out' });
+    }
+  });
+
+  // ─── Compass slow rotation (ambient) ─────────────────────────────
+  function spinCompass() {
+    if (!window.gsap) return;
+    gsap.to('#hero-ocean-001-compass', {
+      rotate: 6, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: -1
+    });
+  }
+
+  // ─── ENTRANCE ─────────────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 1) return;
+
+    const tl = gsap.timeline();
+
+    // Moon fade in
+    gsap.set('#hero-ocean-001-moon', { scale: 0.85 });
+    tl.to('#hero-ocean-001-moon', { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out' }, 0);
+
+    // HUDs
+    gsap.set(['#hero-ocean-001-compass','#hero-ocean-001-depth'], { y: -10 });
+    tl.to(['#hero-ocean-001-compass','#hero-ocean-001-depth'], {
+      opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out'
+    }, 0.5);
+
+    // Eyebrow
+    gsap.set('#hero-ocean-001-eyebrow', { y: 10 });
+    tl.to('#hero-ocean-001-eyebrow', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.7);
+
+    // Title
+    gsap.set('#hero-ocean-001-title', { y: 32, opacity: 0 });
+    tl.to('#hero-ocean-001-title', { y: 0, opacity: 1, duration: 1.2, ease: 'expo.out' }, 0.9);
+
+    // Accent
+    tl.fromTo('.hero-ocean-001-accent',
+      { opacity: 0, scale: 0.88 },
+      { opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.8)' }, 1.5
+    );
+
+    // Divider
+    gsap.set('#hero-ocean-001-divider', { scaleX: 0, transformOrigin: 'center' });
+    tl.to('#hero-ocean-001-divider', { opacity: 1, scaleX: 1, duration: 0.6, ease: 'power2.out' }, 1.6);
+
+    // Subtitle
+    gsap.set('#hero-ocean-001-subtitle', { y: 14 });
+    tl.to('#hero-ocean-001-subtitle', { opacity: 0.68, y: 0, duration: 0.8, ease: 'power2.out' }, 1.75);
+
+    // Recipient
+    gsap.set('#hero-ocean-001-recipient', { y: 16 });
+    tl.to('#hero-ocean-001-recipient', { opacity: 1, y: 0, duration: 0.9, ease: 'back.out(1.4)' }, 1.95);
+
+    // Hint
+    tl.to('#hero-ocean-001-hint', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 2.6);
+
+    // Ambient start
+    tl.call(() => {
+      startParticles();
+      spinCompass();
+
+      // Accent pulse
+      gsap.to('.hero-ocean-001-accent', {
+        textShadow: '0 0 50px var(--accent), 0 2px 80px rgba(80,180,255,0.4)',
+        duration: 2.5, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+      // Moon gentle drift
+      gsap.to('#hero-ocean-001-moon', {
+        y: -8, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+      // Depth bar breathing
+      gsap.to('.hero-ocean-001-depth-bar', {
+        opacity: 0.6, duration: 2.8, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+      // Divider drop pulse
+      gsap.to('.hero-ocean-001-divider-drop', {
+        scale: 1.4, opacity: 0.8, duration: 1.8,
+        ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+    }, [], 1.2);
+
+  });
+
+})();
+</script>

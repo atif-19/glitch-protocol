@@ -1,0 +1,924 @@
+<!-- Component: ending-playful-004
+     Type: ending
+     Aesthetic: Playful / Color Explosion
+     Obsession: Color / Joy / Chaos / Celebration
+     Tone: euphoric, wild, electric
+     Occasion: both
+     Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME--
+-->
+<style>
+  /* =====================================================
+     ENDING-PLAYFUL-004 | Color Explosion Aesthetic
+     Full-screen playful ending — paint splatter bursts,
+     chromatic chaos, rainbow trails, ink bomb detonation
+     ===================================================== */
+
+  /* Scoped root variables */
+  .ep004-root {
+    --ep004-heading: var(--font-heading);
+    --ep004-body: var(--font-body);
+    --ep004-c1: color-mix(in srgb, var(--accent)  90%, white);
+    --ep004-c2: color-mix(in srgb, var(--primary) 90%, white);
+    --ep004-c3: color-mix(in srgb, var(--accent)  60%, var(--primary));
+    --ep004-c4: color-mix(in srgb, var(--text)    30%, var(--accent));
+    --ep004-c5: color-mix(in srgb, var(--primary) 50%, white);
+    --ep004-c6: color-mix(in srgb, var(--accent)  40%, var(--bg));
+  }
+
+  /* Full screen container */
+  .ep004-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  /* ── Canvas layer for splatter SVG shapes ── */
+  .ep004-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ── Radial burst background ── */
+  .ep004-burst-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      color-mix(in srgb, var(--accent)  16%, transparent) 0%,
+      color-mix(in srgb, var(--primary) 10%, transparent) 35%,
+      color-mix(in srgb, var(--accent)   5%, transparent) 60%,
+      transparent 80%
+    );
+    pointer-events: none;
+  }
+
+  /* ── Grain overlay ── */
+  .ep004-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 9;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    animation: ep004-grain 0.14s steps(1) infinite;
+  }
+
+  @keyframes ep004-grain {
+    0%   { background-position:  0px  0px; }
+    25%  { background-position: -22px 13px; }
+    50%  { background-position:  14px -19px; }
+    75%  { background-position: -11px 24px; }
+    100% { background-position:  20px -9px; }
+  }
+
+  /* ── Paint blob shapes (CSS clip-path blobs) ── */
+  .ep004-blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    filter: blur(0.5px);
+    transform-origin: center;
+  }
+
+  /* ── Ink splat rays — thin lines radiating outward ── */
+  .ep004-splat-ray {
+    position: absolute;
+    height: 2px;
+    transform-origin: left center;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+  }
+
+  /* ── Confetti squares ── */
+  .ep004-confetti {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+    border-radius: 2px;
+  }
+
+  /* ── Floating paint drops ── */
+  .ep004-drop {
+    position: absolute;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+  }
+
+  /* ── Ring burst circles ── */
+  .ep004-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    transform: scale(0);
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
+
+  /* ══════════════════════════════════════
+     MAIN CONTENT CARD
+     ══════════════════════════════════════ */
+
+  /* ── Card wrapper ── */
+  .ep004-card {
+    position: relative;
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(24px, 5vw, 64px) clamp(28px, 6vw, 80px);
+    gap: clamp(10px, 2vh, 24px);
+    max-width: clamp(300px, 80vw, 740px);
+    width: 100%;
+    opacity: 0;
+    border-radius: clamp(14px, 2.5vw, 24px);
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent),
+      0 28px 72px rgba(0,0,0,0.38),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* Chromatic border animation */
+  @keyframes ep004-borderSpin {
+    0%   { border-color: var(--ep004-c1); box-shadow: 0 0 0 1px color-mix(in srgb,var(--ep004-c1) 20%,transparent), 0 28px 72px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05); }
+    33%  { border-color: var(--ep004-c2); box-shadow: 0 0 0 1px color-mix(in srgb,var(--ep004-c2) 20%,transparent), 0 28px 72px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05); }
+    66%  { border-color: var(--ep004-c3); box-shadow: 0 0 0 1px color-mix(in srgb,var(--ep004-c3) 20%,transparent), 0 28px 72px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05); }
+    100% { border-color: var(--ep004-c1); box-shadow: 0 0 0 1px color-mix(in srgb,var(--ep004-c1) 20%,transparent), 0 28px 72px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05); }
+  }
+
+  /* ── Exploding tag pill ── */
+  .ep004-tag {
+    font-family: var(--ep004-body);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: clamp(3px, 0.7vw, 9px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+    border-radius: 100px;
+    padding: clamp(3px, 0.5vh, 6px) clamp(10px, 2vw, 22px);
+  }
+
+  /* ── Recipient name ── */
+  .ep004-name {
+    font-family: var(--ep004-heading);
+    font-size: clamp(12px, 1.8vw, 22px);
+    letter-spacing: clamp(5px, 1.1vw, 16px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0;
+  }
+
+  /* ── Chromatic divider ── */
+  .ep004-divider {
+    display: flex;
+    align-items: center;
+    gap: clamp(5px, 1.2vw, 14px);
+    width: 100%;
+    max-width: clamp(160px, 38vw, 400px);
+    opacity: 0;
+  }
+
+  .ep004-divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent),
+      transparent
+    );
+    opacity: 0.45;
+  }
+
+  /* Color dot chain */
+  .ep004-divider-dot {
+    width: clamp(4px, 0.55vw, 7px);
+    height: clamp(4px, 0.55vw, 7px);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: ep004-dotPop 2s ease-in-out infinite;
+  }
+
+  .ep004-divider-dot:nth-child(2) { background: var(--ep004-c1); animation-delay: 0.0s; }
+  .ep004-divider-dot:nth-child(3) { background: var(--ep004-c2); animation-delay: 0.3s; }
+  .ep004-divider-dot:nth-child(4) { background: var(--ep004-c3); animation-delay: 0.6s; }
+
+  @keyframes ep004-dotPop {
+    0%,100% { transform: scale(1);   opacity: 0.9; }
+    50%      { transform: scale(0.5); opacity: 0.3; }
+  }
+
+  /* ── Ending line ── */
+  .ep004-ending-line {
+    font-family: var(--ep004-heading);
+    font-size: clamp(20px, 4vw, 54px);
+    line-height: 1.2;
+    color: var(--text);
+    font-weight: 400;
+    opacity: 0;
+    max-width: 100%;
+  }
+
+  /* ── Song row ── */
+  .ep004-song-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 18px);
+    opacity: 0;
+    margin-top: clamp(2px, 0.5vh, 10px);
+  }
+
+  /* Spinning color wheel icon */
+  .ep004-wheel {
+    width:  clamp(18px, 2.5vw, 28px);
+    height: clamp(18px, 2.5vw, 28px);
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--ep004-c1) 0deg 90deg,
+      var(--ep004-c2) 90deg 180deg,
+      var(--ep004-c3) 180deg 270deg,
+      var(--ep004-c4) 270deg 360deg
+    );
+    flex-shrink: 0;
+    animation: ep004-wheelSpin 3s linear infinite;
+    box-shadow: 0 0 8px 2px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  @keyframes ep004-wheelSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .ep004-song-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1px, 0.3vh, 4px);
+  }
+
+  .ep004-song-label {
+    font-family: var(--ep004-body);
+    font-size: clamp(7px, 0.75vw, 9px);
+    letter-spacing: clamp(2px, 0.45vw, 6px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.65;
+  }
+
+  .ep004-song-name {
+    font-family: var(--ep004-heading);
+    font-size: clamp(11px, 1.3vw, 16px);
+    font-style: italic;
+    color: var(--text);
+    opacity: 0.9;
+  }
+
+  /* ── Custom cursor ── */
+  .ep004-cursor {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: clamp(16px, 2vw, 24px);
+    height: clamp(16px, 2vw, 24px);
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    translate: -50% -50%;
+    mix-blend-mode: screen;
+  }
+
+  .ep004-cursor-dot {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    translate: -50% -50%;
+  }
+
+  /* ── Click ripple ── */
+  .ep004-click-ripple {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 15;
+    transform: scale(0);
+    opacity: 0.9;
+  }
+</style>
+<div class="ep004-root" id="ep004-root">
+  <!-- Burst background -->
+  <div class="ep004-burst-bg" id="ep004-burstBg"></div>
+  <!-- Grain overlay -->
+  <div class="ep004-grain"></div>
+  <!-- Paint blobs (JS populated) -->
+  <div id="ep004-blobWrap"  style="position:absolute;inset:0;z-index:2;pointer-events:none;"></div>
+  <!-- Splat rays (JS populated) -->
+  <div id="ep004-rayWrap"   style="position:absolute;inset:0;z-index:3;pointer-events:none;"></div>
+  <!-- Confetti (JS populated) -->
+  <div id="ep004-confWrap"  style="position:absolute;inset:0;z-index:4;pointer-events:none;"></div>
+  <!-- Paint drops (JS populated) -->
+  <div id="ep004-dropWrap"  style="position:absolute;inset:0;z-index:4;pointer-events:none;"></div>
+  <!-- Ring bursts (JS populated) -->
+  <div id="ep004-ringWrap"  style="position:absolute;inset:0;z-index:3;pointer-events:none;"></div>
+  <!-- Main card -->
+  <div class="ep004-card" id="ep004-card">
+<!-- Exploding pill tag -->
+<div class="ep004-tag" id="ep004-tag">The End</div>
+
+<!-- Recipient name -->
+<div class="ep004-name" id="ep004-name">--RECIPIENT_NAME--</div>
+
+<!-- Chromatic divider -->
+<div class="ep004-divider" id="ep004-divider">
+  <div class="ep004-divider-line"></div>
+  <div class="ep004-divider-dot"></div>
+  <div class="ep004-divider-dot"></div>
+  <div class="ep004-divider-dot"></div>
+  <div class="ep004-divider-line"></div>
+</div>
+
+<!-- Ending message -->
+<div class="ep004-ending-line" id="ep004-endingLine">--ENDING_LINE--</div>
+
+<!-- Song row -->
+<div class="ep004-song-row" id="ep004-songRow">
+  <div class="ep004-wheel"></div>
+  <div class="ep004-song-info">
+    <span class="ep004-song-label">Colour of sound</span>
+    <span class="ep004-song-name">--SONG_NAME--</span>
+  </div>
+</div></div>
+  <!-- Custom cursor -->
+  <div class="ep004-cursor"     id="ep004-cursor"></div>
+  <div class="ep004-cursor-dot" id="ep004-cursorDot"></div>
+</div>
+<script>
+(function () {
+  /* =====================================================
+     ENDING-PLAYFUL-004 | Color Explosion
+     Gates on glitch:enter index === 7
+     ===================================================== */
+
+  var SECTION_INDEX = 7;
+
+  /* ── DOM refs ── */
+  var root       = document.getElementById('ep004-root');
+  var burstBg    = document.getElementById('ep004-burstBg');
+  var blobWrap   = document.getElementById('ep004-blobWrap');
+  var rayWrap    = document.getElementById('ep004-rayWrap');
+  var confWrap   = document.getElementById('ep004-confWrap');
+  var dropWrap   = document.getElementById('ep004-dropWrap');
+  var ringWrap   = document.getElementById('ep004-ringWrap');
+  var card       = document.getElementById('ep004-card');
+  var tag        = document.getElementById('ep004-tag');
+  var nameEl     = document.getElementById('ep004-name');
+  var divider    = document.getElementById('ep004-divider');
+  var endingLine = document.getElementById('ep004-endingLine');
+  var songRow    = document.getElementById('ep004-songRow');
+  var cursorEl   = document.getElementById('ep004-cursor');
+  var cursorDot  = document.getElementById('ep004-cursorDot');
+
+  /* ── Utility ── */
+  function rnd (a, b) { return a + Math.random() * (b - a); }
+  function rndInt (a, b) { return Math.floor(rnd(a, b)); }
+  function pick (arr) { return arr[rndInt(0, arr.length)]; }
+
+  /* ── Color palette ── */
+  var COLORS = [
+    'var(--ep004-c1)',
+    'var(--ep004-c2)',
+    'var(--ep004-c3)',
+    'var(--ep004-c4)',
+    'var(--ep004-c5)',
+    'var(--ep004-c6)'
+  ];
+
+  /* ── Build paint blobs ── */
+  var BLOB_COUNT = 24;
+  var blobs = [];
+
+  /* SVG blob path generator — organic wobbly circle */
+  function blobPath (seed) {
+    var points = 7;
+    var sliceAngle = (Math.PI * 2) / points;
+    var r = 0.5;
+    var d = 'M ';
+    var coords = [];
+    for (var i = 0; i < points; i++) {
+      var angle = i * sliceAngle - Math.PI / 2;
+      var radius = r * (0.72 + Math.sin(seed + i * 1.3) * 0.28);
+      coords.push([
+        0.5 + radius * Math.cos(angle),
+        0.5 + radius * Math.sin(angle)
+      ]);
+    }
+    /* Build cubic bezier path */
+    var path = '';
+    for (var j = 0; j < coords.length; j++) {
+      var curr = coords[j];
+      var next = coords[(j + 1) % coords.length];
+      var mx = (curr[0] + next[0]) / 2;
+      var my = (curr[1] + next[1]) / 2;
+      if (j === 0) path += 'M ' + curr[0] + ' ' + curr[1] + ' ';
+      path += 'Q ' + curr[0] + ' ' + curr[1] + ' ' + mx + ' ' + my + ' ';
+    }
+    path += 'Z';
+    return path;
+  }
+
+  function buildBlobs () {
+    for (var i = 0; i < BLOB_COUNT; i++) {
+      var div = document.createElement('div');
+      div.className = 'ep004-blob';
+      var sz = rnd(28, 130);
+      var color = pick(COLORS);
+      div.style.cssText = [
+        'width:' + sz + 'px',
+        'height:' + sz + 'px',
+        'left:' + rnd(0, 95) + '%',
+        'top:' + rnd(0, 90) + '%',
+        'background:' + color,
+        /* Organic blob shape via clip-path percentage polygon */
+        'clip-path: polygon(' + [
+          rnd(15,35)+'% '+rnd(0,10)+'%',
+          rnd(65,85)+'% '+rnd(0,10)+'%',
+          rnd(90,100)+'% '+rnd(30,50)+'%',
+          rnd(90,100)+'% '+rnd(55,75)+'%',
+          rnd(65,85)+'% '+rnd(88,100)+'%',
+          rnd(15,35)+'% '+rnd(88,100)+'%',
+          rnd(0,10)+'% '+rnd(55,75)+'%',
+          rnd(0,10)+'% '+rnd(30,50)+'%'
+        ].join(',') + ')'
+      ].join(';');
+      blobWrap.appendChild(div);
+      blobs.push(div);
+    }
+  }
+  buildBlobs();
+
+  /* ── Build splat rays ── */
+  var RAY_COUNT = 32;
+  var rays = [];
+
+  function buildRays () {
+    var cx = 50; var cy = 50; /* center percent */
+    for (var i = 0; i < RAY_COUNT; i++) {
+      var ray = document.createElement('div');
+      ray.className = 'ep004-splat-ray';
+      var angle = (i / RAY_COUNT) * 360;
+      var len   = rnd(clamp(60, 8, 220), clamp(200, 20, 480));
+      var color = pick(COLORS);
+      ray.style.cssText = [
+        'left:' + cx + '%',
+        'top:' + cy + '%',
+        'width:' + len + 'px',
+        'background:' + color,
+        'transform:rotate(' + angle + 'deg)',
+        'height:' + rnd(1, 3.5) + 'px',
+        'opacity:0'
+      ].join(';');
+      rayWrap.appendChild(ray);
+      rays.push(ray);
+    }
+  }
+
+  function clamp (val, min, max) { return Math.min(Math.max(val, min), max); }
+  buildRays();
+
+  /* ── Build confetti ── */
+  var CONF_COUNT = 70;
+  var confettiPieces = [];
+
+  function buildConfetti () {
+    for (var i = 0; i < CONF_COUNT; i++) {
+      var c = document.createElement('div');
+      c.className = 'ep004-confetti';
+      var w = rnd(5, 13);
+      var h = rnd(6, 16);
+      c.style.cssText = [
+        'width:'  + w + 'px',
+        'height:' + h + 'px',
+        'left:'   + rnd(0, 100) + '%',
+        'top:'    + rnd(-15, 5) + '%',
+        'background:' + pick(COLORS),
+        'transform:rotate(' + rnd(0, 360) + 'deg)',
+        'border-radius:' + (Math.random() > 0.45 ? '50%' : '2px')
+      ].join(';');
+      confWrap.appendChild(c);
+      confettiPieces.push(c);
+    }
+  }
+  buildConfetti();
+
+  /* ── Build paint drops ── */
+  var DROP_COUNT = 18;
+  var drops = [];
+
+  function buildDrops () {
+    for (var i = 0; i < DROP_COUNT; i++) {
+      var d = document.createElement('div');
+      d.className = 'ep004-drop';
+      var sz = rnd(6, 20);
+      d.style.cssText = [
+        'width:'  + sz + 'px',
+        'height:' + (sz * 1.3) + 'px',
+        'left:'   + rnd(5, 90) + '%',
+        'top:'    + rnd(5, 80) + '%',
+        'background:' + pick(COLORS)
+      ].join(';');
+      dropWrap.appendChild(d);
+      drops.push(d);
+    }
+  }
+  buildDrops();
+
+  /* ── Build ring bursts ── */
+  var RING_SIZES = [120, 220, 340, 480, 640];
+  var rings = [];
+
+  function buildRings () {
+    RING_SIZES.forEach(function (sz, i) {
+      var ring = document.createElement('div');
+      ring.className = 'ep004-ring';
+      var color = pick(COLORS);
+      ring.style.cssText = [
+        'width:'  + sz + 'px',
+        'height:' + sz + 'px',
+        'border-color:' + color,
+        'border-width:' + rnd(1, 3) + 'px'
+      ].join(';');
+      ringWrap.appendChild(ring);
+      rings.push(ring);
+    });
+  }
+  buildRings();
+
+  /* ── Custom cursor tracking ── */
+  document.addEventListener('mousemove', function (e) {
+    gsap.to(cursorEl,  { x: e.clientX, y: e.clientY, duration: 0.2,  ease: 'power2.out' });
+    gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0.06, ease: 'none' });
+
+    /* Cursor color cycles on move */
+    var t = Date.now() / 1200;
+    var hue = (t * 80) % 360;
+    cursorEl.style.borderColor = 'hsl(' + hue + ',80%,65%)';
+    cursorDot.style.background = 'hsl(' + hue + ',90%,70%)';
+  });
+
+  /* ── Click — spawn paint splatter at cursor ── */
+  document.addEventListener('click', function (e) {
+    spawnSplat(e.clientX, e.clientY);
+
+    /* Ripple ring */
+    var rip = document.createElement('div');
+    rip.className = 'ep004-click-ripple';
+    var color = pick(COLORS);
+    rip.style.cssText = [
+      'width:8px', 'height:8px',
+      'left:' + (e.clientX - 4) + 'px',
+      'top:'  + (e.clientY - 4) + 'px',
+      'border:2px solid ' + color,
+      'background:' + color.replace(')', ' / 0.15)')
+    ].join(';');
+    root.appendChild(rip);
+    gsap.to(rip, {
+      scale: 22, opacity: 0, duration: 0.8, ease: 'power2.out',
+      onComplete: function () { rip.parentNode && rip.parentNode.removeChild(rip); }
+    });
+  });
+
+  /* ── Spawn mini paint splat at x,y ── */
+  function spawnSplat (x, y) {
+    var n = rndInt(5, 10);
+    for (var i = 0; i < n; i++) {
+      var p = document.createElement('div');
+      var sz = rnd(5, 18);
+      var color = pick(COLORS);
+      p.style.cssText = [
+        'position:fixed',
+        'z-index:16',
+        'pointer-events:none',
+        'width:' + sz + 'px',
+        'height:' + sz + 'px',
+        'left:' + x + 'px',
+        'top:' + y + 'px',
+        'border-radius:' + (Math.random() > 0.5 ? '50%' : '40% 60% 50% 70%'),
+        'background:' + color,
+        'filter:blur(0.5px)'
+      ].join(';');
+      root.appendChild(p);
+      gsap.fromTo(p,
+        { opacity: 0.95, scale: 0.2, x: 0, y: 0 },
+        {
+          opacity: 0,
+          scale: rnd(0.8, 1.8),
+          x: rnd(-70, 70),
+          y: rnd(-80, 30),
+          rotation: rnd(0, 360),
+          duration: rnd(0.55, 1.1),
+          ease: 'power2.out',
+          onComplete: function () { p.parentNode && p.parentNode.removeChild(p); }
+        }
+      );
+    }
+  }
+
+  /* ── Mouse parallax on card ── */
+  document.addEventListener('mousemove', function (e) {
+    var cx = window.innerWidth  / 2;
+    var cy = window.innerHeight / 2;
+    gsap.to(card, {
+      rotateX: -((e.clientY - cy) / cy) * 5,
+      rotateY:  ((e.clientX - cx) / cx) * 5,
+      duration: 1.4,
+      ease: 'power2.out',
+      transformPerspective: 900
+    });
+    /* Blobs parallax */
+    gsap.to(blobWrap, {
+      x: ((e.clientX - cx) / cx) * 18,
+      y: ((e.clientY - cy) / cy) * 12,
+      duration: 2, ease: 'power1.out'
+    });
+  });
+
+  /* ── glitch:enter ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1. Background burst flash */
+    tl.to(burstBg, { opacity: 1, duration: 0.3, ease: 'power4.out' });
+    tl.to(burstBg, { opacity: 0.45, duration: 1.2, ease: 'power2.inOut' }, '-=0.05');
+
+    /* 2. Ring bursts explode outward — concentric */
+    tl.fromTo(rings,
+      { scale: 0, opacity: 0.85 },
+      {
+        scale: 1,
+        opacity: 0,
+        duration: 1.4,
+        stagger: 0.14,
+        ease: 'power2.out'
+      },
+      '-=0.8'
+    );
+
+    /* 3. Splat rays shoot outward */
+    tl.fromTo(rays,
+      { scaleX: 0, opacity: 0 },
+      {
+        scaleX: 1,
+        opacity: function () { return rnd(0.35, 0.75); },
+        duration: 0.55,
+        stagger: { each: 0.012, from: 'random' },
+        ease: 'power3.out'
+      },
+      '-=1.0'
+    );
+
+    /* Fade rays after burst */
+    tl.to(rays, {
+      opacity: function () { return rnd(0.1, 0.3); },
+      duration: 1.0,
+      stagger: 0.02,
+      ease: 'power1.inOut'
+    }, '-=0.2');
+
+    /* 4. Blobs scale in from center — scattered explosion */
+    tl.fromTo(blobs,
+      { scale: 0, opacity: 0 },
+      {
+        scale: 1,
+        opacity: function () { return rnd(0.18, 0.62); },
+        duration: 0.7,
+        stagger: { each: 0.03, from: 'center' },
+        ease: 'back.out(1.4)'
+      },
+      '-=0.9'
+    );
+
+    /* 5. Confetti rain */
+    tl.fromTo(confettiPieces,
+      { y: -30, opacity: 0 },
+      {
+        y: function () { return rnd(window.innerHeight * 0.55, window.innerHeight * 1.05); },
+        opacity: function () { return rnd(0.55, 1); },
+        rotation: function () { return rnd(-360, 360); },
+        duration: function () { return rnd(2.0, 4.2); },
+        stagger: { each: 0.03, from: 'random' },
+        ease: 'none'
+      },
+      '-=0.6'
+    );
+
+    /* 6. Drops splat in */
+    tl.fromTo(drops,
+      { scale: 0, opacity: 0, y: -40 },
+      {
+        scale: 1,
+        opacity: function () { return rnd(0.55, 0.88); },
+        y: 0,
+        duration: 0.5,
+        stagger: { each: 0.06, from: 'random' },
+        ease: 'bounce.out'
+      },
+      '-=1.4'
+    );
+
+    /* 7. Card pops in */
+    tl.fromTo(card,
+      { opacity: 0, scale: 0.78, y: 24 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.75, ease: 'back.out(1.8)' },
+      '-=1.0'
+    );
+
+    /* 8. Tag explodes in */
+    tl.fromTo(tag,
+      { opacity: 0, scale: 0.4, rotation: -12 },
+      { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2.4)' },
+      '-=0.4'
+    );
+
+    /* 9. Name slides up */
+    tl.fromTo(nameEl,
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.6 },
+      '-=0.25'
+    );
+
+    /* 10. Divider expands */
+    tl.fromTo(divider,
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.6, ease: 'power2.inOut' },
+      '-=0.3'
+    );
+
+    /* 11. Ending line — word pop with color flash */
+    var words = endingLine.textContent.trim().split(/\s+/);
+    endingLine.innerHTML = words.map(function (w, i) {
+      var c = COLORS[i % COLORS.length];
+      return '<span style="display:inline-block;opacity:0;margin-right:0.22em;' +
+             'transition:color 0.4s;" data-color="' + c + '">' + w + '</span>';
+    }).join('');
+
+    tl.set(endingLine, { opacity: 1 }, '-=0.1');
+    tl.fromTo(
+      endingLine.querySelectorAll('span'),
+      { opacity: 0, y: 22, scale: 0.7 },
+      {
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.5,
+        stagger: 0.07,
+        ease: 'back.out(2)',
+        onStart: function () {
+          /* Flash each word in its color then fade to text */
+          endingLine.querySelectorAll('span').forEach(function (sp, idx) {
+            gsap.delayedCall(idx * 0.07, function () {
+              sp.style.color = sp.getAttribute('data-color');
+              gsap.to(sp, { color: 'var(--text)', duration: 0.8, delay: 0.2 });
+            });
+          });
+        }
+      },
+      '-=0.2'
+    );
+
+    /* 12. Song row */
+    tl.fromTo(songRow,
+      { opacity: 0, x: -16 },
+      { opacity: 1, x: 0, duration: 0.6 },
+      '-=0.2'
+    );
+
+    /* ── IDLE animations ── */
+    tl.add(function () {
+
+      /* Card chromatic border animation */
+      card.style.animation = 'ep004-borderSpin 5s linear infinite';
+
+      /* Blobs drift and morph endlessly */
+      blobs.forEach(function (b, i) {
+        gsap.to(b, {
+          x: rnd(-35, 35),
+          y: rnd(-25, 25),
+          rotation: rnd(-30, 30),
+          duration: rnd(4, 9),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: rnd(0, 3)
+        });
+        /* Opacity throb */
+        gsap.to(b, {
+          opacity: rnd(0.08, 0.5),
+          duration: rnd(2.5, 5),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: rnd(0, 2)
+        });
+      });
+
+      /* Drops drip downward slowly */
+      drops.forEach(function (d) {
+        gsap.to(d, {
+          y: '+=' + rnd(15, 50),
+          duration: rnd(3, 7),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: rnd(0, 2)
+        });
+      });
+
+      /* Ray opacity breathe */
+      rays.forEach(function (r, i) {
+        gsap.to(r, {
+          opacity: rnd(0.05, 0.28),
+          duration: rnd(1.8, 4.2),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: rnd(0, 2)
+        });
+      });
+
+      /* Card gentle bob */
+      gsap.to(card, {
+        y: -8, duration: 4,
+        yoyo: true, repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+      /* Confetti re-rain loop */
+      function reRain () {
+        confettiPieces.forEach(function (c) {
+          if (parseFloat(gsap.getProperty(c, 'y')) > window.innerHeight * 0.95) {
+            gsap.set(c, {
+              y: rnd(-40, -8),
+              x: rnd(-20, 20),
+              opacity: rnd(0.55, 1),
+              rotation: rnd(0, 360)
+            });
+            gsap.to(c, {
+              y: '+=' + rnd(window.innerHeight * 0.85, window.innerHeight * 1.1),
+              opacity: 0,
+              rotation: '+=' + rnd(-180, 180),
+              duration: rnd(2.8, 5.5),
+              ease: 'none'
+            });
+          }
+        });
+        gsap.delayedCall(0.35, reRain);
+      }
+      reRain();
+
+      /* Burst background slow hue rotate */
+      gsap.to(burstBg, {
+        filter: 'hue-rotate(360deg)',
+        duration: 12,
+        repeat: -1,
+        ease: 'none'
+      });
+
+    }); /* end idle */
+
+  }); /* end glitch:enter */
+
+})();
+</script>

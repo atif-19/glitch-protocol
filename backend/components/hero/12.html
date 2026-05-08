@@ -1,0 +1,581 @@
+<!--
+  Component: hero_marvel_001
+  Type: hero
+  Aesthetic: Superhero epic
+  Obsession: Marvel
+  Tone: cinematic, dramatic, powerful
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  :root {
+    --primary: #e8c840;
+    --accent: #c0392b;
+    --bg: #070709;
+    --text: #f0ece4;
+    --font-heading: 'Bebas Neue', 'Impact', sans-serif;
+    --font-body: 'Georgia', serif;
+  }
+ 
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
+ 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  .hero-marvel-001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: var(--font-body);
+    cursor: none;
+  }
+ 
+  /* ── Custom cursor ── */
+  .hero-marvel-001-cursor {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    background: var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .hero-marvel-001-cursor-ring {
+    position: fixed;
+    width: 38px;
+    height: 38px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+  }
+ 
+  /* ── Noise overlay ── */
+  .hero-marvel-001-noise {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.045;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    animation: hero-marvel-001-noiseShift 0.4s steps(1) infinite;
+  }
+  @keyframes hero-marvel-001-noiseShift {
+    0%   { background-position: 0 0; }
+    25%  { background-position: -30px 20px; }
+    50%  { background-position: 15px -10px; }
+    75%  { background-position: -20px -25px; }
+    100% { background-position: 0 0; }
+  }
+ 
+  /* ── Radial energy pulse bg ── */
+  .hero-marvel-001-energy {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 60%, rgba(192,57,43,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(232,200,64,0.07) 0%, transparent 60%);
+  }
+ 
+  /* ── Comic halftone rings ── */
+  .hero-marvel-001-rings {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .hero-marvel-001-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(232,200,64,0.06);
+    transform: scale(0);
+    opacity: 0;
+  }
+ 
+  /* ── Particle canvas ── */
+  .hero-marvel-001-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+ 
+  /* ── Shield grid lines ── */
+  .hero-marvel-001-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(232,200,64,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,200,64,0.025) 1px, transparent 1px);
+    background-size: clamp(40px, 6vw, 80px) clamp(40px, 6vw, 80px);
+    opacity: 0;
+  }
+ 
+  /* ── Diagonal slash accent ── */
+  .hero-marvel-001-slash {
+    position: absolute;
+    top: 0;
+    left: -10%;
+    width: 55%;
+    height: 100%;
+    z-index: 2;
+    background: linear-gradient(
+      105deg,
+      rgba(192,57,43,0.13) 0%,
+      rgba(192,57,43,0.0) 60%
+    );
+    clip-path: polygon(0 0, 80% 0, 60% 100%, 0 100%);
+    pointer-events: none;
+    opacity: 0;
+  }
+ 
+  /* ── Top badge ── */
+  .hero-marvel-001-badge {
+    position: absolute;
+    top: clamp(24px, 4vh, 48px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+  }
+  .hero-marvel-001-badge-line {
+    width: clamp(28px, 5vw, 60px);
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+  }
+  .hero-marvel-001-badge-line.right {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .hero-marvel-001-badge-text {
+    font-family: var(--font-heading);
+    font-size: clamp(10px, 1.5vw, 14px);
+    letter-spacing: 0.35em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+ 
+  /* ── Eye-line name ── */
+  .hero-marvel-001-eyeline {
+    position: absolute;
+    top: clamp(80px, 12vh, 130px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 22px);
+    opacity: 0;
+    white-space: nowrap;
+  }
+  .hero-marvel-001-eyeline-rule {
+    width: clamp(30px, 6vw, 80px);
+    height: 1px;
+    background: rgba(240,236,228,0.3);
+  }
+  .hero-marvel-001-eyeline-name {
+    font-family: var(--font-heading);
+    font-size: clamp(11px, 1.6vw, 15px);
+    letter-spacing: 0.5em;
+    color: var(--text);
+    opacity: 0.55;
+    text-transform: uppercase;
+  }
+ 
+  /* ── Main title block ── */
+  .hero-marvel-001-title-wrap {
+    position: absolute;
+    bottom: clamp(120px, 22vh, 220px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+    width: 90%;
+    max-width: 900px;
+  }
+ 
+  .hero-marvel-001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(52px, 12vw, 140px);
+    line-height: 0.88;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    overflow: hidden;
+    display: block;
+    position: relative;
+  }
+ 
+  .hero-marvel-001-title-accent {
+    color: var(--primary);
+    display: inline-block;
+    position: relative;
+  }
+  .hero-marvel-001-title-accent::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--accent);
+    transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+  }
+  .hero-marvel-001-title-accent.underlined::after { width: 100%; }
+ 
+  .hero-marvel-001-subtitle {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: clamp(13px, 2.2vw, 22px);
+    color: var(--text);
+    opacity: 0;
+    margin-top: clamp(10px, 2vh, 20px);
+    letter-spacing: 0.08em;
+    font-weight: 300;
+  }
+ 
+  /* ── Accent word cinematic strip ── */
+  .hero-marvel-001-strip {
+    position: absolute;
+    bottom: clamp(62px, 9vh, 100px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.5vw, 28px);
+    opacity: 0;
+  }
+  .hero-marvel-001-strip-bar {
+    width: clamp(35px, 7vw, 90px);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary));
+  }
+  .hero-marvel-001-strip-bar.right {
+    background: linear-gradient(90deg, var(--primary), transparent);
+  }
+  .hero-marvel-001-strip-word {
+    font-family: var(--font-heading);
+    font-size: clamp(13px, 2vw, 18px);
+    letter-spacing: 0.45em;
+    color: var(--primary);
+    text-transform: uppercase;
+  }
+ 
+  /* ── Corner marks ── */
+  .hero-marvel-001-corner {
+    position: absolute;
+    z-index: 10;
+    width: 26px;
+    height: 26px;
+    opacity: 0;
+  }
+  .hero-marvel-001-corner::before,
+  .hero-marvel-001-corner::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+  }
+  .hero-marvel-001-corner::before { width: 100%; height: 2px; top: 0; left: 0; }
+  .hero-marvel-001-corner::after  { width: 2px; height: 100%; top: 0; left: 0; }
+  .hero-marvel-001-corner.tl { top: 20px; left: 20px; }
+  .hero-marvel-001-corner.tr { top: 20px; right: 20px; transform: scaleX(-1); }
+  .hero-marvel-001-corner.bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+  .hero-marvel-001-corner.br { bottom: 20px; right: 20px; transform: scale(-1,-1); }
+ 
+  /* ── Shield emblem bg watermark ── */
+  .hero-marvel-001-emblem {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: clamp(260px, 55vw, 620px);
+    height: clamp(260px, 55vw, 620px);
+    opacity: 0;
+    pointer-events: none;
+  }
+ 
+  /* ── Glitch flicker overlay ── */
+  .hero-marvel-001-glitch {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    background: var(--accent);
+    mix-blend-mode: screen;
+  }
+</style>
+</head>
+<body>
+<div class="hero-marvel-001-root" id="hero-marvel-001-root">
+ 
+  <!-- Custom cursor -->
+  <div class="hero-marvel-001-cursor" id="hero-marvel-001-cursor"></div>
+  <div class="hero-marvel-001-cursor-ring" id="hero-marvel-001-cursor-ring"></div>
+ 
+  <!-- Layers -->
+  <div class="hero-marvel-001-noise"></div>
+  <div class="hero-marvel-001-energy"></div>
+  <div class="hero-marvel-001-grid" id="hero-marvel-001-grid"></div>
+  <div class="hero-marvel-001-slash" id="hero-marvel-001-slash"></div>
+  <div class="hero-marvel-001-glitch" id="hero-marvel-001-glitch"></div>
+ 
+  <!-- Rings -->
+  <div class="hero-marvel-001-rings" id="hero-marvel-001-rings">
+    <div class="hero-marvel-001-ring" id="hero-marvel-001-r1" style="width:200px;height:200px;"></div>
+    <div class="hero-marvel-001-ring" id="hero-marvel-001-r2" style="width:380px;height:380px;"></div>
+    <div class="hero-marvel-001-ring" id="hero-marvel-001-r3" style="width:580px;height:580px;"></div>
+    <div class="hero-marvel-001-ring" id="hero-marvel-001-r4" style="width:820px;height:820px;"></div>
+    <div class="hero-marvel-001-ring" id="hero-marvel-001-r5" style="width:1100px;height:1100px;"></div>
+  </div>
+ 
+  <!-- Shield SVG watermark -->
+  <svg class="hero-marvel-001-emblem" id="hero-marvel-001-emblem" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 10 L185 50 L185 110 Q185 160 100 190 Q15 160 15 110 L15 50 Z"
+      stroke="rgba(232,200,64,0.07)" stroke-width="1.5" fill="rgba(232,200,64,0.02)"/>
+    <path d="M100 30 L168 62 L168 110 Q168 150 100 174 Q32 150 32 110 L32 62 Z"
+      stroke="rgba(232,200,64,0.06)" stroke-width="1" fill="none"/>
+    <path d="M100 55 L148 76 L148 110 Q148 138 100 155 Q52 138 52 110 L52 76 Z"
+      stroke="rgba(232,200,64,0.05)" stroke-width="1" fill="none"/>
+    <circle cx="100" cy="110" r="26" stroke="rgba(192,57,43,0.08)" stroke-width="1" fill="rgba(192,57,43,0.03)"/>
+    <line x1="100" y1="10" x2="100" y2="190" stroke="rgba(232,200,64,0.04)" stroke-width="1"/>
+    <line x1="15" y1="80" x2="185" y2="80" stroke="rgba(232,200,64,0.04)" stroke-width="1"/>
+  </svg>
+ 
+  <!-- Particle canvas -->
+  <canvas class="hero-marvel-001-canvas" id="hero-marvel-001-canvas"></canvas>
+ 
+  <!-- Badge -->
+  <div class="hero-marvel-001-badge" id="hero-marvel-001-badge">
+    <span class="hero-marvel-001-badge-line"></span>
+    <span class="hero-marvel-001-badge-text">The Glitch Protocol</span>
+    <span class="hero-marvel-001-badge-line right"></span>
+  </div>
+ 
+  <!-- Eye-line name -->
+  <div class="hero-marvel-001-eyeline" id="hero-marvel-001-eyeline">
+    <span class="hero-marvel-001-eyeline-rule"></span>
+    <span class="hero-marvel-001-eyeline-name">--RECIPIENT_NAME--</span>
+    <span class="hero-marvel-001-eyeline-rule"></span>
+  </div>
+ 
+  <!-- Corner marks -->
+  <div class="hero-marvel-001-corner tl"></div>
+  <div class="hero-marvel-001-corner tr"></div>
+  <div class="hero-marvel-001-corner bl"></div>
+  <div class="hero-marvel-001-corner br"></div>
+ 
+  <!-- Main title -->
+  <div class="hero-marvel-001-title-wrap">
+    <span class="hero-marvel-001-title" id="hero-marvel-001-title">
+      --TITLE--&nbsp;<span class="hero-marvel-001-title-accent" id="hero-marvel-001-accent-word">--ACCENT_WORD--</span>
+    </span>
+    <div class="hero-marvel-001-subtitle" id="hero-marvel-001-subtitle">--SUBTITLE--</div>
+  </div>
+ 
+  <!-- Strip -->
+  <div class="hero-marvel-001-strip" id="hero-marvel-001-strip">
+    <span class="hero-marvel-001-strip-bar"></span>
+    <span class="hero-marvel-001-strip-word">--ACCENT_WORD--</span>
+    <span class="hero-marvel-001-strip-bar right"></span>
+  </div>
+ 
+</div>
+ 
+<script>
+(function() {
+  /* ── Cursor ── */
+  const cur  = document.getElementById('hero-marvel-001-cursor');
+  const ring = document.getElementById('hero-marvel-001-cursor-ring');
+  let mx = window.innerWidth/2, my = window.innerHeight/2;
+  let rx = mx, ry = my;
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left  = mx + 'px';
+    cur.style.top   = my + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+ 
+  /* ── Particle canvas ── */
+  const canvas = document.getElementById('hero-marvel-001-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [];
+ 
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+ 
+  function spawnParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.4,
+      alpha: Math.random() * 0.5 + 0.1,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -(Math.random() * 0.5 + 0.15),
+      life: 1,
+      decay: Math.random() * 0.002 + 0.001,
+      color: Math.random() > 0.5 ? '232,200,64' : '192,57,43'
+    };
+  }
+  for (let i = 0; i < 80; i++) particles.push(spawnParticle());
+ 
+  function drawParticles() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(function(p, i) {
+      p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+      if (p.life <= 0) particles[i] = spawnParticle();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + p.color + ',' + (p.alpha * p.life) + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+ 
+  /* ── Parallax on mouse ── */
+  document.addEventListener('mousemove', function(e) {
+    const ox = (e.clientX / window.innerWidth  - 0.5) * 18;
+    const oy = (e.clientY / window.innerHeight - 0.5) * 12;
+    const emblem = document.getElementById('hero-marvel-001-emblem');
+    if (emblem) emblem.style.transform = 'translate(calc(-50% + ' + ox * 0.5 + 'px), calc(-50% + ' + oy * 0.5 + 'px))';
+  });
+ 
+  /* ── Glitch helper ── */
+  function glitchFlash() {
+    const g = document.getElementById('hero-marvel-001-glitch');
+    const tl = gsap.timeline();
+    tl.to(g, { opacity: 0.06, duration: 0.05 })
+      .to(g, { opacity: 0,    duration: 0.04 })
+      .to(g, { opacity: 0.04, duration: 0.03 })
+      .to(g, { opacity: 0,    duration: 0.06 });
+  }
+ 
+  /* ── ENTER ANIMATION ── */
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 1) return;
+ 
+    const corners = document.querySelectorAll('.hero-marvel-001-corner');
+    const rings   = [
+      document.getElementById('hero-marvel-001-r1'),
+      document.getElementById('hero-marvel-001-r2'),
+      document.getElementById('hero-marvel-001-r3'),
+      document.getElementById('hero-marvel-001-r4'),
+      document.getElementById('hero-marvel-001-r5'),
+    ];
+    const badge    = document.getElementById('hero-marvel-001-badge');
+    const eyeline  = document.getElementById('hero-marvel-001-eyeline');
+    const grid     = document.getElementById('hero-marvel-001-grid');
+    const slash    = document.getElementById('hero-marvel-001-slash');
+    const emblem   = document.getElementById('hero-marvel-001-emblem');
+    const title    = document.getElementById('hero-marvel-001-title');
+    const subtitle = document.getElementById('hero-marvel-001-subtitle');
+    const strip    = document.getElementById('hero-marvel-001-strip');
+    const accentW  = document.getElementById('hero-marvel-001-accent-word');
+ 
+    /* Glitch flash intro */
+    glitchFlash();
+ 
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+ 
+    tl.to(corners, { opacity: 1, duration: 0.2, stagger: 0.06 }, 0.1)
+      .to(grid,    { opacity: 1, duration: 0.8 }, 0.15)
+      .to(slash,   { opacity: 1, duration: 0.5 }, 0.2)
+      .to(rings, {
+        scale: 1,
+        opacity: 1,
+        duration: 1.2,
+        stagger: 0.12,
+        ease: 'expo.out'
+      }, 0.1)
+      .to(emblem,  { opacity: 1, duration: 1.4 }, 0.3)
+      .fromTo(badge,
+        { opacity: 0, y: -14 },
+        { opacity: 1, y: 0, duration: 0.5 }, 0.4)
+      .fromTo(eyeline,
+        { opacity: 0, y: -8 },
+        { opacity: 1, y: 0, duration: 0.5 }, 0.55)
+      .fromTo(title,
+        { opacity: 0, y: 60, skewY: 3 },
+        { opacity: 1, y: 0, skewY: 0, duration: 0.8, ease: 'expo.out' }, 0.65)
+      .call(glitchFlash, [], 1.25)
+      .call(function() {
+        if (accentW) accentW.classList.add('underlined');
+      }, [], 1.4)
+      .fromTo(subtitle,
+        { opacity: 0, y: 12 },
+        { opacity: 0.72, y: 0, duration: 0.6 }, 1.3)
+      .fromTo(strip,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.5 }, 1.55);
+ 
+    /* ── Ambient idle animations ── */
+    gsap.to(emblem, {
+      rotation: 360,
+      duration: 90,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%'
+    });
+ 
+    gsap.to(rings, {
+      opacity: function(i) { return 0.04 + i * 0.02; },
+      scale: function(i) { return 1 + i * 0.015; },
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: 0.4,
+      delay: 1.8
+    });
+ 
+    /* Periodic glitch flicker */
+    function scheduleGlitch() {
+      setTimeout(function() {
+        glitchFlash();
+        scheduleGlitch();
+      }, 4000 + Math.random() * 8000);
+    }
+    setTimeout(scheduleGlitch, 2000);
+ 
+    /* Title shimmer */
+    gsap.to(title, {
+      textShadow: '0 0 40px rgba(232,200,64,0.25)',
+      duration: 2.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 1.8
+    });
+  });
+})();
+</script>

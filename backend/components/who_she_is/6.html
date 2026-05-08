@@ -1,0 +1,552 @@
+<!--
+  Component: wsi_warm_001
+  Type: who_she_is
+  Aesthetic: Warm
+  Obsession: Soft Glow Cards / Golden Light / Tender Intimacy
+  Tone: warm, gentle, luminous
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --PERSONALITY-- --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<style>
+  /* wsi-warm-001 — root */
+  .wsi-w-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* Ambient warm orbs — blurred light pools */
+  .wsi-w-001-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(clamp(40px, 7vw, 100px));
+    opacity: 0;
+  }
+  .wsi-w-001-orb-1 {
+    width: clamp(220px, 38vw, 520px);
+    height: clamp(220px, 38vw, 520px);
+    top: -8%;
+    right: -10%;
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .wsi-w-001-orb-2 {
+    width: clamp(160px, 28vw, 380px);
+    height: clamp(160px, 28vw, 380px);
+    bottom: -6%;
+    left: -8%;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+  }
+  .wsi-w-001-orb-3 {
+    width: clamp(100px, 18vw, 260px);
+    height: clamp(100px, 18vw, 260px);
+    top: 40%;
+    left: 20%;
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+  }
+
+  /* Dust motes — tiny floating particles */
+  .wsi-w-001-mote {
+    position: absolute;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 50%, transparent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Vignette — soft warm edge */
+  .wsi-w-001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 38%,
+      color-mix(in srgb, var(--bg) 48%, transparent) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  /* Main layout */
+  .wsi-w-001-layout {
+    position: relative;
+    z-index: 10;
+    width: clamp(300px, 84vw, 860px);
+    padding: 0 clamp(18px, 4vw, 52px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  /* Soft eyebrow label */
+  .wsi-w-001-eyebrow {
+    font-family: var(--font-body);
+    font-size: clamp(8px, 0.95vw, 11px);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 72%, transparent);
+    margin: 0 0 clamp(10px, 1.8vh, 22px);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.4vw, 18px);
+  }
+  .wsi-w-001-eyebrow-dot {
+    width: clamp(4px, 0.55vw, 6px);
+    height: clamp(4px, 0.55vw, 6px);
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  /* Name — large warm heading */
+  .wsi-w-001-name-wrap {
+    overflow: hidden;
+    margin: 0 0 clamp(8px, 1.4vh, 18px);
+  }
+  .wsi-w-001-name {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(38px, 9vw, 112px);
+    line-height: 0.94;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin: 0;
+    display: block;
+    transform: translateY(108%);
+  }
+
+  /* Warm underline glow */
+  .wsi-w-001-name-glow {
+    width: 0%;
+    height: clamp(2px, 0.35vh, 4px);
+    background: linear-gradient(
+      90deg,
+      var(--accent),
+      color-mix(in srgb, var(--accent) 30%, transparent)
+    );
+    border-radius: 2px;
+    margin: 0 0 clamp(14px, 2.5vh, 30px);
+    box-shadow: 0 0 clamp(6px, 1vw, 14px) color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  /* Personality — soft italic */
+  .wsi-w-001-personality {
+    font-family: var(--font-body);
+    font-size: clamp(13px, 1.9vw, 20px);
+    font-style: italic;
+    line-height: 1.72;
+    color: color-mix(in srgb, var(--text) 62%, transparent);
+    margin: 0 0 clamp(22px, 3.8vh, 50px);
+    opacity: 0;
+    max-width: 56ch;
+  }
+
+  /* Cards row */
+  .wsi-w-001-cards {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(10px, 1.8vw, 22px);
+    width: 100%;
+  }
+
+  /* Individual glow card */
+  .wsi-w-001-card {
+    flex: 1;
+    position: relative;
+    padding: clamp(14px, 2.2vh, 28px) clamp(14px, 2vw, 24px);
+    border-radius: clamp(10px, 1.4vw, 18px);
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    opacity: 0;
+    cursor: default;
+    transition:
+      border-color 0.35s ease,
+      background 0.35s ease,
+      transform 0.35s ease;
+    overflow: hidden;
+  }
+
+  /* Card inner glow on hover */
+  .wsi-w-001-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .wsi-w-001-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    transform: translateY(-3px);
+  }
+  .wsi-w-001-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Card number badge */
+  .wsi-w-001-card-num {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 4.5vw, 56px);
+    font-weight: 900;
+    line-height: 1;
+    color: color-mix(in srgb, var(--accent) 18%, transparent);
+    margin: 0 0 clamp(8px, 1.2vh, 14px);
+    display: block;
+    transition: color 0.35s ease;
+  }
+  .wsi-w-001-card:hover .wsi-w-001-card-num {
+    color: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  /* Card divider */
+  .wsi-w-001-card-rule {
+    width: clamp(18px, 3vw, 36px);
+    height: 1.5px;
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+    margin: 0 0 clamp(8px, 1.2vh, 14px);
+    border-radius: 1px;
+    transition: width 0.35s ease, background 0.35s ease;
+  }
+  .wsi-w-001-card:hover .wsi-w-001-card-rule {
+    width: clamp(28px, 5vw, 56px);
+    background: var(--accent);
+  }
+
+  /* Card text */
+  .wsi-w-001-card-text {
+    font-family: var(--font-body);
+    font-size: clamp(11px, 1.45vw, 15px);
+    line-height: 1.62;
+    color: color-mix(in srgb, var(--text) 65%, transparent);
+    transition: color 0.35s ease;
+  }
+  .wsi-w-001-card:hover .wsi-w-001-card-text {
+    color: color-mix(in srgb, var(--text) 85%, transparent);
+  }
+
+  /* Card corner glow dot */
+  .wsi-w-001-card-glow {
+    position: absolute;
+    top: clamp(8px, 1.2vh, 14px);
+    right: clamp(8px, 1.2vw, 14px);
+    width: clamp(5px, 0.7vw, 8px);
+    height: clamp(5px, 0.7vw, 8px);
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.25;
+    transition: opacity 0.35s ease;
+    box-shadow: 0 0 clamp(5px, 0.8vw, 10px) color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .wsi-w-001-card:hover .wsi-w-001-card-glow {
+    opacity: 0.75;
+  }
+
+  /* Footer warm line */
+  .wsi-w-001-footer {
+    margin-top: clamp(18px, 3vh, 38px);
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.8vw, 20px);
+    opacity: 0;
+    width: 100%;
+  }
+  .wsi-w-001-footer-line {
+    flex: 1;
+    height: 1px;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .wsi-w-001-footer-text {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.85vw, 10px);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+  .wsi-w-001-footer-dot {
+    width: clamp(3px, 0.4vw, 5px);
+    height: clamp(3px, 0.4vw, 5px);
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.35;
+    flex-shrink: 0;
+  }
+
+  /* Cursor warm trail */
+  .wsi-w-001-trail {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    transform: translate(-50%, -50%);
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+    opacity: 0;
+  }
+
+  /* Mobile stack cards */
+  @media (max-width: 600px) {
+    .wsi-w-001-cards {
+      flex-direction: column;
+    }
+  }
+</style>
+<div class="wsi-w-001-root" id="wsi-w-001-root">
+  <!-- Ambient orbs -->
+  <div class="wsi-w-001-orb wsi-w-001-orb-1" id="wsi-w-001-orb-1"></div>
+  <div class="wsi-w-001-orb wsi-w-001-orb-2" id="wsi-w-001-orb-2"></div>
+  <div class="wsi-w-001-orb wsi-w-001-orb-3" id="wsi-w-001-orb-3"></div>
+  <!-- Vignette -->
+  <div class="wsi-w-001-vignette" id="wsi-w-001-vignette"></div>
+  <!-- Dust motes injected via JS -->
+  <div id="wsi-w-001-motes"></div>
+  <!-- Cursor trails injected via JS -->
+  <div id="wsi-w-001-trails"></div>
+  <!-- Main layout -->
+  <div class="wsi-w-001-layout">
+<!-- Eyebrow -->
+<p class="wsi-w-001-eyebrow" id="wsi-w-001-eyebrow">
+  <span class="wsi-w-001-eyebrow-dot"></span>
+  who she is
+  <span class="wsi-w-001-eyebrow-dot"></span>
+</p>
+
+<!-- Name -->
+<div class="wsi-w-001-name-wrap">
+  <span class="wsi-w-001-name" id="wsi-w-001-name">--RECIPIENT_NAME--</span>
+</div>
+
+<!-- Name glow rule -->
+<div class="wsi-w-001-name-glow" id="wsi-w-001-name-glow"></div>
+
+<!-- Personality -->
+<p class="wsi-w-001-personality" id="wsi-w-001-personality">--PERSONALITY--</p>
+
+<!-- Glow cards -->
+<div class="wsi-w-001-cards">
+
+  <div class="wsi-w-001-card" id="wsi-w-001-card-1">
+    <div class="wsi-w-001-card-glow"></div>
+    <span class="wsi-w-001-card-num">01</span>
+    <div class="wsi-w-001-card-rule"></div>
+    <p class="wsi-w-001-card-text">--DETAIL_1--</p>
+  </div>
+
+  <div class="wsi-w-001-card" id="wsi-w-001-card-2">
+    <div class="wsi-w-001-card-glow"></div>
+    <span class="wsi-w-001-card-num">02</span>
+    <div class="wsi-w-001-card-rule"></div>
+    <p class="wsi-w-001-card-text">--DETAIL_2--</p>
+  </div>
+
+  <div class="wsi-w-001-card" id="wsi-w-001-card-3">
+    <div class="wsi-w-001-card-glow"></div>
+    <span class="wsi-w-001-card-num">03</span>
+    <div class="wsi-w-001-card-rule"></div>
+    <p class="wsi-w-001-card-text">--DETAIL_3--</p>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="wsi-w-001-footer" id="wsi-w-001-footer">
+  <div class="wsi-w-001-footer-line"></div>
+  <span class="wsi-w-001-footer-dot"></span>
+  <span class="wsi-w-001-footer-text">written with warmth</span>
+  <span class="wsi-w-001-footer-dot"></span>
+  <div class="wsi-w-001-footer-line"></div>
+</div></div>
+</div>
+<script>
+(function () {
+
+  /* ─── Dust motes ─── */
+  var motesContainer = document.getElementById('wsi-w-001-motes');
+  var moteData = [
+    { top: '15%', left: '8%',  s: 3 }, { top: '72%', left: '92%', s: 2 },
+    { top: '33%', left: '88%', s: 4 }, { top: '60%', left: '5%',  s: 2 },
+    { top: '85%', left: '42%', s: 3 }, { top: '22%', left: '55%', s: 2 },
+    { top: '50%', left: '76%', s: 3 }, { top: '10%', left: '38%', s: 2 },
+    { top: '78%', left: '68%', s: 4 }, { top: '44%', left: '22%', s: 2 },
+    { top: '6%',  left: '70%', s: 3 }, { top: '90%', left: '15%', s: 2 }
+  ];
+  var moteEls = [];
+  moteData.forEach(function (d) {
+    var el = document.createElement('div');
+    el.className = 'wsi-w-001-mote';
+    el.style.cssText = 'top:' + d.top + ';left:' + d.left + ';width:' + d.s + 'px;height:' + d.s + 'px;';
+    motesContainer.appendChild(el);
+    moteEls.push(el);
+  });
+
+  /* ─── Cursor warm trail ─── */
+  var trailsContainer = document.getElementById('wsi-w-001-trails');
+  var TRAIL_COUNT = 7;
+  var trails = [];
+  for (var t = 0; t < TRAIL_COUNT; t++) {
+    var sz = Math.max(2, 8 - t);
+    var tr = document.createElement('div');
+    tr.className = 'wsi-w-001-trail';
+    tr.style.width  = sz + 'px';
+    tr.style.height = sz + 'px';
+    trailsContainer.appendChild(tr);
+    trails.push({ el: tr, x: 0, y: 0 });
+  }
+  var mouseX = 0, mouseY = 0;
+  var trailVisible = false;
+
+  document.addEventListener('mousemove', function (e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (!trailVisible) {
+      trailVisible = true;
+      trails.forEach(function (tr) {
+        gsap.to(tr.el, { opacity: 0.5, duration: 0.4 });
+      });
+    }
+  });
+
+  /* Staggered lag chain */
+  (function followTrail() {
+    var px = mouseX, py = mouseY;
+    trails.forEach(function (tr, i) {
+      var lag = 0.08 + i * 0.055;
+      tr.x += (px - tr.x) * lag;
+      tr.y += (py - tr.y) * lag;
+      tr.el.style.left = tr.x + 'px';
+      tr.el.style.top  = tr.y + 'px';
+      px = tr.x; py = tr.y;
+    });
+    requestAnimationFrame(followTrail);
+  })();
+
+  /* ─── Main entrance ─── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 2) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1 — Orbs bloom in */
+    tl.to('#wsi-w-001-orb-1', { opacity: 1, scale: 1, duration: 1.8, ease: 'power2.out' }, 0);
+    tl.to('#wsi-w-001-orb-2', { opacity: 1, scale: 1, duration: 2.0, ease: 'power2.out' }, 0.15);
+    tl.to('#wsi-w-001-orb-3', { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out' }, 0.3);
+    gsap.set(['#wsi-w-001-orb-1','#wsi-w-001-orb-2','#wsi-w-001-orb-3'], { scale: 0.5 });
+
+    /* 2 — Vignette fades */
+    tl.to('#wsi-w-001-vignette', { opacity: 1, duration: 1.2 }, 0.2);
+
+    /* 3 — Eyebrow */
+    tl.to('#wsi-w-001-eyebrow', { opacity: 1, duration: 0.45 }, 0.55);
+
+    /* 4 — Name rises */
+    tl.to('#wsi-w-001-name', { y: '0%', duration: 0.72, ease: 'power4.out' }, 0.7);
+
+    /* 5 — Glow rule expands */
+    tl.to('#wsi-w-001-name-glow', { width: '100%', duration: 0.65, ease: 'power2.inOut' }, 1.05);
+
+    /* 6 — Personality */
+    gsap.set('#wsi-w-001-personality', { y: 12 });
+    tl.to('#wsi-w-001-personality', { opacity: 1, y: 0, duration: 0.65 }, 1.2);
+
+    /* 7 — Cards bloom in with glow scale */
+    gsap.set(
+      ['#wsi-w-001-card-1','#wsi-w-001-card-2','#wsi-w-001-card-3'],
+      { scale: 0.92, y: 16 }
+    );
+    tl.to(
+      ['#wsi-w-001-card-1','#wsi-w-001-card-2','#wsi-w-001-card-3'],
+      { opacity: 1, scale: 1, y: 0, duration: 0.55, stagger: 0.14, ease: 'back.out(1.5)' },
+      1.45
+    );
+
+    /* 8 — Footer */
+    tl.to('#wsi-w-001-footer', { opacity: 1, duration: 0.4 }, 2.0);
+
+    /* ─── Idle: dust motes float ─── */
+    tl.call(function () {
+      moteEls.forEach(function (m, i) {
+        gsap.to(m, {
+          opacity: 0.3 + Math.random() * 0.5,
+          y: -(10 + Math.random() * 20),
+          x: (Math.random() - 0.5) * 12,
+          duration: 3.5 + Math.random() * 3,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.18
+        });
+      });
+    }, [], 1.6);
+
+    /* ─── Idle: orbs drift ─── */
+    tl.call(function () {
+      gsap.to('#wsi-w-001-orb-1', {
+        x: -22, y: 18, duration: 8, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+      gsap.to('#wsi-w-001-orb-2', {
+        x: 16, y: -14, duration: 10, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.2
+      });
+      gsap.to('#wsi-w-001-orb-3', {
+        x: -10, y: -20, duration: 7, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 0.6
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: name glow pulses ─── */
+    tl.call(function () {
+      gsap.to('#wsi-w-001-name-glow', {
+        opacity: 0.5,
+        duration: 2.8,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: card corner glows pulse individually ─── */
+    tl.call(function () {
+      document.querySelectorAll('.wsi-w-001-card-glow').forEach(function (g, i) {
+        gsap.to(g, {
+          opacity: 0.55,
+          duration: 1.8 + i * 0.4,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.6
+        });
+      });
+    }, [], 2.2);
+
+    /* ─── Idle: footer dots pulse ─── */
+    tl.call(function () {
+      document.querySelectorAll('.wsi-w-001-footer-dot').forEach(function (d, i) {
+        gsap.to(d, {
+          opacity: 0.8,
+          scale: 1.5,
+          duration: 1.4,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.7
+        });
+      });
+    }, [], 2.4);
+
+  }); /* end glitch:enter */
+
+})();
+</script>

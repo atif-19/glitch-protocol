@@ -1,0 +1,717 @@
+<!--
+  Component: hero_ghibli_001
+  Type: hero
+  Aesthetic: Soft magical
+  Obsession: Studio Ghibli
+  Tone: dreamy, tender, nostalgic
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .hero-ghibli-001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: none;
+    background: #0d1a2e;
+  }
+
+  .hero-ghibli-001-sky {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+      180deg,
+      #0a1628 0%,
+      #1a2d4a 28%,
+      #2d4a6e 52%,
+      #4a6e8a 70%,
+      #7a9eb5 82%,
+      #c4b8a0 92%,
+      #e8d5b0 100%
+    );
+  }
+
+  .hero-ghibli-001-stars-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-ghibli-001-clouds-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hero-ghibli-001-hills {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .hero-ghibli-001-tree-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .hero-ghibli-001-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+  }
+
+  .hero-ghibli-001-spore {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 248, 220, 0.9);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .hero-ghibli-001-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(0.5rem, 1.3vw, 1.1rem);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    pointer-events: none;
+    margin-top: clamp(-6rem, -10vh, -4rem);
+  }
+
+  .hero-ghibli-001-eyebrow {
+    font-size: clamp(0.58rem, 1.1vw, 0.75rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: rgba(255, 248, 220, 0.7);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+  }
+
+  .hero-ghibli-001-eyebrow-glyph {
+    font-size: 0.7em;
+    opacity: 0.6;
+  }
+
+  .hero-ghibli-001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.8rem, 8.5vw, 7.5rem);
+    line-height: 1.05;
+    color: #fdf6e3;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    text-shadow:
+      0 2px 40px rgba(200, 160, 80, 0.35),
+      0 0 80px rgba(120, 180, 255, 0.15);
+  }
+
+  .hero-ghibli-001-accent {
+    color: var(--accent);
+    display: inline-block;
+    text-shadow:
+      0 0 30px var(--accent),
+      0 2px 60px rgba(200, 160, 80, 0.4);
+  }
+
+  .hero-ghibli-001-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+  }
+
+  .hero-ghibli-001-divider-wing {
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,248,200,0.5));
+  }
+
+  .hero-ghibli-001-divider-wing.right {
+    background: linear-gradient(to left, transparent, rgba(255,248,200,0.5));
+  }
+
+  .hero-ghibli-001-divider-leaf {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 248, 200, 0.5);
+    transform: rotate(45deg);
+    border-radius: 1px;
+  }
+
+  .hero-ghibli-001-subtitle {
+    font-size: clamp(0.82rem, 2vw, 1.15rem);
+    color: rgba(253, 246, 227, 0.72);
+    opacity: 0;
+    letter-spacing: 0.03em;
+    max-width: 460px;
+    line-height: 1.8;
+  }
+
+  .hero-ghibli-001-recipient {
+    margin-top: clamp(0.3rem, 1vw, 0.7rem);
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2.8vw, 1.9rem);
+    color: #fdf6e3;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    text-shadow: 0 2px 20px rgba(200, 160, 80, 0.3);
+  }
+
+  .hero-ghibli-001-recipient::before,
+  .hero-ghibli-001-recipient::after {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: rgba(255, 248, 200, 0.5);
+  }
+
+  .hero-ghibli-001-totoro {
+    position: absolute;
+    bottom: clamp(6rem, 14vh, 12rem);
+    right: clamp(2rem, 6vw, 7rem);
+    z-index: 7;
+    width: clamp(60px, 9vw, 120px);
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+  }
+
+  .hero-ghibli-001-kodama {
+    position: absolute;
+    z-index: 7;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .hero-ghibli-001-hint {
+    position: absolute;
+    bottom: clamp(1.2rem, 3vh, 2.2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+  }
+
+  .hero-ghibli-001-hint-text {
+    font-size: clamp(0.52rem, 1vw, 0.67rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255, 248, 220, 0.35);
+  }
+
+  .hero-ghibli-001-hint-line {
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(255,248,200,0.5), transparent);
+    animation: hero-ghibli-001-breathe 2.4s ease-in-out infinite;
+  }
+
+  @keyframes hero-ghibli-001-breathe {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.9); }
+    50% { opacity: 0.9; transform: scaleY(1.1); }
+  }
+
+  .hero-ghibli-001-cursor {
+    position: fixed;
+    width: 28px;
+    height: 28px;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+</style>
+<div class="hero-ghibli-001-root" id="hero-ghibli-001-root">
+  <div class="hero-ghibli-001-sky"></div>
+  <canvas class="hero-ghibli-001-stars-canvas" id="hero-ghibli-001-stars"></canvas>
+  <canvas class="hero-ghibli-001-clouds-canvas" id="hero-ghibli-001-clouds"></canvas>
+  <!-- Hills SVG -->
+<svg class="hero-ghibli-001-hills" viewBox="0 0 1440 320"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+<defs>
+<linearGradient id="ghibliHill1" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#2d5a3d"/>
+<stop offset="100%" stop-color="#1a3d28"/>
+</linearGradient>
+<linearGradient id="ghibliHill2" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#3d7a52"/>
+<stop offset="100%" stop-color="#2a5538"/>
+</linearGradient>
+<linearGradient id="ghibliHill3" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#4e9966"/>
+<stop offset="100%" stop-color="#356b47"/>
+</linearGradient>
+</defs>
+<!-- Back hill -->
+<path d="M0 220 Q180 80 360 160 Q540 240 720 140 Q900 40 1080 130 Q1260 220 1440 180 L1440 320 L0 320 Z"
+   fill="url(#ghibliHill1)"/>
+<!-- Mid hill -->
+<path d="M0 260 Q200 170 400 210 Q600 250 800 190 Q1000 130 1200 200 Q1350 240 1440 220 L1440 320 L0 320 Z"
+   fill="url(#ghibliHill2)"/>
+<!-- Front hill -->
+<path d="M0 290 Q240 240 480 270 Q720 300 960 260 Q1200 220 1440 260 L1440 320 L0 320 Z"
+   fill="url(#ghibliHill3)"/>
+<!-- Ground -->
+<rect x="0" y="305" width="1440" height="15" fill="#2a5538"/>
+</svg>
+  <!-- Trees SVG -->
+<svg class="hero-ghibli-001-tree-layer" id="hero-ghibli-001-trees"
+ viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"
+ preserveAspectRatio="xMidYMax meet">
+<defs>
+<radialGradient id="ghibliLeaf" cx="50%" cy="40%" r="50%">
+<stop offset="0%" stop-color="#5db870"/>
+<stop offset="100%" stop-color="#2d6e40"/>
+</radialGradient>
+<radialGradient id="ghibliLeafDark" cx="50%" cy="40%" r="50%">
+<stop offset="0%" stop-color="#3a7a50"/>
+<stop offset="100%" stop-color="#1e4a2c"/>
+</radialGradient>
+</defs>
+<!-- Camphor tree left (big Totoro tree) -->
+<rect x="108" y="220" width="14" height="80" fill="#2a1a0e"/>
+<ellipse cx="115" cy="210" rx="55" ry="60" fill="url(#ghibliLeafDark)"/>
+<ellipse cx="95" cy="200" rx="38" ry="42" fill="url(#ghibliLeafDark)"/>
+<ellipse cx="138" cy="205" rx="40" ry="44" fill="url(#ghibliLeaf)"/>
+<ellipse cx="115" cy="180" rx="32" ry="36" fill="#4a9a60"/>
+<!-- Right big tree -->
+<rect x="1298" y="230" width="12" height="70" fill="#2a1a0e"/>
+<ellipse cx="1304" cy="220" rx="48" ry="55" fill="url(#ghibliLeafDark)"/>
+<ellipse cx="1286" cy="212" rx="34" ry="38" fill="url(#ghibliLeaf)"/>
+<ellipse cx="1320" cy="215" rx="36" ry="40" fill="url(#ghibliLeaf)"/>
+<ellipse cx="1304" cy="192" rx="28" ry="32" fill="#4a9a60"/>
+<!-- Small trees scattered -->
+<rect x="248" y="272" width="7" height="38" fill="#2a1a0e"/>
+<ellipse cx="252" cy="264" rx="22" ry="26" fill="url(#ghibliLeaf)"/>
+<ellipse cx="252" cy="252" rx="16" ry="18" fill="#5db870"/>
+<rect x="390" y="275" width="6" height="32" fill="#2a1a0e"/>
+<ellipse cx="393" cy="268" rx="18" ry="22" fill="url(#ghibliLeafDark)"/>
+<rect x="1060" y="268" width="7" height="38" fill="#2a1a0e"/>
+<ellipse cx="1064" cy="260" rx="22" ry="26" fill="url(#ghibliLeaf)"/>
+<rect x="1160" y="272" width="6" height="32" fill="#2a1a0e"/>
+<ellipse cx="1163" cy="265" rx="19" ry="23" fill="url(#ghibliLeafDark)"/>
+<!-- Pine shapes mid -->
+<polygon points="560,295 548,295 554,270" fill="#2d5a3d"/>
+<polygon points="560,280 545,280 552,255" fill="#356b47"/>
+<polygon points="880,292 868,292 874,268" fill="#2d5a3d"/>
+<polygon points="880,278 866,278 873,254" fill="#356b47"/>
+<!-- House silhouette -->
+<rect x="660" y="268" width="40" height="32" fill="#1a1208"/>
+<polygon points="655,268 680,248 705,268" fill="#221a0a"/>
+<rect x="670" y="282" width="10" height="18" fill="#0a0806"/>
+<rect x="664" y="272" width="8" height="8" fill="#4a6a3a" opacity="0.6"/>
+<rect x="688" y="272" width="8" height="8" fill="#4a6a3a" opacity="0.6"/>
+<!-- Chimney smoke hint -->
+<ellipse cx="692" cy="244" rx="3" ry="3" fill="rgba(200,190,170,0.3)"/>
+<ellipse cx="694" cy="238" rx="4" ry="4" fill="rgba(200,190,170,0.2)"/>
+<ellipse cx="691" cy="232" rx="5" ry="5" fill="rgba(200,190,170,0.1)"/>
+</svg>
+  <!-- Totoro silhouette -->
+<svg class="hero-ghibli-001-totoro" id="hero-ghibli-001-totoro"
+ viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+<!-- Body -->
+<ellipse cx="50" cy="80" rx="38" ry="44" fill="#2a2a2a"/>
+<!-- Belly -->
+<ellipse cx="50" cy="88" rx="24" ry="30" fill="#e8e0d0"/>
+<!-- Belly markings -->
+<ellipse cx="44" cy="78" rx="5" ry="7" fill="rgba(100,100,80,0.4)"/>
+<ellipse cx="56" cy="78" rx="5" ry="7" fill="rgba(100,100,80,0.4)"/>
+<ellipse cx="50" cy="92" rx="4" ry="5" fill="rgba(100,100,80,0.3)"/>
+<!-- Head -->
+<ellipse cx="50" cy="42" rx="32" ry="30" fill="#2a2a2a"/>
+<!-- Ears -->
+<polygon points="28,22 22,2 38,18" fill="#2a2a2a"/>
+<polygon points="72,22 78,2 62,18" fill="#2a2a2a"/>
+<!-- Inner ear -->
+<polygon points="30,20 26,8 36,18" fill="#4a3a3a"/>
+<polygon points="70,20 74,8 64,18" fill="#4a3a3a"/>
+<!-- Eyes -->
+<ellipse cx="38" cy="38" rx="9" ry="10" fill="white"/>
+<ellipse cx="62" cy="38" rx="9" ry="10" fill="white"/>
+<ellipse cx="40" cy="39" rx="6" ry="7" fill="#1a1a40"/>
+<ellipse cx="64" cy="39" rx="6" ry="7" fill="#1a1a40"/>
+<ellipse cx="41" cy="37" rx="2" ry="2" fill="white"/>
+<ellipse cx="65" cy="37" rx="2" ry="2" fill="white"/>
+<!-- Nose -->
+<ellipse cx="50" cy="50" rx="4" ry="3" fill="#1a1a1a"/>
+<!-- Whiskers -->
+<line x1="20" y1="48" x2="40" y2="50" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+<line x1="18" y1="52" x2="40" y2="52" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+<line x1="60" y1="50" x2="80" y2="48" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+<line x1="60" y1="52" x2="82" y2="52" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+<!-- Tummy smile -->
+<path d="M42 98 Q50 104 58 98" stroke="#b0a090" stroke-width="1.5" fill="none"/>
+<!-- Feet -->
+<ellipse cx="35" cy="122" rx="14" ry="8" fill="#222"/>
+<ellipse cx="65" cy="122" rx="14" ry="8" fill="#222"/>
+<!-- Claws -->
+<line x1="27" y1="126" x2="25" y2="130" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="35" y1="128" x2="34" y2="130" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="43" y1="126" x2="44" y2="130" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="57" y1="126" x2="56" y2="130" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="65" y1="128" x2="65" y2="130" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="73" y1="126" x2="75" y2="130" stroke="#1a1a1a" stroke-width="1.5"/>
+<!-- Umbrella -->
+<line x1="80" y1="60" x2="88" y2="20" stroke="#5a4a2a" stroke-width="3"/>
+<path d="M60,22 Q88,0 116,22 Q104,18 88,20 Q72,18 60,22 Z" fill="#4a6a8a" opacity="0.85"/>
+<path d="M60,22 Q88,0 116,22 Q88,6 60,22 Z" fill="rgba(255,255,255,0.1)"/>
+</svg>
+  <!-- Kodamas (small tree spirits) -->
+<svg class="hero-ghibli-001-kodama" id="hero-ghibli-001-kodama-1"
+ style="left:12%;bottom:38%;width:clamp(18px,2.5vw,34px);"
+ viewBox="0 0 40 55" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="20" cy="38" rx="12" ry="16" fill="rgba(240,235,225,0.88)"/>
+<ellipse cx="20" cy="16" rx="14" ry="14" fill="rgba(240,235,225,0.92)"/>
+<ellipse cx="14" cy="14" rx="3" ry="4" fill="rgba(80,60,40,0.5)"/>
+<ellipse cx="26" cy="14" rx="3" ry="4" fill="rgba(80,60,40,0.5)"/>
+<path d="M16 22 Q20 25 24 22" stroke="rgba(80,60,40,0.4)" stroke-width="1" fill="none"/>
+</svg>
+<svg class="hero-ghibli-001-kodama" id="hero-ghibli-001-kodama-2"
+ style="right:18%;bottom:42%;width:clamp(14px,2vw,28px);"
+ viewBox="0 0 40 55" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="20" cy="38" rx="12" ry="16" fill="rgba(240,235,225,0.82)"/>
+<ellipse cx="20" cy="16" rx="14" ry="14" fill="rgba(240,235,225,0.88)"/>
+<ellipse cx="14" cy="14" rx="3" ry="4" fill="rgba(80,60,40,0.45)"/>
+<ellipse cx="26" cy="14" rx="3" ry="4" fill="rgba(80,60,40,0.45)"/>
+<path d="M16 22 Q20 25 24 22" stroke="rgba(80,60,40,0.35)" stroke-width="1" fill="none"/>
+</svg>
+  <!-- Dust spores / soot sprites container -->
+  <div class="hero-ghibli-001-particles" id="hero-ghibli-001-particles"></div>
+  <!-- Main content -->
+  <div class="hero-ghibli-001-content">
+    <div class="hero-ghibli-001-eyebrow" id="hero-ghibli-001-eyebrow">
+      <span class="hero-ghibli-001-eyebrow-glyph">✿</span>
+      A Message From the Forest
+      <span class="hero-ghibli-001-eyebrow-glyph">✿</span>
+    </div>
+    <div class="hero-ghibli-001-title" id="hero-ghibli-001-title">
+      --TITLE--<br/>
+      <span class="hero-ghibli-001-accent">--ACCENT_WORD--</span>
+    </div>
+    <div class="hero-ghibli-001-divider" id="hero-ghibli-001-divider">
+      <div class="hero-ghibli-001-divider-wing"></div>
+      <div class="hero-ghibli-001-divider-leaf"></div>
+      <div class="hero-ghibli-001-divider-wing right"></div>
+    </div>
+    <div class="hero-ghibli-001-subtitle" id="hero-ghibli-001-subtitle">--SUBTITLE--</div>
+    <div class="hero-ghibli-001-recipient" id="hero-ghibli-001-recipient">--RECIPIENT_NAME--</div>
+  </div>
+  <div class="hero-ghibli-001-hint" id="hero-ghibli-001-hint">
+    <span class="hero-ghibli-001-hint-text">Step inside</span>
+    <div class="hero-ghibli-001-hint-line"></div>
+  </div>
+  <!-- Leaf cursor -->
+  <div class="hero-ghibli-001-cursor" id="hero-ghibli-001-cursor">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2 Q22 6 24 14 Q22 22 14 26 Q6 22 4 14 Q6 6 14 2 Z"
+        fill="rgba(80,160,90,0.7)" stroke="rgba(200,240,180,0.6)" stroke-width="1"/>
+      <line x1="14" y1="4" x2="14" y2="24" stroke="rgba(200,240,180,0.5)" stroke-width="0.8"/>
+      <line x1="10" y1="10" x2="14" y2="14" stroke="rgba(200,240,180,0.4)" stroke-width="0.6"/>
+      <line x1="18" y1="10" x2="14" y2="14" stroke="rgba(200,240,180,0.4)" stroke-width="0.6"/>
+      <line x1="10" y1="18" x2="14" y2="14" stroke="rgba(200,240,180,0.4)" stroke-width="0.6"/>
+      <line x1="18" y1="18" x2="14" y2="14" stroke="rgba(200,240,180,0.4)" stroke-width="0.6"/>
+    </svg>
+  </div>
+</div>
+<script>
+(function () {
+
+  // ─── Star field ───────────────────────────────────────────────────
+  const starCanvas = document.getElementById('hero-ghibli-001-stars');
+  const sCtx = starCanvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resizeAll() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    starCanvas.width = W;
+    starCanvas.height = H;
+    cloudCanvas.width = W;
+    cloudCanvas.height = H;
+  }
+
+  function buildStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H * 0.55,
+        r: Math.random() * 1.2 + 0.2,
+        a: Math.random() * 0.7 + 0.2,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.003 + 0.001
+      });
+    }
+  }
+
+  function drawStars(t) {
+    sCtx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      const tw = s.a * (0.65 + 0.35 * Math.sin(t * s.speed * 60 + s.phase));
+      sCtx.beginPath();
+      sCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      sCtx.fillStyle = `rgba(255,248,220,${tw})`;
+      sCtx.fill();
+    });
+  }
+
+  // ─── Cloud layer ──────────────────────────────────────────────────
+  const cloudCanvas = document.getElementById('hero-ghibli-001-clouds');
+  const cCtx = cloudCanvas.getContext('2d');
+
+  const clouds = [];
+  function buildClouds() {
+    clouds.length = 0;
+    const baseY = [H * 0.32, H * 0.42, H * 0.27, H * 0.38, H * 0.22];
+    const widths = [200, 140, 180, 120, 160];
+    for (let i = 0; i < 5; i++) {
+      clouds.push({
+        x: Math.random() * W,
+        y: baseY[i % baseY.length],
+        w: widths[i % widths.length] * (0.8 + Math.random() * 0.5),
+        h: 40 + Math.random() * 30,
+        speed: 0.08 + Math.random() * 0.06,
+        alpha: 0.12 + Math.random() * 0.1
+      });
+    }
+  }
+
+  function drawCloud(c) {
+    const g = cCtx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.w * 0.6);
+    g.addColorStop(0, `rgba(255,248,230,${c.alpha})`);
+    g.addColorStop(1, 'rgba(200,220,255,0)');
+    cCtx.beginPath();
+    cCtx.ellipse(c.x, c.y, c.w * 0.6, c.h * 0.5, 0, 0, Math.PI * 2);
+    cCtx.fillStyle = g;
+    cCtx.fill();
+    cCtx.beginPath();
+    cCtx.ellipse(c.x - c.w * 0.2, c.y + c.h * 0.1, c.w * 0.4, c.h * 0.4, 0, 0, Math.PI * 2);
+    cCtx.fill();
+    cCtx.beginPath();
+    cCtx.ellipse(c.x + c.w * 0.2, c.y + c.h * 0.12, c.w * 0.38, c.h * 0.38, 0, 0, Math.PI * 2);
+    cCtx.fill();
+  }
+
+  function drawClouds() {
+    cCtx.clearRect(0, 0, W, H);
+    clouds.forEach(c => {
+      c.x += c.speed;
+      if (c.x - c.w > W) c.x = -c.w;
+      drawCloud(c);
+    });
+  }
+
+  // ─── Main loop ────────────────────────────────────────────────────
+  let t = 0;
+  function loop() {
+    t += 0.016;
+    drawStars(t);
+    drawClouds();
+    requestAnimationFrame(loop);
+  }
+
+  resizeAll();
+  buildStars();
+  buildClouds();
+  loop();
+  window.addEventListener('resize', () => { resizeAll(); buildStars(); buildClouds(); });
+
+  // ─── Floating spores / soot sprites ───────────────────────────────
+  const particlesEl = document.getElementById('hero-ghibli-001-particles');
+  const SPORE_COUNT = 22;
+  const sporePool = [];
+
+  for (let i = 0; i < SPORE_COUNT; i++) {
+    const el = document.createElement('div');
+    el.className = 'hero-ghibli-001-spore';
+    const sz = Math.random() * 5 + 2;
+    el.style.width = sz + 'px';
+    el.style.height = sz + 'px';
+    particlesEl.appendChild(el);
+    sporePool.push({ el, busy: false });
+  }
+
+  function getFreeSpore() { return sporePool.find(s => !s.busy) || null; }
+
+  function launchSpore() {
+    const s = getFreeSpore();
+    if (!s) return;
+    s.busy = true;
+    const x = Math.random() * window.innerWidth;
+    const startY = window.innerHeight * (0.5 + Math.random() * 0.4);
+    const isLight = Math.random() > 0.4;
+    const col = isLight ? 'rgba(255,248,200,0.85)' : 'rgba(80,60,40,0.7)';
+    s.el.style.cssText = `left:${x}px;top:${startY}px;background:${col};opacity:0;`;
+    if (window.gsap) {
+      const drift = (Math.random() - 0.5) * 120;
+      gsap.fromTo(s.el,
+        { opacity: 0, y: 0, x: 0 },
+        {
+          opacity: 0.85,
+          y: -(Math.random() * 200 + 100),
+          x: drift,
+          duration: 4 + Math.random() * 4,
+          ease: 'power1.inOut',
+          onComplete: () => {
+            gsap.to(s.el, { opacity: 0, duration: 0.6, onComplete: () => { s.busy = false; } });
+          }
+        }
+      );
+    }
+    setTimeout(launchSpore, Math.random() * 700 + 200);
+  }
+
+  // ─── Cursor leaf ──────────────────────────────────────────────────
+  const cursor = document.getElementById('hero-ghibli-001-cursor');
+  document.getElementById('hero-ghibli-001-root').style.cursor = 'none';
+
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    if (window.gsap) {
+      const angle = 15 * ((e.clientX / window.innerWidth) - 0.5);
+      gsap.to(cursor, { rotate: angle, duration: 0.4, ease: 'power1.out' });
+    }
+  });
+
+  // ─── Parallax ─────────────────────────────────────────────────────
+  document.addEventListener('mousemove', e => {
+    if (!window.gsap) return;
+    const dx = (e.clientX / window.innerWidth - 0.5) * 18;
+    const dy = (e.clientY / window.innerHeight - 0.5) * 10;
+    gsap.to('#hero-ghibli-001-content', { x: dx * 0.4, y: dy * 0.3, duration: 1.6, ease: 'power1.out' });
+    gsap.to('.hero-ghibli-001-hills', { x: dx * 0.8, duration: 2.2, ease: 'power1.out' });
+    gsap.to('.hero-ghibli-001-tree-layer', { x: dx * 1.3, duration: 2.5, ease: 'power1.out' });
+    gsap.to('#hero-ghibli-001-totoro', { x: dx * 1.8, duration: 2, ease: 'power1.out' });
+  });
+
+  // ─── Kodama head-rattle ───────────────────────────────────────────
+  function rattleKodama(id) {
+    const el = document.getElementById(id);
+    if (!el || !window.gsap) return;
+    gsap.to(el, {
+      rotate: 6, duration: 0.12, ease: 'none', yoyo: true, repeat: 5,
+      onComplete: () => {
+        gsap.set(el, { rotate: 0 });
+        setTimeout(() => rattleKodama(id), 3000 + Math.random() * 4000);
+      }
+    });
+  }
+
+  // ─── ENTRANCE ─────────────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 1) return;
+
+    const tl = gsap.timeline();
+
+    // Hills rise
+    gsap.set('.hero-ghibli-001-hills', { y: 60, opacity: 0 });
+    tl.to('.hero-ghibli-001-hills', { y: 0, opacity: 1, duration: 1.8, ease: 'power3.out' }, 0);
+
+    // Trees rise slightly after
+    gsap.set('.hero-ghibli-001-tree-layer', { y: 40, opacity: 0 });
+    tl.to('.hero-ghibli-001-tree-layer', { y: 0, opacity: 1, duration: 1.4, ease: 'power2.out' }, 0.3);
+
+    // Totoro waddle in
+    gsap.set('#hero-ghibli-001-totoro', { x: 80, opacity: 0 });
+    tl.to('#hero-ghibli-001-totoro', { x: 0, opacity: 1, duration: 1.1, ease: 'back.out(1.4)' }, 0.8);
+
+    // Kodamas appear
+    gsap.set(['#hero-ghibli-001-kodama-1','#hero-ghibli-001-kodama-2'], { scale: 0, opacity: 0 });
+    tl.to('#hero-ghibli-001-kodama-1', { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 1.1);
+    tl.to('#hero-ghibli-001-kodama-2', { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 1.3);
+
+    // Eyebrow
+    gsap.set('#hero-ghibli-001-eyebrow', { y: 10 });
+    tl.to('#hero-ghibli-001-eyebrow', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.9);
+
+    // Title
+    gsap.set('#hero-ghibli-001-title', { y: 28, opacity: 0 });
+    tl.to('#hero-ghibli-001-title', { y: 0, opacity: 1, duration: 1.1, ease: 'expo.out' }, 1.1);
+
+    // Accent pop
+    tl.fromTo('.hero-ghibli-001-accent',
+      { scale: 0.85, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.7, ease: 'back.out(2)' },
+      1.6
+    );
+
+    // Divider
+    gsap.set('#hero-ghibli-001-divider', { scaleX: 0, transformOrigin: 'center' });
+    tl.to('#hero-ghibli-001-divider', { opacity: 1, scaleX: 1, duration: 0.6, ease: 'power2.out' }, 1.6);
+
+    // Subtitle
+    gsap.set('#hero-ghibli-001-subtitle', { y: 12 });
+    tl.to('#hero-ghibli-001-subtitle', { opacity: 0.72, y: 0, duration: 0.8, ease: 'power2.out' }, 1.75);
+
+    // Recipient
+    gsap.set('#hero-ghibli-001-recipient', { y: 14 });
+    tl.to('#hero-ghibli-001-recipient', { opacity: 1, y: 0, duration: 0.8, ease: 'back.out(1.5)' }, 1.95);
+
+    // Hint
+    tl.to('#hero-ghibli-001-hint', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 2.6);
+
+    // Ambient systems start
+    tl.call(() => {
+      launchSpore();
+
+      // Totoro gentle float
+      gsap.to('#hero-ghibli-001-totoro', {
+        y: -10, duration: 2.8, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+      // Accent soft glow pulse
+      gsap.to('.hero-ghibli-001-accent', {
+        textShadow: '0 0 50px var(--accent), 0 2px 80px rgba(200,160,80,0.5)',
+        duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+      // Kodama rattle
+      setTimeout(() => rattleKodama('hero-ghibli-001-kodama-1'), 2000);
+      setTimeout(() => rattleKodama('hero-ghibli-001-kodama-2'), 3500);
+
+      // Divider leaf rotate
+      gsap.to('.hero-ghibli-001-divider-leaf', {
+        rotate: 225, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+      // Trees gentle sway
+      gsap.to('.hero-ghibli-001-tree-layer', {
+        x: 6, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+    }, [], 1.2);
+
+  });
+
+})();
+</script>

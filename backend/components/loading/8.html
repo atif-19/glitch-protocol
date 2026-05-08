@@ -1,0 +1,577 @@
+<!-- 
+  Component: loading_space_001
+  Type: loading
+  Aesthetic: System Init Cosmos
+  Obsession: Astronomy
+  Tone: vast, mysterious, awe-inspiring
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<style>
+  :root {
+    --primary: #7eb8e8;
+    --accent: #a8d4f5;
+    --bg: #020408;
+    --text: #e8f4ff;
+    --font-heading: 'Orbitron', 'Courier New', monospace;
+    --font-body: 'Share Tech Mono', 'Courier New', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .ls001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* ── Star field canvas ── */
+  .ls001-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* ── Nebula blobs ── */
+  .ls001-nebula {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 30%, rgba(80,40,140,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(20,80,160,0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 30% at 60% 20%, rgba(140,60,80,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 40% 80%, rgba(20,120,100,0.08) 0%, transparent 70%);
+    animation: ls001-nebula-drift 12s ease-in-out infinite alternate;
+  }
+  @keyframes ls001-nebula-drift {
+    from { transform: scale(1) translate(0, 0); opacity: 0.8; }
+    to   { transform: scale(1.08) translate(1%, 1.5%); opacity: 1; }
+  }
+
+  /* ── Vignette ── */
+  .ls001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(2,4,8,0.92) 100%);
+  }
+
+  /* ── Scan line sweep ── */
+  .ls001-scan {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(126,184,232,0.08) 30%, rgba(126,184,232,0.18) 50%, rgba(126,184,232,0.08) 70%, transparent 100%);
+    z-index: 4;
+    pointer-events: none;
+    animation: ls001-scan-sweep 10s linear infinite;
+  }
+  @keyframes ls001-scan-sweep {
+    0%   { top: -2px; opacity: 0; }
+    4%   { opacity: 1; }
+    96%  { opacity: 0.4; }
+    100% { top: 100vh; opacity: 0; }
+  }
+
+  /* ── HUD corner frames ── */
+  .ls001-hud-corner {
+    position: absolute;
+    z-index: 10;
+    width: clamp(28px, 4vw, 56px);
+    height: clamp(28px, 4vw, 56px);
+    opacity: 0;
+  }
+  .ls001-hud-corner::before,
+  .ls001-hud-corner::after {
+    content: '';
+    position: absolute;
+    background: var(--primary);
+    opacity: 0.6;
+  }
+  .ls001-hud-corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+  .ls001-hud-corner::after  { width: 1px; height: 100%; top: 0; left: 0; }
+  .ls001-hud-corner.tl { top: clamp(16px,3vh,36px);    left: clamp(16px,3vw,36px); }
+  .ls001-hud-corner.tr { top: clamp(16px,3vh,36px);    right: clamp(16px,3vw,36px); transform: scaleX(-1); }
+  .ls001-hud-corner.bl { bottom: clamp(16px,3vh,36px); left: clamp(16px,3vw,36px); transform: scaleY(-1); }
+  .ls001-hud-corner.br { bottom: clamp(16px,3vh,36px); right: clamp(16px,3vw,36px); transform: scale(-1,-1); }
+
+  /* ── HUD top bar ── */
+  .ls001-hud-top {
+    position: absolute;
+    top: clamp(16px,3vh,36px);
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 clamp(60px,8vw,100px);
+    z-index: 10;
+    opacity: 0;
+  }
+  .ls001-hud-label {
+    font-family: var(--font-body);
+    font-size: clamp(8px,0.8vw,11px);
+    letter-spacing: 0.3em;
+    color: var(--primary);
+    opacity: 0.55;
+    text-transform: uppercase;
+  }
+
+  /* ── HUD bottom bar ── */
+  .ls001-hud-bottom {
+    position: absolute;
+    bottom: clamp(16px,3vh,36px);
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 clamp(60px,8vw,100px);
+    z-index: 10;
+    opacity: 0;
+  }
+
+  /* ── Orbiting ring ── */
+  .ls001-orbit-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+    width: clamp(200px,38vw,500px);
+    height: clamp(200px,38vw,500px);
+    opacity: 0;
+  }
+  .ls001-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(126,184,232,0.12);
+  }
+  .ls001-ring-1 {
+    animation: ls001-ring-spin 18s linear infinite;
+    border-color: rgba(126,184,232,0.18);
+  }
+  .ls001-ring-2 {
+    inset: 12%;
+    border-color: rgba(168,212,245,0.10);
+    animation: ls001-ring-spin 28s linear infinite reverse;
+  }
+  .ls001-ring-3 {
+    inset: 26%;
+    border-color: rgba(126,184,232,0.14);
+    animation: ls001-ring-spin 12s linear infinite;
+  }
+  @keyframes ls001-ring-spin {
+    from { transform: rotate(0deg) rotateX(70deg); }
+    to   { transform: rotate(360deg) rotateX(70deg); }
+  }
+
+  /* Orbit dot */
+  .ls001-orbit-dot {
+    position: absolute;
+    width: clamp(4px,0.6vw,8px);
+    height: clamp(4px,0.6vw,8px);
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 10px 3px rgba(126,184,232,0.5);
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: ls001-ring-spin 6s linear infinite;
+    transform-origin: 50% clamp(100px,19vw,250px);
+  }
+  .ls001-orbit-dot-2 {
+    width: clamp(3px,0.4vw,5px);
+    height: clamp(3px,0.4vw,5px);
+    background: #e8a87e;
+    box-shadow: 0 0 8px 2px rgba(232,168,126,0.5);
+    animation-duration: 14s;
+    animation-direction: reverse;
+    transform-origin: 50% clamp(65px,12.5vw,163px);
+    top: 38%;
+  }
+
+  /* ── Planet core ── */
+  .ls001-planet {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(44px,8vw,100px);
+    height: clamp(44px,8vw,100px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #1a3a5c, #0a1a2e 60%, #020810);
+    box-shadow:
+      0 0 30px 8px rgba(126,184,232,0.12),
+      0 0 60px 20px rgba(20,60,120,0.10),
+      inset 0 0 20px rgba(126,184,232,0.08);
+    z-index: 6;
+    animation: ls001-planet-pulse 4s ease-in-out infinite alternate;
+  }
+  @keyframes ls001-planet-pulse {
+    from { box-shadow: 0 0 30px 8px rgba(126,184,232,0.12), 0 0 60px 20px rgba(20,60,120,0.10), inset 0 0 20px rgba(126,184,232,0.08); }
+    to   { box-shadow: 0 0 50px 14px rgba(126,184,232,0.20), 0 0 90px 30px rgba(20,60,120,0.16), inset 0 0 30px rgba(126,184,232,0.12); }
+  }
+
+  /* ── Center content ── */
+  .ls001-content {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: clamp(10px,2vh,20px);
+    padding: clamp(16px,4vw,48px);
+    margin-top: clamp(180px,36vw,520px);
+  }
+
+  .ls001-system-id {
+    font-family: var(--font-body);
+    font-size: clamp(8px,0.9vw,11px);
+    letter-spacing: 0.5em;
+    color: var(--primary);
+    opacity: 0;
+    text-transform: uppercase;
+  }
+
+  .ls001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(24px,5.5vw,76px);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    position: relative;
+    text-shadow: 0 0 40px rgba(126,184,232,0.3);
+  }
+
+  .ls001-coords {
+    font-family: var(--font-body);
+    font-size: clamp(9px,1vw,13px);
+    color: var(--primary);
+    letter-spacing: 0.3em;
+    opacity: 0;
+  }
+
+  .ls001-loading-line {
+    font-family: var(--font-body);
+    font-size: clamp(10px,1.1vw,14px);
+    color: var(--text);
+    opacity: 0;
+    letter-spacing: 0.2em;
+    max-width: clamp(220px,48vw,520px);
+    line-height: 1.9;
+  }
+
+  /* Boot log lines */
+  .ls001-log {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(3px,0.5vh,6px);
+    opacity: 0;
+    min-width: clamp(200px,36vw,400px);
+  }
+  .ls001-log-line {
+    font-family: var(--font-body);
+    font-size: clamp(8px,0.85vw,11px);
+    color: rgba(126,184,232,0.5);
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ls001-log-line::before {
+    content: '›';
+    color: var(--primary);
+    opacity: 0.7;
+  }
+  .ls001-log-line.done { color: rgba(126,184,232,0.8); }
+  .ls001-log-line.done::before { content: '✓'; color: #7ed8a0; }
+
+  /* Progress bar */
+  .ls001-prog-wrap {
+    width: clamp(160px,30vw,360px);
+    height: 2px;
+    background: rgba(126,184,232,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0;
+    position: relative;
+  }
+  .ls001-prog-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(126,184,232,0.4), var(--primary), var(--accent));
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(126,184,232,0.6);
+  }
+
+  /* Flash */
+  .ls001-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    background: #020408;
+    opacity: 1;
+    pointer-events: none;
+  }
+</style>
+<div class="ls001-root" id="ls001-root">
+  <!-- Dark fade overlay -->
+  <div class="ls001-flash" id="ls001-flash"></div>
+  <!-- Star field -->
+<canvas class="ls001-canvas" id="ls001-canvas"></canvas>
+  <!-- Nebula + atmosphere -->
+  <div class="ls001-nebula"></div>
+  <div class="ls001-vignette"></div>
+  <div class="ls001-scan"></div>
+  <!-- HUD corners -->
+  <div class="ls001-hud-corner tl" id="ls001-c-tl"></div>
+  <div class="ls001-hud-corner tr" id="ls001-c-tr"></div>
+  <div class="ls001-hud-corner bl" id="ls001-c-bl"></div>
+  <div class="ls001-hud-corner br" id="ls001-c-br"></div>
+  <!-- HUD top -->
+  <div class="ls001-hud-top" id="ls001-hud-top">
+    <div class="ls001-hud-label">GLITCH PROTOCOL // DEEP FIELD</div>
+    <div class="ls001-hud-label" id="ls001-clock">00:00:00</div>
+    <div class="ls001-hud-label">UPLINK · ESTABLISHED</div>
+  </div>
+  <!-- HUD bottom -->
+  <div class="ls001-hud-bottom" id="ls001-hud-bottom">
+    <div class="ls001-hud-label">RA 05h 34m · DEC +22°</div>
+    <div class="ls001-hud-label">SECTOR 7G · NODE ACTIVE</div>
+    <div class="ls001-hud-label">SIGNAL · 99.8%</div>
+  </div>
+  <!-- Orbital system -->
+  <div class="ls001-orbit-wrap" id="ls001-orbit">
+    <div class="ls001-ring ls001-ring-1"></div>
+    <div class="ls001-ring ls001-ring-2"></div>
+    <div class="ls001-ring ls001-ring-3"></div>
+    <div class="ls001-orbit-dot"></div>
+    <div class="ls001-orbit-dot ls001-orbit-dot-2"></div>
+    <div class="ls001-planet" id="ls001-planet"></div>
+  </div>
+  <!-- Text content -->
+  <div class="ls001-content">
+    <div class="ls001-system-id" id="ls001-sysid">SYSTEM · INIT · SEQUENCE · 001</div><div class="ls001-title" id="ls001-title">--RECIPIENT_NAME--</div>
+
+<div class="ls001-coords" id="ls001-coords">49.2827° N · 123.1207° W · ALT 402KM</div>
+
+<div class="ls001-log" id="ls001-log">
+  <div class="ls001-log-line done" id="ls001-l1">STAR CHARTS LOADED</div>
+  <div class="ls001-log-line done" id="ls001-l2">GRAVITATIONAL ANCHOR SET</div>
+  <div class="ls001-log-line done" id="ls001-l3">SIGNAL ENCRYPTED</div>
+  <div class="ls001-log-line" id="ls001-l4">INITIALISING TRANSMISSION...</div>
+</div>
+
+<div class="ls001-loading-line" id="ls001-loadline">--LOADING_LINE--</div>
+
+<div class="ls001-prog-wrap" id="ls001-prog-wrap">
+  <div class="ls001-prog-fill" id="ls001-prog-fill"></div>
+</div></div>
+</div>
+<script>
+(function () {
+
+  /* ── Star field ── */
+  const canvas = document.getElementById('ls001-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resizeCanvas() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    const count = Math.floor((W * H) / 3200);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.4,
+        a: 0.3 + Math.random() * 0.7,
+        speed: 0.0003 + Math.random() * 0.0008,
+        phase: Math.random() * Math.PI * 2,
+        color: Math.random() > 0.85
+          ? `rgba(200,220,255,`
+          : Math.random() > 0.6
+            ? `rgba(255,240,200,`
+            : `rgba(220,235,255,`
+      });
+    }
+  }
+
+  function drawStars(t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      const a = s.a * (0.6 + 0.4 * Math.sin(t * s.speed * 1000 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = s.color + a + ')';
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+
+  resizeCanvas();
+  initStars();
+  requestAnimationFrame(drawStars);
+  window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
+
+  /* ── HUD clock ── */
+  function tickClock() {
+    const el = document.getElementById('ls001-clock');
+    if (!el) return;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const ss = String(now.getSeconds()).padStart(2,'0');
+    el.textContent = hh + ':' + mm + ':' + ss;
+    setTimeout(tickClock, 1000);
+  }
+  tickClock();
+
+  /* ── Log line sequencer ── */
+  function animateLog() {
+    const l4 = document.getElementById('ls001-l4');
+    let dots = 0;
+    setInterval(() => {
+      dots = (dots + 1) % 4;
+      l4.textContent = 'INITIALISING TRANSMISSION' + '.'.repeat(dots);
+    }, 500);
+  }
+
+  /* ── Entrance ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 0) return;
+    runEntrance();
+  });
+
+  let didRun = false;
+  function runEntrance() {
+    if (didRun) return;
+    didRun = true;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* Fade dark overlay out */
+    tl.to('#ls001-flash', { opacity: 0, duration: 1.4, ease: 'power2.inOut' }, 0);
+
+    /* HUD corners pop in */
+    tl.to(['#ls001-c-tl','#ls001-c-tr','#ls001-c-bl','#ls001-c-br'],
+      { opacity: 1, duration: 0.4, stagger: 0.08 }, 0.6);
+
+    /* HUD bars */
+    tl.to('#ls001-hud-top',    { opacity: 1, duration: 0.5 }, 0.8);
+    tl.to('#ls001-hud-bottom', { opacity: 1, duration: 0.5 }, 0.9);
+
+    /* Orbital system scales in */
+    tl.fromTo('#ls001-orbit',
+      { opacity: 0, scale: 0.4 },
+      { opacity: 1, scale: 1, duration: 1.4, ease: 'back.out(1.4)' }, 0.5);
+
+    /* System ID */
+    tl.to('#ls001-sysid',
+      { opacity: 1, duration: 0.5, ease: 'power2.out' }, 1.4);
+
+    /* Title */
+    tl.fromTo('#ls001-title',
+      { opacity: 0, letterSpacing: '0.3em' },
+      { opacity: 1, letterSpacing: '0.06em', duration: 1, ease: 'power3.out' }, 1.7);
+
+    /* Coordinates */
+    tl.to('#ls001-coords',
+      { opacity: 1, duration: 0.6 }, 2.2);
+
+    /* Log lines stagger in */
+    tl.to('#ls001-log', { opacity: 1, duration: 0.3 }, 2.4);
+    tl.fromTo(['#ls001-l1','#ls001-l2','#ls001-l3','#ls001-l4'],
+      { opacity: 0, x: -10 },
+      { opacity: 1, x: 0, duration: 0.4, stagger: 0.2, ease: 'power2.out' }, 2.5);
+
+    /* Loading line */
+    tl.to('#ls001-loadline',
+      { opacity: 0.7, duration: 0.6 }, 3.2);
+
+    /* Progress bar */
+    tl.to('#ls001-prog-wrap',
+      { opacity: 1, duration: 0.3 }, 3.4);
+    tl.to('#ls001-prog-fill',
+      { width: '100%', duration: 3.0, ease: 'power1.inOut' }, 3.5);
+
+    /* Start log animation */
+    tl.call(() => { animateLog(); }, [], 2.8);
+
+    /* ── Ambient idle loops ── */
+    tl.call(() => {
+
+      /* Planet slow rotation glow */
+      gsap.to('#ls001-planet', {
+        boxShadow: '0 0 60px 18px rgba(126,184,232,0.22), 0 0 100px 35px rgba(20,60,120,0.18), inset 0 0 30px rgba(126,184,232,0.12)',
+        duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Orbital system slow tilt */
+      gsap.to('#ls001-orbit', {
+        rotateZ: 4, duration: 9, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Title subtle pulse */
+      gsap.to('#ls001-title', {
+        textShadow: '0 0 60px rgba(126,184,232,0.55)',
+        duration: 2.8, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* HUD labels flicker */
+      gsap.to('.ls001-hud-label', {
+        opacity: 0.3, duration: 0.08, repeat: 1, yoyo: true,
+        ease: 'none', delay: 4, repeatDelay: 7,
+        stagger: { each: 0.04, repeat: -1, repeatDelay: 9 }
+      });
+
+      /* Corner brackets breathe */
+      gsap.to('.ls001-hud-corner', {
+        opacity: 0.5, duration: 2, repeat: -1, yoyo: true,
+        ease: 'sine.inOut', stagger: 0.4
+      });
+
+    }, [], 2.0);
+  }
+
+  setTimeout(function () { if (!didRun) runEntrance(); }, 300);
+
+  /* ── Cursor parallax ── */
+  document.addEventListener('mousemove', function (ev) {
+    const cx = (ev.clientX / window.innerWidth  - 0.5) * 2;
+    const cy = (ev.clientY / window.innerHeight - 0.5) * 2;
+
+    gsap.to('#ls001-orbit', {
+      x: cx * 14, y: cy * 10,
+      duration: 1.8, ease: 'power2.out', overwrite: 'auto'
+    });
+    gsap.to('#ls001-title', {
+      x: cx * 7, y: cy * 5,
+      duration: 1.3, ease: 'power2.out', overwrite: 'auto'
+    });
+    gsap.to('.ls001-nebula', {
+      x: cx * 22, y: cy * 16,
+      duration: 2.5, ease: 'power2.out'
+    });
+  });
+
+})();
+</script>

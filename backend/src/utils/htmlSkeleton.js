@@ -534,6 +534,7 @@ function getSkeleton() {
   if (document.readyState !== 'loading') GlitchNav.init()
 <\/script>
 
+  
 </body>
 </html>`
 }

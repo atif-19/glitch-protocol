@@ -1,0 +1,727 @@
+<!--
+  Component: hero_art_001
+  Type: hero
+  Aesthetic: Gallery dark
+  Obsession: Art Painting
+  Tone: cinematic, contemplative, electric
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  .hart001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Canvas texture overlay — linen weave */
+  .hart001-linen {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--text) 2.5%, transparent) 0px,
+        color-mix(in srgb, var(--text) 2.5%, transparent) 1px,
+        transparent 1px,
+        transparent 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--text) 1.5%, transparent) 0px,
+        color-mix(in srgb, var(--text) 1.5%, transparent) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+  }
+
+  /* Gallery spot lighting — single overhead beam */
+  .hart001-spotlight {
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(300px, 55vw, 700px);
+    height: 140%;
+    background: radial-gradient(ellipse 55% 60% at 50% 0%,
+      color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 6%, transparent) 35%,
+      transparent 70%
+    );
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Side ambient fills */
+  .hart001-side-left {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 40% 70% at -5% 60%,
+      color-mix(in srgb, var(--primary) 8%, transparent), transparent 65%);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hart001-side-right {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 35% 60% at 105% 35%,
+      color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Paint stroke SVGs layer */
+  .hart001-strokes {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hart001-stroke {
+    position: absolute;
+    opacity: 0;
+  }
+
+  /* Palette knife scrapes — thin diagonal rectangles */
+  .hart001-scrape {
+    position: absolute;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    transform-origin: left center;
+  }
+
+  /* The "canvas" frame — an actual painting border */
+  .hart001-canvas-frame {
+    position: absolute;
+    inset: clamp(1.2rem, 3vw, 3.2rem);
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Frame constructed via box-shadow layering */
+  .hart001-canvas-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    box-shadow:
+      inset 0 0 0 6px color-mix(in srgb, var(--bg) 30%, transparent),
+      inset 0 0 0 7px color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  /* Corner bracket marks — like registration marks */
+  .hart001-canvas-frame::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 1px solid color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+
+  .hart001-frame-corner {
+    position: absolute;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hart001-frame-corner.tl { top: clamp(0.8rem, 2vw, 2rem); left: clamp(0.8rem, 2vw, 2rem); }
+  .hart001-frame-corner.tr { top: clamp(0.8rem, 2vw, 2rem); right: clamp(0.8rem, 2vw, 2rem); transform: scaleX(-1); }
+  .hart001-frame-corner.bl { bottom: clamp(0.8rem, 2vw, 2rem); left: clamp(0.8rem, 2vw, 2rem); transform: scaleY(-1); }
+  .hart001-frame-corner.br { bottom: clamp(0.8rem, 2vw, 2rem); right: clamp(0.8rem, 2vw, 2rem); transform: scale(-1,-1); }
+
+  /* Floating pigment dust */
+  .hart001-dust {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Central content */
+  .hart001-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: clamp(2rem, 5vw, 5rem);
+    max-width: min(800px, 90vw);
+  }
+
+  /* Museum placard label — small brass plate aesthetic */
+  .hart001-placard {
+    display: inline-block;
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding: clamp(0.3rem, 0.8vh, 0.6rem) clamp(0.8rem, 2vw, 1.6rem);
+    margin-bottom: clamp(1rem, 3vh, 2.2rem);
+    opacity: 0;
+    position: relative;
+  }
+  .hart001-placard::before,
+  .hart001-placard::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 50%, transparent);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .hart001-placard::before { left: -3px; }
+  .hart001-placard::after { right: -3px; }
+
+  .hart001-placard-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.55rem, 1vw, 0.72rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Title — big expressive type */
+  .hart001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 8.5vw, 9rem);
+    line-height: 0.88;
+    color: var(--text);
+    margin: 0;
+    opacity: 0;
+    position: relative;
+  }
+
+  /* Accent word — painted look with slight skew */
+  .hart001-accent-word {
+    display: block;
+    color: var(--accent);
+    font-style: italic;
+    transform: skewX(-2deg);
+    display: inline-block;
+    position: relative;
+  }
+
+  /* Paint dab under accent word */
+  .hart001-paint-dab {
+    position: absolute;
+    bottom: 2px;
+    left: -4px;
+    right: -4px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  /* Medium / year credit line */
+  .hart001-medium {
+    font-family: var(--font-body);
+    font-size: clamp(0.65rem, 1.1vw, 0.82rem);
+    letter-spacing: 0.18em;
+    font-style: italic;
+    color: color-mix(in srgb, var(--text) 38%, transparent);
+    margin: clamp(0.6rem, 1.5vh, 1.2rem) 0 0;
+    opacity: 0;
+  }
+
+  /* Rule divider — impasto stroke look */
+  .hart001-rule-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.2vw, 1.2rem);
+    margin: clamp(1.2rem, 3.5vh, 2.8rem) 0;
+    opacity: 0;
+  }
+  .hart001-rule-line {
+    height: 1px;
+    width: clamp(40px, 9vw, 100px);
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+  .hart001-rule-cross {
+    position: relative;
+    width: 10px;
+    height: 10px;
+  }
+  .hart001-rule-cross::before,
+  .hart001-rule-cross::after {
+    content: '';
+    position: absolute;
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+    border-radius: 1px;
+  }
+  .hart001-rule-cross::before { width: 10px; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+  .hart001-rule-cross::after { width: 1px; height: 10px; left: 50%; top: 0; transform: translateX(-50%); }
+
+  .hart001-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+    font-style: italic;
+    color: color-mix(in srgb, var(--text) 55%, transparent);
+    line-height: 1.65;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .hart001-recipient {
+    font-family: var(--font-body);
+    font-size: clamp(0.6rem, 1.1vw, 0.78rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 32%, transparent);
+    margin-top: clamp(1.8rem, 4.5vh, 3.5rem);
+    opacity: 0;
+  }
+
+  /* Cursor — tiny crosshair palette */
+  .hart001-cursor-dot {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 99;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+    mix-blend-mode: screen;
+  }
+  .hart001-cursor-ring {
+    position: fixed;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 68%);
+    pointer-events: none;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Vertical side labels — like gallery wall text */
+  .hart001-wall-label {
+    position: absolute;
+    z-index: 6;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hart001-wall-label-left {
+    left: clamp(1rem, 2vw, 2rem);
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center;
+  }
+  .hart001-wall-label-right {
+    right: clamp(1rem, 2vw, 2rem);
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: center;
+  }
+  .hart001-wall-label span {
+    font-family: var(--font-body);
+    font-size: clamp(0.5rem, 0.85vw, 0.65rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 20%, transparent);
+    white-space: nowrap;
+  }
+</style>
+<!-- Cursor -->
+<div class="hart001-cursor-dot" id="hart001-cdot"></div>
+<div class="hart001-cursor-ring" id="hart001-cring"></div>
+<div class="hart001-root" id="hart001-root">
+  <!-- Atmosphere -->
+  <div class="hart001-spotlight" id="hart001-spotlight"></div>
+  <div class="hart001-side-left"></div>
+  <div class="hart001-side-right"></div>
+  <div class="hart001-linen"></div>
+  <!-- Paint strokes layer (SVG injected by JS) -->
+  <div class="hart001-strokes" id="hart001-strokes"></div>
+  <!-- Palette knife scrapes (injected by JS) -->
+  <!-- Frame -->
+  <div class="hart001-canvas-frame" id="hart001-cf"></div>
+  <!-- Frame corners -->
+  <svg class="hart001-frame-corner tl" id="hart001-fctl" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 47 L1 1 L47 1" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.55"/>
+    <path d="M1 16 L1 1 L16 1" stroke="var(--accent)" stroke-width="1.8"/>
+    <rect x="0" y="0" width="3" height="3" fill="var(--accent)" opacity="0.7"/>
+    <line x1="1" y1="26" x2="8" y2="26" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+    <line x1="26" y1="1" x2="26" y2="8" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+  </svg>
+  <svg class="hart001-frame-corner tr" id="hart001-fctr" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 47 L1 1 L47 1" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.55"/>
+    <path d="M1 16 L1 1 L16 1" stroke="var(--accent)" stroke-width="1.8"/>
+    <rect x="0" y="0" width="3" height="3" fill="var(--accent)" opacity="0.7"/>
+    <line x1="1" y1="26" x2="8" y2="26" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+    <line x1="26" y1="1" x2="26" y2="8" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+  </svg>
+  <svg class="hart001-frame-corner bl" id="hart001-fcbl" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 47 L1 1 L47 1" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.55"/>
+    <path d="M1 16 L1 1 L16 1" stroke="var(--accent)" stroke-width="1.8"/>
+    <rect x="0" y="0" width="3" height="3" fill="var(--accent)" opacity="0.7"/>
+    <line x1="1" y1="26" x2="8" y2="26" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+    <line x1="26" y1="1" x2="26" y2="8" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+  </svg>
+  <svg class="hart001-frame-corner br" id="hart001-fcbr" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 47 L1 1 L47 1" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.55"/>
+    <path d="M1 16 L1 1 L16 1" stroke="var(--accent)" stroke-width="1.8"/>
+    <rect x="0" y="0" width="3" height="3" fill="var(--accent)" opacity="0.7"/>
+    <line x1="1" y1="26" x2="8" y2="26" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+    <line x1="26" y1="1" x2="26" y2="8" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.35"/>
+  </svg>
+  <!-- Gallery wall labels -->
+  <div class="hart001-wall-label hart001-wall-label-left" id="hart001-wll">
+    <span>Oil on canvas &nbsp;·&nbsp; Mixed media &nbsp;·&nbsp; Original work</span>
+  </div>
+  <div class="hart001-wall-label hart001-wall-label-right" id="hart001-wlr">
+    <span>Not for sale &nbsp;·&nbsp; Private collection &nbsp;·&nbsp; One of one</span>
+  </div>
+  <!-- Pigment dust (injected by JS) -->
+  <!-- Content -->
+  <div class="hart001-content" id="hart001-content">
+<div class="hart001-placard" id="hart001-placard">
+  <span class="hart001-placard-text">Gallery &nbsp;I &nbsp;·&nbsp; Hall of the Devoted</span>
+</div>
+
+<h1 class="hart001-title" id="hart001-title">
+  <span class="hart001-accent-word" id="hart001-accent">
+    --ACCENT_WORD--
+    <span class="hart001-paint-dab" id="hart001-dab"></span>
+  </span>
+  <br>--TITLE--
+</h1>
+
+<p class="hart001-medium" id="hart001-medium">--SUBTITLE-- &nbsp;·&nbsp; a singular work</p>
+
+<div class="hart001-rule-wrap" id="hart001-rule">
+  <div class="hart001-rule-line"></div>
+  <div class="hart001-rule-cross"></div>
+  <div class="hart001-rule-line"></div>
+</div>
+
+<p class="hart001-subtitle" id="hart001-subtitle">--SUBTITLE--</p>
+
+<p class="hart001-recipient" id="hart001-recipient">dedicated to &nbsp;—&nbsp; --RECIPIENT_NAME--</p></div>
+</div>
+<script>
+(function() {
+
+  // --- Custom cursor ---
+  var cdot = document.getElementById('hart001-cdot');
+  var cring = document.getElementById('hart001-cring');
+  var mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+    cdot.style.left = mx + 'px';
+    cdot.style.top = my + 'px';
+    gsap.to(cring, { left: mx, top: my, duration: 0.55, ease: 'power2.out' });
+  });
+
+  // --- Build paint brush strokes (organic SVG paths) ---
+  var strokesLayer = document.getElementById('hart001-strokes');
+  var root = document.getElementById('hart001-root');
+
+  var strokeDefs = [
+    // [x%, y%, width, height, rotation, opacity-max, color-mix-amount]
+    { x: 2,  y: 18, w: 220, h: 18, rot: -8,  op: 0.18, cm: 25 },
+    { x: 72, y: 8,  w: 160, h: 14, rot: 14,  op: 0.14, cm: 20 },
+    { x: 5,  y: 72, w: 180, h: 12, rot: 6,   op: 0.12, cm: 18 },
+    { x: 68, y: 80, w: 200, h: 16, rot: -12, op: 0.16, cm: 22 },
+    { x: 40, y: 5,  w: 120, h: 8,  rot: 2,   op: 0.10, cm: 15 },
+    { x: 15, y: 88, w: 140, h: 10, rot: -4,  op: 0.11, cm: 16 },
+    { x: 78, y: 50, w: 100, h: 7,  rot: 18,  op: 0.09, cm: 14 },
+    { x: 0,  y: 45, w: 80,  h: 6,  rot: -22, op: 0.08, cm: 12 },
+    { x: 55, y: 92, w: 160, h: 9,  rot: 5,   op: 0.10, cm: 14 },
+    { x: 82, y: 25, w: 90,  h: 8,  rot: -9,  op: 0.09, cm: 13 },
+  ];
+
+  var strokeEls = [];
+  strokeDefs.forEach(function(def, i) {
+    var el = document.createElement('div');
+    el.className = 'hart001-stroke';
+    el.id = 'hart001-stroke-' + i;
+    // Organic brush stroke path using CSS clip-path
+    var cp = 'polygon(' +
+      '0% 40%, 8% 10%, 20% 0%, 50% 5%, 80% 0%, 95% 15%, 100% 45%, ' +
+      '95% 75%, 78% 100%, 50% 90%, 22% 100%, 6% 80%, 0% 60%' +
+    ')';
+    el.style.cssText = [
+      'left:' + def.x + '%',
+      'top:' + def.y + '%',
+      'width:' + def.w + 'px',
+      'height:' + def.h + 'px',
+      'transform:rotate(' + def.rot + 'deg)',
+      'background:color-mix(in srgb,var(--accent) ' + def.cm + '%,var(--primary) ' + Math.floor(def.cm * 0.6) + '%)',
+      'clip-path:' + cp,
+      'position:absolute',
+      'opacity:0'
+    ].join(';');
+    strokesLayer.appendChild(el);
+    strokeEls.push({ el: el, op: def.op });
+  });
+
+  // --- Palette knife scrapes ---
+  var scrapeData = [
+    { left: '8%',  top: '30%', width: 90,  rot: -35, op: 0.22 },
+    { left: '85%', top: '55%', width: 70,  rot: 50,  op: 0.18 },
+    { left: '20%', top: '82%', width: 55,  rot: -15, op: 0.16 },
+    { left: '60%', top: '15%', width: 80,  rot: 28,  op: 0.20 },
+    { left: '48%', top: '88%', width: 45,  rot: -42, op: 0.14 },
+    { left: '92%', top: '72%', width: 60,  rot: 10,  op: 0.15 },
+    { left: '3%',  top: '62%', width: 50,  rot: 65,  op: 0.13 },
+  ];
+  var scrapeEls = [];
+  scrapeData.forEach(function(d, i) {
+    var s = document.createElement('div');
+    s.className = 'hart001-scrape';
+    s.id = 'hart001-scrape-' + i;
+    s.style.cssText = [
+      'left:' + d.left,
+      'top:' + d.top,
+      'width:' + d.width + 'px',
+      'transform:rotate(' + d.rot + 'deg)',
+      'opacity:0'
+    ].join(';');
+    root.appendChild(s);
+    scrapeEls.push({ el: s, op: d.op });
+  });
+
+  // --- Pigment dust particles ---
+  var dustColors = ['var(--accent)', 'var(--primary)', 'var(--text)'];
+  var dustEls = [];
+  for (var i = 0; i < 30; i++) {
+    var d = document.createElement('div');
+    d.className = 'hart001-dust';
+    var sz = Math.random() * 4 + 1.5;
+    var col = dustColors[Math.floor(Math.random() * dustColors.length)];
+    d.style.cssText = [
+      'width:' + sz + 'px',
+      'height:' + sz + 'px',
+      'left:' + (Math.random() * 100) + '%',
+      'top:' + (Math.random() * 100) + '%',
+      'background:' + col,
+      'opacity:0',
+      'position:absolute',
+      'z-index:2'
+    ].join(';');
+    root.appendChild(d);
+    dustEls.push(d);
+  }
+
+  // --------------------------------------------------
+  // GSAP — glitch:enter index 1
+  // --------------------------------------------------
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 1) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // 1. Spotlight blooms from top like a gallery fixture flicking on
+    tl.fromTo('#hart001-spotlight', {
+      scaleY: 0, transformOrigin: 'top center', opacity: 0
+    }, {
+      scaleY: 1, opacity: 1, duration: 1.6, ease: 'expo.out'
+    }, 0);
+
+    // 2. Brush strokes smear in — staggered fast
+    strokeEls.forEach(function(obj, i) {
+      tl.fromTo(obj.el, {
+        scaleX: 0, transformOrigin: 'left center', opacity: 0
+      }, {
+        scaleX: 1, opacity: obj.op, duration: 0.6 + Math.random() * 0.4,
+        ease: 'power2.out', delay: i * 0.05
+      }, 0.3);
+    });
+
+    // 3. Knife scrapes slash in
+    scrapeEls.forEach(function(obj, i) {
+      tl.fromTo(obj.el, {
+        scaleX: 0, transformOrigin: 'left center', opacity: 0
+      }, {
+        scaleX: 1, opacity: obj.op, duration: 0.3,
+        ease: 'power4.out', delay: i * 0.07
+      }, 0.5);
+    });
+
+    // 4. Canvas frame materialises
+    tl.fromTo('#hart001-cf', {
+      opacity: 0, scale: 0.96
+    }, {
+      opacity: 1, scale: 1, duration: 1.2, ease: 'expo.out'
+    }, 0.4);
+
+    // 5. Corner ticks draw
+    tl.to(['#hart001-fctl','#hart001-fctr','#hart001-fcbl','#hart001-fcbr'], {
+      opacity: 1, duration: 0.8, stagger: 0.09
+    }, 0.5);
+
+    // 6. Dust particles emerge
+    dustEls.forEach(function(d, i) {
+      tl.to(d, {
+        opacity: Math.random() * 0.38 + 0.05,
+        duration: 1.2,
+        delay: i * 0.04,
+        ease: 'power1.out'
+      }, 0.6);
+    });
+
+    // 7. Wall labels slide in
+    tl.fromTo('#hart001-wll', {
+      opacity: 0, x: -12
+    }, {
+      opacity: 1, x: 0, duration: 1.2
+    }, 1);
+    tl.fromTo('#hart001-wlr', {
+      opacity: 0, x: 12
+    }, {
+      opacity: 1, x: 0, duration: 1.2
+    }, 1.1);
+
+    // 8. Museum placard rises
+    tl.fromTo('#hart001-placard', {
+      opacity: 0, y: 10, scale: 0.9
+    }, {
+      opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'back.out(1.5)'
+    }, 0.9);
+
+    // 9. Title slams up with weight
+    tl.fromTo('#hart001-title', {
+      opacity: 0, y: 60, skewY: 2
+    }, {
+      opacity: 1, y: 0, skewY: 0, duration: 1.1, ease: 'expo.out'
+    }, 1.05);
+
+    // 10. Paint dab under accent word draws
+    tl.fromTo('#hart001-dab', {
+      scaleX: 0, opacity: 0, transformOrigin: 'left center'
+    }, {
+      scaleX: 1, opacity: 0.65, duration: 0.9, ease: 'power3.inOut'
+    }, 1.4);
+
+    // 11. Medium / year
+    tl.fromTo('#hart001-medium', {
+      opacity: 0, y: 8
+    }, {
+      opacity: 1, y: 0, duration: 0.9
+    }, 1.5);
+
+    // 12. Rule divider expands
+    tl.fromTo('#hart001-rule', {
+      opacity: 0, scaleX: 0.2
+    }, {
+      opacity: 1, scaleX: 1, duration: 0.9, ease: 'expo.out'
+    }, 1.6);
+
+    // 13. Subtitle
+    tl.fromTo('#hart001-subtitle', {
+      opacity: 0, y: 14
+    }, {
+      opacity: 1, y: 0, duration: 1
+    }, 1.75);
+
+    // 14. Recipient
+    tl.fromTo('#hart001-recipient', {
+      opacity: 0
+    }, {
+      opacity: 1, duration: 1.1
+    }, 2);
+
+    // --------------------------------
+    // AMBIENT IDLE ANIMATIONS
+    // --------------------------------
+
+    // Spotlight breathes — like bulb warmup
+    gsap.to('#hart001-spotlight', {
+      opacity: 0.75, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.8
+    });
+
+    // Title levitates imperceptibly
+    gsap.to('#hart001-title', {
+      y: -6, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2.2
+    });
+
+    // Brush strokes breathe in opacity — painting feels alive
+    strokeEls.forEach(function(obj, i) {
+      gsap.to(obj.el, {
+        opacity: obj.op * (0.5 + Math.random() * 0.7),
+        duration: 3 + Math.random() * 3,
+        repeat: -1, yoyo: true, ease: 'sine.inOut',
+        delay: Math.random() * 2
+      });
+    });
+
+    // Scrapes shimmer
+    scrapeEls.forEach(function(obj, i) {
+      gsap.to(obj.el, {
+        opacity: obj.op * (0.4 + Math.random() * 0.8),
+        duration: 2.5 + Math.random() * 2,
+        repeat: -1, yoyo: true, ease: 'sine.inOut',
+        delay: Math.random() * 1.5
+      });
+    });
+
+    // Dust motes drift
+    dustEls.forEach(function(d) {
+      gsap.to(d, {
+        x: (Math.random() - 0.5) * 40,
+        y: (Math.random() - 0.5) * 50,
+        opacity: Math.random() * 0.35 + 0.04,
+        duration: 5 + Math.random() * 5,
+        repeat: -1, yoyo: true, ease: 'sine.inOut',
+        delay: Math.random() * 3
+      });
+    });
+
+    // Paint dab pulse under accent word
+    gsap.to('#hart001-dab', {
+      opacity: 0.3, scaleX: 0.85, duration: 2.8,
+      repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2, transformOrigin: 'left center'
+    });
+
+    // Wall labels slow fade in-out
+    gsap.to(['#hart001-wll', '#hart001-wlr'], {
+      opacity: 0.6, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2.5, stagger: 0.5
+    });
+
+    // Placard micro-pulse
+    gsap.to('#hart001-placard', {
+      scale: 1.015, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2
+    });
+
+  });
+
+  // --- Mouse parallax ---
+  document.getElementById('hart001-root').addEventListener('mousemove', function(e) {
+    var rx = e.clientX / window.innerWidth - 0.5;
+    var ry = e.clientY / window.innerHeight - 0.5;
+    gsap.to('#hart001-content', { x: rx * 18, y: ry * 11, duration: 1.2, ease: 'power1.out' });
+    gsap.to('#hart001-strokes', { x: rx * -30, y: ry * -18, duration: 1.6, ease: 'power1.out' });
+    gsap.to('#hart001-spotlight', { x: rx * 25, duration: 2, ease: 'power1.out' });
+    gsap.to('.hart001-side-left, .hart001-side-right', { x: rx * 20, y: ry * 15, duration: 2, ease: 'power1.out' });
+  });
+
+  // --- Title hover — paint flick effect ---
+  document.getElementById('hart001-title').addEventListener('mouseenter', function() {
+    gsap.to('#hart001-accent', { skewX: -5, duration: 0.3, ease: 'power2.out' });
+    gsap.to('#hart001-dab', { scaleX: 1.15, opacity: 0.9, duration: 0.3 });
+  });
+  document.getElementById('hart001-title').addEventListener('mouseleave', function() {
+    gsap.to('#hart001-accent', { skewX: -2, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+    gsap.to('#hart001-dab', { scaleX: 1, opacity: 0.65, duration: 0.4 });
+  });
+
+})();
+</script>

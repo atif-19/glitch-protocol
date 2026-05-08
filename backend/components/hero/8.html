@@ -1,0 +1,664 @@
+<!--
+  Component: hero_anime_001
+  Type: hero
+  Aesthetic: Cinematic
+  Obsession: manga
+  Tone: dramatic, intimate, ethereal
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  #hero-anime-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: pointer;
+  }
+
+  #hero-anime-001 .ha1-ink-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  #hero-anime-001 .ha1-speed-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200vmax;
+    height: 1px;
+    transform-origin: left center;
+    background: linear-gradient(90deg, transparent 0%, var(--primary) 60%, transparent 100%);
+    opacity: 0;
+  }
+
+  #hero-anime-001 .ha1-halftone {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, var(--primary) 1px, transparent 1px);
+    background-size: clamp(18px, 3vw, 32px) clamp(18px, 3vw, 32px);
+    opacity: 0.04;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #hero-anime-001 .ha1-panel-border {
+    position: absolute;
+    inset: clamp(10px, 2vw, 24px);
+    border: 1px solid var(--primary);
+    opacity: 0.12;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #hero-anime-001 .ha1-panel-inner {
+    position: absolute;
+    inset: clamp(16px, 3vw, 36px);
+    border: 1px solid var(--accent);
+    opacity: 0.07;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #hero-anime-001 .ha1-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 35%, var(--bg) 90%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  #hero-anime-001 .ha1-ink-wash {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 80%, var(--primary) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 20%, var(--accent) 0%, transparent 55%);
+    opacity: 0.07;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #hero-anime-001 .ha1-sakura {
+    position: absolute;
+    z-index: 4;
+    pointer-events: none;
+    font-size: clamp(10px, 1.4vw, 18px);
+    opacity: 0;
+    color: var(--accent);
+    user-select: none;
+  }
+
+  #hero-anime-001 .ha1-chapter-tag {
+    position: absolute;
+    top: clamp(20px, 3.5vw, 44px);
+    left: clamp(20px, 3.5vw, 44px);
+    z-index: 12;
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 1vw, 12px);
+    opacity: 0;
+  }
+
+  #hero-anime-001 .ha1-chapter-box {
+    background: var(--primary);
+    color: var(--bg);
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: clamp(2px, 0.5vw, 6px);
+    text-transform: uppercase;
+    padding: clamp(4px, 0.6vh, 7px) clamp(8px, 1.2vw, 14px);
+    font-weight: 900;
+  }
+
+  #hero-anime-001 .ha1-chapter-num {
+    font-family: var(--font-heading);
+    font-size: clamp(10px, 1.2vw, 14px);
+    color: var(--primary);
+    opacity: 0.5;
+    letter-spacing: clamp(2px, 0.4vw, 5px);
+  }
+
+  #hero-anime-001 .ha1-vol-tag {
+    position: absolute;
+    top: clamp(20px, 3.5vw, 44px);
+    right: clamp(20px, 3.5vw, 44px);
+    z-index: 12;
+    opacity: 0;
+    writing-mode: vertical-rl;
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: clamp(3px, 0.6vw, 7px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0;
+  }
+
+  #hero-anime-001 .ha1-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: clamp(16px, 4vw, 60px);
+    max-width: clamp(300px, 82vw, 960px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #hero-anime-001 .ha1-overline {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 24px);
+    margin-bottom: clamp(14px, 3vh, 30px);
+    opacity: 0;
+  }
+
+  #hero-anime-001 .ha1-overline-rule {
+    flex: 1;
+    max-width: clamp(28px, 6vw, 80px);
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+
+  #hero-anime-001 .ha1-overline-text {
+    font-family: var(--font-body);
+    font-size: clamp(8px, 0.85vw, 11px);
+    letter-spacing: clamp(5px, 1.2vw, 14px);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  #hero-anime-001 .ha1-name-stage {
+    position: relative;
+    margin-bottom: clamp(10px, 2.5vh, 26px);
+    overflow: visible;
+  }
+
+  #hero-anime-001 .ha1-name-shadow {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: clamp(56px, 12vw, 176px);
+    font-weight: 900;
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--primary);
+    opacity: 0;
+    transform: translate(clamp(3px, 0.5vw, 8px), clamp(3px, 0.5vw, 8px));
+    pointer-events: none;
+    white-space: nowrap;
+    filter: blur(1px);
+  }
+
+  #hero-anime-001 .ha1-name {
+    font-family: var(--font-heading);
+    font-size: clamp(56px, 12vw, 176px);
+    font-weight: 900;
+    line-height: 0.85;
+    color: var(--text);
+    display: block;
+    position: relative;
+    white-space: nowrap;
+    opacity: 0;
+    letter-spacing: -0.02em;
+  }
+
+  #hero-anime-001 .ha1-name-underline {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: clamp(2px, 0.35vw, 4px);
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--primary));
+    border-radius: 2px;
+  }
+
+  #hero-anime-001 .ha1-impact-lines {
+    position: absolute;
+    inset: -20% -15%;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  #hero-anime-001 .ha1-impact-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 1px;
+    transform-origin: left center;
+    background: linear-gradient(90deg, transparent, var(--accent));
+    opacity: 0.5;
+  }
+
+  #hero-anime-001 .ha1-title-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 2vw, 22px);
+    margin-bottom: clamp(12px, 2.5vh, 26px);
+    opacity: 0;
+  }
+
+  #hero-anime-001 .ha1-title-rule {
+    flex: 1;
+    max-width: clamp(24px, 5vw, 70px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary));
+  }
+
+  #hero-anime-001 .ha1-title-rule.right {
+    background: linear-gradient(90deg, var(--primary), transparent);
+  }
+
+  #hero-anime-001 .ha1-title {
+    font-family: var(--font-heading);
+    font-size: clamp(12px, 1.8vw, 24px);
+    color: var(--primary);
+    letter-spacing: clamp(3px, 0.6vw, 8px);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  #hero-anime-001 .ha1-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(12px, 1.5vw, 19px);
+    color: var(--text);
+    opacity: 0;
+    line-height: 1.7;
+    max-width: clamp(260px, 52vw, 580px);
+    margin-bottom: clamp(22px, 5vh, 50px);
+  }
+
+  #hero-anime-001 .ha1-accent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 20px);
+    opacity: 0;
+    position: relative;
+  }
+
+  #hero-anime-001 .ha1-accent-diamond {
+    width: clamp(6px, 0.8vw, 10px);
+    height: clamp(6px, 0.8vw, 10px);
+    background: var(--accent);
+    transform: rotate(45deg);
+    box-shadow: 0 0 clamp(8px, 1.5vw, 18px) var(--accent);
+    flex-shrink: 0;
+  }
+
+  #hero-anime-001 .ha1-accent-word {
+    font-family: var(--font-heading);
+    font-size: clamp(14px, 1.8vw, 22px);
+    color: var(--accent);
+    letter-spacing: clamp(4px, 0.8vw, 10px);
+    text-transform: uppercase;
+  }
+
+  #hero-anime-001 .ha1-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: clamp(3px, 0.4vh, 5px);
+    background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+    opacity: 0;
+    z-index: 12;
+  }
+
+  #hero-anime-001 .ha1-cta {
+    position: absolute;
+    bottom: clamp(24px, 5.5vh, 52px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(5px, 1vh, 10px);
+    opacity: 0;
+  }
+
+  #hero-anime-001 .ha1-cta-label {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.85vw, 10px);
+    letter-spacing: clamp(4px, 0.9vw, 10px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.3;
+  }
+
+  #hero-anime-001 .ha1-cta-chevron {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(2px, 0.4vh, 5px);
+  }
+
+  #hero-anime-001 .ha1-chevron {
+    width: clamp(8px, 1.2vw, 14px);
+    height: clamp(8px, 1.2vw, 14px);
+    border-right: 1px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
+    transform: rotate(45deg);
+    opacity: 0.5;
+  }
+
+  #hero-anime-001 .ha1-screen-flash {
+    position: absolute;
+    inset: 0;
+    background: var(--text);
+    opacity: 0;
+    z-index: 20;
+    pointer-events: none;
+  }
+</style>
+<section id="hero-anime-001">
+  <div class="ha1-ink-bg" id="ha1-speedlines-container"></div>
+  <div class="ha1-halftone"></div>
+  <div class="ha1-ink-wash"></div>
+  <div class="ha1-panel-border"></div>
+  <div class="ha1-panel-inner"></div>
+  <div class="ha1-vignette"></div>
+  <div class="ha1-screen-flash" id="ha1-flash"></div>
+  <div class="ha1-chapter-tag" id="ha1-chapter-tag">
+    <div class="ha1-chapter-box">Chapter</div>
+    <span class="ha1-chapter-num">001</span>
+  </div>
+  <div class="ha1-vol-tag" id="ha1-vol-tag">--TITLE--</div>
+  <div class="ha1-content">
+    <div class="ha1-overline" id="ha1-overline">
+      <span class="ha1-overline-rule"></span>
+      <span class="ha1-overline-text">--TITLE--</span>
+      <span class="ha1-overline-rule"></span>
+    </div><div class="ha1-name-stage">
+  <div class="ha1-impact-lines" id="ha1-impact-lines">
+  </div>
+  <span class="ha1-name-shadow">--RECIPIENT_NAME--</span>
+  <span class="ha1-name" id="ha1-name">--RECIPIENT_NAME--</span>
+  <div class="ha1-name-underline" id="ha1-name-underline"></div>
+</div>
+
+<div class="ha1-title-block" id="ha1-title-block">
+  <span class="ha1-title-rule"></span>
+  <span class="ha1-title">--SUBTITLE--</span>
+  <span class="ha1-title-rule right"></span>
+</div>
+
+<p class="ha1-subtitle" id="ha1-subtitle">--SUBTITLE--</p>
+
+<div class="ha1-accent-badge" id="ha1-accent-badge">
+  <div class="ha1-accent-diamond"></div>
+  <span class="ha1-accent-word">--ACCENT_WORD--</span>
+  <div class="ha1-accent-diamond"></div>
+</div></div>
+  <div class="ha1-bottom-bar" id="ha1-bottom-bar"></div>
+  <div class="ha1-cta" id="ha1-cta">
+    <span class="ha1-cta-label">Next Page</span>
+    <div class="ha1-cta-chevron">
+      <div class="ha1-chevron" style="opacity:0.6"></div>
+      <div class="ha1-chevron" style="opacity:0.3"></div>
+    </div>
+  </div>
+</section>
+<script>
+(function () {
+  function buildImpactLines() {
+    const container = document.getElementById('ha1-impact-lines');
+    if (!container) return;
+    const count = 20;
+    for (let i = 0; i < count; i++) {
+      const line = document.createElement('div');
+      line.className = 'ha1-impact-line';
+      const angle = (i / count) * 360;
+      line.style.transform = `rotate(${angle}deg)`;
+      line.style.width = (35 + Math.random() * 30) + '%';
+      line.style.opacity = (0.2 + Math.random() * 0.4).toString();
+      container.appendChild(line);
+    }
+  }
+
+  function buildSpeedLines() {
+    const container = document.getElementById('ha1-speedlines-container');
+    if (!container) return;
+    const count = 24;
+    for (let i = 0; i < count; i++) {
+      const line = document.createElement('div');
+      line.className = 'ha1-speed-line';
+      const angle = -8 + (i / count) * 16;
+      line.style.transform = `translateY(-50%) rotate(${angle}deg)`;
+      line.style.opacity = '0';
+      line.style.width = (60 + Math.random() * 80) + 'vmax';
+      container.appendChild(line);
+    }
+  }
+
+  function buildSakura() {
+    const section = document.getElementById('hero-anime-001');
+    const symbols = ['✿', '❀', '✾', '⊹', '✦', '◈'];
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('div');
+      el.className = 'ha1-sakura';
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.left = Math.random() * 100 + '%';
+      el.style.top = Math.random() * 100 + '%';
+      el.style.opacity = '0';
+      section.appendChild(el);
+    }
+  }
+
+  buildImpactLines();
+  buildSpeedLines();
+  buildSakura();
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 1) return;
+
+    const section = document.getElementById('hero-anime-001');
+    const flash = document.getElementById('ha1-flash');
+    const speedLines = section.querySelectorAll('.ha1-speed-line');
+    const impactLines = document.getElementById('ha1-impact-lines');
+    const nameEl = document.getElementById('ha1-name');
+    const nameShadow = section.querySelector('.ha1-name-shadow');
+    const nameUnderline = document.getElementById('ha1-name-underline');
+    const overline = document.getElementById('ha1-overline');
+    const titleBlock = document.getElementById('ha1-title-block');
+    const subtitle = document.getElementById('ha1-subtitle');
+    const badge = document.getElementById('ha1-accent-badge');
+    const chapterTag = document.getElementById('ha1-chapter-tag');
+    const volTag = document.getElementById('ha1-vol-tag');
+    const bottomBar = document.getElementById('ha1-bottom-bar');
+    const cta = document.getElementById('ha1-cta');
+    const sakura = section.querySelectorAll('.ha1-sakura');
+    const panelBorder = section.querySelector('.ha1-panel-border');
+    const panelInner = section.querySelector('.ha1-panel-inner');
+
+    const tl = gsap.timeline();
+
+    // 1. ENTRANCE — manga panel reveal
+    // Flash
+    tl.to(flash, { opacity: 0.9, duration: 0.06, ease: 'none' }, 0)
+      .to(flash, { opacity: 0, duration: 0.18, ease: 'power2.out' }, 0.06)
+
+    // Speed lines burst
+      .fromTo(speedLines,
+        { opacity: 0, scaleX: 0 },
+        {
+          opacity: () => 0.04 + Math.random() * 0.1,
+          scaleX: 1,
+          duration: 0.35,
+          stagger: { each: 0.01, from: 'center' },
+          ease: 'power3.out',
+          transformOrigin: 'left center'
+        }, 0.08)
+      .to(speedLines, { opacity: 0, duration: 0.5, ease: 'power2.in', stagger: 0.01 }, 0.5)
+
+    // Panel borders draw in
+      .fromTo([panelBorder, panelInner],
+        { opacity: 0, scale: 1.04 },
+        { opacity: (i) => i === 0 ? 0.12 : 0.07, scale: 1, duration: 0.6, ease: 'power3.out', stagger: 0.1 }, 0.15)
+
+    // Chapter tag
+      .to(chapterTag, { opacity: 1, x: 0, duration: 0.4, ease: 'power3.out' }, 0.3)
+      .to(volTag, { opacity: 0.25, duration: 0.4, ease: 'power2.out' }, 0.45)
+
+    // Impact lines flash then name smash in
+      .set(impactLines, { opacity: 1 }, 0.55)
+      .fromTo(nameEl,
+        { opacity: 0, scale: 1.18, y: clamp(10, 2, 20) },
+        { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: 'expo.out' }, 0.58)
+      .fromTo(nameShadow,
+        { opacity: 0 },
+        { opacity: 0.4, duration: 0.4, ease: 'power2.out' }, 0.72)
+      .to(impactLines, { opacity: 0, duration: 0.4, ease: 'power2.out' }, 0.85)
+
+    // Underline sweep
+      .to(nameUnderline, { width: '100%', duration: 0.55, ease: 'expo.out' }, 0.9)
+
+    // Overline
+      .fromTo(overline,
+        { opacity: 0, y: -8 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }, 1.05)
+
+    // Title
+      .fromTo(titleBlock,
+        { opacity: 0, scaleX: 0.9 },
+        { opacity: 1, scaleX: 1, duration: 0.45, ease: 'back.out(1.6)' }, 1.2)
+
+    // Subtitle
+      .fromTo(subtitle,
+        { opacity: 0, y: 10 },
+        { opacity: 0.55, y: 0, duration: 0.5, ease: 'power2.out' }, 1.35)
+
+    // Badge
+      .fromTo(badge,
+        { opacity: 0, scale: 0.85 },
+        { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(2)' }, 1.52)
+
+    // Bottom bar
+      .fromTo(bottomBar,
+        { opacity: 0, scaleX: 0 },
+        { opacity: 1, scaleX: 1, duration: 0.6, ease: 'power3.out', transformOrigin: 'left center' }, 1.6)
+
+    // Sakura scatter
+      .to(sakura, {
+        opacity: () => 0.15 + Math.random() * 0.35,
+        duration: 0.3,
+        stagger: { each: 0.05, from: 'random' },
+        ease: 'power2.out'
+      }, 1.0)
+
+    // CTA
+      .fromTo(cta,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.85);
+
+    // 2. AMBIENT LOOP
+    gsap.to(nameShadow, {
+      x: clamp(6, 2, 10), y: clamp(6, 2, 10),
+      opacity: 0.15,
+      duration: 2.8, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2
+    });
+
+    gsap.to(section.querySelector('.ha1-ink-wash'), {
+      opacity: 0.12, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1
+    });
+
+    // Diamond pulse
+    section.querySelectorAll('.ha1-accent-diamond').forEach((d, i) => {
+      gsap.to(d, {
+        scale: 1.5, opacity: 0.4, boxShadow: '0 0 20px var(--accent)',
+        duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.3 + 2
+      });
+    });
+
+    // Sakura ambient float
+    sakura.forEach((s, i) => {
+      gsap.to(s, {
+        y: () => (Math.random() - 0.5) * 30,
+        x: () => (Math.random() - 0.5) * 15,
+        rotation: () => (Math.random() - 0.5) * 20,
+        opacity: () => 0.08 + Math.random() * 0.25,
+        duration: 3 + Math.random() * 3,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: Math.random() * 2
+      });
+    });
+
+    // CTA chevron cascade
+    const chevrons = section.querySelectorAll('.ha1-chevron');
+    chevrons.forEach((c, i) => {
+      gsap.to(c, {
+        y: clamp(4, 2, 6), opacity: i === 0 ? 1 : 0.5,
+        duration: 0.6, ease: 'sine.inOut', yoyo: true, repeat: -1,
+        delay: i * 0.15 + 2.2
+      });
+    });
+
+    // Bottom bar shimmer
+    gsap.to(bottomBar, {
+      backgroundPosition: '200% center',
+      duration: 3, ease: 'linear', repeat: -1, delay: 2
+    });
+    bottomBar.style.backgroundSize = '200% auto';
+
+    // 3. PERIODIC IMPACT FLASH
+    function scheduleImpact() {
+      gsap.delayedCall(4 + Math.random() * 5, function () {
+        const impTl = gsap.timeline({ onComplete: scheduleImpact });
+        impTl
+          .to(impactLines, { opacity: 0.6, duration: 0.06, ease: 'none' })
+          .to(nameEl, { scale: 1.02, duration: 0.06, ease: 'none' })
+          .to(nameEl, { scale: 1, duration: 0.3, ease: 'elastic.out(1, 0.4)' })
+          .to(impactLines, { opacity: 0, duration: 0.25, ease: 'power2.out' }, '-=0.25');
+      });
+    }
+    gsap.delayedCall(3, scheduleImpact);
+  });
+
+  // 4. INTERACTION REACTION
+  document.getElementById('hero-anime-001').addEventListener('click', function () {
+    const section = document.getElementById('hero-anime-001');
+    const flash = document.getElementById('ha1-flash');
+    const nameEl = document.getElementById('ha1-name');
+    const impactLines = document.getElementById('ha1-impact-lines');
+    const speedLines = section.querySelectorAll('.ha1-speed-line');
+    const sakura = section.querySelectorAll('.ha1-sakura');
+
+    gsap.timeline()
+      .to(flash, { opacity: 0.5, duration: 0.04, ease: 'none' })
+      .to(flash, { opacity: 0, duration: 0.2, ease: 'power2.out' })
+      .to(impactLines, { opacity: 1, duration: 0.05, ease: 'none' }, 0)
+      .to(nameEl, { scale: 1.04, duration: 0.05, ease: 'none' }, 0)
+      .to(nameEl, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.35)' }, 0.05)
+      .to(impactLines, { opacity: 0, duration: 0.2, ease: 'power2.out' }, 0.1)
+      .to(speedLines, { opacity: () => 0.03 + Math.random() * 0.08, scaleX: 1, duration: 0.15, stagger: 0.008, ease: 'none', transformOrigin: 'left center' }, 0)
+      .to(speedLines, { opacity: 0, duration: 0.35, stagger: 0.006, ease: 'power2.in' }, 0.18)
+      .to(sakura, { scale: 1.6, opacity: 0.6, duration: 0.1, stagger: { each: 0.02, from: 'random' } }, 0)
+      .to(sakura, { scale: 1, opacity: () => 0.1 + Math.random() * 0.2, duration: 0.5, stagger: { each: 0.03, from: 'random' } }, 0.12);
+
+    if (window.glitchEvents && window.glitchEvents.advance) {
+      gsap.delayedCall(0.18, () => window.glitchEvents.advance());
+    }
+  });
+
+  function clamp(mid, min, max) {
+    return Math.max(min, Math.min(max, mid));
+  }
+})();
+</script>

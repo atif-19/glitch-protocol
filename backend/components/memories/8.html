@@ -1,0 +1,611 @@
+<!-- Component: mem_neon_001 
+ Type: memories 
+ Aesthetic: neon noir / late night diner / wet pavement 
+ Obsession: Neon signs 
+ Occasion: both 
+ Tone: electric, intimate, alive 
+ Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- -->
+<style>
+  .mn001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Wet pavement reflection floor */
+  .mn001-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 38%;
+    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .mn001-floor-reflection {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 38%;
+    background: radial-gradient(ellipse at 50% 100%, var(--accent) 0%, transparent 60%);
+    opacity: 0.07;
+    z-index: 1;
+    pointer-events: none;
+    filter: blur(18px);
+  }
+
+  /* Rain streaks */
+  .mn001-rain {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .mn001-raindrop {
+    position: absolute;
+    top: -80px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.12), transparent);
+    border-radius: 1px;
+    opacity: 0;
+  }
+
+  /* Vignette */
+  .mn001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.78) 100%);
+  }
+
+  /* Main layout — three neon sign cards */
+  .mn001-stage {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: clamp(16px, 3vw, 48px);
+    width: 100%;
+    padding: 0 clamp(16px, 5vw, 72px);
+    padding-bottom: clamp(60px, 12vh, 110px);
+  }
+
+  /* Neon sign card */
+  .mn001-sign {
+    position: relative;
+    flex: 1;
+    max-width: clamp(200px, 28vw, 360px);
+    background: rgba(6, 4, 10, 0.88);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 2px;
+    padding: clamp(20px, 3vh, 36px) clamp(14px, 2vw, 28px) clamp(16px, 2.5vh, 28px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(12px, 2vh, 22px);
+    cursor: default;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04) inset,
+      0 24px 60px rgba(0,0,0,0.7);
+  }
+
+  /* Metal bracket top */
+  .mn001-sign::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(32px, 5vw, 56px);
+    height: 6px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 0 0 3px 3px;
+  }
+
+  /* Metal screws */
+  .mn001-sign::after {
+    content: '· ·';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    letter-spacing: 0.8em;
+    color: rgba(255,255,255,0.18);
+    pointer-events: none;
+  }
+
+  /* Neon tube text — the sign itself */
+  .mn001-neon-word {
+    font-family: var(--font-heading);
+    font-size: clamp(22px, 3.8vw, 54px);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-align: center;
+    line-height: 1.1;
+    color: #fff;
+    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 18px currentColor) drop-shadow(0 0 40px currentColor);
+    transition: filter 0.3s ease;
+    user-select: none;
+    position: relative;
+  }
+
+  /* Each sign has its own color via modifier */
+  .mn001-sign.mn001-s1 .mn001-neon-word { color: var(--accent); }
+  .mn001-sign.mn001-s2 .mn001-neon-word { color: #ff6eb4; }
+  .mn001-sign.mn001-s3 .mn001-neon-word { color: #5af0d8; }
+
+  .mn001-sign.mn001-s1 { box-shadow: 0 0 40px -10px var(--accent), 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset; }
+  .mn001-sign.mn001-s2 { box-shadow: 0 0 40px -10px #ff6eb4, 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset; }
+  .mn001-sign.mn001-s3 { box-shadow: 0 0 40px -10px #5af0d8, 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset; }
+
+  /* Neon glow bloom behind text */
+  .mn001-neon-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    filter: blur(28px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.18;
+  }
+  .mn001-s1 .mn001-neon-glow { width: 110%; height: 60px; background: var(--accent); }
+  .mn001-s2 .mn001-neon-glow { width: 110%; height: 60px; background: #ff6eb4; }
+  .mn001-s3 .mn001-neon-glow { width: 110%; height: 60px; background: #5af0d8; }
+
+  /* Divider tube line */
+  .mn001-tube-line {
+    width: 60%;
+    height: 1.5px;
+    border-radius: 2px;
+    opacity: 0.5;
+    position: relative;
+  }
+  .mn001-s1 .mn001-tube-line {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent), 0 0 18px var(--accent);
+  }
+  .mn001-s2 .mn001-tube-line {
+    background: #ff6eb4;
+    box-shadow: 0 0 8px #ff6eb4, 0 0 18px #ff6eb4;
+  }
+  .mn001-s3 .mn001-tube-line {
+    background: #5af0d8;
+    box-shadow: 0 0 8px #5af0d8, 0 0 18px #5af0d8;
+  }
+
+  /* Memory text */
+  .mn001-memory {
+    font-family: var(--font-body);
+    font-size: clamp(11px, 1.2vw, 15px);
+    line-height: 1.6;
+    color: rgba(255,255,255,0.65);
+    text-align: center;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Photo or placeholder inside sign */
+  .mn001-photo-wrap {
+    width: 100%;
+    height: clamp(80px, 12vh, 140px);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .mn001-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.7) brightness(0.8);
+  }
+
+  /* Placeholder — abstract neon shape */
+  .mn001-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.6);
+    overflow: hidden;
+  }
+
+  .mn001-placeholder svg {
+    width: 90%;
+    height: 90%;
+  }
+
+  /* Center sign is taller */
+  .mn001-sign.mn001-s2 {
+    transform: translateY(clamp(-24px, -3vh, -36px));
+    max-width: clamp(220px, 32vw, 400px);
+  }
+
+  /* Hover glow boost */
+  .mn001-sign:hover .mn001-neon-word {
+    filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 28px currentColor) drop-shadow(0 0 60px currentColor) drop-shadow(0 0 90px currentColor);
+  }
+
+  /* Top section label */
+  .mn001-label {
+    position: absolute;
+    top: clamp(28px, 5vh, 58px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .mn001-label-text {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.22);
+    opacity: 0;
+  }
+
+  /* Caption strip bottom */
+  .mn001-captions {
+    position: absolute;
+    bottom: clamp(18px, 3.5vh, 38px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    display: flex;
+    gap: clamp(20px, 5vw, 72px);
+    white-space: nowrap;
+  }
+
+  .mn001-cap {
+    font-size: clamp(8px, 0.85vw, 11px);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    font-family: var(--font-heading);
+    opacity: 0;
+  }
+
+  /* Flicker overlay per sign */
+  .mn001-flicker-overlay {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    pointer-events: none;
+    z-index: 2;
+    border-radius: 2px;
+  }
+
+  /* Reflection of sign on floor */
+  .mn001-reflection {
+    position: absolute;
+    bottom: clamp(60px, 10vh, 100px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: clamp(40px, 6vh, 70px);
+    z-index: 2;
+    pointer-events: none;
+    filter: blur(10px);
+    opacity: 0.14;
+    display: flex;
+    justify-content: center;
+    gap: clamp(16px, 3vw, 48px);
+  }
+
+  .mn001-ref-blob {
+    flex: 1;
+    max-width: 30%;
+    border-radius: 50%;
+    height: 100%;
+  }
+  .mn001-ref-blob:nth-child(1) { background: var(--accent); }
+  .mn001-ref-blob:nth-child(2) { background: #ff6eb4; }
+  .mn001-ref-blob:nth-child(3) { background: #5af0d8; }
+</style>
+<div class="mn001-root" id="mn001">
+  <div class="mn001-floor-reflection"></div>
+  <div class="mn001-floor"></div>
+  <div class="mn001-vignette"></div>
+  <!-- Rain -->
+  <div class="mn001-rain" id="mn001-rain"></div>
+  <!-- Floor reflections of neon blobs -->
+  <div class="mn001-reflection">
+    <div class="mn001-ref-blob"></div>
+    <div class="mn001-ref-blob"></div>
+    <div class="mn001-ref-blob"></div>
+  </div>
+  <!-- Section label -->
+  <div class="mn001-label">
+    <div class="mn001-label-text" id="mn001-label">still glowing</div>
+  </div>
+  <!-- Three neon signs -->
+  <div class="mn001-stage">
+<!-- Sign 1 -->
+<div class="mn001-sign mn001-s1" id="mn001-s1">
+  <div class="mn001-flicker-overlay" id="mn001-flk1"></div>
+  <div class="mn001-neon-glow"></div>
+  <div class="mn001-neon-word" id="mn001-nw1">I</div>
+  <div class="mn001-tube-line"></div>
+
+  <!-- Photo or placeholder -->
+  <div class="mn001-photo-wrap" id="mn001-pw1">
+    <div class="mn001-placeholder">
+      <svg viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="10" width="80" height="40" rx="3" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+        <rect x="18" y="18" width="64" height="24" rx="2" stroke="var(--accent)" stroke-width="0.6" opacity="0.3"/>
+        <circle cx="50" cy="30" r="6" stroke="var(--accent)" stroke-width="1" opacity="0.5"/>
+        <line x1="10" y1="30" x2="44" y2="30" stroke="var(--accent)" stroke-width="0.5" opacity="0.3"/>
+        <line x1="56" y1="30" x2="90" y2="30" stroke="var(--accent)" stroke-width="0.5" opacity="0.3"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="mn001-memory">"--MEMORY_1--"</div>
+</div>
+
+<!-- Sign 2 — center focal -->
+<div class="mn001-sign mn001-s2" id="mn001-s2">
+  <div class="mn001-flicker-overlay" id="mn001-flk2"></div>
+  <div class="mn001-neon-glow"></div>
+  <div class="mn001-neon-word" id="mn001-nw2">remember</div>
+  <div class="mn001-tube-line"></div>
+
+  <div class="mn001-photo-wrap" id="mn001-pw2">
+    <div class="mn001-placeholder">
+      <svg viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="30" r="22" stroke="#ff6eb4" stroke-width="1.2" opacity="0.4"/>
+        <circle cx="50" cy="30" r="14" stroke="#ff6eb4" stroke-width="0.7" opacity="0.3"/>
+        <circle cx="50" cy="30" r="6" fill="#ff6eb4" opacity="0.25"/>
+        <line x1="28" y1="30" x2="36" y2="30" stroke="#ff6eb4" stroke-width="0.8" opacity="0.5"/>
+        <line x1="64" y1="30" x2="72" y2="30" stroke="#ff6eb4" stroke-width="0.8" opacity="0.5"/>
+        <line x1="50" y1="8" x2="50" y2="16" stroke="#ff6eb4" stroke-width="0.8" opacity="0.5"/>
+        <line x1="50" y1="44" x2="50" y2="52" stroke="#ff6eb4" stroke-width="0.8" opacity="0.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="mn001-memory">"--MEMORY_2--"</div>
+</div>
+
+<!-- Sign 3 -->
+<div class="mn001-sign mn001-s3" id="mn001-s3">
+  <div class="mn001-flicker-overlay" id="mn001-flk3"></div>
+  <div class="mn001-neon-glow"></div>
+  <div class="mn001-neon-word" id="mn001-nw3">us</div>
+  <div class="mn001-tube-line"></div>
+
+  <div class="mn001-photo-wrap" id="mn001-pw3">
+    <div class="mn001-placeholder">
+      <svg viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 50 Q35 10 50 30 Q65 50 80 10" stroke="#5af0d8" stroke-width="1.2" fill="none" opacity="0.5"/>
+        <circle cx="20" cy="50" r="2.5" fill="#5af0d8" opacity="0.6"/>
+        <circle cx="50" cy="30" r="2.5" fill="#5af0d8" opacity="0.6"/>
+        <circle cx="80" cy="10" r="2.5" fill="#5af0d8" opacity="0.6"/>
+        <circle cx="35" cy="22" r="1.2" fill="#5af0d8" opacity="0.35"/>
+        <circle cx="65" cy="38" r="1.2" fill="#5af0d8" opacity="0.35"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="mn001-memory">"--MEMORY_3--"</div>
+</div></div>
+  <!-- Captions -->
+  <div class="mn001-captions">
+    <div class="mn001-cap" id="mn001-cap1">--MEMORY_CAPTION_1--</div>
+    <div class="mn001-cap" id="mn001-cap2">--MEMORY_CAPTION_2--</div>
+  </div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 3;
+
+  // Build rain
+  function buildRain() {
+    const rain = document.getElementById('mn001-rain');
+    if (!rain) return;
+    const count = 55;
+    for (let i = 0; i < count; i++) {
+      const d = document.createElement('div');
+      d.className = 'mn001-raindrop';
+      d.style.left = (Math.random() * 100) + '%';
+      d.style.height = (Math.random() * 60 + 30) + 'px';
+      d.style.opacity = '0';
+      rain.appendChild(d);
+    }
+  }
+  buildRain();
+
+  // Ambient neon flicker for a sign element
+  function startFlicker(neonWordId, color, delay) {
+    const el = document.getElementById(neonWordId);
+    if (!el) return;
+    const base = `drop-shadow(0 0 6px ${color}) drop-shadow(0 0 18px ${color}) drop-shadow(0 0 40px ${color})`;
+    const bright = `drop-shadow(0 0 10px ${color}) drop-shadow(0 0 28px ${color}) drop-shadow(0 0 60px ${color}) drop-shadow(0 0 100px ${color})`;
+    const dim = `drop-shadow(0 0 2px ${color}) drop-shadow(0 0 6px ${color})`;
+
+    function doFlicker() {
+      const seq = gsap.timeline({ delay: Math.random() * 5 + delay });
+      seq.to(el, { filter: dim, duration: 0.05, ease: 'none' })
+         .to(el, { filter: bright, duration: 0.05, ease: 'none' })
+         .to(el, { filter: dim, duration: 0.08, ease: 'none' })
+         .to(el, { filter: base, duration: 0.12, ease: 'none' })
+         .call(() => { setTimeout(doFlicker, Math.random() * 6000 + 2000); });
+    }
+    setTimeout(doFlicker, Math.random() * 3000 + delay * 1000);
+  }
+
+  // Cursor parallax
+  const root = document.getElementById('mn001');
+  const stage = root ? root.querySelector('.mn001-stage') : null;
+  if (root && stage) {
+    root.addEventListener('mousemove', function(e) {
+      const rect = root.getBoundingClientRect();
+      const cx = (e.clientX - rect.left) / rect.width - 0.5;
+      const cy = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to(stage, { x: cx * 14, y: cy * 8, duration: 1.4, ease: 'power2.out' });
+      gsap.to('.mn001-reflection', { x: cx * -10, duration: 1.8, ease: 'power2.out' });
+    });
+  }
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    const tl = gsap.timeline();
+
+    // 1. Rain drops fall in
+    document.querySelectorAll('.mn001-raindrop').forEach((d, i) => {
+      gsap.to(d, {
+        opacity: Math.random() * 0.25 + 0.05,
+        y: window.innerHeight + 100,
+        duration: Math.random() * 1.8 + 1.0,
+        delay: Math.random() * 1.5,
+        ease: 'none',
+        repeat: -1,
+        repeatDelay: Math.random() * 2,
+        onRepeat: function() {
+          gsap.set(d, { y: -80, opacity: 0 });
+        }
+      });
+    });
+
+    // 2. Label fade in
+    tl.fromTo('#mn001-label',
+      { opacity: 0, letterSpacing: '0.7em' },
+      { opacity: 1, letterSpacing: '0.42em', duration: 1.2, ease: 'power3.out' },
+      0.3
+    );
+
+    // 3. Signs stagger up — outer first then center
+    tl.fromTo(['#mn001-s1', '#mn001-s3'],
+      { opacity: 0, y: 50, scale: 0.94 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'expo.out', stagger: 0.12 },
+      0.55
+    );
+    tl.fromTo('#mn001-s2',
+      { opacity: 0, y: 34, scale: 0.92 },
+      { opacity: 1, y: 'clamp(-24px, -3vh, -36px)', scale: 1, duration: 1.3, ease: 'expo.out' },
+      0.72
+    );
+
+    // 4. Neon words light up with stagger glow burst
+    ['mn001-nw1','mn001-nw2','mn001-nw3'].forEach((id, i) => {
+      const colors = ['var(--accent)', '#ff6eb4', '#5af0d8'];
+      const el = document.getElementById(id);
+      if (!el) return;
+      const c = colors[i];
+      tl.fromTo(el,
+        { opacity: 0, filter: `drop-shadow(0 0 0px ${c})` },
+        {
+          opacity: 1,
+          filter: `drop-shadow(0 0 10px ${c}) drop-shadow(0 0 30px ${c}) drop-shadow(0 0 70px ${c})`,
+          duration: 0.7,
+          ease: 'power2.out'
+        },
+        0.9 + i * 0.22
+      );
+      tl.to(el, {
+        filter: `drop-shadow(0 0 6px ${c}) drop-shadow(0 0 18px ${c}) drop-shadow(0 0 40px ${c})`,
+        duration: 0.5,
+        ease: 'power2.in'
+      }, 1.6 + i * 0.22);
+    });
+
+    // 5. Tube lines draw in
+    tl.fromTo('.mn001-tube-line',
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 0.5, duration: 0.8, ease: 'power3.out', stagger: 0.15, transformOrigin: 'left' },
+      1.0
+    );
+
+    // 6. Memory text fade in
+    tl.fromTo('.mn001-memory',
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.18 },
+      1.3
+    );
+
+    // 7. Photo wraps
+    tl.fromTo('.mn001-photo-wrap',
+      { opacity: 0, scaleY: 0.7 },
+      { opacity: 1, scaleY: 1, duration: 0.8, ease: 'expo.out', stagger: 0.15, transformOrigin: 'top' },
+      1.1
+    );
+
+    // 8. Captions
+    tl.fromTo(['#mn001-cap1', '#mn001-cap2'],
+      { opacity: 0, y: 6 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.14 },
+      1.6
+    );
+
+    // 9. Floor reflections bloom
+    tl.fromTo('.mn001-ref-blob',
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 1.2, ease: 'expo.out', stagger: 0.12, transformOrigin: 'center' },
+      0.9
+    );
+
+    // 10. Ambient breathing glow on center sign
+    gsap.to('#mn001-s2', {
+      boxShadow: '0 0 80px -6px #ff6eb4, 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset',
+      duration: 2.8,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 2.0
+    });
+
+    // 11. Reflection shimmer
+    gsap.to('.mn001-reflection', {
+      opacity: 0.22,
+      duration: 2.5,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 1.8
+    });
+
+    // 12. Start ambient flicker per sign
+    startFlicker('mn001-nw1', 'var(--accent)', 2.5);
+    startFlicker('mn001-nw2', '#ff6eb4', 4.0);
+    startFlicker('mn001-nw3', '#5af0d8', 3.2);
+
+    // 13. Photo wrap subtle hover glow
+    document.querySelectorAll('.mn001-sign').forEach((sign, i) => {
+      const colors = ['var(--accent)', '#ff6eb4', '#5af0d8'];
+      sign.addEventListener('mouseenter', function() {
+        gsap.to(sign.querySelector('.mn001-neon-glow'), {
+          opacity: 0.35, scale: 1.3, duration: 0.5, ease: 'power2.out'
+        });
+      });
+      sign.addEventListener('mouseleave', function() {
+        gsap.to(sign.querySelector('.mn001-neon-glow'), {
+          opacity: 0.18, scale: 1, duration: 0.6, ease: 'power2.in'
+        });
+      });
+    });
+  });
+
+})();
+</script>

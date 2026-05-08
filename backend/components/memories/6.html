@@ -1,0 +1,546 @@
+<!-- Component: mem_dramatic_002 
+ Type: memories 
+ Aesthetic: cinematic-dark 
+ Obsession: film 
+ Tone: nostalgic, intimate, haunting 
+ Occasion: both 
+ Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- --RECIPIENT_NAME-- -->
+<style>
+  .mem-d002-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  .mem-d002-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .mem-d002-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .mem-d002-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .mem-d002-film-strip-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: clamp(28px, 4vw, 52px);
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: clamp(12px, 2vh, 24px) 0;
+  }
+
+  .mem-d002-film-strip-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: clamp(28px, 4vw, 52px);
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    border-left: 1px solid rgba(255,255,255,0.06);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: clamp(12px, 2vh, 24px) 0;
+  }
+
+  .mem-d002-perforation {
+    width: clamp(10px, 1.4vw, 18px);
+    height: clamp(14px, 2vh, 22px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 2px;
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+
+  .mem-d002-stage {
+    position: relative;
+    z-index: 10;
+    width: min(680px, 80vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(20px, 3vh, 40px);
+  }
+
+  .mem-d002-label {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1vw, 12px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  .mem-d002-frame-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mem-d002-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #0a0a0a;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  .mem-d002-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .mem-d002-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.3) contrast(1.1) brightness(0.85);
+    opacity: 0.9;
+  }
+
+  .mem-d002-photo-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mem-d002-constellation {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mem-d002-frame-number {
+    position: absolute;
+    bottom: clamp(8px, 1.2vh, 14px);
+    right: clamp(10px, 1.5vw, 18px);
+    font-size: clamp(9px, 0.9vw, 11px);
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.25);
+    font-family: var(--font-body);
+    z-index: 3;
+  }
+
+  .mem-d002-caption {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-top: clamp(10px, 1.5vh, 18px);
+    opacity: 0;
+    gap: 20px;
+  }
+
+  .mem-d002-caption-left {
+    font-family: var(--font-heading);
+    font-size: clamp(11px, 1.1vw, 14px);
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    max-width: 55%;
+  }
+
+  .mem-d002-caption-right {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 0.85vw, 11px);
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    text-align: right;
+    padding-top: 2px;
+  }
+
+  .mem-d002-memories-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.8vh, 20px);
+    opacity: 0;
+  }
+
+  .mem-d002-memory-item {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(12px, 2vw, 22px);
+    padding: clamp(12px, 1.8vh, 20px) clamp(14px, 2vw, 24px);
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    position: relative;
+    cursor: default;
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+
+  .mem-d002-memory-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mem-d002-memory-item:hover::before {
+    transform: scaleY(1);
+  }
+
+  .mem-d002-memory-item:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .mem-d002-memory-index {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 0.85vw, 11px);
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    opacity: 0.5;
+    padding-top: 3px;
+    flex-shrink: 0;
+    width: 28px;
+  }
+
+  .mem-d002-memory-text {
+    font-family: var(--font-heading);
+    font-size: clamp(12px, 1.3vw, 17px);
+    color: var(--text);
+    line-height: 1.55;
+    opacity: 0.82;
+    font-style: italic;
+  }
+
+  .mem-d002-bottom-rule {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+  }
+
+  .mem-d002-rule-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .mem-d002-rule-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
+  .mem-d002-rule-text {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 0.85vw, 11px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+  }
+
+  .mem-d002-cursor-glow {
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--accent-rgb, 255,200,100), 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .mem-d002-ambient-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+</style>
+<div class="mem-d002-root" id="mem-d002-root">
+  <div class="mem-d002-noise"></div>
+  <div class="mem-d002-vignette"></div>
+  <div class="mem-d002-scanlines"></div>
+  <div class="mem-d002-cursor-glow" id="mem-d002-cursor-glow"></div>
+  <div class="mem-d002-film-strip-left" id="mem-d002-strip-left">
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+  </div>
+  <div class="mem-d002-film-strip-right" id="mem-d002-strip-right">
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+    <div class="mem-d002-perforation"></div>
+  </div>
+  <div class="mem-d002-stage" id="mem-d002-stage">
+<div class="mem-d002-label" id="mem-d002-label">A few frames from us, --RECIPIENT_NAME--</div>
+
+<div class="mem-d002-frame-wrapper">
+  <div class="mem-d002-frame" id="mem-d002-frame">
+    <img
+      class="mem-d002-photo"
+      src="--PHOTO_1--"
+      alt="memory"
+      id="mem-d002-photo"
+      onerror="document.getElementById('mem-d002-photo').style.display='none'; document.getElementById('mem-d002-placeholder').style.display='flex';"
+    />
+    <div class="mem-d002-photo-placeholder" id="mem-d002-placeholder" style="display:none;">
+      <svg class="mem-d002-constellation" viewBox="0 0 680 382" xmlns="http://www.w3.org/2000/svg" id="mem-d002-svg-constellation">
+      </svg>
+    </div>
+    <div class="mem-d002-frame-number">003 ▸ 2K</div>
+  </div>
+
+  <div class="mem-d002-caption" id="mem-d002-caption">
+    <div class="mem-d002-caption-left">--MEMORY_CAPTION_1-- / --MEMORY_CAPTION_2--</div>
+    <div class="mem-d002-caption-right">still frame</div>
+  </div>
+</div>
+
+<div class="mem-d002-memories-list" id="mem-d002-memories-list">
+  <div class="mem-d002-memory-item">
+    <span class="mem-d002-memory-index">01</span>
+    <span class="mem-d002-memory-text">--MEMORY_1--</span>
+  </div>
+  <div class="mem-d002-memory-item">
+    <span class="mem-d002-memory-index">02</span>
+    <span class="mem-d002-memory-text">--MEMORY_2--</span>
+  </div>
+  <div class="mem-d002-memory-item">
+    <span class="mem-d002-memory-index">03</span>
+    <span class="mem-d002-memory-text">--MEMORY_3--</span>
+  </div>
+</div>
+
+<div class="mem-d002-bottom-rule" id="mem-d002-bottom-rule">
+  <div class="mem-d002-rule-line"></div>
+  <div class="mem-d002-rule-dot"></div>
+  <div class="mem-d002-rule-text">end of reel</div>
+  <div class="mem-d002-rule-dot"></div>
+  <div class="mem-d002-rule-line"></div>
+</div></div>
+  <div class="mem-d002-ambient-particle" id="mem-d002-p1" style="width:3px;height:3px;left:15%;top:20%;"></div>
+  <div class="mem-d002-ambient-particle" id="mem-d002-p2" style="width:2px;height:2px;left:75%;top:70%;"></div>
+  <div class="mem-d002-ambient-particle" id="mem-d002-p3" style="width:2px;height:2px;left:88%;top:30%;"></div>
+  <div class="mem-d002-ambient-particle" id="mem-d002-p4" style="width:3px;height:3px;left:22%;top:78%;"></div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 3;
+
+  function buildConstellation() {
+    const svg = document.getElementById('mem-d002-svg-constellation');
+    if (!svg) return;
+    const stars = [
+      [80,60],[200,120],[340,80],[480,150],[600,90],[160,220],[300,190],[440,240],[560,180],[100,300],
+      [240,310],[380,280],[520,320],[650,260],[140,160],[420,100],[260,340],[620,350],[50,200],[700,150]
+    ];
+    const lines = [
+      [0,1],[1,2],[2,3],[3,4],[1,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[2,6],[3,7],[14,1],[2,15],[10,16],[8,17]
+    ];
+    lines.forEach(([a,b]) => {
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1', stars[a][0]);
+      line.setAttribute('y1', stars[a][1]);
+      line.setAttribute('x2', stars[b][0]);
+      line.setAttribute('y2', stars[b][1]);
+      line.setAttribute('stroke','rgba(255,255,255,0.07)');
+      line.setAttribute('stroke-width','0.8');
+      svg.appendChild(line);
+    });
+    stars.forEach(([cx,cy], i) => {
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', i % 5 === 0 ? 2.5 : 1.5);
+      circle.setAttribute('fill','rgba(255,255,255,0.5)');
+      svg.appendChild(circle);
+    });
+  }
+
+  function checkPhoto() {
+    const photo = document.getElementById('mem-d002-photo');
+    const placeholder = document.getElementById('mem-d002-placeholder');
+    if (!photo || !placeholder) return;
+    const src = photo.getAttribute('src') || '';
+    if (src === 'NONE' || src === '' || src.includes('--PHOTO_1--')) {
+      photo.style.display = 'none';
+      placeholder.style.display = 'flex';
+      buildConstellation();
+    }
+  }
+
+  checkPhoto();
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    gsap.set('#mem-d002-strip-left', { x: -40, opacity: 0 });
+    gsap.set('#mem-d002-strip-right', { x: 40, opacity: 0 });
+    gsap.set('#mem-d002-label', { opacity: 0, y: -12 });
+    gsap.set('#mem-d002-frame', { opacity: 0, scaleX: 0.96, filter: 'blur(8px)' });
+    gsap.set('#mem-d002-caption', { opacity: 0, y: 10 });
+    gsap.set('#mem-d002-memories-list', { opacity: 0 });
+    gsap.set('.mem-d002-memory-item', { opacity: 0, x: -20 });
+    gsap.set('#mem-d002-bottom-rule', { opacity: 0 });
+
+    tl
+      .to(['#mem-d002-strip-left','#mem-d002-strip-right'], {
+        x: 0, opacity: 1, duration: 0.9, stagger: 0.1
+      })
+      .to('#mem-d002-label', { opacity: 1, y: 0, duration: 0.7 }, '-=0.5')
+      .to('#mem-d002-frame', {
+        opacity: 1, scaleX: 1,
+        filter: 'blur(0px)',
+        duration: 1.1,
+        ease: 'power2.out'
+      }, '-=0.3')
+      .to('#mem-d002-caption', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+      .to('#mem-d002-memories-list', { opacity: 1, duration: 0.01 }, '-=0.1')
+      .to('.mem-d002-memory-item', {
+        opacity: 1, x: 0, duration: 0.6, stagger: 0.18, ease: 'power2.out'
+      })
+      .to('#mem-d002-bottom-rule', { opacity: 1, duration: 0.5 }, '-=0.2');
+
+    // Ambient flicker on frame
+    gsap.to('#mem-d002-frame', {
+      filter: 'brightness(0.97)',
+      duration: 0.08,
+      yoyo: true,
+      repeat: -1,
+      repeatDelay: gsap.utils.random(4, 9),
+      ease: 'none',
+      delay: 2
+    });
+
+    // Film strip idle drift
+    gsap.to(['#mem-d002-strip-left','#mem-d002-strip-right'], {
+      y: -8,
+      duration: 6,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      stagger: 0.5,
+      delay: 1.5
+    });
+
+    // Ambient particles float
+    ['#mem-d002-p1','#mem-d002-p2','#mem-d002-p3','#mem-d002-p4'].forEach((id, i) => {
+      gsap.to(id, {
+        opacity: gsap.utils.random(0.3, 0.7),
+        y: gsap.utils.random(-18, 18),
+        x: gsap.utils.random(-10, 10),
+        duration: gsap.utils.random(4, 7),
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: i * 0.6 + 2
+      });
+    });
+
+    // Constellation star pulse if visible
+    const svgStars = document.querySelectorAll('#mem-d002-svg-constellation circle');
+    if (svgStars.length) {
+      svgStars.forEach((star, i) => {
+        gsap.to(star, {
+          opacity: gsap.utils.random(0.3, 1),
+          duration: gsap.utils.random(2, 5),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: i * 0.15
+        });
+      });
+    }
+  });
+
+  // Cursor glow
+  const glow = document.getElementById('mem-d002-cursor-glow');
+  const root = document.getElementById('mem-d002-root');
+  if (root && glow) {
+    root.addEventListener('mousemove', function(e) {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+      glow.style.opacity = '1';
+    });
+    root.addEventListener('mouseleave', function() {
+      glow.style.opacity = '0';
+    });
+  }
+})();
+</script>

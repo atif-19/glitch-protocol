@@ -1,0 +1,635 @@
+<!-- Component: reveal_orbit_001 
+ Type: reveal 
+ Aesthetic: space 
+ Obsession: orbital-mechanics/cosmos 
+ Tone: ethereal, intimate, cosmic 
+ Occasion: birthday, apology, both 
+ Variables: --RECIPIENT_NAME-- --HIDDEN_MESSAGE-- --REVEAL_INSTRUCTION-- 
+ -->
+<style>
+  .rorb-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: var(--font-body);
+    cursor: none;
+  }
+
+  .rorb-starfield {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .rorb-nebula {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 30%, rgba(80,0,120,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(0,40,120,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 60% 20%, rgba(0,80,80,0.10) 0%, transparent 70%);
+  }
+
+  .rorb-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rorb-sun {
+    position: relative;
+    width: clamp(64px,12vw,110px);
+    height: clamp(64px,12vw,110px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 36%, #ffe8a0 0%, #ffb930 40%, #ff7200 75%, #c93000 100%);
+    box-shadow:
+      0 0 clamp(20px,4vw,50px) clamp(10px,2vw,28px) rgba(255,140,0,0.55),
+      0 0 clamp(40px,8vw,100px) clamp(20px,4vw,50px) rgba(255,80,0,0.22),
+      0 0 clamp(80px,16vw,200px) clamp(40px,8vw,100px) rgba(255,40,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 12;
+    cursor: pointer;
+  }
+
+  .rorb-sun-label {
+    font-family: var(--font-heading);
+    font-size: clamp(8px,1.4vw,12px);
+    color: rgba(255,240,200,0.85);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.4;
+    text-shadow: 0 0 8px rgba(255,200,100,0.8);
+    padding: 0 6px;
+  }
+
+  .rorb-sun-corona {
+    position: absolute;
+    inset: -clamp(6px,1.2vw,14px);
+    border-radius: 50%;
+    border: 1px solid rgba(255,180,60,0.18);
+    pointer-events: none;
+  }
+  .rorb-sun-corona-2 {
+    position: absolute;
+    inset: -clamp(14px,2.5vw,30px);
+    border-radius: 50%;
+    border: 1px solid rgba(255,140,30,0.09);
+    pointer-events: none;
+  }
+
+  .rorb-orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.07);
+    pointer-events: none;
+    z-index: 9;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  .rorb-orbit-ring-1 {
+    width: clamp(170px,30vw,300px);
+    height: clamp(170px,30vw,300px);
+    border-color: rgba(160,200,255,0.12);
+  }
+  .rorb-orbit-ring-2 {
+    width: clamp(270px,48vw,460px);
+    height: clamp(270px,48vw,460px);
+    border-color: rgba(180,160,255,0.09);
+  }
+  .rorb-orbit-ring-3 {
+    width: clamp(370px,66vw,620px);
+    height: clamp(370px,66vw,620px);
+    border-color: rgba(160,220,200,0.07);
+  }
+
+  .rorb-planet-wrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    z-index: 11;
+    pointer-events: none;
+  }
+
+  .rorb-planet {
+    position: absolute;
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    cursor: pointer;
+    pointer-events: all;
+    transition: box-shadow 0.3s;
+  }
+
+  .rorb-planet-p1 {
+    width: clamp(22px,4vw,38px);
+    height: clamp(22px,4vw,38px);
+    background: radial-gradient(circle at 35% 32%, #a8d8ff, #3a6fbf 55%, #1a2f6e 100%);
+    box-shadow: 0 0 14px 4px rgba(80,160,255,0.35), inset -3px -2px 6px rgba(0,0,60,0.4);
+  }
+  .rorb-planet-p2 {
+    width: clamp(32px,5.5vw,52px);
+    height: clamp(32px,5.5vw,52px);
+    background: radial-gradient(circle at 32% 30%, #e8c0ff, #9040c0 50%, #3a0060 100%);
+    box-shadow: 0 0 18px 6px rgba(160,80,255,0.4), inset -4px -3px 8px rgba(20,0,40,0.5);
+  }
+  .rorb-planet-p3 {
+    width: clamp(18px,3vw,28px);
+    height: clamp(18px,3vw,28px);
+    background: radial-gradient(circle at 38% 35%, #b0ffee, #20c090 55%, #006050 100%);
+    box-shadow: 0 0 12px 4px rgba(0,220,160,0.35), inset -2px -2px 5px rgba(0,30,20,0.4);
+  }
+
+  .rorb-planet-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) rotateX(70deg);
+    border-radius: 50%;
+    border: 2px solid rgba(200,160,255,0.35);
+    pointer-events: none;
+  }
+
+  .rorb-planet-label {
+    position: absolute;
+    bottom: calc(100% + clamp(6px,1.2vw,12px));
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-size: clamp(8px,1.2vw,10px);
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.2em;
+    white-space: nowrap;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .rorb-recipient {
+    position: absolute;
+    bottom: clamp(18px,4vh,36px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-size: clamp(9px,1.5vw,13px);
+    color: rgba(180,220,255,0.5);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    z-index: 20;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .rorb-instruction {
+    position: absolute;
+    bottom: clamp(40px,8vh,70px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-size: clamp(9px,1.4vw,12px);
+    color: rgba(180,200,255,0.38);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    z-index: 20;
+    opacity: 0;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .rorb-top-label {
+    position: absolute;
+    top: clamp(14px,3vh,28px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-size: clamp(8px,1.3vw,11px);
+    color: rgba(160,200,255,0.35);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    z-index: 20;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .rorb-reveal-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .rorb-reveal-card {
+    position: relative;
+    width: min(88vw, 580px);
+    padding: clamp(28px,5vw,56px) clamp(24px,5vw,52px);
+    border: 1px solid rgba(180,180,255,0.18);
+    background: rgba(6,6,24,0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(14px,2.5vh,24px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .rorb-reveal-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(160,180,255,0.6), transparent);
+  }
+  .rorb-reveal-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(120,80,255,0.5), transparent);
+  }
+
+  .rorb-reveal-planet-icon {
+    width: clamp(36px,6vw,56px);
+    height: clamp(36px,6vw,56px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 32%, #e8c0ff, #9040c0 50%, #3a0060 100%);
+    box-shadow: 0 0 24px 8px rgba(160,80,255,0.45);
+    flex-shrink: 0;
+  }
+
+  .rorb-reveal-eyebrow {
+    font-family: var(--font-heading);
+    font-size: clamp(8px,1.3vw,11px);
+    color: rgba(180,160,255,0.55);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .rorb-reveal-message {
+    font-family: var(--font-body);
+    font-size: clamp(16px,3vw,26px);
+    color: var(--text);
+    line-height: 1.75;
+    text-align: center;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .rorb-reveal-divider {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(160,120,255,0.5), transparent);
+  }
+
+  .rorb-cursor {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    mix-blend-mode: screen;
+  }
+  .rorb-cursor-ring {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(180,200,255,0.4);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    mix-blend-mode: screen;
+  }
+
+  @media (max-width: 600px) {
+    .rorb-root { cursor: auto; }
+    .rorb-cursor, .rorb-cursor-ring { display: none; }
+  }
+</style>
+<div class="rorb-root" id="reveal_orbit_001">
+  <div class="rorb-cursor" id="rorb-cursor"></div>
+  <div class="rorb-cursor-ring" id="rorb-cursor-ring"></div>
+  <canvas class="rorb-starfield" id="rorb-starfield"></canvas>
+  <div class="rorb-nebula"></div>
+  <div class="rorb-top-label" id="rorb-top-label">TRANSMISSION INCOMING</div>
+  <div class="rorb-recipient" id="rorb-recipient">FOR: --RECIPIENT_NAME--</div>
+  <div class="rorb-instruction" id="rorb-instruction">--REVEAL_INSTRUCTION--</div>
+  <div class="rorb-orbit-ring rorb-orbit-ring-1" id="rorb-ring1"></div>
+  <div class="rorb-orbit-ring rorb-orbit-ring-2" id="rorb-ring2"></div>
+  <div class="rorb-orbit-ring rorb-orbit-ring-3" id="rorb-ring3"></div>
+  <div class="rorb-center" id="rorb-center">
+    <div class="rorb-sun" id="rorb-sun">
+      <div class="rorb-sun-corona"></div>
+      <div class="rorb-sun-corona-2"></div>
+      <div class="rorb-sun-label" id="rorb-sun-label">YOU</div>
+    </div>
+  </div>
+  <div class="rorb-planet-wrap" id="rorb-pw1">
+    <div class="rorb-planet rorb-planet-p1" id="rorb-p1">
+      <div class="rorb-planet-label">KEPLAR</div>
+    </div>
+  </div>
+  <div class="rorb-planet-wrap" id="rorb-pw2">
+    <div class="rorb-planet rorb-planet-p2" id="rorb-p2">
+      <div class="rorb-planet-ring" style="width:clamp(44px,8vw,76px);height:clamp(14px,2.5vw,24px);"></div>
+      <div class="rorb-planet-label">REVEAL</div>
+    </div>
+  </div>
+  <div class="rorb-planet-wrap" id="rorb-pw3">
+    <div class="rorb-planet rorb-planet-p3" id="rorb-p3">
+      <div class="rorb-planet-label">AURA</div>
+    </div>
+  </div>
+  <div class="rorb-reveal-overlay" id="rorb-reveal-overlay">
+    <div class="rorb-reveal-card" id="rorb-reveal-card">
+      <div class="rorb-reveal-planet-icon" id="rorb-reveal-icon"></div>
+      <div class="rorb-reveal-eyebrow">MESSAGE DECODED</div>
+      <div class="rorb-reveal-divider"></div>
+      <div class="rorb-reveal-message" id="rorb-reveal-msg">--HIDDEN_MESSAGE--</div>
+      <div class="rorb-reveal-divider"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+
+  var SECTION_INDEX = 6;
+  var entered = false;
+
+  /* ── Starfield ── */
+  var sf = document.getElementById('rorb-starfield');
+  var sCtx = sf.getContext('2d');
+  var stars = [];
+
+  function initStars(){
+    sf.width  = window.innerWidth;
+    sf.height = window.innerHeight;
+    stars = [];
+    var count = Math.floor((sf.width * sf.height) / 3000);
+    for(var i = 0; i < count; i++){
+      stars.push({
+        x: Math.random() * sf.width,
+        y: Math.random() * sf.height,
+        r: Math.random() * 1.4 + 0.2,
+        base: Math.random() * 0.7 + 0.15,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.018 + 0.006
+      });
+    }
+  }
+
+  var sfTick = 0;
+  function drawStars(){
+    sCtx.clearRect(0, 0, sf.width, sf.height);
+    sfTick += 0.016;
+    for(var i = 0; i < stars.length; i++){
+      var s = stars[i];
+      var alpha = s.base + Math.sin(sfTick * s.speed * 60 + s.phase) * 0.25;
+      sCtx.globalAlpha = Math.max(0, Math.min(1, alpha));
+      sCtx.fillStyle = '#ffffff';
+      sCtx.beginPath();
+      sCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      sCtx.fill();
+    }
+    sCtx.globalAlpha = 1;
+    requestAnimationFrame(drawStars);
+  }
+
+  initStars();
+  drawStars();
+  window.addEventListener('resize', initStars);
+
+  /* ── Orbital maths ── */
+  var root  = document.getElementById('reveal_orbit_001');
+  var pw1   = document.getElementById('rorb-pw1');
+  var pw2   = document.getElementById('rorb-pw2');
+  var pw3   = document.getElementById('rorb-pw3');
+  var sunEl = document.getElementById('rorb-sun');
+
+  var angles = { p1: 0, p2: Math.PI * 0.6, p3: Math.PI * 1.35 };
+  var speeds  = { p1: 0.0004, p2: 0.00022, p3: 0.00065 };
+  var orbitRunning = false;
+  var lastTime = 0;
+
+  function getR(idx){
+    var el = document.querySelector('.rorb-orbit-ring-' + idx);
+    return el ? el.offsetWidth / 2 : [120,200,280][idx-1];
+  }
+
+  function positionPlanet(pw, angle, r){
+    var cx = Math.cos(angle) * r;
+    var cy = Math.sin(angle) * r;
+    pw.style.transform = 'translate(calc(-50% + ' + cx + 'px), calc(-50% + ' + cy + 'px))';
+  }
+
+  function orbitTick(ts){
+    if(!orbitRunning) return;
+    var dt = lastTime ? Math.min(ts - lastTime, 64) : 16;
+    lastTime = ts;
+    angles.p1 += speeds.p1 * dt;
+    angles.p2 += speeds.p2 * dt;
+    angles.p3 += speeds.p3 * dt;
+    positionPlanet(pw1, angles.p1, getR(1));
+    positionPlanet(pw2, angles.p2, getR(2));
+    positionPlanet(pw3, angles.p3, getR(3));
+    requestAnimationFrame(orbitTick);
+  }
+
+  /* ── Custom cursor ── */
+  var cursor     = document.getElementById('rorb-cursor');
+  var cursorRing = document.getElementById('rorb-cursor-ring');
+
+  document.addEventListener('mousemove', function(e){
+    gsap.to(cursor,     { x: e.clientX, y: e.clientY, duration: 0.08, ease: 'none' });
+    gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.22, ease: 'power2.out' });
+  });
+
+  /* ── Planet hover states ── */
+  function addPlanetHover(el){
+    el.addEventListener('mouseenter', function(){
+      gsap.to(el, { scale: 1.28, duration: 0.3, ease: 'back.out(2)' });
+      gsap.to(cursor, { scale: 2.2, duration: 0.2 });
+      gsap.to(cursorRing, { scale: 0.5, opacity: 0.6, duration: 0.2 });
+    });
+    el.addEventListener('mouseleave', function(){
+      gsap.to(el, { scale: 1, duration: 0.35, ease: 'power2.out' });
+      gsap.to(cursor, { scale: 1, duration: 0.2 });
+      gsap.to(cursorRing, { scale: 1, opacity: 1, duration: 0.2 });
+    });
+  }
+
+  addPlanetHover(document.getElementById('rorb-p1'));
+  addPlanetHover(document.getElementById('rorb-p2'));
+  addPlanetHover(document.getElementById('rorb-p3'));
+
+  /* ── Reveal ── */
+  var revealed = false;
+
+  function doReveal(e){
+    // CRITICAL: stop click from bubbling to the document advance listener
+    if(e) e.stopPropagation();
+    if(revealed) return;
+    revealed = true;
+
+    var overlay = document.getElementById('rorb-reveal-overlay');
+    var card    = document.getElementById('rorb-reveal-card');
+    var msg     = document.getElementById('rorb-reveal-msg');
+
+    overlay.style.pointerEvents = 'all';
+
+    var tl = gsap.timeline();
+    tl.to([pw1, pw2, pw3], {
+        opacity: 0, scale: 0.4, duration: 0.55, ease: 'power3.in', stagger: 0.06
+      })
+      .to('#rorb-ring1, #rorb-ring2, #rorb-ring3', {
+        opacity: 0, scale: 0.7, duration: 0.45, ease: 'power2.in'
+      }, '-=0.4')
+      .to(sunEl, {
+        scale: 1.18,
+        boxShadow: '0 0 80px 40px rgba(255,140,0,0.7), 0 0 160px 80px rgba(255,60,0,0.28)',
+        duration: 0.5, ease: 'power2.out'
+      }, '-=0.2')
+      .to(overlay, { opacity: 1, duration: 0.1 })
+      .fromTo(card,
+        { opacity: 0, scale: 0.78, y: 32 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: 'expo.out' }
+      )
+      .fromTo('.rorb-reveal-eyebrow, .rorb-reveal-divider',
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
+        '-=0.35'
+      )
+      .fromTo(msg,
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' },
+        '-=0.3'
+      )
+      .call(function(){
+        // Ambient card glow
+        gsap.to(card, {
+          boxShadow: '0 0 60px 8px rgba(140,80,255,0.18)',
+          duration: 2.4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+        });
+
+        // ── CRITICAL: notify skeleton that reveal is complete ──
+        // This switches the nav bar forward button from locked → Continue CTA
+        if(window.glitchEvents && window.glitchEvents.revealed) {
+          window.glitchEvents.revealed();
+        }
+      });
+
+    // Click card = re-orbit (dismiss reveal)
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(ev){
+      ev.stopPropagation(); // don't bubble to advance listener
+      if(!revealed) return;
+      revealed = false;
+      // Hide the continue CTA again if they dismiss
+      var fwdBtn = document.getElementById('glitch-nav-fwd');
+      if(fwdBtn) fwdBtn.classList.remove('revealed');
+
+      var tl2 = gsap.timeline();
+      tl2.to(card, { opacity: 0, scale: 0.85, y: 20, duration: 0.4, ease: 'power2.in' })
+         .to(overlay, { opacity: 0, duration: 0.2 })
+         .call(function(){
+           overlay.style.pointerEvents = 'none';
+           gsap.to([pw1,pw2,pw3], { opacity:1, scale:1, duration:0.6, ease:'back.out(1.5)', stagger:0.1 });
+           gsap.to('#rorb-ring1, #rorb-ring2, #rorb-ring3', { opacity:1, scale:1, duration:0.5 });
+           gsap.to(sunEl, {
+             scale:1,
+             boxShadow:'0 0 clamp(20px,4vw,50px) clamp(10px,2vw,28px) rgba(255,140,0,0.55),0 0 clamp(40px,8vw,100px) clamp(20px,4vw,50px) rgba(255,80,0,0.22)',
+             duration:0.6
+           });
+         });
+    }, { once: false });
+  }
+
+  // Planet clicks — stopPropagation handled inside doReveal
+  ['rorb-p1','rorb-p2','rorb-p3'].forEach(function(id){
+    document.getElementById(id).addEventListener('click', doReveal);
+  });
+
+  /* ── Entrance animation ── */
+  function runEntrance(){
+    if(entered) return;
+    entered = true;
+
+    gsap.set([pw1,pw2,pw3], { opacity:0, scale:0 });
+    gsap.set(['#rorb-ring1','#rorb-ring2','#rorb-ring3'], { opacity:0, scale:0.5 });
+    gsap.set(sunEl, { opacity:0, scale:0 });
+    gsap.set(['#rorb-top-label','#rorb-recipient','#rorb-instruction'], { opacity:0, y:14 });
+
+    var tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+
+    tl.to(sunEl, { opacity:1, scale:1, duration:1.1, ease:'elastic.out(1,0.55)' })
+      .to(sunEl, { boxShadow:'0 0 80px 36px rgba(255,160,0,0.75), 0 0 160px 70px rgba(255,80,0,0.3)', duration:0.35, ease:'power2.out' })
+      .to(sunEl, { boxShadow:'0 0 clamp(20px,4vw,50px) clamp(10px,2vw,28px) rgba(255,140,0,0.55),0 0 clamp(40px,8vw,100px) clamp(20px,4vw,50px) rgba(255,80,0,0.22)', duration:0.8, ease:'power2.inOut' })
+      .to('#rorb-ring1', { opacity:1, scale:1, duration:0.7, ease:'back.out(1.4)' }, '-=0.5')
+      .to('#rorb-ring2', { opacity:1, scale:1, duration:0.75, ease:'back.out(1.3)' }, '-=0.55')
+      .to('#rorb-ring3', { opacity:1, scale:1, duration:0.8, ease:'back.out(1.2)' }, '-=0.55')
+      .to(pw1, { opacity:1, scale:1, duration:0.6, ease:'back.out(2.2)' }, '-=0.5')
+      .to(pw2, { opacity:1, scale:1, duration:0.65, ease:'back.out(2)' }, '-=0.42')
+      .to(pw3, { opacity:1, scale:1, duration:0.6, ease:'back.out(2.2)' }, '-=0.42')
+      .to('#rorb-top-label', { opacity:1, y:0, duration:0.55 }, '-=0.3')
+      .to('#rorb-recipient',  { opacity:1, y:0, duration:0.55 }, '-=0.35')
+      .to('#rorb-instruction',{ opacity:1, y:0, duration:0.55 }, '-=0.35')
+      .call(function(){
+        orbitRunning = true;
+        requestAnimationFrame(orbitTick);
+        startAmbient();
+      });
+  }
+
+  /* ── Ambient idle ── */
+  function startAmbient(){
+    gsap.to(sunEl, { scale:1.055, duration:2.8, repeat:-1, yoyo:true, ease:'sine.inOut' });
+    gsap.to('#rorb-instruction', { opacity:0.12, duration:2.2, repeat:-1, yoyo:true, ease:'sine.inOut' });
+    gsap.to('#rorb-ring2', { opacity:0.18, duration:3.5, repeat:-1, yoyo:true, ease:'sine.inOut' });
+    gsap.to('#rorb-p1', { boxShadow:'0 0 22px 8px rgba(80,160,255,0.55)', duration:2.4, repeat:-1, yoyo:true, ease:'sine.inOut', delay:0.3 });
+    gsap.to('#rorb-p2', { boxShadow:'0 0 28px 10px rgba(160,80,255,0.6)', duration:2.0, repeat:-1, yoyo:true, ease:'sine.inOut' });
+    gsap.to('#rorb-p3', { boxShadow:'0 0 18px 6px rgba(0,220,160,0.55)', duration:3.0, repeat:-1, yoyo:true, ease:'sine.inOut', delay:1.0 });
+  }
+
+  /* ── Touch support ── */
+  ['rorb-p1','rorb-p2','rorb-p3'].forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener('touchstart', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      gsap.to(el, { scale:1.3, duration:0.2, ease:'back.out(2)' });
+    }, { passive:false });
+    el.addEventListener('touchend', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      gsap.to(el, { scale:1, duration:0.25 });
+      doReveal(e);
+    }, { passive:false });
+  });
+
+  /* ── Entry event ── */
+  document.addEventListener('glitch:enter', function(e){
+    if(e && e.detail && e.detail.index !== SECTION_INDEX) return;
+    runEntrance();
+  });
+
+  setTimeout(runEntrance, 120);
+
+})();
+</script>

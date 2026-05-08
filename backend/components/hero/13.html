@@ -1,0 +1,573 @@
+<!--
+  Component: hero_disney_001
+  Type: hero
+  Aesthetic: Fairytale warm
+  Obsession: Disney
+  Tone: magical, warm, cinematic
+  Occasion: birthday
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+.hero-disney-001-root {
+position: relative;
+width: 100vw;
+height: 100vh;
+background: var(--bg);
+overflow: hidden;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: var(--font-body);
+cursor: none;
+}
+/* Deep night-sky gradient painted via canvas */
+.hero-disney-001-sky {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at 50% 0%, #1a0a2e 0%, #0d0618 45%, #050210 100%);
+z-index: 0;
+}
+/* Star canvas */
+.hero-disney-001-stars {
+position: absolute;
+inset: 0;
+z-index: 1;
+}
+/* Castle silhouette */
+.hero-disney-001-castle {
+position: absolute;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+width: clamp(320px, 60vw, 760px);
+z-index: 2;
+opacity: 0;
+}
+/* Enchanted mist at base */
+.hero-disney-001-mist {
+position: absolute;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 28vh;
+background: linear-gradient(to top, rgba(180, 120, 255, 0.18) 0%, transparent 100%);
+z-index: 3;
+pointer-events: none;
+}
+/* Floating sparkles container */
+.hero-disney-001-sparkles {
+position: absolute;
+inset: 0;
+z-index: 4;
+pointer-events: none;
+}
+.hero-disney-001-sparkle {
+position: absolute;
+width: 6px;
+height: 6px;
+border-radius: 50%;
+background: var(--accent);
+box-shadow: 0 0 8px 3px var(--accent);
+opacity: 0;
+}
+/* Shooting star */
+.hero-disney-001-shoot {
+position: absolute;
+width: 140px;
+height: 2px;
+background: linear-gradient(to right, transparent, #fff8c0, transparent);
+border-radius: 2px;
+opacity: 0;
+transform-origin: left center;
+z-index: 5;
+}
+/* Content */
+.hero-disney-001-content {
+position: relative;
+z-index: 10;
+text-align: center;
+padding: clamp(1.5rem, 4vw, 3rem);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: clamp(0.6rem, 1.5vw, 1.2rem);
+pointer-events: none;
+}
+.hero-disney-001-eyebrow {
+font-family: var(--font-body);
+font-size: clamp(0.65rem, 1.3vw, 0.85rem);
+letter-spacing: 0.35em;
+text-transform: uppercase;
+color: var(--accent);
+opacity: 0;
+}
+.hero-disney-001-title {
+font-family: var(--font-heading);
+font-size: clamp(2.6rem, 8vw, 7rem);
+line-height: 1.05;
+color: var(--text);
+letter-spacing: -0.01em;
+opacity: 0;
+filter: drop-shadow(0 0 40px rgba(255, 200, 100, 0.25));
+}
+.hero-disney-001-title .hero-disney-001-accent-word {
+color: var(--accent);
+display: inline-block;
+filter: drop-shadow(0 0 22px var(--accent));
+}
+.hero-disney-001-divider {
+width: 60px;
+height: 1px;
+background: linear-gradient(to right, transparent, var(--accent), transparent);
+opacity: 0;
+margin: 0.2rem 0;
+}
+.hero-disney-001-subtitle {
+font-family: var(--font-body);
+font-size: clamp(0.85rem, 2.2vw, 1.2rem);
+color: var(--text);
+opacity: 0.55;
+letter-spacing: 0.04em;
+max-width: 480px;
+line-height: 1.7;
+opacity: 0;
+}
+.hero-disney-001-recipient {
+margin-top: clamp(0.5rem, 1.5vw, 1rem);
+font-family: var(--font-heading);
+font-size: clamp(1.1rem, 3vw, 2rem);
+color: var(--text);
+letter-spacing: 0.08em;
+opacity: 0;
+display: flex;
+align-items: center;
+gap: 0.5em;
+}
+.hero-disney-001-recipient::before,
+.hero-disney-001-recipient::after {
+content: '✦';
+font-size: 0.5em;
+color: var(--accent);
+display: inline-block;
+}
+/* Wand cursor */
+.hero-disney-001-cursor {
+position: fixed;
+width: 20px;
+height: 20px;
+pointer-events: none;
+z-index: 9999;
+transform: translate(-50%, -50%);
+transition: transform 0.08s ease;
+}
+.hero-disney-001-cursor svg {
+width: 100%;
+height: 100%;
+filter: drop-shadow(0 0 4px var(--accent));
+}
+/* Cursor trail sparkle */
+.hero-disney-001-trail {
+position: fixed;
+width: 5px;
+height: 5px;
+border-radius: 50%;
+background: var(--accent);
+pointer-events: none;
+z-index: 9998;
+transform: translate(-50%, -50%);
+}
+/* Scroll hint */
+.hero-disney-001-hint {
+position: absolute;
+bottom: clamp(1.2rem, 3vh, 2.5rem);
+left: 50%;
+transform: translateX(-50%);
+z-index: 11;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 6px;
+opacity: 0;
+cursor: pointer;
+pointer-events: all;
+}
+.hero-disney-001-hint-text {
+font-size: clamp(0.55rem, 1.1vw, 0.7rem);
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(--text);
+opacity: 0.4;
+}
+.hero-disney-001-hint-line {
+width: 1px;
+height: 32px;
+background: linear-gradient(to bottom, var(--accent), transparent);
+animation: hero-disney-001-pulse 2s ease-in-out infinite;
+}
+@keyframes hero-disney-001-pulse {
+0%, 100% { opacity: 0.3; transform: scaleY(1); }
+50% { opacity: 0.9; transform: scaleY(1.15); }
+}
+/* Ambient glow orbs */
+.hero-disney-001-orb {
+position: absolute;
+border-radius: 50%;
+filter: blur(80px);
+z-index: 1;
+pointer-events: none;
+}
+.hero-disney-001-orb-1 {
+width: 45vw; height: 45vw;
+top: -10vw; left: -10vw;
+background: rgba(120, 60, 200, 0.12);
+}
+.hero-disney-001-orb-2 {
+width: 40vw; height: 40vw;
+top: -8vw; right: -8vw;
+background: rgba(255, 160, 50, 0.08);
+}
+.hero-disney-001-orb-3 {
+width: 50vw; height: 30vw;
+bottom: 0; left: 50%;
+transform: translateX(-50%);
+background: rgba(150, 80, 255, 0.1);
+}
+</style>
+</head>
+<body>
+<div class="hero-disney-001-root" id="hero-disney-001-root">
+  <div class="hero-disney-001-sky"></div>
+  <div class="hero-disney-001-orb hero-disney-001-orb-1"></div>
+  <div class="hero-disney-001-orb hero-disney-001-orb-2"></div>
+  <div class="hero-disney-001-orb hero-disney-001-orb-3"></div>
+<canvas class="hero-disney-001-stars" id="hero-disney-001-stars"></canvas>
+  <!-- Castle SVG -->
+<svg class="hero-disney-001-castle" id="hero-disney-001-castle"
+ viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg"
+ fill="none" preserveAspectRatio="xMidYMax meet">
+<!-- Base walls -->
+<rect x="150" y="200" width="600" height="280" rx="0" fill="url(#castleGrad)"/>
+<!-- Center tower tall -->
+<rect x="370" y="40" width="160" height="460" fill="url(#towerGrad)"/>
+<!-- Center tower top pointed -->
+<polygon points="450,0 320,100 580,100" fill="#7c4cbf"/>
+<!-- Center tower window glow -->
+<ellipse cx="450" cy="130" rx="20" ry="28" fill="url(#winGlow)"/>
+<ellipse cx="450" cy="130" rx="14" ry="20" fill="url(#winGlow2)"/>
+<!-- Left mid tower -->
+<rect x="240" y="140" width="90" height="340" fill="#5a2d8a"/>
+<polygon points="285,100 210,160 360,160" fill="#7c4cbf"/>
+<!-- Right mid tower -->
+<rect x="570" y="140" width="90" height="340" fill="#5a2d8a"/>
+<polygon points="615,100 540,160 690,160" fill="#7c4cbf"/>
+<!-- Left small towers -->
+<rect x="150" y="200" width="65" height="280" fill="#4a2070"/>
+<polygon points="183,175 148,215 218,215" fill="#7040a0"/>
+<rect x="685" y="200" width="65" height="280" fill="#4a2070"/>
+<polygon points="718,175 683,215 753,215" fill="#7040a0"/>
+<!-- Arched gate -->
+<path d="M400 480 Q450 380 500 480 Z" fill="#1a0830"/>
+<!-- Windows scattered -->
+<rect x="420" y="220" width="18" height="28" rx="9" fill="url(#winSmall)"/>
+<rect x="462" y="220" width="18" height="28" rx="9" fill="url(#winSmall)"/>
+<rect x="258" y="200" width="14" height="22" rx="7" fill="url(#winSmall)"/>
+<rect x="589" y="200" width="14" height="22" rx="7" fill="url(#winSmall)"/>
+<rect x="170" y="260" width="12" height="18" rx="6" fill="url(#winSmall)"/>
+<rect x="718" y="260" width="12" height="18" rx="6" fill="url(#winSmall)"/>
+<!-- Battlements -->
+<rect x="150" y="192" width="18" height="22" fill="#3d1a60"/>
+<rect x="178" y="192" width="18" height="22" fill="#3d1a60"/>
+<rect x="206" y="192" width="18" height="22" fill="#3d1a60"/>
+<rect x="680" y="192" width="18" height="22" fill="#3d1a60"/>
+<rect x="708" y="192" width="18" height="22" fill="#3d1a60"/>
+<rect x="736" y="192" width="18" height="22" fill="#3d1a60"/>
+<!-- Flag on top -->
+<line x1="450" y1="0" x2="450" y2="-20" stroke="#f0c040" stroke-width="2"/>
+<polygon points="450,-20 480,-10 450,0" fill="#f0c040"/>
+<defs>
+<linearGradient id="castleGrad" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#3d1a5e"/>
+<stop offset="100%" stop-color="#1a0830"/>
+</linearGradient>
+<linearGradient id="towerGrad" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#5c2a8f"/>
+<stop offset="100%" stop-color="#2a0f4a"/>
+</linearGradient>
+<radialGradient id="winGlow" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#ffe090" stop-opacity="0.9"/>
+<stop offset="100%" stop-color="#ff9020" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="winGlow2" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#fff4c0" stop-opacity="1"/>
+<stop offset="100%" stop-color="#ffb030" stop-opacity="0.5"/>
+</radialGradient>
+<radialGradient id="winSmall" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#ffe8a0" stop-opacity="0.85"/>
+<stop offset="100%" stop-color="#ffa030" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>
+  <div class="hero-disney-001-mist"></div>
+  <!-- Sparkles layer -->
+  <div class="hero-disney-001-sparkles" id="hero-disney-001-sparkles"></div>
+  <!-- Shooting star -->
+  <div class="hero-disney-001-shoot" id="hero-disney-001-shoot"></div>
+  <!-- Main content -->
+  <div class="hero-disney-001-content">
+    <div class="hero-disney-001-eyebrow" id="hero-disney-001-eyebrow">✦ &nbsp; A Magical Greeting &nbsp; ✦</div>
+    <div class="hero-disney-001-title" id="hero-disney-001-title">
+      --TITLE--<br/><span class="hero-disney-001-accent-word">--ACCENT_WORD--</span>
+    </div>
+    <div class="hero-disney-001-divider" id="hero-disney-001-divider"></div>
+    <div class="hero-disney-001-subtitle" id="hero-disney-001-subtitle">--SUBTITLE--</div>
+    <div class="hero-disney-001-recipient" id="hero-disney-001-recipient">--RECIPIENT_NAME--</div>
+  </div>
+  <!-- Scroll hint -->
+  <div class="hero-disney-001-hint" id="hero-disney-001-hint">
+    <span class="hero-disney-001-hint-text">Begin</span>
+    <div class="hero-disney-001-hint-line"></div>
+  </div>
+  <!-- Magic wand cursor -->
+  <div class="hero-disney-001-cursor" id="hero-disney-001-cursor">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <line x1="2" y1="22" x2="18" y2="6" stroke="#f0c040" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="18" cy="6" r="3" fill="#f0c040"/>
+      <circle cx="18" cy="6" r="1.5" fill="#ffffff"/>
+    </svg>
+  </div>
+</div>
+<script>
+(function() {
+
+  // ─── Star field ────────────────────────────────────────────────────
+  const canvas = document.getElementById('hero-disney-001-stars');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resizeCanvas() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function buildStars(count) {
+    stars = [];
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H * 0.75,
+        r: Math.random() * 1.4 + 0.2,
+        alpha: Math.random() * 0.7 + 0.2,
+        speed: Math.random() * 0.004 + 0.001,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  let frameId;
+  function drawStars(t) {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      const twinkle = s.alpha * (0.7 + 0.3 * Math.sin(t * s.speed * 60 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 245, 230, ${twinkle})`;
+      ctx.fill();
+    });
+    frameId = requestAnimationFrame(drawStars);
+  }
+
+  resizeCanvas();
+  buildStars(220);
+  drawStars(0);
+  window.addEventListener('resize', () => { resizeCanvas(); buildStars(220); });
+
+  // ─── Sparkle pool ──────────────────────────────────────────────────
+  const sparkleContainer = document.getElementById('hero-disney-001-sparkles');
+  const POOL_SIZE = 28;
+  const pool = [];
+
+  for (let i = 0; i < POOL_SIZE; i++) {
+    const el = document.createElement('div');
+    el.className = 'hero-disney-001-sparkle';
+    sparkleContainer.appendChild(el);
+    pool.push({ el, busy: false });
+  }
+
+  function getFreeSparkle() {
+    return pool.find(s => !s.busy) || null;
+  }
+
+  function fireSparkle(x, y, fromCursor) {
+    const s = getFreeSparkle();
+    if (!s) return;
+    s.busy = true;
+    const size = fromCursor ? (Math.random() * 6 + 3) : (Math.random() * 8 + 4);
+    const hue = Math.random() > 0.5 ? '#f0c040' : '#e080ff';
+    s.el.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${hue};box-shadow:0 0 ${size*2}px ${size}px ${hue};opacity:0;`;
+    if (window.gsap) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = fromCursor ? (Math.random() * 40 + 10) : (Math.random() * 80 + 30);
+      gsap.fromTo(s.el,
+        { opacity: 1, scale: 1, x: 0, y: 0 },
+        { opacity: 0, scale: 0, x: Math.cos(angle) * dist, y: Math.sin(angle) * dist,
+          duration: fromCursor ? 0.6 : 1.4, ease: 'power2.out',
+          onComplete: () => { s.el.style.opacity = '0'; s.busy = false; }
+        }
+      );
+    }
+  }
+
+  // Ambient sparkles raining near castle
+  function ambientSparkle() {
+    const cx = window.innerWidth / 2;
+    const spread = window.innerWidth * 0.28;
+    const x = cx + (Math.random() - 0.5) * spread;
+    const y = window.innerHeight * (0.25 + Math.random() * 0.5);
+    fireSparkle(x, y, false);
+    setTimeout(ambientSparkle, Math.random() * 600 + 200);
+  }
+
+  // ─── Cursor wand ───────────────────────────────────────────────────
+  const cursor = document.getElementById('hero-disney-001-cursor');
+  let trailThrottle = 0;
+
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+
+    const now = Date.now();
+    if (now - trailThrottle > 60) {
+      trailThrottle = now;
+      fireSparkle(e.clientX, e.clientY, true);
+    }
+  });
+
+  // Hide system cursor on root
+  const root = document.getElementById('hero-disney-001-root');
+  root.style.cursor = 'none';
+
+  // ─── Shooting star ─────────────────────────────────────────────────
+  const shoot = document.getElementById('hero-disney-001-shoot');
+
+  function launchShootingStar() {
+    const startX = Math.random() * window.innerWidth * 0.6;
+    const startY = Math.random() * window.innerHeight * 0.3;
+    const angle = 20 + Math.random() * 20;
+
+    shoot.style.cssText = `left:${startX}px;top:${startY}px;transform:rotate(${angle}deg);opacity:0;`;
+
+    if (window.gsap) {
+      gsap.fromTo(shoot,
+        { opacity: 0, x: 0 },
+        { opacity: 1, x: 200, duration: 0.12, ease: 'power1.in',
+          onComplete: () => {
+            gsap.to(shoot, { opacity: 0, x: 320, duration: 0.25, ease: 'power1.out' });
+          }
+        }
+      );
+    }
+
+    setTimeout(launchShootingStar, Math.random() * 5000 + 3500);
+  }
+
+  // ─── Entrance animations ───────────────────────────────────────────
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 1) return;
+
+    const tl = gsap.timeline();
+
+    // Stars already visible; castle rises
+    tl.to('#hero-disney-001-castle', {
+      opacity: 0.92,
+      y: 0,
+      duration: 1.8,
+      ease: 'power3.out',
+      onStart: () => {
+        gsap.set('#hero-disney-001-castle', { y: 60 });
+      }
+    }, 0);
+
+    // Eyebrow
+    tl.to('#hero-disney-001-eyebrow', {
+      opacity: 1, y: 0, duration: 0.7, ease: 'power2.out',
+      onStart: () => gsap.set('#hero-disney-001-eyebrow', { y: 14 })
+    }, 0.6);
+
+    // Title
+    tl.to('#hero-disney-001-title', {
+      opacity: 1, y: 0, duration: 1.1, ease: 'expo.out',
+      onStart: () => gsap.set('#hero-disney-001-title', { y: 30 })
+    }, 0.85);
+
+    // Accent word sparkle pop
+    tl.fromTo('.hero-disney-001-accent-word',
+      { scale: 0.8, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(2)' },
+      1.3
+    );
+
+    // Divider
+    tl.to('#hero-disney-001-divider', {
+      opacity: 1, scaleX: 1, duration: 0.6, ease: 'power2.out',
+      onStart: () => gsap.set('#hero-disney-001-divider', { scaleX: 0, transformOrigin: 'center' })
+    }, 1.4);
+
+    // Subtitle
+    tl.to('#hero-disney-001-subtitle', {
+      opacity: 0.65, y: 0, duration: 0.8, ease: 'power2.out',
+      onStart: () => gsap.set('#hero-disney-001-subtitle', { y: 12 })
+    }, 1.5);
+
+    // Recipient name
+    tl.to('#hero-disney-001-recipient', {
+      opacity: 1, y: 0, duration: 0.9, ease: 'back.out(1.6)',
+      onStart: () => gsap.set('#hero-disney-001-recipient', { y: 18 })
+    }, 1.75);
+
+    // Scroll hint
+    tl.to('#hero-disney-001-hint', {
+      opacity: 1, duration: 0.7, ease: 'power2.out'
+    }, 2.4);
+
+    // Begin ambient effects after entrance
+    tl.call(() => {
+      ambientSparkle();
+      launchShootingStar();
+
+      // Castle float
+      gsap.to('#hero-disney-001-castle', {
+        y: -8, duration: 3.5, ease: 'sine.inOut',
+        yoyo: true, repeat: -1
+      });
+
+      // Accent word idle glow pulse
+      gsap.to('.hero-disney-001-accent-word', {
+        filter: 'drop-shadow(0 0 30px var(--accent))',
+        duration: 2, ease: 'sine.inOut',
+        yoyo: true, repeat: -1
+      });
+
+      // Orb slow drift
+      gsap.to('.hero-disney-001-orb-1', {
+        x: 30, y: 20, duration: 7, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+      gsap.to('.hero-disney-001-orb-2', {
+        x: -25, y: 15, duration: 8.5, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+    }, [], 2.0);
+  });
+
+  // Mouse parallax on content
+  document.addEventListener('mousemove', e => {
+    const dx = (e.clientX / window.innerWidth - 0.5) * 12;
+    const dy = (e.clientY / window.innerHeight - 0.5) * 8;
+    if (window.gsap) {
+      gsap.to('#hero-disney-001-content', { x: dx * 0.6, y: dy * 0.6, duration: 1.2, ease: 'power1.out' });
+      gsap.to('#hero-disney-001-castle', { x: dx * 1.2, duration: 1.8, ease: 'power1.out' });
+    }
+  });
+
+})();
+</script>

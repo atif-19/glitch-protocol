@@ -1,0 +1,470 @@
+<!--
+  Component: cm_dramatic_003
+  Type: hero
+  Aesthetic: Dramatic cinematic
+  Obsession: Title card
+  Tone: epic, cinematic, reverent
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  .cm-dramatic-003-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .cm-dramatic-003-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .cm-dramatic-003-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.96) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .cm-dramatic-003-letterbox-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: clamp(40px, 8vh, 90px);
+    background: #000;
+    z-index: 8;
+    transform: translateY(-100%);
+  }
+
+  .cm-dramatic-003-letterbox-bot {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: clamp(40px, 8vh, 90px);
+    background: #000;
+    z-index: 8;
+    transform: translateY(100%);
+  }
+
+  .cm-dramatic-003-aspect-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .cm-dramatic-003-h-rule {
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-h-rule-t { top: clamp(50px, 10vh, 110px); }
+  .cm-dramatic-003-h-rule-b { bottom: clamp(50px, 10vh, 110px); }
+
+  .cm-dramatic-003-v-rule {
+    position: absolute;
+    top: 0;
+    height: 0;
+    width: 1px;
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-v-rule-l { left: clamp(40px, 7vw, 100px); }
+  .cm-dramatic-003-v-rule-r { right: clamp(40px, 7vw, 100px); }
+
+  .cm-dramatic-003-corner-mark {
+    position: absolute;
+    z-index: 9;
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-corner-mark::before,
+  .cm-dramatic-003-corner-mark::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+  }
+
+  .cm-dramatic-003-corner-mark::before { width: clamp(14px, 2.5vw, 28px); height: 1px; top: 0; left: 0; }
+  .cm-dramatic-003-corner-mark::after  { width: 1px; height: clamp(14px, 2.5vw, 28px); top: 0; left: 0; }
+
+  .cm-dramatic-003-cm-tl { top: clamp(44px, 9vh, 100px); left: clamp(44px, 7vw, 100px); }
+  .cm-dramatic-003-cm-tr { top: clamp(44px, 9vh, 100px); right: clamp(44px, 7vw, 100px); transform: scaleX(-1); }
+  .cm-dramatic-003-cm-bl { bottom: clamp(44px, 9vh, 100px); left: clamp(44px, 7vw, 100px); transform: scaleY(-1); }
+  .cm-dramatic-003-cm-br { bottom: clamp(44px, 9vh, 100px); right: clamp(44px, 7vw, 100px); transform: scale(-1,-1); }
+
+  .cm-dramatic-003-bg-text {
+    position: absolute;
+    font-family: var(--font-heading);
+    font-size: clamp(10rem, 30vw, 26rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    white-space: nowrap;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .cm-dramatic-003-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: min(920px, 88vw);
+    width: 100%;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+
+  .cm-dramatic-003-pre-label {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 20px);
+    margin-bottom: clamp(1.8rem, 5vh, 3.5rem);
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-pre-line {
+    height: 1px;
+    width: clamp(24px, 5vw, 60px);
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
+  .cm-dramatic-003-pre-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.56rem, 0.9vw, 0.68rem);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.9;
+  }
+
+  .cm-dramatic-003-title-wrap {
+    overflow: hidden;
+    margin-bottom: clamp(0.4rem, 1.5vh, 1rem);
+    position: relative;
+  }
+
+  .cm-dramatic-003-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3.2rem, 10vw, 9rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 0.92;
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-accent-wrap {
+    overflow: hidden;
+    margin-bottom: clamp(1.8rem, 5vh, 3.5rem);
+  }
+
+  .cm-dramatic-003-accent-word {
+    font-family: var(--font-heading);
+    font-size: clamp(3.2rem, 10vw, 9rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    line-height: 0.92;
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-rule-center {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin-bottom: clamp(1.5rem, 4vh, 3rem);
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.78rem, 1.6vw, 1.05rem);
+    font-weight: 300;
+    color: rgba(240, 234, 248, 0.5);
+    letter-spacing: 0.12em;
+    line-height: 1.85;
+    text-transform: uppercase;
+    opacity: 0;
+    max-width: min(560px, 85vw);
+  }
+
+  .cm-dramatic-003-recipient-badge {
+    margin-top: clamp(2.5rem, 7vh, 5rem);
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.5vw, 22px);
+    opacity: 0;
+  }
+
+  .cm-dramatic-003-badge-line {
+    width: clamp(28px, 5vw, 55px);
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .cm-dramatic-003-badge-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .cm-dramatic-003-badge-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    opacity: 0.7;
+  }
+
+  .cm-dramatic-003-badge-name {
+    font-family: var(--font-body);
+    font-size: clamp(0.58rem, 1vw, 0.72rem);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.85;
+  }
+
+  .cm-dramatic-003-reel-counter {
+    position: absolute;
+    bottom: clamp(18px, 4vh, 45px);
+    right: clamp(48px, 8vw, 110px);
+    font-family: var(--font-body);
+    font-size: clamp(0.52rem, 0.85vw, 0.65rem);
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    opacity: 0;
+    z-index: 9;
+  }
+
+  .cm-dramatic-003-reel-counter span {
+    opacity: 0.5;
+  }
+
+  .cm-dramatic-003-scanline {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    top: 0;
+  }
+
+  .cm-dramatic-003-cursor-x {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(201,167,235,0.06), transparent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+  }
+</style>
+<div class="cm-dramatic-003-root" id="cm-dramatic-003-root">
+  <div class="cm-dramatic-003-grain"></div>
+  <div class="cm-dramatic-003-vignette"></div>
+  <div class="cm-dramatic-003-letterbox-top" id="cm-d3-lb-top"></div>
+  <div class="cm-dramatic-003-letterbox-bot" id="cm-d3-lb-bot"></div>
+  <div class="cm-dramatic-003-aspect-lines">
+    <div class="cm-dramatic-003-h-rule cm-dramatic-003-h-rule-t" id="cm-d3-hr-t"></div>
+    <div class="cm-dramatic-003-h-rule cm-dramatic-003-h-rule-b" id="cm-d3-hr-b"></div>
+    <div class="cm-dramatic-003-v-rule cm-dramatic-003-v-rule-l" id="cm-d3-vr-l"></div>
+    <div class="cm-dramatic-003-v-rule cm-dramatic-003-v-rule-r" id="cm-d3-vr-r"></div>
+  </div>
+  <div class="cm-dramatic-003-corner-mark cm-dramatic-003-cm-tl" id="cm-d3-c-tl"></div>
+  <div class="cm-dramatic-003-corner-mark cm-dramatic-003-cm-tr" id="cm-d3-c-tr"></div>
+  <div class="cm-dramatic-003-corner-mark cm-dramatic-003-cm-bl" id="cm-d3-c-bl"></div>
+  <div class="cm-dramatic-003-corner-mark cm-dramatic-003-cm-br" id="cm-d3-c-br"></div>
+  <div class="cm-dramatic-003-bg-text" id="cm-d3-bg-text">--ACCENT_WORD--</div>
+  <div class="cm-dramatic-003-scanline" id="cm-d3-scanline"></div>
+  <div class="cm-dramatic-003-cursor-x" id="cm-d3-cursor-x"></div>
+  <div class="cm-dramatic-003-reel-counter" id="cm-d3-reel">
+    SCENE <span>001</span> &nbsp;/&nbsp; <span>∞</span>
+  </div>
+  <div class="cm-dramatic-003-center">
+<div class="cm-dramatic-003-pre-label" id="cm-d3-pre">
+  <div class="cm-dramatic-003-pre-line"></div>
+  <div class="cm-dramatic-003-pre-text">presented to &nbsp;—&nbsp; --RECIPIENT_NAME--</div>
+  <div class="cm-dramatic-003-pre-line"></div>
+</div>
+
+<div class="cm-dramatic-003-title-wrap">
+  <span class="cm-dramatic-003-title" id="cm-d3-title">--TITLE--</span>
+</div>
+
+<div class="cm-dramatic-003-accent-wrap">
+  <span class="cm-dramatic-003-accent-word" id="cm-d3-accent">--ACCENT_WORD--</span>
+</div>
+
+<div class="cm-dramatic-003-rule-center" id="cm-d3-rule"></div>
+
+<div class="cm-dramatic-003-subtitle" id="cm-d3-subtitle">--SUBTITLE--</div>
+
+<div class="cm-dramatic-003-recipient-badge" id="cm-d3-badge">
+  <div class="cm-dramatic-003-badge-line"></div>
+  <div class="cm-dramatic-003-badge-inner">
+    <div class="cm-dramatic-003-badge-dot"></div>
+    <div class="cm-dramatic-003-badge-name">--RECIPIENT_NAME--</div>
+    <div class="cm-dramatic-003-badge-dot"></div>
+  </div>
+  <div class="cm-dramatic-003-badge-line"></div>
+</div></div>
+</div>
+<script>
+(function () {
+
+  function runEntrance() {
+    var tl = gsap.timeline();
+
+    gsap.set('#cm-d3-lb-top', { y: '-100%' });
+    gsap.set('#cm-d3-lb-bot', { y: '100%' });
+    gsap.set(['#cm-d3-c-tl','#cm-d3-c-tr','#cm-d3-c-bl','#cm-d3-c-br'], { opacity: 0 });
+    gsap.set('#cm-d3-pre', { opacity: 0, y: -10 });
+    gsap.set('#cm-d3-subtitle', { opacity: 0, y: 10 });
+    gsap.set('#cm-d3-badge', { opacity: 0 });
+    gsap.set('#cm-d3-rule', { opacity: 0, width: 0 });
+    gsap.set('#cm-d3-reel', { opacity: 0 });
+    gsap.set('#cm-d3-bg-text', { opacity: 0, scale: 1.08 });
+
+    tl.to('#cm-d3-lb-top', { y: '0%', duration: 0.55, ease: 'power4.inOut' }, 0);
+    tl.to('#cm-d3-lb-bot', { y: '0%', duration: 0.55, ease: 'power4.inOut' }, 0.05);
+    tl.to('#cm-d3-lb-top', { y: '-100%', duration: 0.6, ease: 'power4.inOut' }, 0.75);
+    tl.to('#cm-d3-lb-bot', { y: '100%', duration: 0.6, ease: 'power4.inOut' }, 0.8);
+
+    tl.to('#cm-d3-hr-t', { width: '100%', opacity: 0.14, duration: 0.7, ease: 'power3.inOut' }, 0.85);
+    tl.to('#cm-d3-hr-b', { width: '100%', opacity: 0.14, duration: 0.7, ease: 'power3.inOut' }, 0.92);
+    tl.to('#cm-d3-vr-l', { height: '100%', opacity: 0.08, duration: 0.6, ease: 'power3.inOut' }, 1.05);
+    tl.to('#cm-d3-vr-r', { height: '100%', opacity: 0.08, duration: 0.6, ease: 'power3.inOut' }, 1.12);
+    tl.to(['#cm-d3-c-tl','#cm-d3-c-tr','#cm-d3-c-bl','#cm-d3-c-br'], { opacity: 1, duration: 0.35, stagger: 0.07 }, 1.3);
+
+    tl.to('#cm-d3-bg-text', { opacity: 0.025, scale: 1, duration: 1.4, ease: 'power2.out' }, 0.9);
+
+    tl.to('#cm-d3-pre', { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, 1.1);
+
+    tl.to('#cm-d3-title', { opacity: 1, y: 0, duration: 1.0, ease: 'expo.out' }, 1.3);
+    tl.to('#cm-d3-accent', { opacity: 1, y: 0, duration: 1.0, ease: 'expo.out' }, 1.52);
+
+    tl.to('#cm-d3-rule', { opacity: 0.5, width: '100%', duration: 0.8, ease: 'power2.inOut' }, 2.0);
+    tl.to('#cm-d3-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, 2.2);
+    tl.to('#cm-d3-badge', { opacity: 1, duration: 0.65, ease: 'power2.out' }, 2.6);
+    tl.to('#cm-d3-reel', { opacity: 0.55, duration: 0.5, ease: 'power2.out' }, 2.7);
+
+    gsap.to('#cm-d3-bg-text', {
+      y: -18,
+      duration: 14,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2.5
+    });
+
+    gsap.to('#cm-d3-hr-t', { opacity: 0.06, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3 });
+    gsap.to('#cm-d3-hr-b', { opacity: 0.06, duration: 8, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3.5 });
+
+    function runScanline() {
+      var el = document.getElementById('cm-d3-scanline');
+      gsap.set(el, { top: '-2px', opacity: 0 });
+      gsap.to(el, {
+        top: '102%',
+        opacity: 0.1,
+        duration: 2.2,
+        ease: 'none',
+        onComplete: function () {
+          gsap.to(el, { opacity: 0, duration: 0.15, onComplete: function () {
+            setTimeout(runScanline, 6000 + Math.random() * 8000);
+          }});
+        }
+      });
+    }
+    setTimeout(runScanline, 3500);
+
+    function reelTick() {
+      var reel = document.getElementById('cm-d3-reel');
+      var n = 1;
+      setInterval(function () {
+        n = (n % 99) + 1;
+        var s = n < 10 ? '00' + n : n < 100 ? '0' + n : '' + n;
+        reel.innerHTML = 'SCENE <span>' + s + '</span> &nbsp;/&nbsp; <span>∞</span>';
+      }, 3000);
+    }
+    setTimeout(reelTick, 3000);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail && e.detail.index !== 1) return;
+    runEntrance();
+  });
+
+  var root = document.getElementById('cm-dramatic-003-root');
+  var cursorX = document.getElementById('cm-d3-cursor-x');
+
+  root.addEventListener('mousemove', function (e) {
+    var rect = root.getBoundingClientRect();
+    var mx = e.clientX - rect.left;
+    var my = e.clientY - rect.top;
+    var cx = (mx / rect.width - 0.5) * 2;
+    var cy = (my / rect.height - 0.5) * 2;
+
+    gsap.to(cursorX, { left: mx, opacity: 1, duration: 0.35, ease: 'power2.out' });
+
+    gsap.to('#cm-d3-title', { x: cx * 10, rotateY: cx * 2, transformPerspective: 1000, duration: 1, ease: 'power2.out' });
+    gsap.to('#cm-d3-accent', { x: -cx * 8, rotateY: -cx * 1.5, transformPerspective: 1000, duration: 1, ease: 'power2.out' });
+    gsap.to('#cm-d3-bg-text', { x: cx * 20, y: cy * 12, duration: 1.2, ease: 'power2.out' });
+    gsap.to('#cm-d3-subtitle', { x: cx * 5, duration: 1, ease: 'power2.out' });
+    gsap.to('#cm-d3-pre', { x: cx * 4, duration: 1, ease: 'power2.out' });
+  });
+
+  root.addEventListener('mouseleave', function () {
+    gsap.to(cursorX, { opacity: 0, duration: 0.5 });
+    gsap.to(['#cm-d3-title','#cm-d3-accent','#cm-d3-bg-text','#cm-d3-subtitle','#cm-d3-pre'], {
+      x: 0, y: 0, rotateY: 0, duration: 1, ease: 'power3.out'
+    });
+  });
+
+  root.addEventListener('mouseenter', function () {
+    gsap.to(['#cm-d3-c-tl','#cm-d3-c-tr','#cm-d3-c-bl','#cm-d3-c-br'], { opacity: 1, duration: 0.3 });
+  });
+
+  setTimeout(runEntrance, 300);
+})();
+</script>

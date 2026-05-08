@@ -1,0 +1,880 @@
+<!-- Component: ending-dreamy-005
+     Type: ending
+     Aesthetic: Dreamy / Candle Fade
+     Obsession: Warmth / Intimacy / Candlelight
+     Tone: tender, luminous, wistful
+     Occasion: both
+     Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME--
+-->
+<style>
+  /* =====================================================
+     ENDING-DREAMY-005 | Candle Fade Aesthetic
+     Full-screen dreamy ending — warm candlelight glow,
+     wax drip details, flame flicker, soft fade to dark
+     ===================================================== */
+
+  /* Scoped root variables */
+  .ed005-root {
+    --ed005-heading: var(--font-heading);
+    --ed005-body: var(--font-body);
+    --ed005-flame-core:  color-mix(in srgb, var(--accent) 95%, white);
+    --ed005-flame-mid:   color-mix(in srgb, var(--accent) 70%, var(--primary));
+    --ed005-flame-outer: color-mix(in srgb, var(--primary) 60%, transparent);
+    --ed005-wax:         color-mix(in srgb, var(--text) 12%, var(--bg));
+    --ed005-glow:        color-mix(in srgb, var(--accent) 35%, transparent);
+    --ed005-glow-soft:   color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  /* Full screen container */
+  .ed005-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  /* ── Deep dark vignette — candlelit room ── */
+  .ed005-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 42%,
+      transparent 18%,
+      color-mix(in srgb, var(--bg) 40%, transparent) 50%,
+      color-mix(in srgb, var(--bg) 82%, transparent) 75%,
+      var(--bg) 100%
+    );
+  }
+
+  /* ── Warm light wash from candle ── */
+  .ed005-light-wash {
+    position: absolute;
+    top: 0; left: 50%;
+    translate: -50% 0;
+    width: clamp(280px, 65vw, 820px);
+    height: clamp(280px, 65vw, 820px);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 38%,
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      color-mix(in srgb, var(--primary) 10%, transparent) 38%,
+      color-mix(in srgb, var(--accent)  4%, transparent) 60%,
+      transparent 75%
+    );
+    filter: blur(clamp(20px, 4vw, 55px));
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── Grain texture ── */
+  .ed005-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    animation: ed005-grain 0.15s steps(1) infinite;
+  }
+
+  @keyframes ed005-grain {
+    0%   { background-position: 0 0; }
+    25%  { background-position: -24px 14px; }
+    50%  { background-position: 16px -20px; }
+    75%  { background-position: -12px 26px; }
+    100% { background-position: 22px -10px; }
+  }
+
+  /* ══════════════════════════════════════
+     CANDLE ANATOMY
+     Positioned center-upper area
+     ══════════════════════════════════════ */
+
+  /* ── Candle group wrapper ── */
+  .ed005-candle-wrap {
+    position: absolute;
+    top: clamp(14%, 18%, 22%);
+    left: 50%;
+    translate: -50% 0;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+  }
+
+  /* ── Flame assembly ── */
+  .ed005-flame-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: clamp(-2px, -0.3vh, -1px);
+  }
+
+  /* Flame outer aura */
+  .ed005-flame-aura {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    translate: -50% 0;
+    width:  clamp(36px, 6vw, 68px);
+    height: clamp(52px, 9vw, 100px);
+    background: radial-gradient(
+      ellipse at 50% 70%,
+      var(--ed005-flame-outer) 0%,
+      transparent 70%
+    );
+    filter: blur(clamp(8px, 1.5vw, 18px));
+    border-radius: 50% 50% 40% 40%;
+    animation: ed005-flameAura 2.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes ed005-flameAura {
+    0%,100% { transform: scaleX(1)    scaleY(1);    opacity: 0.7; }
+    30%      { transform: scaleX(1.12) scaleY(0.95); opacity: 0.9; }
+    65%      { transform: scaleX(0.9)  scaleY(1.08); opacity: 0.6; }
+  }
+
+  /* Flame body */
+  .ed005-flame {
+    position: relative;
+    width:  clamp(14px, 2.2vw, 28px);
+    height: clamp(28px, 4.5vw, 56px);
+    background: radial-gradient(
+      ellipse at 50% 75%,
+      var(--ed005-flame-core) 0%,
+      var(--ed005-flame-mid)  45%,
+      var(--ed005-flame-outer) 80%,
+      transparent 100%
+    );
+    border-radius: 50% 50% 30% 30% / 60% 60% 40% 40%;
+    filter: blur(0.6px);
+    transform-origin: 50% 100%;
+    animation: ed005-flicker 1.8s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  @keyframes ed005-flicker {
+    0%,100% { transform: rotate(-1.5deg) scaleX(1)    scaleY(1);    }
+    20%      { transform: rotate( 2.5deg) scaleX(0.93) scaleY(1.06); }
+    40%      { transform: rotate(-2deg)   scaleX(1.06) scaleY(0.94); }
+    60%      { transform: rotate( 1deg)   scaleX(0.96) scaleY(1.04); }
+    80%      { transform: rotate(-1deg)   scaleX(1.04) scaleY(0.97); }
+  }
+
+  /* Flame inner bright core */
+  .ed005-flame-inner {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    translate: -50% 0;
+    width: 35%;
+    height: 45%;
+    background: color-mix(in srgb, white 80%, var(--ed005-flame-core));
+    border-radius: 50% 50% 35% 35%;
+    filter: blur(1.5px);
+    opacity: 0.9;
+    animation: ed005-innerFlicker 1.4s ease-in-out infinite;
+  }
+
+  @keyframes ed005-innerFlicker {
+    0%,100% { opacity: 0.9; transform: scaleY(1); }
+    45%      { opacity: 0.6; transform: scaleY(0.85); }
+    75%      { opacity: 1;   transform: scaleY(1.1); }
+  }
+
+  /* ── Glow halo beneath flame ── */
+  .ed005-glow-halo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: clamp(60px, 12vw, 140px);
+    height: clamp(60px, 12vw, 140px);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--ed005-glow) 0%, transparent 70%);
+    filter: blur(clamp(10px, 2vw, 24px));
+    animation: ed005-haloBreath 2.2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes ed005-haloBreath {
+    0%,100% { transform: scale(1);    opacity: 0.8; }
+    50%      { transform: scale(1.22); opacity: 0.5; }
+  }
+
+  /* ── Candle body ── */
+  .ed005-candle-body {
+    position: relative;
+    width:  clamp(22px, 3.5vw, 44px);
+    height: clamp(70px, 12vw, 150px);
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--ed005-wax) 70%, var(--bg)) 0%,
+      var(--ed005-wax) 35%,
+      color-mix(in srgb, var(--text) 20%, var(--ed005-wax)) 60%,
+      color-mix(in srgb, var(--bg) 60%, var(--ed005-wax)) 100%
+    );
+    border-radius: 3px 3px clamp(2px, 0.5vw, 6px) clamp(2px, 0.5vw, 6px);
+    box-shadow:
+      inset -3px 0 8px rgba(0,0,0,0.25),
+      inset 2px 0 6px rgba(255,255,255,0.04),
+      0 2px 12px rgba(0,0,0,0.35);
+  }
+
+  /* Candle top wax pool */
+  .ed005-candle-body::before {
+    content: '';
+    position: absolute;
+    top: -3px; left: -3px; right: -3px;
+    height: clamp(6px, 1.2vw, 14px);
+    background: color-mix(in srgb, var(--ed005-wax) 80%, var(--accent) 8%);
+    border-radius: 50%;
+    box-shadow: 0 0 clamp(6px, 1vw, 14px) var(--ed005-glow-soft);
+  }
+
+  /* Candle wick */
+  .ed005-candle-body::after {
+    content: '';
+    position: absolute;
+    top: -clamp(8px, 1.5vw, 18px);
+    left: 50%;
+    translate: -50% 0;
+    width: 1.5px;
+    height: clamp(8px, 1.5vw, 18px);
+    background: color-mix(in srgb, var(--text) 60%, var(--bg));
+    border-radius: 1px;
+  }
+
+  /* ── Wax drip elements ── */
+  .ed005-drip {
+    position: absolute;
+    bottom: 0;
+    width: clamp(4px, 0.7vw, 8px);
+    background: linear-gradient(
+      to bottom,
+      var(--ed005-wax),
+      color-mix(in srgb, var(--ed005-wax) 70%, transparent)
+    );
+    border-radius: 0 0 50% 50%;
+    transform-origin: top center;
+    opacity: 0;
+  }
+
+  /* ── Floating ember particles ── */
+  .ed005-ember {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--ed005-flame-core);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    box-shadow: 0 0 4px 1px var(--ed005-glow);
+  }
+
+  /* ── Smoke wisps (CSS-drawn) ── */
+  .ed005-smoke {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    translate: -50% 0;
+    z-index: 7;
+    pointer-events: none;
+  }
+
+  .ed005-smoke-strand {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    height: clamp(20px, 4vh, 48px);
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--text) 20%, transparent),
+      transparent
+    );
+    border-radius: 1px;
+    transform-origin: bottom center;
+    opacity: 0;
+    animation: ed005-smokeRise 3s ease-out infinite;
+  }
+
+  .ed005-smoke-strand:nth-child(1) { left: -4px; animation-delay: 0s;    animation-duration: 3.2s; }
+  .ed005-smoke-strand:nth-child(2) { left:  0px; animation-delay: 0.6s;  animation-duration: 2.8s; }
+  .ed005-smoke-strand:nth-child(3) { left:  4px; animation-delay: 1.2s;  animation-duration: 3.5s; }
+
+  @keyframes ed005-smokeRise {
+    0%   { transform: translateY(0)   scaleX(1)   rotate(0deg); opacity: 0; }
+    15%  { opacity: 0.35; }
+    60%  { transform: translateY(-clamp(24px,5vh,60px)) scaleX(1.8) rotate(8deg);  opacity: 0.2; }
+    100% { transform: translateY(-clamp(48px,10vh,120px)) scaleX(2.5) rotate(-6deg); opacity: 0; }
+  }
+
+  /* ══════════════════════════════════════
+     CONTENT TYPOGRAPHY
+     ══════════════════════════════════════ */
+
+  /* ── Main content stage ── */
+  .ed005-stage {
+    position: relative;
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: clamp(300px, 78vw, 760px);
+    padding: clamp(14px, 3vw, 48px);
+    margin-top: clamp(140px, 28vmin, 320px);
+    gap: clamp(10px, 2vh, 24px);
+    opacity: 0;
+  }
+
+  /* ── Decorative flame-rule ── */
+  .ed005-flame-rule {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 20px);
+    width: 100%;
+    max-width: clamp(160px, 40vw, 420px);
+    opacity: 0;
+  }
+
+  .ed005-flame-rule-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--accent) 50%, transparent),
+      transparent
+    );
+  }
+
+  .ed005-flame-rule-dot {
+    width: clamp(4px, 0.6vw, 7px);
+    height: clamp(4px, 0.6vw, 7px);
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    box-shadow: 0 0 6px 2px var(--ed005-glow);
+    animation: ed005-dotGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes ed005-dotGlow {
+    0%,100% { box-shadow: 0 0 4px 1px var(--ed005-glow);  opacity: 0.9; }
+    50%      { box-shadow: 0 0 10px 3px var(--ed005-glow); opacity: 0.5; }
+  }
+
+  /* ── For label ── */
+  .ed005-for-label {
+    font-family: var(--ed005-body);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: clamp(4px, 0.9vw, 12px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  /* ── Recipient name ── */
+  .ed005-name {
+    font-family: var(--ed005-heading);
+    font-size: clamp(12px, 1.8vw, 22px);
+    letter-spacing: clamp(5px, 1.1vw, 16px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0;
+  }
+
+  /* ── Ending line ── */
+  .ed005-ending-line {
+    font-family: var(--ed005-heading);
+    font-size: clamp(20px, 4vw, 56px);
+    line-height: 1.2;
+    color: var(--text);
+    font-weight: 400;
+    opacity: 0;
+    max-width: 100%;
+    text-shadow: 0 0 clamp(20px,4vw,50px) var(--ed005-glow-soft);
+  }
+
+  /* ── Song row ── */
+  .ed005-song-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 18px);
+    opacity: 0;
+    margin-top: clamp(4px, 1vh, 12px);
+  }
+
+  .ed005-song-flame {
+    font-size: clamp(12px, 1.6vw, 18px);
+    animation: ed005-songFlame 1.8s ease-in-out infinite;
+    line-height: 1;
+  }
+
+  @keyframes ed005-songFlame {
+    0%,100% { transform: rotate(-6deg) scale(1); }
+    50%      { transform: rotate( 6deg) scale(1.15); }
+  }
+
+  .ed005-song-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1px, 0.3vh, 4px);
+  }
+
+  .ed005-song-label {
+    font-family: var(--ed005-body);
+    font-size: clamp(7px, 0.75vw, 9px);
+    letter-spacing: clamp(2px, 0.45vw, 6px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.65;
+  }
+
+  .ed005-song-name {
+    font-family: var(--ed005-heading);
+    font-size: clamp(11px, 1.3vw, 16px);
+    font-style: italic;
+    color: var(--text);
+    opacity: 0.88;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Fade-to-dark overlay (end state) ── */
+  .ed005-fade-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: var(--bg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── Custom cursor ── */
+  .ed005-cursor {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: clamp(14px, 1.8vw, 22px);
+    height: clamp(14px, 1.8vw, 22px);
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    translate: -50% -50%;
+    mix-blend-mode: screen;
+    opacity: 0.75;
+  }
+
+  .ed005-cursor-dot {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--ed005-flame-core);
+    translate: -50% -50%;
+    box-shadow: 0 0 5px 2px var(--ed005-glow);
+  }
+</style>
+<div class="ed005-root" id="ed005-root">
+  <!-- Warm light radial wash -->
+  <div class="ed005-light-wash" id="ed005-lightWash"></div>
+  <!-- Deep vignette -->
+  <div class="ed005-vignette"></div>
+  <!-- Film grain -->
+  <div class="ed005-grain"></div>
+  <!-- Fade-to-dark final overlay -->
+  <div class="ed005-fade-overlay" id="ed005-fadeOverlay"></div>
+  <!-- ── Candle assembly ── -->
+  <div class="ed005-candle-wrap" id="ed005-candleWrap">
+<!-- Glow halo behind flame -->
+<div style="position:relative; display:flex; flex-direction:column; align-items:center;">
+  <div class="ed005-glow-halo" id="ed005-glowHalo"></div>
+
+  <!-- Smoke wisps -->
+  <div class="ed005-smoke" id="ed005-smoke">
+    <div class="ed005-smoke-strand"></div>
+    <div class="ed005-smoke-strand"></div>
+    <div class="ed005-smoke-strand"></div>
+  </div>
+
+  <!-- Flame -->
+  <div class="ed005-flame-wrap" id="ed005-flameWrap">
+    <div class="ed005-flame-aura"></div>
+    <div class="ed005-flame" id="ed005-flame">
+      <div class="ed005-flame-inner"></div>
+    </div>
+  </div>
+
+  <!-- Candle body with drips -->
+  <div class="ed005-candle-body" id="ed005-candleBody">
+    <!-- Wax drips injected by JS -->
+  </div>
+</div></div>
+  <!-- ── Text stage ── -->
+  <div class="ed005-stage" id="ed005-stage">
+<!-- Flame rule top -->
+<div class="ed005-flame-rule" id="ed005-ruleTop">
+  <div class="ed005-flame-rule-line"></div>
+  <div class="ed005-flame-rule-dot"></div>
+  <div class="ed005-flame-rule-line"></div>
+</div>
+
+<!-- For label -->
+<div class="ed005-for-label" id="ed005-forLabel">for</div>
+
+<!-- Recipient name -->
+<div class="ed005-name" id="ed005-name">--RECIPIENT_NAME--</div>
+
+<!-- Ending line -->
+<div class="ed005-ending-line" id="ed005-endingLine">--ENDING_LINE--</div>
+
+<!-- Flame rule bottom -->
+<div class="ed005-flame-rule" id="ed005-ruleBottom">
+  <div class="ed005-flame-rule-line"></div>
+  <div class="ed005-flame-rule-dot" style="animation-delay:1s;"></div>
+  <div class="ed005-flame-rule-line"></div>
+</div>
+
+<!-- Song row -->
+<div class="ed005-song-row" id="ed005-songRow">
+  <span class="ed005-song-flame">🕯️</span>
+  <div class="ed005-song-info">
+    <span class="ed005-song-label">Playing softly</span>
+    <span class="ed005-song-name">--SONG_NAME--</span>
+  </div>
+</div></div>
+  <!-- Ember particles container -->
+  <div id="ed005-emberWrap" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>
+  <!-- Custom cursor -->
+  <div class="ed005-cursor"     id="ed005-cursor"></div>
+  <div class="ed005-cursor-dot" id="ed005-cursorDot"></div>
+</div>
+<script>
+(function () {
+  /* =====================================================
+     ENDING-DREAMY-005 | Candle Fade
+     Gates on glitch:enter index === 7
+     ===================================================== */
+
+  var SECTION_INDEX = 7;
+
+  /* ── DOM refs ── */
+  var root         = document.getElementById('ed005-root');
+  var lightWash    = document.getElementById('ed005-lightWash');
+  var candleWrap   = document.getElementById('ed005-candleWrap');
+  var flameWrap    = document.getElementById('ed005-flameWrap');
+  var flame        = document.getElementById('ed005-flame');
+  var glowHalo     = document.getElementById('ed005-glowHalo');
+  var candleBody   = document.getElementById('ed005-candleBody');
+  var smoke        = document.getElementById('ed005-smoke');
+  var stage        = document.getElementById('ed005-stage');
+  var forLabel     = document.getElementById('ed005-forLabel');
+  var nameEl       = document.getElementById('ed005-name');
+  var endingLine   = document.getElementById('ed005-endingLine');
+  var ruleTop      = document.getElementById('ed005-ruleTop');
+  var ruleBottom   = document.getElementById('ed005-ruleBottom');
+  var songRow      = document.getElementById('ed005-songRow');
+  var emberWrap    = document.getElementById('ed005-emberWrap');
+  var fadeOverlay  = document.getElementById('ed005-fadeOverlay');
+  var cursorEl     = document.getElementById('ed005-cursor');
+  var cursorDot    = document.getElementById('ed005-cursorDot');
+
+  /* ── Utility ── */
+  function rnd (a, b) { return a + Math.random() * (b - a); }
+
+  /* ── Build wax drips on candle body ── */
+  function buildDrips () {
+    var positions = [18, 38, 62, 82];
+    positions.forEach(function (left, i) {
+      var drip = document.createElement('div');
+      drip.className = 'ed005-drip';
+      var h = rnd(10, 32);
+      drip.style.cssText = [
+        'left:' + left + '%',
+        'height:' + h + 'px',
+        'width:' + rnd(4, 7) + 'px',
+        'bottom:' + rnd(10, 55) + '%',
+        'border-radius:0 0 50% 50%'
+      ].join(';');
+      candleBody.appendChild(drip);
+    });
+  }
+  buildDrips();
+
+  /* ── Build floating ember particles ── */
+  var EMBER_COUNT = 22;
+  var embers = [];
+
+  function buildEmbers () {
+    for (var i = 0; i < EMBER_COUNT; i++) {
+      var em = document.createElement('div');
+      em.className = 'ed005-ember';
+      var sz = rnd(1.5, 4);
+      em.style.cssText = [
+        'width:'  + sz + 'px',
+        'height:' + sz + 'px',
+        'left:50%',
+        'top:' + (candleWrap.offsetTop || 20) + '%'
+      ].join(';');
+      emberWrap.appendChild(em);
+      embers.push(em);
+    }
+  }
+  buildEmbers();
+
+  /* ── Custom cursor tracking ── */
+  document.addEventListener('mousemove', function (e) {
+    gsap.to(cursorEl,  { x: e.clientX, y: e.clientY, duration: 0.28, ease: 'power2.out' });
+    gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0.07, ease: 'none' });
+
+    /* Flame leans toward cursor horizontally */
+    var cx = window.innerWidth / 2;
+    var lean = ((e.clientX - cx) / cx) * 8;
+    gsap.to(flame, {
+      rotationZ: lean,
+      duration: 1.5,
+      ease: 'power1.out',
+      overwrite: 'auto'
+    });
+    gsap.to(glowHalo, {
+      x: lean * 1.2,
+      duration: 1.8,
+      ease: 'power1.out'
+    });
+  });
+
+  /* ── Continuous ember float animation ── */
+  function launchEmber (em) {
+    /* Anchor ember near flame top */
+    var candleRect = candleBody.getBoundingClientRect();
+    var startX = candleRect.left + candleRect.width / 2;
+    var startY = candleRect.top - rnd(10, 30);
+
+    gsap.set(em, {
+      x: startX + rnd(-8, 8),
+      y: startY,
+      opacity: rnd(0.5, 0.9),
+      scale: rnd(0.5, 1.2)
+    });
+
+    gsap.to(em, {
+      x: startX + rnd(-55, 55),
+      y: startY - rnd(60, 180),
+      opacity: 0,
+      scale: 0,
+      duration: rnd(1.2, 2.8),
+      ease: 'power1.out',
+      onComplete: function () {
+        gsap.delayedCall(rnd(0.2, 1.5), function () { launchEmber(em); });
+      }
+    });
+  }
+
+  /* ── Candle fade sequence — dramatic slow extinguish ── */
+  function startCandleFade () {
+    /* After 14 seconds, slowly dim and extinguish the candle */
+    gsap.delayedCall(14, function () {
+      var fadeTl = gsap.timeline();
+
+      /* Flame flickers more erratically before dying */
+      fadeTl.to(flame, {
+        scaleX: 0.6, scaleY: 0.7,
+        duration: 0.4, ease: 'power2.inOut',
+        yoyo: true, repeat: 5
+      });
+
+      /* Flame shrinks and disappears */
+      fadeTl.to(flameWrap, {
+        scaleY: 0, opacity: 0,
+        duration: 1.2, ease: 'power3.in'
+      });
+
+      /* Glow halo dims */
+      fadeTl.to(glowHalo, {
+        opacity: 0, scale: 0.5,
+        duration: 1.0, ease: 'power2.in'
+      }, '-=0.8');
+
+      /* Light wash dims gradually */
+      fadeTl.to(lightWash, {
+        opacity: 0, duration: 3.5, ease: 'power1.inOut'
+      }, '-=0.6');
+
+      /* Smoke wisps appear as candle dies */
+      fadeTl.to(smoke.querySelectorAll('.ed005-smoke-strand'), {
+        opacity: 0.5, duration: 0.4, stagger: 0.15
+      }, '-=2.8');
+
+      /* Content fades to dark — curtain call */
+      fadeTl.to(fadeOverlay, {
+        opacity: 0.88, duration: 5.5, ease: 'power2.inOut'
+      }, '-=2.0');
+    });
+  }
+
+  /* ── glitch:enter handler ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1. Light wash blooms from top */
+    tl.to(lightWash, {
+      opacity: 1, duration: 1.8, ease: 'power2.inOut'
+    });
+
+    /* 2. Candle assembly fades in with upward drift */
+    tl.fromTo(candleWrap,
+      { opacity: 0, y: 22 },
+      { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' },
+      '-=1.0'
+    );
+
+    /* 3. Wax drips reveal — slide down one by one */
+    tl.fromTo(
+      candleBody.querySelectorAll('.ed005-drip'),
+      { opacity: 0, scaleY: 0 },
+      {
+        opacity: 1, scaleY: 1,
+        duration: 0.6,
+        stagger: 0.18,
+        ease: 'power2.out',
+        transformOrigin: 'top center'
+      },
+      '-=0.4'
+    );
+
+    /* 4. Stage content fades in */
+    tl.fromTo(stage,
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 0.9 },
+      '-=0.5'
+    );
+
+    /* 5. Top rule expands */
+    tl.fromTo(ruleTop,
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.65, ease: 'power2.inOut' },
+      '-=0.5'
+    );
+
+    /* 6. "For" label */
+    tl.fromTo(forLabel,
+      { opacity: 0, y: 8, letterSpacing: '0.4em' },
+      { opacity: 1, y: 0, letterSpacing: '', duration: 0.65 },
+      '-=0.3'
+    );
+
+    /* 7. Name — letter stagger */
+    tl.fromTo(nameEl,
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.75 },
+      '-=0.3'
+    );
+
+    /* 8. Ending line — word cascade with warm glow build */
+    var words = endingLine.textContent.trim().split(/\s+/);
+    endingLine.innerHTML = words.map(function (w) {
+      return '<span style="display:inline-block;opacity:0;margin-right:0.22em;">' + w + '</span>';
+    }).join('');
+
+    tl.set(endingLine, { opacity: 1 }, '-=0.1');
+    tl.fromTo(
+      endingLine.querySelectorAll('span'),
+      { opacity: 0, y: 18, filter: 'blur(4px)' },
+      {
+        opacity: 1, y: 0, filter: 'blur(0px)',
+        duration: 0.7,
+        stagger: 0.09,
+        ease: 'power2.out'
+      },
+      '-=0.2'
+    );
+
+    /* 9. Bottom rule */
+    tl.fromTo(ruleBottom,
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.65, ease: 'power2.inOut' },
+      '-=0.15'
+    );
+
+    /* 10. Song row */
+    tl.fromTo(songRow,
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.8 },
+      '-=0.2'
+    );
+
+    /* ── IDLE animations ── */
+    tl.add(function () {
+
+      /* Light wash gentle breathe */
+      gsap.to(lightWash, {
+        opacity: 0.75,
+        scale: 1.08,
+        duration: 3.5,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+      /* Stage subtle float */
+      gsap.to(stage, {
+        y: -7,
+        duration: 4.5,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+      /* Candle sway — very gentle */
+      gsap.to(candleWrap, {
+        rotationZ: 0.8,
+        duration: 3.8,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        transformOrigin: '50% 100%'
+      });
+
+      /* Ending line shimmer — text glow pulse */
+      gsap.to(endingLine, {
+        textShadow: '0 0 clamp(35px,7vw,80px) var(--ed005-glow-soft)',
+        duration: 2.8,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+      /* Launch all embers in staggered fashion */
+      embers.forEach(function (em, i) {
+        gsap.delayedCall(i * 0.22 + rnd(0, 0.8), function () {
+          launchEmber(em);
+        });
+      });
+
+      /* Start slow candle fade sequence */
+      startCandleFade();
+    });
+
+  }); /* end glitch:enter */
+
+})();
+</script>

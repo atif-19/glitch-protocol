@@ -1,0 +1,563 @@
+<!-- Component: ending-cinematic-002
+ Type: ending
+ Aesthetic: Cinematic
+ Tone: profound, haunting, still
+ Occasion: both
+ Obsession: black screen, typographic silence, final frame, director's cut
+ Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME-- -->
+<style>
+  .ec002-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: default;
+  }
+
+  .ec002-noise {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .ec002-scanline {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.012) 2px,
+      rgba(255,255,255,0.012) 4px
+    );
+    opacity: 0;
+  }
+
+  .ec002-curtain-top {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 50%;
+    background: #000;
+    z-index: 10;
+    transform-origin: top center;
+  }
+
+  .ec002-curtain-bot {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 50%;
+    background: #000;
+    z-index: 10;
+    transform-origin: bottom center;
+  }
+
+  .ec002-letterbox-top {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: clamp(28px, 5.5vh, 56px);
+    background: #000;
+    z-index: 8;
+    opacity: 0;
+  }
+
+  .ec002-letterbox-bot {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: clamp(28px, 5.5vh, 56px);
+    background: #000;
+    z-index: 8;
+    opacity: 0;
+  }
+
+  .ec002-timecode {
+    position: absolute;
+    top: clamp(10px, 2.2vh, 22px);
+    left: clamp(16px, 3vw, 36px);
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.48rem, 0.9vw, 0.62rem);
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.18);
+    z-index: 9;
+    opacity: 0;
+    user-select: none;
+  }
+
+  .ec002-reel {
+    position: absolute;
+    top: clamp(10px, 2.2vh, 22px);
+    right: clamp(16px, 3vw, 36px);
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.45rem, 0.85vw, 0.58rem);
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.1);
+    z-index: 9;
+    opacity: 0;
+    user-select: none;
+  }
+
+  .ec002-center {
+    position: relative;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+    padding: clamp(20px, 5vw, 60px);
+    max-width: min(88vw, 760px);
+    width: 100%;
+  }
+
+  .ec002-pre-line {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.5rem, 1vw, 0.65rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    opacity: 0;
+    margin-bottom: clamp(28px, 5.5vh, 52px);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ec002-pre-tick {
+    width: clamp(22px, 4vw, 40px);
+    height: 1px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .ec002-quote-block {
+    position: relative;
+    opacity: 0;
+    margin-bottom: clamp(32px, 6.5vh, 64px);
+  }
+
+  .ec002-quote-mark-open {
+    position: absolute;
+    top: clamp(-20px, -3.5vh, -36px);
+    left: clamp(-12px, -2vw, -24px);
+    font-family: Georgia, serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.12;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .ec002-quote-mark-close {
+    position: absolute;
+    bottom: clamp(-36px, -5.5vh, -60px);
+    right: clamp(-12px, -2vw, -24px);
+    font-family: Georgia, serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.12;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .ec002-ending-line {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.15rem, 3.2vw, 2.1rem);
+    line-height: 1.7;
+    color: rgba(255,255,255,0.88);
+    font-style: italic;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ec002-ending-line .ec002-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(8px);
+    margin-right: 0.28em;
+  }
+
+  .ec002-rule-wrap {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.5vw, 22px);
+    width: 100%;
+    max-width: min(70vw, 420px);
+    opacity: 0;
+    margin-bottom: clamp(28px, 5.5vh, 52px);
+  }
+
+  .ec002-rule-seg {
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .ec002-rule-center {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent), 0 0 22px var(--accent);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .ec002-name-block {
+    opacity: 0;
+    transform: translateY(12px);
+    margin-bottom: clamp(24px, 5vh, 46px);
+  }
+
+  .ec002-name-label {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.48rem, 0.9vw, 0.62rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.18);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .ec002-name {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 7.5vw, 5.8rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, var(--accent) 55%, rgba(255,255,255,0.6) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px var(--accent));
+  }
+
+  .ec002-song-strip {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.2vw, 18px);
+    opacity: 0;
+    transform: translateY(10px);
+    padding: clamp(8px, 1.8vh, 14px) clamp(14px, 2.8vw, 24px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    width: 100%;
+    max-width: min(80vw, 480px);
+    justify-content: center;
+  }
+
+  .ec002-song-bar {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: clamp(14px, 2.5vh, 20px);
+    flex-shrink: 0;
+  }
+
+  .ec002-bar {
+    width: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .ec002-song-text-wrap { text-align: left; }
+
+  .ec002-song-tag {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.45rem, 0.85vw, 0.58rem);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.22);
+    margin-bottom: 3px;
+  }
+
+  .ec002-song-name {
+    font-size: clamp(0.78rem, 1.55vw, 0.98rem);
+    color: rgba(255,255,255,0.65);
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+
+  .ec002-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ec002-bottom-code {
+    position: absolute;
+    bottom: clamp(10px, 2.2vh, 22px);
+    right: clamp(16px, 3vw, 36px);
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.42rem, 0.8vw, 0.55rem);
+    letter-spacing: 0.16em;
+    color: rgba(255,255,255,0.08);
+    z-index: 9;
+    opacity: 0;
+    user-select: none;
+  }
+
+  .ec002-corner {
+    position: absolute;
+    width: clamp(16px, 3vw, 26px);
+    height: clamp(16px, 3vw, 26px);
+    opacity: 0;
+    z-index: 9;
+    pointer-events: none;
+  }
+
+  .ec002-corner-tl { top: clamp(36px, 7vh, 72px); left: clamp(16px, 3vw, 36px); border-top: 1px solid rgba(255,255,255,0.12); border-left: 1px solid rgba(255,255,255,0.12); }
+  .ec002-corner-tr { top: clamp(36px, 7vh, 72px); right: clamp(16px, 3vw, 36px); border-top: 1px solid rgba(255,255,255,0.12); border-right: 1px solid rgba(255,255,255,0.12); }
+  .ec002-corner-bl { bottom: clamp(36px, 7vh, 72px); left: clamp(16px, 3vw, 36px); border-bottom: 1px solid rgba(255,255,255,0.12); border-left: 1px solid rgba(255,255,255,0.12); }
+  .ec002-corner-br { bottom: clamp(36px, 7vh, 72px); right: clamp(16px, 3vw, 36px); border-bottom: 1px solid rgba(255,255,255,0.12); border-right: 1px solid rgba(255,255,255,0.12); }
+</style>
+<div class="ec002-wrap" id="ec002-wrap">
+  <div class="ec002-flash" id="ec002-flash"></div>
+  <div class="ec002-curtain-top" id="ec002-curtain-top"></div>
+  <div class="ec002-curtain-bot" id="ec002-curtain-bot"></div>
+  <div class="ec002-letterbox-top" id="ec002-lb-top"></div>
+  <div class="ec002-letterbox-bot" id="ec002-lb-bot"></div>
+<canvas class="ec002-noise" id="ec002-noise"></canvas>
+  <div class="ec002-scanline" id="ec002-scanline"></div>
+  <div class="ec002-timecode" id="ec002-timecode">00:00:00:00</div>
+  <div class="ec002-reel" id="ec002-reel">REEL &nbsp;·&nbsp; FINAL CUT</div>
+  <div class="ec002-bottom-code" id="ec002-bottom-code">END FRAME &nbsp;·&nbsp; DO NOT REPRODUCE</div>
+  <div class="ec002-corner ec002-corner-tl" id="ec002-ctleft"></div>
+  <div class="ec002-corner ec002-corner-tr" id="ec002-ctr"></div>
+  <div class="ec002-corner ec002-corner-bl" id="ec002-cbl"></div>
+  <div class="ec002-corner ec002-corner-br" id="ec002-cbr"></div>
+  <div class="ec002-center">
+    <div class="ec002-pre-line" id="ec002-pre">
+      <div class="ec002-pre-tick"></div>
+      final frame
+      <div class="ec002-pre-tick"></div>
+    </div>
+<div class="ec002-quote-block" id="ec002-quote-block">
+  <div class="ec002-quote-mark-open">"</div>
+  <div class="ec002-ending-line" id="ec002-ending-line">--ENDING_LINE--</div>
+  <div class="ec002-quote-mark-close">"</div>
+</div>
+
+<div class="ec002-rule-wrap" id="ec002-rule">
+  <div class="ec002-rule-seg"></div>
+  <div class="ec002-rule-center"></div>
+  <div class="ec002-rule-seg"></div>
+</div>
+
+<div class="ec002-name-block" id="ec002-name-block">
+  <span class="ec002-name-label">dedicated to</span>
+  <div class="ec002-name">--RECIPIENT_NAME--</div>
+</div>
+
+<div class="ec002-song-strip" id="ec002-song-strip">
+  <div class="ec002-song-bar" id="ec002-song-bar">
+    <div class="ec002-bar" id="ec002-bar1" style="height:35%"></div>
+    <div class="ec002-bar" id="ec002-bar2" style="height:70%"></div>
+    <div class="ec002-bar" id="ec002-bar3" style="height:55%"></div>
+    <div class="ec002-bar" id="ec002-bar4" style="height:90%"></div>
+    <div class="ec002-bar" id="ec002-bar5" style="height:45%"></div>
+    <div class="ec002-bar" id="ec002-bar6" style="height:65%"></div>
+  </div>
+  <div class="ec002-song-text-wrap">
+    <span class="ec002-song-tag">playing now</span>
+    <span class="ec002-song-name">--SONG_NAME--</span>
+  </div>
+</div></div>
+</div>
+<script>
+(function () {
+  let initialized = false;
+
+  /* ── Film grain noise ── */
+  function initNoise() {
+    const canvas = document.getElementById('ec002-noise');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    function resize() {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function drawGrain() {
+      const img = ctx.createImageData(W, H);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const v = Math.random() * 255;
+        d[i] = d[i+1] = d[i+2] = v;
+        d[i+3] = Math.random() * 18;
+      }
+      ctx.putImageData(img, 0, 0);
+      requestAnimationFrame(drawGrain);
+    }
+    drawGrain();
+  }
+
+  /* ── Timecode counter ── */
+  function startTimecode() {
+    const el = document.getElementById('ec002-timecode');
+    if (!el) return;
+    let f = 0;
+    setInterval(() => {
+      f++;
+      const fr = f % 24;
+      const sec = Math.floor(f / 24) % 60;
+      const min = Math.floor(f / 1440) % 60;
+      const hr = Math.floor(f / 86400);
+      el.textContent =
+        String(hr).padStart(2,'0') + ':' +
+        String(min).padStart(2,'0') + ':' +
+        String(sec).padStart(2,'0') + ':' +
+        String(fr).padStart(2,'0');
+    }, 42);
+  }
+
+  /* ── Word-by-word reveal ── */
+  function wrapWords() {
+    const el = document.getElementById('ec002-ending-line');
+    if (!el) return;
+    const text = el.textContent.trim();
+    el.innerHTML = '';
+    text.split(' ').forEach(word => {
+      const span = document.createElement('span');
+      span.className = 'ec002-word';
+      span.textContent = word;
+      el.appendChild(span);
+    });
+  }
+
+  /* ── Audio bar ambient ── */
+  function animateBars() {
+    const bars = ['#ec002-bar1','#ec002-bar2','#ec002-bar3','#ec002-bar4','#ec002-bar5','#ec002-bar6'];
+    const heights = [35, 70, 55, 90, 45, 65];
+    bars.forEach((sel, i) => {
+      gsap.to(sel, {
+        height: (heights[i] * (0.3 + Math.random() * 0.7)) + '%',
+        duration: 0.28 + Math.random() * 0.35,
+        repeat: -1,
+        yoyo: true,
+        ease: 'power1.inOut',
+        delay: Math.random() * 0.4
+      });
+    });
+  }
+
+  /* ── Cursor presence ── */
+  function cursorReact() {
+    const wrap = document.getElementById('ec002-wrap');
+    if (!wrap) return;
+    wrap.addEventListener('mousemove', e => {
+      const cx = e.clientX / window.innerWidth - 0.5;
+      const cy = e.clientY / window.innerHeight - 0.5;
+      gsap.to('#ec002-quote-block', {
+        x: cx * 10, y: cy * 6,
+        duration: 2.2, ease: 'power2.out'
+      });
+      gsap.to('#ec002-name-block', {
+        x: cx * -7, y: cy * -4,
+        duration: 2.5, ease: 'power2.out'
+      });
+      gsap.to('#ec002-scanline', {
+        opacity: 0.025 + Math.abs(cx) * 0.04,
+        duration: 0.5
+      });
+    });
+  }
+
+  /* ── Main entrance ── */
+  function enter() {
+    if (initialized) return;
+    initialized = true;
+
+    wrapWords();
+    initNoise();
+
+    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+    /* curtains pull apart like a cinema screen */
+    tl.to('#ec002-curtain-top', { y: '-100%', duration: 1.6, ease: 'power3.inOut' }, 0)
+      .to('#ec002-curtain-bot', { y: '100%',  duration: 1.6, ease: 'power3.inOut' }, 0)
+
+      /* letterbox bars drop in */
+      .to(['#ec002-lb-top','#ec002-lb-bot'], { opacity: 1, duration: 0.5 }, 1.0)
+
+      /* UI chrome fades */
+      .to('#ec002-scanline', { opacity: 1, duration: 0.8 }, 1.2)
+      .to('#ec002-noise',    { opacity: 1, duration: 0.8 }, 1.2)
+      .to(['#ec002-timecode','#ec002-reel','#ec002-bottom-code'], { opacity: 1, duration: 0.7, stagger: 0.15 }, 1.3)
+      .to(['#ec002-ctleft','#ec002-ctr','#ec002-cbl','#ec002-cbr'], { opacity: 1, duration: 0.6, stagger: 0.08 }, 1.5)
+
+      /* pre-line */
+      .to('#ec002-pre', { opacity: 1, duration: 0.7 }, 1.8)
+
+      /* quote block container */
+      .to('#ec002-quote-block', { opacity: 1, duration: 0.01 }, 2.3)
+
+      /* words appear one by one */
+      .to('.ec002-word', {
+        opacity: 1, y: 0,
+        duration: 0.55,
+        stagger: 0.08,
+        ease: 'power3.out'
+      }, 2.35)
+
+      /* rule + name + song */
+      .to('#ec002-rule',        { opacity: 1, duration: 0.7, ease: 'power2.inOut' }, 3.6)
+      .to('#ec002-name-block',  { opacity: 1, y: 0, duration: 0.9, ease: 'back.out(1.6)' }, 4.0)
+      .to('#ec002-song-strip',  { opacity: 1, y: 0, duration: 0.7 }, 4.5);
+
+    tl.call(() => {
+      startTimecode();
+      animateBars();
+      cursorReact();
+
+      /* name breathe */
+      gsap.to('#ec002-name-block', {
+        filter: 'drop-shadow(0 0 55px var(--accent))',
+        duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* rule dot pulse */
+      gsap.to('#ec002-rule .ec002-rule-center', {
+        boxShadow: '0 0 18px var(--accent), 0 0 40px var(--accent)',
+        opacity: 1,
+        duration: 2, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* scanline drift */
+      gsap.to('#ec002-scanline', {
+        backgroundPositionY: '100px',
+        duration: 8, repeat: -1, ease: 'none'
+      });
+    }, null, 4.8);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 7) return;
+    enter();
+  });
+})();
+</script>

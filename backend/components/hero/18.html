@@ -1,0 +1,485 @@
+<!--
+  Component: hero_books_001
+  Type: hero
+  Aesthetic: Literary warm
+  Obsession: Books Reading
+  Tone: cinematic, dreamy, intimate
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  .hero-books-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+  }
+
+  .hero-books-001-paper-grain {
+    position: absolute;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+  }
+
+  .hero-books-001-bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 60%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
+      radial-gradient(ellipse 50% 70% at 75% 30%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 70%);
+    z-index: 0;
+  }
+
+  /* Floating book pages in background */
+  .hero-books-001-pages-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-books-001-page {
+    position: absolute;
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+    border-radius: 1px;
+    opacity: 0;
+  }
+
+  /* Ink lines on pages */
+  .hero-books-001-page::before {
+    content: '';
+    position: absolute;
+    inset: 15% 20%;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 10px,
+      color-mix(in srgb, var(--text) 8%, transparent) 10px,
+      color-mix(in srgb, var(--text) 8%, transparent) 11px
+    );
+  }
+
+  /* Spine line */
+  .hero-books-001-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  /* Central content */
+  .hero-books-001-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: clamp(2rem, 6vw, 5rem);
+    max-width: min(800px, 90vw);
+  }
+
+  /* Decorative open book SVG above title */
+  .hero-books-001-book-icon {
+    display: block;
+    margin: 0 auto clamp(1.5rem, 4vh, 3rem);
+    width: clamp(60px, 10vw, 100px);
+    opacity: 0;
+  }
+
+  .hero-books-001-eyebrow {
+    font-family: var(--font-body);
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: clamp(1rem, 2.5vh, 2rem);
+  }
+
+  .hero-books-001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.8rem, 7.5vw, 7rem);
+    line-height: 0.95;
+    color: var(--text);
+    margin: 0 0 clamp(0.5rem, 1.5vh, 1rem);
+    opacity: 0;
+    position: relative;
+  }
+
+  .hero-books-001-title-accent {
+    color: var(--accent);
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Underline drawn effect */
+  .hero-books-001-title-accent::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .hero-books-001-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: color-mix(in srgb, var(--text) 65%, transparent);
+    font-style: italic;
+    margin: clamp(1rem, 3vh, 2rem) 0 0;
+    opacity: 0;
+    line-height: 1.5;
+  }
+
+  /* Decorative divider */
+  .hero-books-001-divider {
+    margin: clamp(1.5rem, 4vh, 3rem) auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    opacity: 0;
+  }
+
+  .hero-books-001-divider-line {
+    height: 1px;
+    width: clamp(40px, 8vw, 80px);
+    background: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .hero-books-001-divider-diamond {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+
+  /* Recipient name */
+  .hero-books-001-recipient {
+    font-family: var(--font-body);
+    font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+    letter-spacing: 0.2em;
+    color: color-mix(in srgb, var(--text) 45%, transparent);
+    text-transform: uppercase;
+    margin-top: clamp(1.5rem, 4vh, 3rem);
+    opacity: 0;
+  }
+
+  /* Floating particles — ink dots */
+  .hero-books-001-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  /* Corner ornaments */
+  .hero-books-001-corner {
+    position: absolute;
+    width: clamp(30px, 5vw, 60px);
+    height: clamp(30px, 5vw, 60px);
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hero-books-001-corner-tl { top: clamp(1.5rem, 3vw, 3rem); left: clamp(1.5rem, 3vw, 3rem); }
+  .hero-books-001-corner-tr { top: clamp(1.5rem, 3vw, 3rem); right: clamp(1.5rem, 3vw, 3rem); transform: scaleX(-1); }
+  .hero-books-001-corner-bl { bottom: clamp(1.5rem, 3vw, 3rem); left: clamp(1.5rem, 3vw, 3rem); transform: scaleY(-1); }
+  .hero-books-001-corner-br { bottom: clamp(1.5rem, 3vw, 3rem); right: clamp(1.5rem, 3vw, 3rem); transform: scale(-1,-1); }
+
+  /* Cursor glow dot */
+  .hero-books-001-cursor-glow {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+    pointer-events: none;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+    transition: none;
+  }
+
+  /* Hover shimmer on title */
+  .hero-books-001-title:hover .hero-books-001-title-accent {
+    text-shadow: 0 0 30px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+</style>
+<!-- Cursor glow -->
+<div class="hero-books-001-cursor-glow" id="hb001-cursor-glow"></div>
+<div class="hero-books-001-root" id="hb001-root">
+  <!-- Background glow layers -->
+  <div class="hero-books-001-bg-glow"></div>
+  <div class="hero-books-001-paper-grain"></div>
+  <!-- Floating book pages -->
+  <div class="hero-books-001-pages-bg" id="hb001-pages-bg"></div>
+  <!-- Corner ornaments -->
+  <svg class="hero-books-001-corner hero-books-001-corner-tl" id="hb001-c-tl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 58 L2 2 L58 2" stroke="var(--accent)" stroke-width="1.5" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.5"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)"/>
+  </svg>
+  <svg class="hero-books-001-corner hero-books-001-corner-tr" id="hb001-c-tr" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 58 L2 2 L58 2" stroke="var(--accent)" stroke-width="1.5" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.5"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)"/>
+  </svg>
+  <svg class="hero-books-001-corner hero-books-001-corner-bl" id="hb001-c-bl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 58 L2 2 L58 2" stroke="var(--accent)" stroke-width="1.5" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.5"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)"/>
+  </svg>
+  <svg class="hero-books-001-corner hero-books-001-corner-br" id="hb001-c-br" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 58 L2 2 L58 2" stroke="var(--accent)" stroke-width="1.5" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.5"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)"/>
+  </svg>
+  <!-- Main content -->
+  <div class="hero-books-001-content" id="hb001-content">
+<!-- Open book SVG icon -->
+<svg class="hero-books-001-book-icon" id="hb001-book-icon" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 10 C40 6 15 4 4 8 L4 62 C15 58 40 60 50 64" stroke="var(--accent)" stroke-width="1.5" fill="color-mix(in srgb, var(--accent) 5%, transparent)" stroke-linecap="round"/>
+  <path d="M50 10 C60 6 85 4 96 8 L96 62 C85 58 60 60 50 64" stroke="var(--accent)" stroke-width="1.5" fill="color-mix(in srgb, var(--accent) 5%, transparent)" stroke-linecap="round"/>
+  <line x1="50" y1="10" x2="50" y2="64" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.6"/>
+  <!-- ink lines left page -->
+  <line x1="14" y1="24" x2="44" y2="22" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.25"/>
+  <line x1="13" y1="31" x2="43" y2="29" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.25"/>
+  <line x1="13" y1="38" x2="43" y2="36" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.25"/>
+  <line x1="14" y1="45" x2="38" y2="43" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.15"/>
+  <!-- ink lines right page -->
+  <line x1="56" y1="22" x2="86" y2="24" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.25"/>
+  <line x1="57" y1="29" x2="87" y2="31" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.25"/>
+  <line x1="57" y1="36" x2="87" y2="38" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.25"/>
+  <line x1="57" y1="43" x2="82" y2="45" stroke="var(--text)" stroke-width="0.7" stroke-opacity="0.15"/>
+</svg>
+
+<p class="hero-books-001-eyebrow" id="hb001-eyebrow">A story written for</p>
+
+<h1 class="hero-books-001-title" id="hb001-title">
+  <span class="hero-books-001-title-accent" id="hb001-accent-word">--ACCENT_WORD--</span><br>
+  --TITLE--
+</h1>
+
+<div class="hero-books-001-divider" id="hb001-divider">
+  <div class="hero-books-001-divider-line"></div>
+  <div class="hero-books-001-divider-diamond"></div>
+  <div class="hero-books-001-divider-line"></div>
+</div>
+
+<p class="hero-books-001-subtitle" id="hb001-subtitle">--SUBTITLE--</p>
+
+<p class="hero-books-001-recipient" id="hb001-recipient">for &nbsp;—&nbsp; --RECIPIENT_NAME--</p></div>
+</div>
+<script>
+(function() {
+  // --- Cursor glow tracking ---
+  var cursorGlow = document.getElementById('hb001-cursor-glow');
+  document.addEventListener('mousemove', function(e) {
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top = e.clientY + 'px';
+  });
+
+  // --- Generate floating book pages ---
+  var pagesBg = document.getElementById('hb001-pages-bg');
+  var pageConfigs = [
+    { w: 90, h: 120, top: '8%',  left: '5%',  rot: -18 },
+    { w: 70, h: 95,  top: '60%', left: '2%',  rot: 10  },
+    { w: 110,h: 145, top: '15%', left: '80%', rot: 22  },
+    { w: 80, h: 105, top: '65%', left: '78%', rot: -14 },
+    { w: 60, h: 80,  top: '40%', left: '88%', rot: 6   },
+    { w: 50, h: 70,  top: '5%',  left: '50%', rot: -5  },
+    { w: 75, h: 100, top: '75%', left: '40%', rot: 15  },
+    { w: 55, h: 75,  top: '82%', left: '60%', rot: -20 },
+  ];
+  pageConfigs.forEach(function(cfg, i) {
+    var page = document.createElement('div');
+    page.className = 'hero-books-001-page';
+    page.id = 'hb001-page-' + i;
+    page.style.cssText = 'width:' + cfg.w + 'px;height:' + cfg.h + 'px;top:' + cfg.top + ';left:' + cfg.left + ';transform:rotate(' + cfg.rot + 'deg)';
+    var spine = document.createElement('div');
+    spine.className = 'hero-books-001-spine';
+    page.appendChild(spine);
+    pagesBg.appendChild(page);
+  });
+
+  // --- Generate ink particle dots ---
+  var root = document.getElementById('hb001-root');
+  var particles = [];
+  for (var i = 0; i < 22; i++) {
+    var p = document.createElement('div');
+    p.className = 'hero-books-001-particle';
+    var sz = Math.random() * 3 + 1.5;
+    p.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;top:' + (Math.random() * 100) + '%;left:' + (Math.random() * 100) + '%;opacity:0';
+    root.appendChild(p);
+    particles.push(p);
+  }
+
+  // --------------------------------------------------------
+  // GSAP Animations — triggered on glitch:enter index === 1
+  // --------------------------------------------------------
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 1) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // 1. Corners fade in
+    tl.to(['#hb001-c-tl','#hb001-c-tr','#hb001-c-bl','#hb001-c-br'], {
+      opacity: 1, duration: 1, stagger: 0.12
+    }, 0);
+
+    // 2. Floating pages drift in
+    pageConfigs.forEach(function(cfg, i) {
+      tl.to('#hb001-page-' + i, {
+        opacity: Math.random() * 0.25 + 0.08,
+        y: (Math.random() - 0.5) * 30,
+        duration: 1.4,
+        ease: 'power2.out',
+        delay: i * 0.06
+      }, 0.1);
+    });
+
+    // 3. Book icon rises
+    tl.fromTo('#hb001-book-icon', {
+      opacity: 0, y: 24, scale: 0.85
+    }, {
+      opacity: 1, y: 0, scale: 1, duration: 1.1
+    }, 0.3);
+
+    // 4. Eyebrow
+    tl.fromTo('#hb001-eyebrow', {
+      opacity: 0, letterSpacing: '0.6em'
+    }, {
+      opacity: 1, letterSpacing: '0.35em', duration: 1.2
+    }, 0.55);
+
+    // 5. Title sweeps up with clip
+    tl.fromTo('#hb001-title', {
+      opacity: 0, y: 40, skewY: 2
+    }, {
+      opacity: 1, y: 0, skewY: 0, duration: 1.1, ease: 'expo.out'
+    }, 0.7);
+
+    // 6. Accent word underline draws
+    tl.to('#hb001-accent-word::after', {
+      width: '100%', duration: 0.9, ease: 'power2.inOut'
+    }, 1.3);
+    // fallback via direct style (pseudo-elements via JS workaround)
+    tl.add(function() {
+      var styleEl = document.createElement('style');
+      styleEl.textContent = '.hero-books-001-title-accent::after { transition: width 0.9s cubic-bezier(0.4,0,0.2,1); width: 100% !important; }';
+      document.head.appendChild(styleEl);
+    }, 1.3);
+
+    // 7. Divider
+    tl.fromTo('#hb001-divider', {
+      opacity: 0, scaleX: 0.4
+    }, {
+      opacity: 1, scaleX: 1, duration: 0.9, ease: 'expo.out'
+    }, 1.05);
+
+    // 8. Subtitle
+    tl.fromTo('#hb001-subtitle', {
+      opacity: 0, y: 16
+    }, {
+      opacity: 1, y: 0, duration: 1
+    }, 1.2);
+
+    // 9. Recipient
+    tl.fromTo('#hb001-recipient', {
+      opacity: 0
+    }, {
+      opacity: 1, duration: 1
+    }, 1.5);
+
+    // 10. Ink particles scatter
+    particles.forEach(function(p) {
+      tl.to(p, {
+        opacity: Math.random() * 0.35 + 0.05,
+        duration: 1.5,
+        delay: Math.random() * 0.8,
+        ease: 'power1.out'
+      }, 0.4);
+    });
+
+    // -------------------------
+    // AMBIENT / IDLE ANIMATIONS
+    // -------------------------
+
+    // Idle: pages drift slowly
+    pageConfigs.forEach(function(cfg, i) {
+      var el = document.getElementById('hb001-page-' + i);
+      var dir = i % 2 === 0 ? 1 : -1;
+      gsap.to(el, {
+        y: dir * (10 + Math.random() * 14),
+        x: dir * (4 + Math.random() * 8),
+        rotation: parseFloat(cfg.rot) + dir * (3 + Math.random() * 4),
+        duration: 4 + Math.random() * 3,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: Math.random() * 2
+      });
+    });
+
+    // Idle: book icon gentle breath
+    gsap.to('#hb001-book-icon', {
+      y: -6, scale: 1.03,
+      duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.2
+    });
+
+    // Idle: particles drift
+    particles.forEach(function(p) {
+      gsap.to(p, {
+        y: (Math.random() - 0.5) * 40,
+        x: (Math.random() - 0.5) * 30,
+        opacity: Math.random() * 0.3 + 0.03,
+        duration: 5 + Math.random() * 4,
+        repeat: -1, yoyo: true, ease: 'sine.inOut',
+        delay: Math.random() * 3
+      });
+    });
+
+    // Idle: subtle title float
+    gsap.to('#hb001-title', {
+      y: -5, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.8
+    });
+
+    // Idle: glow pulse
+    gsap.to('.hero-books-001-bg-glow', {
+      opacity: 0.7, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5
+    });
+  });
+
+  // Parallax on mouse move
+  document.getElementById('hb001-root').addEventListener('mousemove', function(e) {
+    var rx = (e.clientX / window.innerWidth - 0.5);
+    var ry = (e.clientY / window.innerHeight - 0.5);
+    gsap.to('#hb001-content', {
+      x: rx * 18, y: ry * 12, duration: 1.2, ease: 'power1.out'
+    });
+    gsap.to('#hb001-pages-bg', {
+      x: rx * -28, y: ry * -18, duration: 1.5, ease: 'power1.out'
+    });
+    gsap.to('.hero-books-001-bg-glow', {
+      x: rx * 40, y: ry * 25, duration: 2, ease: 'power1.out'
+    });
+  });
+
+})();
+</script>

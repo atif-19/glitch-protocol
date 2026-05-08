@@ -1,0 +1,538 @@
+<!--
+  Component: hero_kpop_001
+  Type: hero
+  Aesthetic: Neon
+  Obsession: K-Pop idol
+  Tone: electric, dreamy, cinematic
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  #hero-kpop-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: pointer;
+  }#hero-kpop-001 .hk1-bg-grid {
+position: absolute;
+inset: 0;
+background-image:
+linear-gradient(rgba(var(--primary-rgb, 180,0,255), 0.07) 1px, transparent 1px),
+linear-gradient(90deg, rgba(var(--primary-rgb, 180,0,255), 0.07) 1px, transparent 1px);
+background-size: clamp(30px, 5vw, 60px) clamp(30px, 5vw, 60px);
+transform-origin: center;
+}#hero-kpop-001 .hk1-scanlines {
+position: absolute;
+inset: 0;
+background: repeating-linear-gradient(
+0deg,
+transparent,
+transparent 2px,
+rgba(0,0,0,0.08) 2px,
+rgba(0,0,0,0.08) 4px
+);
+pointer-events: none;
+z-index: 2;
+}#hero-kpop-001 .hk1-vignette {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at center, transparent 40%, var(--bg) 100%);
+z-index: 3;
+pointer-events: none;
+}#hero-kpop-001 .hk1-orb {
+position: absolute;
+border-radius: 50%;
+filter: blur(clamp(40px, 8vw, 120px));
+pointer-events: none;
+z-index: 1;
+}#hero-kpop-001 .hk1-orb-1 {
+width: clamp(200px, 40vw, 600px);
+height: clamp(200px, 40vw, 600px);
+background: var(--primary);
+opacity: 0.18;
+top: -10%;
+left: -10%;
+}#hero-kpop-001 .hk1-orb-2 {
+width: clamp(150px, 30vw, 450px);
+height: clamp(150px, 30vw, 450px);
+background: var(--accent);
+opacity: 0.15;
+bottom: -5%;
+right: -5%;
+}#hero-kpop-001 .hk1-orb-3 {
+width: clamp(80px, 15vw, 200px);
+height: clamp(80px, 15vw, 200px);
+background: var(--primary);
+opacity: 0.25;
+top: 40%;
+right: 15%;
+}#hero-kpop-001 .hk1-particles {
+position: absolute;
+inset: 0;
+z-index: 2;
+pointer-events: none;
+}#hero-kpop-001 .hk1-particle {
+position: absolute;
+width: clamp(2px, 0.3vw, 5px);
+height: clamp(2px, 0.3vw, 5px);
+background: var(--accent);
+border-radius: 50%;
+box-shadow: 0 0 clamp(4px, 1vw, 12px) var(--accent);
+}#hero-kpop-001 .hk1-content {
+position: relative;
+z-index: 10;
+text-align: center;
+padding: clamp(20px, 5vw, 60px);
+max-width: clamp(300px, 80vw, 900px);
+}#hero-kpop-001 .hk1-eyebrow {
+font-family: var(--font-body);
+font-size: clamp(9px, 1.1vw, 13px);
+letter-spacing: clamp(6px, 1.5vw, 18px);
+text-transform: uppercase;
+color: var(--accent);
+opacity: 0;
+margin-bottom: clamp(16px, 3vh, 32px);
+display: block;
+}#hero-kpop-001 .hk1-name-wrap {
+position: relative;
+overflow: visible;
+margin-bottom: clamp(8px, 2vh, 20px);
+}#hero-kpop-001 .hk1-name {
+font-family: var(--font-heading);
+font-size: clamp(52px, 11vw, 160px);
+line-height: 0.88;
+color: var(--text);
+opacity: 0;
+display: block;
+position: relative;
+font-weight: 900;
+letter-spacing: -0.02em;
+}#hero-kpop-001 .hk1-name-glow {
+position: absolute;
+inset: 0;
+font-family: var(--font-heading);
+font-size: clamp(52px, 11vw, 160px);
+line-height: 0.88;
+font-weight: 900;
+letter-spacing: -0.02em;
+color: transparent;
+-webkit-text-stroke: 1px var(--primary);
+filter: blur(8px);
+opacity: 0;
+pointer-events: none;
+display: block;
+}#hero-kpop-001 .hk1-title-line {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: clamp(8px, 2vw, 24px);
+margin-bottom: clamp(12px, 2.5vh, 28px);
+opacity: 0;
+}#hero-kpop-001 .hk1-title-dash {
+flex: 1;
+max-width: clamp(30px, 8vw, 100px);
+height: 1px;
+background: linear-gradient(90deg, transparent, var(--primary));
+display: block;
+}#hero-kpop-001 .hk1-title-dash.right {
+background: linear-gradient(90deg, var(--primary), transparent);
+}#hero-kpop-001 .hk1-title {
+font-family: var(--font-heading);
+font-size: clamp(13px, 2.2vw, 28px);
+color: var(--primary);
+letter-spacing: clamp(2px, 0.5vw, 6px);
+text-transform: uppercase;
+font-weight: 400;
+}#hero-kpop-001 .hk1-subtitle {
+font-family: var(--font-body);
+font-size: clamp(13px, 1.6vw, 20px);
+color: var(--text);
+opacity: 0.6;
+line-height: 1.6;
+max-width: clamp(260px, 55vw, 600px);
+margin: 0 auto clamp(24px, 5vh, 52px);
+opacity: 0;
+}#hero-kpop-001 .hk1-accent-pill {
+display: inline-flex;
+align-items: center;
+gap: clamp(8px, 1.5vw, 16px);
+border: 1px solid var(--accent);
+padding: clamp(8px, 1.2vh, 14px) clamp(20px, 3vw, 36px);
+border-radius: 100px;
+opacity: 0;
+position: relative;
+overflow: hidden;
+}#hero-kpop-001 .hk1-accent-pill::before {
+content: '';
+position: absolute;
+inset: 0;
+background: var(--accent);
+opacity: 0.08;
+border-radius: 100px;
+}#hero-kpop-001 .hk1-accent-text {
+font-family: var(--font-heading);
+font-size: clamp(11px, 1.4vw, 17px);
+color: var(--accent);
+letter-spacing: clamp(2px, 0.4vw, 5px);
+text-transform: uppercase;
+}#hero-kpop-001 .hk1-star {
+color: var(--accent);
+font-size: clamp(10px, 1.2vw, 14px);
+}#hero-kpop-001 .hk1-cta {
+position: absolute;
+bottom: clamp(24px, 5vh, 48px);
+left: 50%;
+transform: translateX(-50%);
+z-index: 10;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: clamp(6px, 1.2vh, 12px);
+opacity: 0;
+}#hero-kpop-001 .hk1-cta-text {
+font-size: clamp(8px, 0.9vw, 11px);
+letter-spacing: clamp(4px, 1vw, 10px);
+text-transform: uppercase;
+color: var(--text);
+opacity: 0.35;
+font-family: var(--font-body);
+}#hero-kpop-001 .hk1-cta-line {
+width: 1px;
+height: clamp(20px, 4vh, 40px);
+background: linear-gradient(to bottom, var(--primary), transparent);
+}#hero-kpop-001 .hk1-corner {
+position: absolute;
+width: clamp(24px, 3.5vw, 50px);
+height: clamp(24px, 3.5vw, 50px);
+z-index: 10;
+pointer-events: none;
+}#hero-kpop-001 .hk1-corner::before,
+#hero-kpop-001 .hk1-corner::after {
+content: '';
+position: absolute;
+background: var(--accent);
+opacity: 0.7;
+}#hero-kpop-001 .hk1-corner.tl { top: clamp(16px, 3vw, 36px); left: clamp(16px, 3vw, 36px); }
+#hero-kpop-001 .hk1-corner.tr { top: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); }
+#hero-kpop-001 .hk1-corner.bl { bottom: clamp(16px, 3vw, 36px); left: clamp(16px, 3vw, 36px); }
+#hero-kpop-001 .hk1-corner.br { bottom: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); }#hero-kpop-001 .hk1-corner.tl::before { top: 0; left: 0; width: 100%; height: 1px; }
+#hero-kpop-001 .hk1-corner.tl::after  { top: 0; left: 0; width: 1px; height: 100%; }
+#hero-kpop-001 .hk1-corner.tr::before { top: 0; right: 0; width: 100%; height: 1px; }
+#hero-kpop-001 .hk1-corner.tr::after  { top: 0; right: 0; width: 1px; height: 100%; }
+#hero-kpop-001 .hk1-corner.bl::before { bottom: 0; left: 0; width: 100%; height: 1px; }
+#hero-kpop-001 .hk1-corner.bl::after  { bottom: 0; left: 0; width: 1px; height: 100%; }
+#hero-kpop-001 .hk1-corner.br::before { bottom: 0; right: 0; width: 100%; height: 1px; }
+#hero-kpop-001 .hk1-corner.br::after  { bottom: 0; right: 0; width: 1px; height: 100%; }#hero-kpop-001 .hk1-glitch-clone {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+pointer-events: none;
+z-index: 9;
+opacity: 0;
+}#hero-kpop-001 .hk1-glitch-text {
+font-family: var(--font-heading);
+font-size: clamp(52px, 11vw, 160px);
+font-weight: 900;
+letter-spacing: -0.02em;
+color: transparent;
+-webkit-text-stroke: 1px var(--accent);
+white-space: nowrap;
+transform: translateX(4px);
+}#hero-kpop-001 .hk1-idol-badge {
+position: absolute;
+top: clamp(16px, 3vw, 36px);
+right: clamp(60px, 8vw, 100px);
+z-index: 12;
+opacity: 0;
+display: flex;
+align-items: center;
+gap: clamp(4px, 0.8vw, 8px);
+}#hero-kpop-001 .hk1-idol-dot {
+width: clamp(5px, 0.7vw, 8px);
+height: clamp(5px, 0.7vw, 8px);
+background: var(--accent);
+border-radius: 50%;
+box-shadow: 0 0 clamp(6px, 1.2vw, 14px) var(--accent);
+}#hero-kpop-001 .hk1-idol-label {
+font-size: clamp(8px, 0.9vw, 11px);
+letter-spacing: clamp(3px, 0.6vw, 7px);
+text-transform: uppercase;
+color: var(--accent);
+font-family: var(--font-body);
+opacity: 0.8;
+}#hero-kpop-001 .hk1-ticker {
+position: absolute;
+bottom: clamp(70px, 12vh, 110px);
+left: 0;
+width: 100%;
+overflow: hidden;
+z-index: 10;
+opacity: 0;
+pointer-events: none;
+}#hero-kpop-001 .hk1-ticker-inner {
+display: flex;
+white-space: nowrap;
+gap: clamp(30px, 5vw, 70px);
+}#hero-kpop-001 .hk1-ticker-item {
+font-size: clamp(9px, 1vw, 12px);
+letter-spacing: clamp(3px, 0.6vw, 7px);
+text-transform: uppercase;
+color: var(--primary);
+opacity: 0.3;
+font-family: var(--font-body);
+flex-shrink: 0;
+}
+</style><section id="hero-kpop-001">
+  <div class="hk1-bg-grid"></div>
+  <div class="hk1-scanlines"></div>
+  <div class="hk1-vignette"></div>  <div class="hk1-orb hk1-orb-1"></div>
+  <div class="hk1-orb hk1-orb-2"></div>
+  <div class="hk1-orb hk1-orb-3"></div>  <div class="hk1-particles" id="hk1-particles-container"></div>  <div class="hk1-corner tl"></div>
+  <div class="hk1-corner tr"></div>
+  <div class="hk1-corner bl"></div>
+  <div class="hk1-corner br"></div>  <div class="hk1-idol-badge">
+    <div class="hk1-idol-dot"></div>
+    <span class="hk1-idol-label">Live</span>
+  </div>  <div class="hk1-glitch-clone" id="hk1-glitch-clone">
+    <span class="hk1-glitch-text">--RECIPIENT_NAME--</span>
+  </div>  <div class="hk1-content">
+    <span class="hk1-eyebrow">--TITLE--</span><div class="hk1-name-wrap">
+  <span class="hk1-name-glow" aria-hidden="true">--RECIPIENT_NAME--</span>
+  <span class="hk1-name" id="hk1-main-name">--RECIPIENT_NAME--</span>
+</div>
+
+<div class="hk1-title-line">
+  <span class="hk1-title-dash"></span>
+  <span class="hk1-title">--SUBTITLE--</span>
+  <span class="hk1-title-dash right"></span>
+</div>
+
+<p class="hk1-subtitle">--SUBTITLE--</p>
+
+<div class="hk1-accent-pill">
+  <span class="hk1-star">✦</span>
+  <span class="hk1-accent-text">--ACCENT_WORD--</span>
+  <span class="hk1-star">✦</span>
+</div></div>
+  <div class="hk1-ticker" id="hk1-ticker">
+    <div class="hk1-ticker-inner" id="hk1-ticker-inner"></div>
+  </div>
+  <div class="hk1-cta" id="hk1-cta">
+    <span class="hk1-cta-text">Continue</span>
+    <div class="hk1-cta-line"></div>
+  </div>
+</section>
+<script>
+(function() {
+  function initHeroKpop001() {
+    const section = document.getElementById('hero-kpop-001');
+    if (!section) return;
+
+    // Build particles
+    const container = document.getElementById('hk1-particles-container');
+    const particleCount = 28;
+    const particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement('div');
+      p.className = 'hk1-particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.opacity = 0;
+      container.appendChild(p);
+      particles.push(p);
+    }
+
+    // Build ticker
+    const tickerInner = document.getElementById('hk1-ticker-inner');
+    const tickerWords = ['--RECIPIENT_NAME--', '--ACCENT_WORD--', '✦', '--TITLE--', '★', '--ACCENT_WORD--', '✦'];
+    const repeatCount = 8;
+    for (let i = 0; i < repeatCount; i++) {
+      tickerWords.forEach(w => {
+        const span = document.createElement('span');
+        span.className = 'hk1-ticker-item';
+        span.textContent = w;
+        tickerInner.appendChild(span);
+      });
+    }
+
+    document.addEventListener('glitch:enter', function(e) {
+      if (e.detail.index !== 1) return;
+
+      const tl = gsap.timeline();
+      const nameEl = document.getElementById('hk1-main-name');
+      const glowEl = section.querySelector('.hk1-name-glow');
+      const eyebrow = section.querySelector('.hk1-eyebrow');
+      const titleLine = section.querySelector('.hk1-title-line');
+      const subtitle = section.querySelector('.hk1-subtitle');
+      const pill = section.querySelector('.hk1-accent-pill');
+      const cta = document.getElementById('hk1-cta');
+      const corners = section.querySelectorAll('.hk1-corner');
+      const badge = section.querySelector('.hk1-idol-badge');
+      const ticker = document.getElementById('hk1-ticker');
+      const grid = section.querySelector('.hk1-bg-grid');
+      const glitchClone = document.getElementById('hk1-glitch-clone');
+
+      // 1. ENTRANCE ANIMATION
+      tl.set(grid, { scale: 1.08 })
+        .to(grid, { scale: 1, duration: 1.8, ease: 'power3.out' }, 0)
+
+        .to(corners, { opacity: 1, duration: 0.3, stagger: 0.06, ease: 'power2.out' }, 0.1)
+        .to(badge, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.3)
+
+        // Glitch flash on name before reveal
+        .set(glitchClone, { opacity: 1 }, 0.5)
+        .to(glitchClone, {
+          x: -6, duration: 0.05, ease: 'none',
+          yoyo: true, repeat: 5
+        }, 0.5)
+        .to(glitchClone, { opacity: 0, duration: 0.08 }, 0.85)
+
+        .fromTo(nameEl,
+          { opacity: 0, y: clampVal(30, 5, 60), skewX: 4 },
+          { opacity: 1, y: 0, skewX: 0, duration: 0.9, ease: 'expo.out' }, 0.7)
+        .to(glowEl, { opacity: 0.45, duration: 1, ease: 'power2.out' }, 0.85)
+
+        .fromTo(eyebrow,
+          { opacity: 0, y: -10, letterSpacing: '20px' },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 1.0)
+
+        .fromTo(titleLine,
+          { opacity: 0, scaleX: 0.85 },
+          { opacity: 1, scaleX: 1, duration: 0.6, ease: 'power2.out' }, 1.2)
+
+        .fromTo(subtitle,
+          { opacity: 0, y: 12 },
+          { opacity: 0.6, y: 0, duration: 0.7, ease: 'power2.out' }, 1.35)
+
+        .fromTo(pill,
+          { opacity: 0, scale: 0.88, y: 8 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.8)' }, 1.52)
+
+        // Particles entrance
+        .to(particles, {
+          opacity: () => Math.random() * 0.7 + 0.2,
+          duration: 0.4,
+          stagger: { each: 0.04, from: 'random' },
+          ease: 'power2.out'
+        }, 1.0)
+
+        .fromTo(ticker,
+          { opacity: 0, y: 6 },
+          { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 1.7)
+
+        .fromTo(cta,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 1.9);
+
+      // 2. AMBIENT LOOP ANIMATIONS
+      // Orb drift
+      gsap.to(section.querySelector('.hk1-orb-1'), {
+        x: '8%', y: '5%', duration: 7, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2
+      });
+      gsap.to(section.querySelector('.hk1-orb-2'), {
+        x: '-6%', y: '-4%', duration: 9, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1
+      });
+      gsap.to(section.querySelector('.hk1-orb-3'), {
+        x: '-5%', y: '6%', duration: 5.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 0.5
+      });
+
+      // Glow pulse
+      gsap.to(glowEl, {
+        opacity: 0.15, duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2
+      });
+
+      // Particle float
+      particles.forEach((p, i) => {
+        gsap.to(p, {
+          y: () => (Math.random() - 0.5) * 40,
+          x: () => (Math.random() - 0.5) * 20,
+          opacity: () => Math.random() * 0.6 + 0.1,
+          duration: 2.5 + Math.random() * 3,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: Math.random() * 2
+        });
+      });
+
+      // Badge dot pulse
+      gsap.to(section.querySelector('.hk1-idol-dot'), {
+        scale: 1.6, opacity: 0.4, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+      // CTA line pulse
+      gsap.to(section.querySelector('.hk1-cta-line'), {
+        scaleY: 0.4, opacity: 0.3, duration: 1.1, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2.2, transformOrigin: 'top center'
+      });
+
+      // Ticker scroll
+      gsap.to(tickerInner, {
+        x: '-50%',
+        duration: 28,
+        ease: 'none',
+        repeat: -1,
+        delay: 1.8
+      });
+
+      // 3. RANDOM GLITCH FLASH
+      function scheduleGlitch() {
+        gsap.delayedCall(3 + Math.random() * 5, function() {
+          const glitchTl = gsap.timeline({ onComplete: scheduleGlitch });
+          glitchTl
+            .set(glitchClone, { opacity: 0.5, x: 5 })
+            .to(glitchClone, { x: -5, duration: 0.04, ease: 'none' })
+            .to(glitchClone, { x: 3, duration: 0.04, ease: 'none' })
+            .to(glitchClone, { opacity: 0, x: 0, duration: 0.06, ease: 'none' });
+        });
+      }
+      gsap.delayedCall(2.5, scheduleGlitch);
+    });
+
+    // 4. INTERACTION REACTION — click/tap ripple on name
+    const nameEl = document.getElementById('hk1-main-name');
+    nameEl.style.cursor = 'default';
+    section.addEventListener('click', function() {
+      const glowEl = section.querySelector('.hk1-name-glow');
+      gsap.timeline()
+        .to(nameEl, { scaleX: 1.03, skewX: -2, duration: 0.08, ease: 'none' })
+        .to(nameEl, { scaleX: 1, skewX: 0, duration: 0.35, ease: 'elastic.out(1,0.4)' })
+        .to(glowEl, { opacity: 0.8, duration: 0.12, ease: 'none' }, 0)
+        .to(glowEl, { opacity: 0.45, duration: 0.5, ease: 'power2.out' }, 0.12);
+
+      // Particle burst
+      particles.forEach(p => {
+        gsap.to(p, {
+          scale: 2.5, opacity: 1, duration: 0.15, ease: 'power3.out',
+          onComplete: () => {
+            gsap.to(p, { scale: 1, opacity: Math.random() * 0.5 + 0.1, duration: 0.6, ease: 'power2.out' });
+          }
+        });
+      });
+
+      // Advance
+      if (window.glitchEvents && window.glitchEvents.advance) {
+        gsap.delayedCall(0.15, () => window.glitchEvents.advance());
+      }
+    });
+  }
+
+  function clampVal(mid, min, max) {
+    return Math.max(min, Math.min(max, mid));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroKpop001);
+  } else {
+    initHeroKpop001();
+  }
+})();
+</script>

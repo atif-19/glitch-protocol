@@ -1,0 +1,505 @@
+<!-- Component: mem_music_001 
+ Type: memories 
+ Aesthetic: Vinyl Record / Lyrics Sheet / Lo-fi Studio 
+ Obsession: Music 
+ Tone: nostalgic, warm, cinematic 
+ Occasion: both 
+ Variables: --RECIPIENT_NAME-- --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- -->
+<style>
+  .mm001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg, #0a0a0f);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body, 'Courier New, monospace');
+    cursor: default;
+  }
+
+  .mm001-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.45;
+  }
+
+  .mm001-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      color-mix(in srgb, var(--bg, #0a0a0f) 18%, transparent) 3px,
+      color-mix(in srgb, var(--bg, #0a0a0f) 18%, transparent) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .mm001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 35%, color-mix(in srgb, var(--bg, #0a0a0f) 80%, transparent) 100%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .mm001-bleed-l {
+    position: absolute;
+    left: -80px; top: 20%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent, #e05c3a) 12%, transparent), transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .mm001-bleed-r {
+    position: absolute;
+    right: -80px; bottom: 15%;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--primary, #7b5ea7) 10%, transparent), transparent 70%);
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .mm001-layout {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    width: clamp(300px, 94vw, 900px);
+    height: clamp(380px, 86vh, 680px);
+    gap: clamp(16px, 3vw, 40px);
+    align-items: stretch;
+    opacity: 0;
+  }
+
+  .mm001-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(12px, 2vh, 20px);
+    flex: 0 0 clamp(140px, 30%, 220px);
+  }
+
+  .mm001-vinyl-wrap {
+    position: relative;
+    width: clamp(110px, 22vw, 200px);
+    height: clamp(110px, 22vw, 200px);
+    flex-shrink: 0;
+  }
+
+  .mm001-vinyl {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      #1a1a1a 0deg, #111 10deg, #1c1c1c 20deg, #0e0e0e 30deg,
+      #1a1a1a 40deg, #111 50deg, #1c1c1c 60deg, #0e0e0e 70deg,
+      #1a1a1a 80deg, #111 90deg, #1c1c1c 100deg, #0e0e0e 110deg,
+      #1a1a1a 120deg, #111 130deg, #1c1c1c 140deg, #0e0e0e 150deg,
+      #1a1a1a 160deg, #111 170deg, #1c1c1c 180deg, #0e0e0e 190deg,
+      #1a1a1a 200deg, #111 210deg, #1c1c1c 220deg, #0e0e0e 230deg,
+      #1a1a1a 240deg, #111 250deg, #1c1c1c 260deg, #0e0e0e 270deg,
+      #1a1a1a 280deg, #111 290deg, #1c1c1c 300deg, #0e0e0e 310deg,
+      #1a1a1a 320deg, #111 330deg, #1c1c1c 340deg, #0e0e0e 350deg,
+      #1a1a1a 360deg
+    );
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--accent, #e05c3a) 20%, transparent),
+      0 8px 40px color-mix(in srgb, #000 70%, transparent),
+      inset 0 0 20px color-mix(in srgb, #000 50%, transparent);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mm001-vinyl::before {
+    content: '';
+    position: absolute;
+    inset: 12%;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow:
+      0 0 0 8px rgba(255,255,255,0.025),
+      0 0 0 16px rgba(255,255,255,0.018),
+      0 0 0 24px rgba(255,255,255,0.012);
+  }
+
+  .mm001-vinyl-label {
+    width: 34%; height: 34%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%,
+      color-mix(in srgb, var(--accent, #e05c3a) 90%, #000),
+      color-mix(in srgb, var(--accent, #e05c3a) 50%, #000)
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px color-mix(in srgb, #000 60%, transparent);
+    z-index: 2;
+  }
+
+  .mm001-vinyl-hole {
+    width: 14%; height: 14%;
+    border-radius: 50%;
+    background: var(--bg, #0a0a0f);
+  }
+
+  .mm001-vinyl::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(255,255,255,0.02) 100%);
+    pointer-events: none;
+  }
+
+  .mm001-photo-frame {
+    width: clamp(90px, 18vw, 160px);
+    height: clamp(68px, 14vw, 118px);
+    border: 1px solid color-mix(in srgb, var(--accent, #e05c3a) 25%, transparent);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .mm001-photo-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: sepia(30%) contrast(1.05) brightness(0.8);
+    display: block;
+  }
+
+  .mm001-waveform {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: color-mix(in srgb, var(--accent, #e05c3a) 4%, var(--bg, #0a0a0f));
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  .mm001-wave-bar {
+    flex: 1;
+    background: color-mix(in srgb, var(--accent, #e05c3a) 55%, transparent);
+    border-radius: 1px;
+    min-height: 4px;
+  }
+
+  .mm001-photo-cap {
+    font-size: clamp(8px, 0.9vw, 10px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent, #e05c3a) 50%, transparent);
+    text-align: center;
+    opacity: 0;
+    line-height: 1.5;
+  }
+
+  .mm001-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(10px, 1.8vh, 18px);
+    position: relative;
+  }
+
+  .mm001-track-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+  }
+
+  .mm001-track-label {
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent, #e05c3a) 65%, transparent);
+  }
+
+  .mm001-track-name {
+    font-family: var(--font-heading, 'Georgia, serif');
+    font-size: clamp(20px, 3.5vw, 42px);
+    font-style: italic;
+    color: var(--text, #f0ebe0);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .mm001-sep {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+  }
+  .mm001-sep-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, color-mix(in srgb, var(--accent, #e05c3a) 40%, transparent), transparent);
+  }
+  .mm001-sep-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent, #e05c3a);
+    opacity: 0.6;
+  }
+
+  .mm001-verse {
+    opacity: 0;
+    position: relative;
+  }
+
+  .mm001-verse-num {
+    font-size: clamp(8px, 0.85vw, 10px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent, #e05c3a) 40%, transparent);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .mm001-verse-text {
+    font-family: var(--font-body, 'Courier New, monospace');
+    font-size: clamp(11px, 1.35vw, 15px);
+    color: color-mix(in srgb, var(--text, #f0ebe0) 72%, transparent);
+    line-height: 1.9;
+    white-space: pre-wrap;
+    position: relative;
+    padding-left: clamp(10px, 1.5vw, 18px);
+    border-left: 1px solid color-mix(in srgb, var(--accent, #e05c3a) 22%, transparent);
+  }
+
+  .mm001-verse:hover .mm001-verse-text {
+    color: color-mix(in srgb, var(--text, #f0ebe0) 92%, transparent);
+    border-left-color: color-mix(in srgb, var(--accent, #e05c3a) 55%, transparent);
+    transition: all 0.3s ease;
+  }
+
+  .mm001-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    opacity: 0;
+    margin-top: auto;
+  }
+
+  .mm001-meta-cap {
+    font-size: clamp(8px, 0.9vw, 10px);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text, #f0ebe0) 30%, transparent);
+  }
+
+  .mm001-playhead-track {
+    flex: 1;
+    height: 2px;
+    background: color-mix(in srgb, var(--text, #f0ebe0) 10%, transparent);
+    margin: 0 clamp(8px, 1.5vw, 16px);
+    position: relative;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .mm001-playhead-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0%;
+    background: linear-gradient(to right, var(--accent, #e05c3a), color-mix(in srgb, var(--accent, #e05c3a) 60%, var(--primary, #7b5ea7)));
+    border-radius: 2px;
+  }
+
+  .mm001-cursor-glow {
+    position: fixed;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent, #e05c3a) 5%, transparent), transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .mm001-note {
+    position: absolute;
+    font-size: clamp(10px, 1.5vw, 18px);
+    color: color-mix(in srgb, var(--accent, #e05c3a) 40%, transparent);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    user-select: none;
+  }
+
+  @media (max-width: 580px) {
+    .mm001-layout { flex-direction: column; height: clamp(520px, 94vh, 800px); gap: clamp(10px, 2vh, 16px); }
+    .mm001-left { flex-direction: row; flex: 0 0 auto; justify-content: flex-start; gap: clamp(12px, 3vw, 20px); }
+    .mm001-vinyl-wrap { width: clamp(80px, 22vw, 120px); height: clamp(80px, 22vw, 120px); }
+    .mm001-photo-frame { display: none; }
+  }
+</style>
+<div class="mm001-root" id="mm001-root">
+  <div class="mm001-grain"></div>
+  <div class="mm001-scanlines"></div>
+  <div class="mm001-vignette"></div>
+  <div class="mm001-bleed-l"></div>
+  <div class="mm001-bleed-r"></div>
+  <div class="mm001-cursor-glow" id="mm001-cursor-glow"></div>
+  <div class="mm001-note" id="mm001-n1" style="left:8%;top:15%">♩</div>
+  <div class="mm001-note" id="mm001-n2" style="right:12%;top:22%">♪</div>
+  <div class="mm001-note" id="mm001-n3" style="left:5%;bottom:20%">♫</div>
+  <div class="mm001-note" id="mm001-n4" style="right:7%;bottom:14%">♬</div>
+  <div class="mm001-note" id="mm001-n5" style="left:50%;top:8%">♩</div>
+  <div class="mm001-layout" id="mm001-layout">
+    <div class="mm001-left">
+      <div class="mm001-vinyl-wrap" id="mm001-vinyl-wrap">
+        <div class="mm001-vinyl" id="mm001-vinyl">
+          <div class="mm001-vinyl-label"><div class="mm001-vinyl-hole"></div></div>
+        </div>
+      </div>
+      <div class="mm001-photo-frame" id="mm001-photo-frame">
+        <div class="mm001-waveform" id="mm001-waveform"></div>
+        <img class="mm001-photo-img" id="mm001-photo-img" src="--PHOTO_1--" alt="" style="display:none;position:absolute;inset:0;" />
+      </div>
+      <div class="mm001-photo-cap" id="mm001-photo-cap">--MEMORY_CAPTION_1--<br>--MEMORY_CAPTION_2--</div>
+    </div>
+    <div class="mm001-right">
+      <div class="mm001-track-header" id="mm001-track-header">
+        <span class="mm001-track-label">Side A · Memories</span>
+        <div class="mm001-track-name">--RECIPIENT_NAME--</div>
+      </div>
+      <div class="mm001-sep" id="mm001-sep">
+        <div class="mm001-sep-line"></div>
+        <div class="mm001-sep-dot"></div>
+      </div>
+      <div class="mm001-verse" id="mm001-v1">
+        <span class="mm001-verse-num">Verse I</span>
+        <div class="mm001-verse-text">--MEMORY_1--</div>
+      </div>
+      <div class="mm001-verse" id="mm001-v2">
+        <span class="mm001-verse-num">Verse II</span>
+        <div class="mm001-verse-text">--MEMORY_2--</div>
+      </div>
+      <div class="mm001-verse" id="mm001-v3">
+        <span class="mm001-verse-num">Bridge</span>
+        <div class="mm001-verse-text">--MEMORY_3--</div>
+      </div>
+      <div class="mm001-meta" id="mm001-meta">
+        <span class="mm001-meta-cap">Now Playing</span>
+        <div class="mm001-playhead-track"><div class="mm001-playhead-fill" id="mm001-playhead-fill"></div></div>
+        <span class="mm001-meta-cap">∞</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  const SECTION_INDEX = 3;
+
+  (function () {
+    const src = '--PHOTO_1--';
+    const img = document.getElementById('mm001-photo-img');
+    const wf = document.getElementById('mm001-waveform');
+    if (src && src !== 'NONE' && !src.startsWith('--')) {
+      img.style.display = 'block';
+      wf.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      wf.style.display = 'flex';
+      const heights = [30,55,80,45,90,60,35,75,50,85,40,65,95,55,70,42,88,52,78,38,62,92,48,72,36,58,84,46,68,32];
+      heights.forEach(h => {
+        const b = document.createElement('div');
+        b.className = 'mm001-wave-bar';
+        b.style.height = h + '%';
+        wf.appendChild(b);
+      });
+    }
+  })();
+
+  const root = document.getElementById('mm001-root');
+  const cg = document.getElementById('mm001-cursor-glow');
+  root.addEventListener('mousemove', e => { cg.style.left = e.clientX + 'px'; cg.style.top = e.clientY + 'px'; });
+  root.addEventListener('mouseenter', () => cg.style.opacity = '1');
+  root.addEventListener('mouseleave', () => cg.style.opacity = '0');
+
+  function startVinylSpin() {
+    gsap.to('#mm001-vinyl', { rotation: 360, duration: 4, repeat: -1, ease: 'linear' });
+  }
+
+  function startPlayhead() {
+    gsap.to('#mm001-playhead-fill', { width: '100%', duration: 28, ease: 'none', repeat: -1 });
+  }
+
+  function startNotes() {
+    ['#mm001-n1','#mm001-n2','#mm001-n3','#mm001-n4','#mm001-n5'].forEach((sel, i) => {
+      gsap.to(sel, {
+        opacity: Math.random() * 0.5 + 0.15,
+        y: -(Math.random() * 40 + 15),
+        x: (Math.random() - 0.5) * 20,
+        duration: Math.random() * 3 + 2.5,
+        delay: i * 0.55,
+        repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+    });
+  }
+
+  function startWaveformPulse() {
+    const bars = document.querySelectorAll('.mm001-wave-bar');
+    bars.forEach((b, i) => {
+      gsap.to(b, {
+        scaleY: Math.random() * 0.5 + 0.5,
+        duration: Math.random() * 0.6 + 0.3,
+        delay: i * 0.04,
+        repeat: -1, yoyo: true,
+        ease: 'power1.inOut',
+        transformOrigin: 'bottom center'
+      });
+    });
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    gsap.set('#mm001-layout', { opacity: 0, y: 24 });
+    gsap.set('#mm001-vinyl-wrap', { scale: 0.7, opacity: 0, rotation: -20 });
+    gsap.set('#mm001-photo-frame', { opacity: 0, y: 12 });
+    gsap.set('#mm001-photo-cap', { opacity: 0 });
+    gsap.set(['#mm001-track-header','#mm001-sep'], { opacity: 0, x: -16 });
+    gsap.set(['#mm001-v1','#mm001-v2','#mm001-v3'], { opacity: 0, x: -12 });
+    gsap.set('#mm001-meta', { opacity: 0 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+    tl.to('#mm001-layout', { opacity: 1, y: 0, duration: 0.9 }, 0);
+    tl.to('#mm001-vinyl-wrap', { scale: 1, opacity: 1, rotation: 0, duration: 1.1, ease: 'back.out(1.4)' }, 0.15);
+    tl.to('#mm001-photo-frame', { opacity: 1, y: 0, duration: 0.7 }, 0.7);
+    tl.to('#mm001-photo-cap', { opacity: 1, duration: 0.5 }, 1.0);
+    tl.to('#mm001-track-header', { opacity: 1, x: 0, duration: 0.7 }, 0.5);
+    tl.to('#mm001-sep', { opacity: 1, x: 0, duration: 0.5 }, 0.75);
+    tl.to('#mm001-v1', { opacity: 1, x: 0, duration: 0.65 }, 0.9);
+    tl.to('#mm001-v2', { opacity: 1, x: 0, duration: 0.65 }, 1.1);
+    tl.to('#mm001-v3', { opacity: 1, x: 0, duration: 0.65 }, 1.3);
+    tl.to('#mm001-meta', { opacity: 1, duration: 0.5 }, 1.55);
+    tl.call(startVinylSpin, [], 0.3);
+    tl.call(startPlayhead, [], 1.6);
+    tl.call(startNotes, [], 1.8);
+    tl.call(startWaveformPulse, [], 1.0);
+  });
+
+  setTimeout(() => {
+    document.dispatchEvent(new CustomEvent('glitch:enter', { detail: { index: 3 } }));
+  }, 300);
+})();
+</script>

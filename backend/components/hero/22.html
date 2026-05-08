@@ -1,0 +1,755 @@
+<!--
+  Component: hero_bollywood_001
+  Type: hero
+  Aesthetic: Filmy grand
+  Obsession: Bollywood
+  Tone: cinematic, euphoric, opulent
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  .hbw001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Deep filmy gradient wash */
+  .hbw001-wash {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%,
+        color-mix(in srgb, var(--accent) 20%, transparent), transparent 65%),
+      radial-gradient(ellipse 60% 80% at 10% 70%,
+        color-mix(in srgb, var(--primary) 14%, transparent), transparent 60%),
+      radial-gradient(ellipse 55% 55% at 92% 60%,
+        color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%),
+      radial-gradient(ellipse 40% 40% at 50% 100%,
+        color-mix(in srgb, var(--primary) 18%, transparent), transparent 60%);
+    z-index: 0;
+  }
+
+  /* Filmy scan shimmer — horizontal gradient bands */
+  .hbw001-scan {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 5px,
+      color-mix(in srgb, var(--accent) 1.2%, transparent) 5px,
+      color-mix(in srgb, var(--accent) 1.2%, transparent) 6px
+    );
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* Grain */
+  .hbw001-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23g)' opacity='0.045'/%3E%3C/svg%3E");
+    background-size: 175px 175px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Vignette */
+  .hbw001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 85% 85% at 50% 50%,
+      transparent 38%, color-mix(in srgb, var(--bg) 70%, transparent) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Marigold garland strings — SVG layer */
+  .hbw001-garland-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Spotlight beams — filmy stage lighting */
+  .hbw001-beam {
+    position: absolute;
+    top: 0;
+    width: clamp(60px, 8vw, 120px);
+    height: 110%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transform-origin: top center;
+  }
+  .hbw001-beam-1 {
+    left: 20%;
+    background: linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+      transparent 80%);
+    transform: rotate(-12deg);
+  }
+  .hbw001-beam-2 {
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(80px, 12vw, 180px);
+    background: linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      transparent 70%);
+  }
+  .hbw001-beam-3 {
+    right: 20%;
+    background: linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+      transparent 80%);
+    transform: rotate(12deg);
+  }
+
+  /* Gold sequin sparkles */
+  .hbw001-sparkle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+  }
+
+  /* Ornate border — double frame with gap */
+  .hbw001-frame-outer {
+    position: absolute;
+    inset: clamp(0.9rem, 2vw, 2.2rem);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hbw001-frame-inner {
+    position: absolute;
+    inset: clamp(1.4rem, 3vw, 3.2rem);
+    border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Corner jhumka ornaments */
+  .hbw001-corner {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hbw001-corner.tl { top: clamp(0.5rem, 1.5vw, 1.5rem); left: clamp(0.5rem, 1.5vw, 1.5rem); }
+  .hbw001-corner.tr { top: clamp(0.5rem, 1.5vw, 1.5rem); right: clamp(0.5rem, 1.5vw, 1.5rem); transform: scaleX(-1); }
+  .hbw001-corner.bl { bottom: clamp(0.5rem, 1.5vw, 1.5rem); left: clamp(0.5rem, 1.5vw, 1.5rem); transform: scaleY(-1); }
+  .hbw001-corner.br { bottom: clamp(0.5rem, 1.5vw, 1.5rem); right: clamp(0.5rem, 1.5vw, 1.5rem); transform: scale(-1,-1); }
+
+  /* Film strip edges — left and right */
+  .hbw001-filmstrip {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(18px, 2.5vw, 32px);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: clamp(0.5rem, 1vh, 1rem) 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hbw001-filmstrip.left { left: 0; }
+  .hbw001-filmstrip.right { right: 0; }
+
+  .hbw001-filmstrip-hole {
+    width: clamp(8px, 1.2vw, 14px);
+    height: clamp(6px, 0.9vw, 11px);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: 2px;
+    margin: 0 auto;
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+
+  /* Floating diya/lamp shapes */
+  .hbw001-diya {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Content */
+  .hbw001-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: clamp(2rem, 5vw, 5rem);
+    max-width: min(820px, 88vw);
+  }
+
+  /* Filmi title card ribbon at top */
+  .hbw001-ribbon {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    margin-bottom: clamp(0.8rem, 2.5vh, 2rem);
+    opacity: 0;
+  }
+  .hbw001-ribbon-line {
+    height: 1px;
+    width: clamp(30px, 6vw, 70px);
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .hbw001-ribbon-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.55rem, 1vw, 0.72rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Big filmi title */
+  .hbw001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3.2rem, 9vw, 10rem);
+    line-height: 0.88;
+    color: var(--text);
+    margin: 0;
+    opacity: 0;
+    position: relative;
+  }
+
+  /* Accent word with gold treatment */
+  .hbw001-accent-word {
+    display: block;
+    color: var(--accent);
+    position: relative;
+  }
+
+  /* Shimmer overlay on accent — animated */
+  .hbw001-accent-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 50%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    background-position: -100% 0;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+
+  /* Decorative text below title */
+  .hbw001-devanagari {
+    font-family: var(--font-body);
+    font-size: clamp(0.7rem, 1.3vw, 0.95rem);
+    letter-spacing: 0.3em;
+    color: color-mix(in srgb, var(--accent) 55%, transparent);
+    margin: clamp(0.5rem, 1.5vh, 1.2rem) 0 0;
+    opacity: 0;
+    font-style: italic;
+  }
+
+  /* Star divider */
+  .hbw001-star-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.2vw, 1.1rem);
+    margin: clamp(1.2rem, 3.5vh, 2.8rem) 0;
+    opacity: 0;
+  }
+  .hbw001-star-line {
+    height: 1px;
+    width: clamp(35px, 8vw, 90px);
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+
+  .hbw001-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.8vw, 1.3rem);
+    font-style: italic;
+    color: color-mix(in srgb, var(--text) 55%, transparent);
+    line-height: 1.65;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .hbw001-recipient {
+    font-family: var(--font-body);
+    font-size: clamp(0.58rem, 1.05vw, 0.78rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 32%, transparent);
+    margin-top: clamp(1.8rem, 4.5vh, 3.5rem);
+    opacity: 0;
+  }
+
+  /* Cursor glow */
+  .hbw001-cursor {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      color-mix(in srgb, var(--accent) 9%, transparent),
+      transparent 68%);
+    pointer-events: none;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+  }
+</style>
+<div class="hbw001-cursor" id="hbw001-cursor"></div>
+<div class="hbw001-root" id="hbw001-root">
+  <div class="hbw001-wash"></div>
+  <div class="hbw001-scan"></div>
+  <div class="hbw001-grain"></div>
+  <div class="hbw001-vignette"></div>
+  <!-- Stage spotlight beams -->
+  <div class="hbw001-beam hbw001-beam-1" id="hbw001-b1"></div>
+  <div class="hbw001-beam hbw001-beam-2" id="hbw001-b2"></div>
+  <div class="hbw001-beam hbw001-beam-3" id="hbw001-b3"></div>
+  <!-- Garland SVG layer (injected by JS) -->
+<svg class="hbw001-garland-layer" id="hbw001-garlands" viewBox="0 0 1000 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"></svg>
+  <!-- Film strips -->
+  <div class="hbw001-filmstrip left" id="hbw001-fsl"></div>
+  <div class="hbw001-filmstrip right" id="hbw001-fsr"></div>
+  <!-- Double border frames -->
+  <div class="hbw001-frame-outer" id="hbw001-fo"></div>
+  <div class="hbw001-frame-inner" id="hbw001-fi"></div>
+  <!-- Jhumka corner ornaments -->
+  <svg class="hbw001-corner tl" id="hbw001-ctl" width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 68 L2 2 L68 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 24 L2 2 L24 2" stroke="var(--accent)" stroke-width="1.6"/>
+    <circle cx="2" cy="2" r="3" fill="var(--accent)" opacity="0.9"/>
+    <!-- Jhumka pendant hanging from corner -->
+    <circle cx="2" cy="10" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="2" cy="18" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="10" cy="2" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="18" cy="2" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <!-- Small diamond filigree -->
+    <path d="M10 10 L16 16 M16 10 L10 16" stroke="var(--accent)" stroke-width="0.7" stroke-opacity="0.4"/>
+    <circle cx="13" cy="13" r="2.5" stroke="var(--accent)" stroke-width="0.7" fill="color-mix(in srgb,var(--accent) 15%,transparent)" opacity="0.6"/>
+  </svg>
+  <svg class="hbw001-corner tr" id="hbw001-ctr" width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 68 L2 2 L68 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 24 L2 2 L24 2" stroke="var(--accent)" stroke-width="1.6"/>
+    <circle cx="2" cy="2" r="3" fill="var(--accent)" opacity="0.9"/>
+    <circle cx="2" cy="10" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="2" cy="18" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="10" cy="2" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="18" cy="2" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <path d="M10 10 L16 16 M16 10 L10 16" stroke="var(--accent)" stroke-width="0.7" stroke-opacity="0.4"/>
+    <circle cx="13" cy="13" r="2.5" stroke="var(--accent)" stroke-width="0.7" fill="color-mix(in srgb,var(--accent) 15%,transparent)" opacity="0.6"/>
+  </svg>
+  <svg class="hbw001-corner bl" id="hbw001-cbl" width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 68 L2 2 L68 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 24 L2 2 L24 2" stroke="var(--accent)" stroke-width="1.6"/>
+    <circle cx="2" cy="2" r="3" fill="var(--accent)" opacity="0.9"/>
+    <circle cx="2" cy="10" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="2" cy="18" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="10" cy="2" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="18" cy="2" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <path d="M10 10 L16 16 M16 10 L10 16" stroke="var(--accent)" stroke-width="0.7" stroke-opacity="0.4"/>
+    <circle cx="13" cy="13" r="2.5" stroke="var(--accent)" stroke-width="0.7" fill="color-mix(in srgb,var(--accent) 15%,transparent)" opacity="0.6"/>
+  </svg>
+  <svg class="hbw001-corner br" id="hbw001-cbr" width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 68 L2 2 L68 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 24 L2 2 L24 2" stroke="var(--accent)" stroke-width="1.6"/>
+    <circle cx="2" cy="2" r="3" fill="var(--accent)" opacity="0.9"/>
+    <circle cx="2" cy="10" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="2" cy="18" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="10" cy="2" r="1.5" fill="var(--accent)" opacity="0.55"/>
+    <circle cx="18" cy="2" r="1.5" fill="var(--accent)" opacity="0.4"/>
+    <path d="M10 10 L16 16 M16 10 L10 16" stroke="var(--accent)" stroke-width="0.7" stroke-opacity="0.4"/>
+    <circle cx="13" cy="13" r="2.5" stroke="var(--accent)" stroke-width="0.7" fill="color-mix(in srgb,var(--accent) 15%,transparent)" opacity="0.6"/>
+  </svg>
+  <!-- Sparkles + diyas injected by JS -->
+  <!-- Content -->
+  <div class="hbw001-content" id="hbw001-content">
+<div class="hbw001-ribbon" id="hbw001-ribbon">
+  <div class="hbw001-ribbon-line"></div>
+  <span class="hbw001-ribbon-text">Presented with love &nbsp;·&nbsp; एक खास तोहफा</span>
+  <div class="hbw001-ribbon-line"></div>
+</div>
+
+<h1 class="hbw001-title" id="hbw001-title">
+  <span class="hbw001-accent-word" id="hbw001-accent">
+    --ACCENT_WORD--
+    <span class="hbw001-accent-shimmer" id="hbw001-shimmer"></span>
+  </span>
+  --TITLE--
+</h1>
+
+<p class="hbw001-devanagari" id="hbw001-deva">तुम्हारे लिए — सिर्फ तुम्हारे लिए</p>
+
+<div class="hbw001-star-row" id="hbw001-stars">
+  <div class="hbw001-star-line"></div>
+  <!-- 8-point star -->
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 0 L9.5 6.5 L16 8 L9.5 9.5 L8 16 L6.5 9.5 L0 8 L6.5 6.5 Z" fill="var(--accent)" opacity="0.85"/>
+  </svg>
+  <svg width="10" height="10" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 0 L9.5 6.5 L16 8 L9.5 9.5 L8 16 L6.5 9.5 L0 8 L6.5 6.5 Z" fill="var(--accent)" opacity="0.5"/>
+  </svg>
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 0 L9.5 6.5 L16 8 L9.5 9.5 L8 16 L6.5 9.5 L0 8 L6.5 6.5 Z" fill="var(--accent)" opacity="0.7"/>
+  </svg>
+  <svg width="10" height="10" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 0 L9.5 6.5 L16 8 L9.5 9.5 L8 16 L6.5 9.5 L0 8 L6.5 6.5 Z" fill="var(--accent)" opacity="0.5"/>
+  </svg>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 0 L9.5 6.5 L16 8 L9.5 9.5 L8 16 L6.5 9.5 L0 8 L6.5 6.5 Z" fill="var(--accent)" opacity="0.85"/>
+  </svg>
+  <div class="hbw001-star-line"></div>
+</div>
+
+<p class="hbw001-subtitle" id="hbw001-subtitle">--SUBTITLE--</p>
+
+<p class="hbw001-recipient" id="hbw001-recipient">dedicated to &nbsp;—&nbsp; --RECIPIENT_NAME--</p></div>
+</div>
+<script>
+(function() {
+
+  // --- Cursor glow ---
+  var cur = document.getElementById('hbw001-cursor');
+  document.addEventListener('mousemove', function(e) {
+    gsap.to(cur, { left: e.clientX, top: e.clientY, duration: 0.6, ease: 'power2.out' });
+  });
+
+  var root = document.getElementById('hbw001-root');
+
+  // --- Build film strip holes ---
+  function buildFilmStrip(id) {
+    var fs = document.getElementById(id);
+    for (var i = 0; i < 20; i++) {
+      var h = document.createElement('div');
+      h.className = 'hbw001-filmstrip-hole';
+      fs.appendChild(h);
+    }
+  }
+  buildFilmStrip('hbw001-fsl');
+  buildFilmStrip('hbw001-fsr');
+
+  // --- Build marigold garlands as SVG curves ---
+  var garlandSVG = document.getElementById('hbw001-garlands');
+  var garlandDefs = [
+    { x1: -20, y1: 0,  x2: 520, y2: 0,  cy: 160, side: 'top-left'  },
+    { x1: 480, y1: 0,  x2: 1020, y2: 0, cy: 140, side: 'top-right' },
+    { x1: -20, y1: 600, x2: 520, y2: 600, cy: 440, side: 'bot-left' },
+    { x1: 480, y1: 600, x2: 1020, y2: 600, cy: 460, side: 'bot-right' },
+  ];
+
+  garlandDefs.forEach(function(g, gi) {
+    var mx = (g.x1 + g.x2) / 2;
+    var my = g.cy;
+
+    // String
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M' + g.x1 + ' ' + g.y1 + ' Q' + mx + ' ' + my + ' ' + g.x2 + ' ' + g.y2);
+    path.setAttribute('stroke', 'color-mix(in srgb, var(--accent) 20%, transparent)');
+    path.setAttribute('stroke-width', '1');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('opacity', '0');
+    path.setAttribute('id', 'hbw001-gstring-' + gi);
+    garlandSVG.appendChild(path);
+
+    // Flower blobs along curve
+    var steps = 12;
+    for (var s = 0; s <= steps; s++) {
+      var t = s / steps;
+      var bx = (1-t)*(1-t)*g.x1 + 2*(1-t)*t*mx + t*t*g.x2;
+      var by = (1-t)*(1-t)*g.y1 + 2*(1-t)*t*my + t*t*g.y2;
+      var flower = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      var sz = Math.random() * 5 + 4;
+      flower.setAttribute('cx', bx);
+      flower.setAttribute('cy', by);
+      flower.setAttribute('r', sz);
+      flower.setAttribute('fill', s % 2 === 0
+        ? 'color-mix(in srgb, var(--accent) 35%, transparent)'
+        : 'color-mix(in srgb, var(--primary) 28%, transparent)');
+      flower.setAttribute('opacity', '0');
+      flower.setAttribute('class', 'hbw001-gflower-' + gi);
+      garlandSVG.appendChild(flower);
+    }
+  });
+
+  // --- Sparkle elements ---
+  var sparklePositions = [
+    {x:'12%',y:'18%'},{x:'88%',y:'14%'},{x:'5%',y:'55%'},{x:'95%',y:'50%'},
+    {x:'22%',y:'88%'},{x:'76%',y:'86%'},{x:'50%',y:'6%'},{x:'35%',y:'92%'},
+    {x:'65%',y:'92%'},{x:'18%',y:'42%'},{x:'83%',y:'38%'},{x:'48%',y:'96%'},
+    {x:'8%',y:'78%'},{x:'92%',y:'72%'},{x:'38%',y:'10%'},{x:'62%',y:'8%'},
+  ];
+  var sparkleEls = [];
+  sparklePositions.forEach(function(pos, i) {
+    var el = document.createElement('div');
+    el.className = 'hbw001-sparkle';
+    el.id = 'hbw001-sp-' + i;
+    var sz = Math.random() * 12 + 6;
+    el.style.cssText = 'left:' + pos.x + ';top:' + pos.y + ';width:' + sz + 'px;height:' + sz + 'px';
+    el.innerHTML = '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 0 L11.8 8.2 L20 10 L11.8 11.8 L10 20 L8.2 11.8 L0 10 L8.2 8.2 Z" fill="var(--accent)" opacity="0.8"/></svg>';
+    root.appendChild(el);
+    sparkleEls.push(el);
+  });
+
+  // --- Diya lamp shapes ---
+  var diyaPositions = [
+    {x:'6%', y:'25%', sz:22}, {x:'91%', y:'22%', sz:18},
+    {x:'4%', y:'70%', sz:16}, {x:'93%', y:'68%', sz:20},
+    {x:'28%', y:'4%', sz:14}, {x:'72%', y:'4%', sz:14},
+  ];
+  var diyaEls = [];
+  diyaPositions.forEach(function(d, i) {
+    var el = document.createElement('div');
+    el.className = 'hbw001-diya';
+    el.id = 'hbw001-diya-' + i;
+    el.style.cssText = 'left:' + d.x + ';top:' + d.y;
+    var s = d.sz;
+    el.innerHTML = '<svg width="' + s + '" height="' + Math.round(s*0.9) + '" viewBox="0 0 28 25" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<ellipse cx="14" cy="18" rx="12" ry="6" fill="color-mix(in srgb,var(--accent) 20%,transparent)" stroke="var(--accent)" stroke-width="1"/>' +
+      '<path d="M14 18 L14 8" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>' +
+      '<ellipse cx="14" cy="7" rx="3" ry="5" fill="color-mix(in srgb,var(--accent) 40%,transparent)" stroke="var(--accent)" stroke-width="0.7"/>' +
+      '<ellipse cx="14" cy="4" rx="1.5" ry="2.5" fill="color-mix(in srgb,var(--accent) 60%,transparent)"/>' +
+      '</svg>';
+    root.appendChild(el);
+    diyaEls.push(el);
+  });
+
+  // --- Shimmer keyframe animation via GSAP ---
+  function runShimmer() {
+    gsap.fromTo('#hbw001-shimmer', {
+      backgroundPosition: '-100% 0'
+    }, {
+      backgroundPosition: '200% 0',
+      duration: 2.2,
+      ease: 'power1.inOut',
+      repeat: -1,
+      repeatDelay: 1.5
+    });
+  }
+
+  // --------------------------------------------------
+  // GSAP — glitch:enter index 1
+  // --------------------------------------------------
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 1) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // 1. Spotlight beams slam down from top — curtain rise
+    tl.fromTo(['#hbw001-b1','#hbw001-b2','#hbw001-b3'], {
+      scaleY: 0, transformOrigin: 'top center', opacity: 0
+    }, {
+      scaleY: 1, opacity: 1, duration: 1.2, stagger: 0.1, ease: 'expo.out'
+    }, 0);
+
+    // 2. Frame outer snaps in
+    tl.fromTo('#hbw001-fo', {
+      opacity: 0, scale: 0.9
+    }, {
+      opacity: 1, scale: 1, duration: 1.3, ease: 'expo.out'
+    }, 0.1);
+    tl.fromTo('#hbw001-fi', {
+      opacity: 0, scale: 0.94
+    }, {
+      opacity: 1, scale: 1, duration: 1.1, ease: 'expo.out'
+    }, 0.2);
+
+    // 3. Film strips slide in from sides
+    tl.fromTo('#hbw001-fsl', {
+      opacity: 0, x: -20
+    }, {
+      opacity: 1, x: 0, duration: 1
+    }, 0.3);
+    tl.fromTo('#hbw001-fsr', {
+      opacity: 0, x: 20
+    }, {
+      opacity: 1, x: 0, duration: 1
+    }, 0.3);
+
+    // 4. Corner jhumkas bloom
+    tl.to(['#hbw001-ctl','#hbw001-ctr','#hbw001-cbl','#hbw001-cbr'], {
+      opacity: 1, duration: 0.8, stagger: 0.1, ease: 'back.out(2)'
+    }, 0.4);
+
+    // 5. Garland strings draw + flowers pop
+    garlandDefs.forEach(function(g, gi) {
+      tl.to('#hbw001-gstring-' + gi, {
+        opacity: 1, duration: 1.2, ease: 'power2.out'
+      }, 0.5 + gi * 0.1);
+      tl.to('.hbw001-gflower-' + gi, {
+        opacity: 1, duration: 0.6, stagger: 0.05, ease: 'back.out(1.5)'
+      }, 0.7 + gi * 0.1);
+    });
+
+    // 6. Diyas flicker on
+    diyaEls.forEach(function(d, i) {
+      tl.fromTo(d, {
+        opacity: 0, scale: 0.5
+      }, {
+        opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(2)'
+      }, 0.6 + i * 0.08);
+    });
+
+    // 7. Sparkles burst in
+    sparkleEls.forEach(function(s, i) {
+      tl.fromTo(s, {
+        opacity: 0, scale: 0, rotation: -30
+      }, {
+        opacity: Math.random() * 0.65 + 0.2,
+        scale: 1, rotation: 0,
+        duration: 0.5, ease: 'back.out(2)'
+      }, 0.8 + i * 0.04);
+    });
+
+    // 8. Ribbon unfurls
+    tl.fromTo('#hbw001-ribbon', {
+      opacity: 0, scaleX: 0.4
+    }, {
+      opacity: 1, scaleX: 1, duration: 1, ease: 'expo.out'
+    }, 0.95);
+
+    // 9. Title thunders up — grand entrance
+    tl.fromTo('#hbw001-title', {
+      opacity: 0, y: 70, skewY: 2, scale: 0.95
+    }, {
+      opacity: 1, y: 0, skewY: 0, scale: 1, duration: 1.2, ease: 'expo.out'
+    }, 1.1);
+
+    // 10. Devanagari text
+    tl.fromTo('#hbw001-deva', {
+      opacity: 0, letterSpacing: '0.6em'
+    }, {
+      opacity: 1, letterSpacing: '0.3em', duration: 1
+    }, 1.35);
+
+    // 11. Star divider expands
+    tl.fromTo('#hbw001-stars', {
+      opacity: 0, scaleX: 0.2
+    }, {
+      opacity: 1, scaleX: 1, duration: 0.9, ease: 'expo.out'
+    }, 1.5);
+
+    // 12. Subtitle
+    tl.fromTo('#hbw001-subtitle', {
+      opacity: 0, y: 16
+    }, {
+      opacity: 1, y: 0, duration: 1
+    }, 1.65);
+
+    // 13. Recipient
+    tl.fromTo('#hbw001-recipient', {
+      opacity: 0
+    }, {
+      opacity: 1, duration: 1.1
+    }, 1.9);
+
+    // 14. Shimmer loop starts
+    tl.add(runShimmer, 1.5);
+
+    // --------------------------------
+    // AMBIENT IDLE
+    // --------------------------------
+
+    // Beams slow oscillate — like followspot swaying
+    gsap.to('#hbw001-b1', { x: -18, duration: 5.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1 });
+    gsap.to('#hbw001-b3', { x: 18, duration: 4.8, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.2 });
+    gsap.to('#hbw001-b2', { opacity: 0.7, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.8 });
+
+    // Title majestic float
+    gsap.to('#hbw001-title', {
+      y: -7, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2
+    });
+
+    // Sparkles twinkle — rotate and opacity pulse
+    sparkleEls.forEach(function(s, i) {
+      gsap.to(s, {
+        rotation: 180, duration: 3 + Math.random() * 3,
+        repeat: -1, ease: 'none', delay: Math.random() * 2
+      });
+      gsap.to(s, {
+        opacity: Math.random() * 0.2 + 0.05,
+        duration: 1.2 + Math.random() * 1.5,
+        repeat: -1, yoyo: true, ease: 'sine.inOut',
+        delay: Math.random() * 2
+      });
+    });
+
+    // Diya flame flicker
+    diyaEls.forEach(function(d, i) {
+      gsap.to(d, {
+        y: -4 - Math.random() * 4,
+        opacity: 0.7 + Math.random() * 0.3,
+        duration: 0.8 + Math.random() * 0.6,
+        repeat: -1, yoyo: true, ease: 'sine.inOut',
+        delay: Math.random() * 1.5
+      });
+    });
+
+    // Garland flowers gentle sway
+    garlandDefs.forEach(function(g, gi) {
+      gsap.to('.hbw001-gflower-' + gi, {
+        y: 4, duration: 2.5 + gi * 0.3,
+        repeat: -1, yoyo: true, ease: 'sine.inOut',
+        stagger: 0.1, delay: Math.random()
+      });
+    });
+
+    // Corner jhumkas pendulum swing
+    gsap.to(['#hbw001-ctl','#hbw001-ctr','#hbw001-cbl','#hbw001-cbr'], {
+      rotation: 2, duration: 2.8, repeat: -1, yoyo: true,
+      ease: 'sine.inOut', stagger: 0.3, transformOrigin: 'top center'
+    });
+
+    // Film strip slow drift
+    gsap.to('#hbw001-fsl', {
+      y: -30, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+    gsap.to('#hbw001-fsr', {
+      y: 30, duration: 5.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5
+    });
+
+    // Bg wash breathe
+    gsap.to('.hbw001-wash', {
+      opacity: 0.7, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+
+    // Devanagari text float
+    gsap.to('#hbw001-deva', {
+      y: -3, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5
+    });
+  });
+
+  // --- Mouse parallax ---
+  root.addEventListener('mousemove', function(e) {
+    var rx = e.clientX / window.innerWidth - 0.5;
+    var ry = e.clientY / window.innerHeight - 0.5;
+    gsap.to('#hbw001-content', { x: rx * 16, y: ry * 10, duration: 1.2, ease: 'power1.out' });
+    gsap.to('#hbw001-garlands', { x: rx * -22, y: ry * -14, duration: 1.6, ease: 'power1.out' });
+    gsap.to('.hbw001-wash', { x: rx * 30, y: ry * 18, duration: 2, ease: 'power1.out' });
+    gsap.to(['#hbw001-b1','#hbw001-b2','#hbw001-b3'], { x: rx * 12, duration: 1.4, ease: 'power1.out' });
+  });
+
+  // --- Title hover — grand pulse ---
+  document.getElementById('hbw001-title').addEventListener('mouseenter', function() {
+    gsap.to('#hbw001-title', { scale: 1.02, duration: 0.4, ease: 'back.out(2)', transformOrigin: '50% 50%' });
+    gsap.to(sparkleEls, { scale: 1.4, duration: 0.3, stagger: 0.02, ease: 'back.out(2)' });
+  });
+  document.getElementById('hbw001-title').addEventListener('mouseleave', function() {
+    gsap.to('#hbw001-title', { scale: 1, duration: 0.5, ease: 'power2.out', transformOrigin: '50% 50%' });
+    gsap.to(sparkleEls, { scale: 1, duration: 0.4, stagger: 0.02 });
+  });
+
+})();
+</script>

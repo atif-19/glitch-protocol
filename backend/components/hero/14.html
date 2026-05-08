@@ -1,0 +1,775 @@
+<!--
+  Component: hero_f1_001
+  Type: hero
+  Aesthetic: Speed dark
+  Obsession: F1 Racing
+  Tone: intense, cinematic, electric
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .hero-f1-001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: none;
+  }
+
+  .hero-f1-001-track-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-f1-001-speed-lines {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-f1-001-speed-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    opacity: 0;
+    transform-origin: left center;
+  }
+
+  .hero-f1-001-grid-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .hero-f1-001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%);
+    pointer-events: none;
+  }
+
+  .hero-f1-001-car-wrap {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    width: clamp(500px, 80vw, 1100px);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .hero-f1-001-exhaust {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .hero-f1-001-exhaust-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  .hero-f1-001-number-bg {
+    position: absolute;
+    bottom: 0;
+    right: clamp(-2rem, -2vw, -1rem);
+    font-family: var(--font-heading);
+    font-size: clamp(16rem, 35vw, 40rem);
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+    z-index: 2;
+    pointer-events: none;
+    letter-spacing: -0.05em;
+    user-select: none;
+  }
+
+  .hero-f1-001-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    width: 100%;
+    max-width: 900px;
+    pointer-events: none;
+    margin-top: clamp(-4rem, -8vh, -6rem);
+  }
+
+  .hero-f1-001-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    font-size: clamp(0.6rem, 1.1vw, 0.78rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  .hero-f1-001-eyebrow-line {
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  .hero-f1-001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 9.5vw, 8.5rem);
+    line-height: 0.92;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    opacity: 0;
+    text-transform: uppercase;
+  }
+
+  .hero-f1-001-title-accent {
+    color: var(--accent);
+    display: block;
+    filter: drop-shadow(0 0 28px var(--accent));
+  }
+
+  .hero-f1-001-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    margin: 0.2rem 0;
+  }
+
+  .hero-f1-001-divider-bar {
+    width: 48px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .hero-f1-001-divider-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px 3px var(--accent);
+  }
+
+  .hero-f1-001-divider-bar-long {
+    width: 18px;
+    height: 2px;
+    background: rgba(255,255,255,0.18);
+  }
+
+  .hero-f1-001-subtitle {
+    font-size: clamp(0.8rem, 1.9vw, 1.1rem);
+    color: var(--text);
+    opacity: 0;
+    letter-spacing: 0.05em;
+    max-width: 480px;
+    line-height: 1.7;
+    font-family: var(--font-body);
+  }
+
+  .hero-f1-001-recipient {
+    margin-top: clamp(0.3rem, 1vw, 0.8rem);
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2.6vw, 1.8rem);
+    color: var(--text);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+
+  .hero-f1-001-recipient-flag {
+    width: clamp(22px, 3vw, 32px);
+    height: clamp(14px, 2vw, 20px);
+    display: inline-flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+
+  .hero-f1-001-hint {
+    position: absolute;
+    bottom: clamp(1.2rem, 3vh, 2.2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    pointer-events: all;
+  }
+
+  .hero-f1-001-hint-text {
+    font-size: clamp(0.52rem, 1vw, 0.68rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.35;
+  }
+
+  .hero-f1-001-hint-chevrons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .hero-f1-001-chevron {
+    width: 10px;
+    height: 6px;
+    border-right: 1.5px solid var(--accent);
+    border-bottom: 1.5px solid var(--accent);
+    transform: rotate(45deg);
+    opacity: 0;
+    animation: hero-f1-001-chev 1.8s ease-in-out infinite;
+  }
+  .hero-f1-001-chevron:nth-child(2) { animation-delay: 0.2s; }
+  .hero-f1-001-chevron:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes hero-f1-001-chev {
+    0%,100% { opacity: 0; }
+    50% { opacity: 0.8; }
+  }
+
+  .hero-f1-001-cursor {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-f1-001-cursor-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    transition: transform 0.12s ease;
+  }
+
+  .hero-f1-001-cursor-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 6px 2px var(--accent);
+  }
+
+  .hero-f1-001-rpm {
+    position: absolute;
+    top: clamp(1rem, 2.5vh, 2rem);
+    right: clamp(1.2rem, 3vw, 2.5rem);
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    opacity: 0;
+  }
+
+  .hero-f1-001-rpm-label {
+    font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .hero-f1-001-rpm-bars {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+  }
+
+  .hero-f1-001-rpm-bar {
+    width: clamp(4px, 0.6vw, 7px);
+    background: var(--accent);
+    border-radius: 1px;
+    opacity: 0.15;
+    transition: opacity 0.15s;
+  }
+
+  .hero-f1-001-lap {
+    position: absolute;
+    top: clamp(1rem, 2.5vh, 2rem);
+    left: clamp(1.2rem, 3vw, 2.5rem);
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+  }
+
+  .hero-f1-001-lap-label {
+    font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .hero-f1-001-lap-time {
+    font-family: var(--font-heading);
+    font-size: clamp(0.9rem, 1.8vw, 1.4rem);
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    filter: drop-shadow(0 0 8px var(--accent));
+  }
+</style>
+<div class="hero-f1-001-root" id="hero-f1-001-root">
+<canvas class="hero-f1-001-track-canvas" id="hero-f1-001-canvas"></canvas>
+  <div class="hero-f1-001-grid-overlay"></div>
+  <div class="hero-f1-001-speed-lines" id="hero-f1-001-speed-lines"></div>
+  <div class="hero-f1-001-vignette"></div>
+  <div class="hero-f1-001-number-bg" id="hero-f1-001-numbg">1</div>
+  <!-- F1 Car SVG -->
+<svg class="hero-f1-001-car-wrap" id="hero-f1-001-car"
+ viewBox="0 0 1100 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+<!-- Shadow -->
+<ellipse cx="550" cy="310" rx="380" ry="18" fill="rgba(0,0,0,0.55)"/>
+<!-- Floor/diffuser -->
+<rect x="180" y="240" width="740" height="30" rx="4" fill="#111"/>
+<!-- Main body -->
+<path d="M220 240 Q250 200 340 195 L760 195 Q850 200 880 240 Z" fill="#1a1a1a"/>
+<!-- Sidepods -->
+<path d="M290 210 Q310 185 390 182 L500 182 L500 210 Z" fill="#222"/>
+<path d="M810 210 Q790 185 710 182 L600 182 L600 210 Z" fill="#222"/>
+<!-- Sidepod accent stripe -->
+<path d="M295 208 Q315 188 392 185 L498 185 L498 192 Q392 192 315 196 Z" fill="var(--accent)" opacity="0.85"/>
+<path d="M805 208 Q785 188 708 185 L602 185 L602 192 Q708 192 785 196 Z" fill="var(--accent)" opacity="0.85"/>
+<!-- Nose cone -->
+<path d="M340 200 Q300 210 160 270 L220 270 Q310 220 370 210 Z" fill="#181818"/>
+<path d="M760 200 Q800 210 940 270 L880 270 Q790 220 730 210 Z" fill="#181818"/>
+<!-- Nose tip -->
+<path d="M160 268 Q120 268 100 272 L155 276 Z" fill="#141414"/>
+<path d="M940 268 Q980 268 1000 272 L945 276 Z" fill="#141414"/>
+<!-- Cockpit surround / halo -->
+<path d="M460 182 Q500 160 540 155 Q580 160 620 182 L620 192 Q580 172 540 167 Q500 172 460 192 Z" fill="#0f0f0f"/>
+<path d="M462 184 Q500 162 540 157 Q580 162 618 184 L616 188 Q580 166 540 161 Q500 166 464 188 Z" fill="rgba(255,255,255,0.06)"/>
+<!-- Halo bar -->
+<rect x="510" y="157" width="60" height="8" rx="4" fill="#111"/>
+<!-- Cockpit dark interior -->
+<ellipse cx="540" cy="190" rx="60" ry="20" fill="#080808"/>
+<!-- Helmet -->
+<ellipse cx="540" cy="178" rx="28" ry="24" fill="#1a1a2e"/>
+<ellipse cx="540" cy="174" rx="22" ry="14" fill="rgba(100,160,255,0.15)"/>
+<path d="M520 176 Q540 165 560 176" stroke="var(--accent)" stroke-width="2" fill="none" opacity="0.7"/>
+<!-- Front wing -->
+<rect x="240" y="268" width="220" height="10" rx="3" fill="#0d0d0d"/>
+<rect x="242" y="265" width="216" height="4" rx="2" fill="var(--accent)" opacity="0.7"/>
+<rect x="250" y="255" width="60" height="14" rx="2" fill="#111"/>
+<rect x="390" y="255" width="60" height="14" rx="2" fill="#111"/>
+<!-- Rear wing -->
+<rect x="640" y="255" width="220" height="12" rx="3" fill="#0d0d0d"/>
+<rect x="642" y="252" width="216" height="5" rx="2" fill="var(--accent)" opacity="0.7"/>
+<rect x="650" y="238" width="60" height="20" rx="2" fill="#111"/>
+<rect x="790" y="238" width="60" height="20" rx="2" fill="#111"/>
+<!-- Rear wing DRS slot -->
+<rect x="642" y="258" width="216" height="2" rx="1" fill="rgba(0,0,0,0.4)"/>
+<!-- Wheels front -->
+<ellipse cx="300" cy="276" rx="36" ry="36" fill="#111"/>
+<ellipse cx="300" cy="276" rx="26" ry="26" fill="#0a0a0a"/>
+<ellipse cx="300" cy="276" rx="12" ry="12" fill="var(--accent)" opacity="0.8"/>
+<ellipse cx="300" cy="276" rx="5" ry="5" fill="#fff" opacity="0.6"/>
+<!-- Wheels rear -->
+<ellipse cx="800" cy="276" rx="40" ry="40" fill="#111"/>
+<ellipse cx="800" cy="276" rx="30" ry="30" fill="#0a0a0a"/>
+<ellipse cx="800" cy="276" rx="13" ry="13" fill="var(--accent)" opacity="0.8"/>
+<ellipse cx="800" cy="276" rx="5" ry="5" fill="#fff" opacity="0.6"/>
+<!-- Tyre tread lines front -->
+<ellipse cx="300" cy="276" rx="35" ry="35" fill="none" stroke="#222" stroke-width="3"/>
+<ellipse cx="800" cy="276" rx="39" ry="39" fill="none" stroke="#222" stroke-width="3"/>
+<!-- Engine cover / airbox intake -->
+<path d="M490 165 Q540 150 590 165 L590 182 Q540 170 490 182 Z" fill="#121212"/>
+<ellipse cx="540" cy="153" rx="22" ry="8" fill="#0a0a0a"/>
+<!-- Livery stripes -->
+<path d="M340 198 L760 198 L760 203 L340 203 Z" fill="var(--accent)" opacity="0.4"/>
+<path d="M380 195 L720 195 L720 198 L380 198 Z" fill="rgba(255,255,255,0.08)"/>
+<!-- Exhaust outlet -->
+<ellipse cx="765" cy="208" rx="8" ry="5" fill="#060606"/>
+<ellipse cx="765" cy="208" rx="5" ry="3" fill="#0a0005"/>
+</svg>
+  <!-- Exhaust particles anchor -->
+  <div class="hero-f1-001-exhaust" id="hero-f1-001-exhaust" style="bottom:38%;left:69%;"></div>
+  <!-- HUD: Lap time -->
+  <div class="hero-f1-001-lap" id="hero-f1-001-lap">
+    <span class="hero-f1-001-lap-label">Best Lap</span>
+    <span class="hero-f1-001-lap-time" id="hero-f1-001-laptime">1:18.412</span>
+  </div>
+  <!-- HUD: RPM bars -->
+  <div class="hero-f1-001-rpm" id="hero-f1-001-rpm">
+    <span class="hero-f1-001-rpm-label">RPM</span>
+    <div class="hero-f1-001-rpm-bars" id="hero-f1-001-rpm-bars">
+    </div>
+  </div>
+  <!-- Main content -->
+  <div class="hero-f1-001-content">
+    <div class="hero-f1-001-eyebrow" id="hero-f1-001-eyebrow">
+      <span class="hero-f1-001-eyebrow-line"></span>
+      Pole Position
+      <span class="hero-f1-001-eyebrow-line"></span>
+    </div>
+    <div class="hero-f1-001-title" id="hero-f1-001-title">
+      --TITLE--<br/>
+      <span class="hero-f1-001-title-accent">--ACCENT_WORD--</span>
+    </div>
+    <div class="hero-f1-001-divider" id="hero-f1-001-divider">
+      <div class="hero-f1-001-divider-bar"></div>
+      <div class="hero-f1-001-divider-dot"></div>
+      <div class="hero-f1-001-divider-bar-long"></div>
+    </div>
+    <div class="hero-f1-001-subtitle" id="hero-f1-001-subtitle">--SUBTITLE--</div>
+    <div class="hero-f1-001-recipient" id="hero-f1-001-recipient">--RECIPIENT_NAME--</div>
+  </div>
+  <!-- Bottom hint -->
+  <div class="hero-f1-001-hint" id="hero-f1-001-hint">
+    <span class="hero-f1-001-hint-text">Full throttle</span>
+    <div class="hero-f1-001-hint-chevrons">
+      <div class="hero-f1-001-chevron"></div>
+      <div class="hero-f1-001-chevron"></div>
+      <div class="hero-f1-001-chevron"></div>
+    </div>
+  </div>
+  <!-- Custom cursor -->
+  <div class="hero-f1-001-cursor" id="hero-f1-001-cursor">
+    <div class="hero-f1-001-cursor-ring"></div>
+    <div class="hero-f1-001-cursor-dot"></div>
+  </div>
+</div>
+<script>
+(function () {
+
+  // ─── Canvas: asphalt + racing line ──────────────────────────────────
+  const canvas = document.getElementById('hero-f1-001-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resizeCanvas() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  let lineOffset = 0;
+
+  function drawTrack() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Dark asphalt base
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#050505');
+    grad.addColorStop(1, '#0e0a08');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Racing line — sweeping curve across screen
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 90;
+    ctx.beginPath();
+    ctx.moveTo(-100, H * 0.7);
+    ctx.bezierCurveTo(W * 0.25, H * 0.8, W * 0.55, H * 0.2, W + 100, H * 0.5);
+    ctx.stroke();
+    ctx.restore();
+
+    // Dashed centre line
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,200,0,0.12)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([28, 24]);
+    ctx.lineDashOffset = -lineOffset;
+    ctx.beginPath();
+    ctx.moveTo(-100, H * 0.72);
+    ctx.bezierCurveTo(W * 0.25, H * 0.82, W * 0.55, H * 0.22, W + 100, H * 0.52);
+    ctx.stroke();
+    ctx.restore();
+
+    lineOffset = (lineOffset + 1.4) % 52;
+    requestAnimationFrame(drawTrack);
+  }
+
+  resizeCanvas();
+  drawTrack();
+  window.addEventListener('resize', resizeCanvas);
+
+  // ─── RPM bars setup ─────────────────────────────────────────────────
+  const rpmContainer = document.getElementById('hero-f1-001-rpm-bars');
+  const BAR_COUNT = 14;
+  const barHeights = [8, 10, 12, 14, 16, 18, 20, 22, 22, 20, 18, 14, 10, 8];
+  const rpmBars = [];
+
+  for (let i = 0; i < BAR_COUNT; i++) {
+    const b = document.createElement('div');
+    b.className = 'hero-f1-001-rpm-bar';
+    b.style.height = barHeights[i] + 'px';
+    rpmContainer.appendChild(b);
+    rpmBars.push(b);
+  }
+
+  let rpmLevel = 0;
+  let rpmDir = 1;
+  let rpmRaf;
+
+  function animateRPM() {
+    rpmLevel += rpmDir * (0.4 + Math.random() * 0.3);
+    if (rpmLevel >= BAR_COUNT) { rpmLevel = BAR_COUNT; rpmDir = -1; }
+    if (rpmLevel <= 3) { rpmLevel = 3; rpmDir = 1; }
+    const lit = Math.floor(rpmLevel);
+    rpmBars.forEach((b, i) => {
+      const active = i < lit;
+      b.style.opacity = active ? (i >= 10 ? '1' : '0.7') : '0.12';
+      b.style.background = active
+        ? (i >= 12 ? '#ff2020' : i >= 10 ? '#ffaa00' : 'var(--accent)')
+        : 'rgba(255,255,255,0.1)';
+    });
+    rpmRaf = setTimeout(animateRPM, 90);
+  }
+
+  // ─── Speed lines ────────────────────────────────────────────────────
+  const linesContainer = document.getElementById('hero-f1-001-speed-lines');
+  const LINE_POOL = 18;
+  const linePool = [];
+
+  for (let i = 0; i < LINE_POOL; i++) {
+    const el = document.createElement('div');
+    el.className = 'hero-f1-001-speed-line';
+    el.style.width = (Math.random() * 120 + 60) + 'px';
+    linesContainer.appendChild(el);
+    linePool.push({ el, busy: false });
+  }
+
+  function fireSpeedLine() {
+    const s = linePool.find(l => !l.busy);
+    if (!s) return;
+    s.busy = true;
+    const y = Math.random() * window.innerHeight;
+    const x = -200;
+    const w = Math.random() * 180 + 60;
+    s.el.style.cssText = `top:${y}px;left:${x}px;width:${w}px;opacity:0;`;
+    if (window.gsap) {
+      gsap.fromTo(s.el,
+        { opacity: 0, x: 0 },
+        { opacity: 0.6, x: window.innerWidth + 300,
+          duration: Math.random() * 0.4 + 0.2,
+          ease: 'power2.in',
+          onComplete: () => { s.el.style.opacity = '0'; s.busy = false; }
+        }
+      );
+    }
+  }
+
+  let speedLineInterval;
+
+  function startSpeedLines() {
+    speedLineInterval = setInterval(() => {
+      const bursts = Math.floor(Math.random() * 3) + 1;
+      for (let i = 0; i < bursts; i++) {
+        setTimeout(fireSpeedLine, i * 40);
+      }
+    }, 280);
+  }
+
+  // ─── Exhaust heat shimmer particles ─────────────────────────────────
+  const exhaustEl = document.getElementById('hero-f1-001-exhaust');
+  const EXHAUST_POOL = 16;
+  const exhaustPool = [];
+
+  for (let i = 0; i < EXHAUST_POOL; i++) {
+    const el = document.createElement('div');
+    el.className = 'hero-f1-001-exhaust-particle';
+    const size = Math.random() * 6 + 2;
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    exhaustEl.appendChild(el);
+    exhaustPool.push({ el, busy: false });
+  }
+
+  function fireExhaust() {
+    const s = exhaustPool.find(p => !p.busy);
+    if (!s) return;
+    s.busy = true;
+    const hue = Math.random() > 0.6 ? 'rgba(255,120,20,0.9)' : 'rgba(255,200,80,0.7)';
+    s.el.style.cssText = `background:${hue};opacity:0;left:0;top:0;`;
+    if (window.gsap) {
+      gsap.fromTo(s.el,
+        { opacity: 0.9, x: 0, y: 0, scale: 1 },
+        { opacity: 0,
+          x: -(Math.random() * 60 + 20),
+          y: (Math.random() - 0.5) * 16,
+          scale: 2.5,
+          duration: 0.5 + Math.random() * 0.3,
+          ease: 'power2.out',
+          onComplete: () => { s.el.style.opacity = '0'; s.busy = false; }
+        }
+      );
+    }
+  }
+
+  let exhaustInterval;
+
+  function startExhaust() {
+    exhaustInterval = setInterval(() => {
+      fireExhaust();
+      fireExhaust();
+    }, 80);
+  }
+
+  // ─── Cursor ─────────────────────────────────────────────────────────
+  const cursor = document.getElementById('hero-f1-001-cursor');
+  const cursorRing = cursor.querySelector('.hero-f1-001-cursor-ring');
+  document.getElementById('hero-f1-001-root').style.cursor = 'none';
+
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    if (window.gsap) {
+      gsap.to(cursorRing, { scale: 1, duration: 0.2, ease: 'power2.out' });
+    }
+  });
+
+  document.addEventListener('mousedown', () => {
+    if (window.gsap) gsap.to(cursorRing, { scale: 0.6, duration: 0.1 });
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (window.gsap) gsap.to(cursorRing, { scale: 1, duration: 0.2 });
+  });
+
+  // ─── Parallax ───────────────────────────────────────────────────────
+  document.addEventListener('mousemove', e => {
+    if (!window.gsap) return;
+    const dx = (e.clientX / window.innerWidth - 0.5) * 20;
+    const dy = (e.clientY / window.innerHeight - 0.5) * 12;
+    gsap.to('#hero-f1-001-content', { x: dx * 0.5, y: dy * 0.4, duration: 1.4, ease: 'power1.out' });
+    gsap.to('#hero-f1-001-car', { x: dx * 1.0, duration: 1.8, ease: 'power1.out' });
+    gsap.to('#hero-f1-001-numbg', { x: dx * 1.8, duration: 2.2, ease: 'power1.out' });
+  });
+
+  // ─── Lap time ticker ────────────────────────────────────────────────
+  const lapTimeEl = document.getElementById('hero-f1-001-laptime');
+  const LAP_TIMES = ['1:18.412','1:17.998','1:19.054','1:18.230','1:17.872'];
+  let lapIdx = 0;
+
+  function tickLapTime() {
+    lapIdx = (lapIdx + 1) % LAP_TIMES.length;
+    if (window.gsap) {
+      gsap.to(lapTimeEl, { opacity: 0, y: -4, duration: 0.15, ease: 'power1.in', onComplete: () => {
+        lapTimeEl.textContent = LAP_TIMES[lapIdx];
+        gsap.to(lapTimeEl, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' });
+      }});
+    }
+    setTimeout(tickLapTime, 3200 + Math.random() * 1400);
+  }
+
+  // ─── ENTRANCE ───────────────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 1) return;
+
+    const tl = gsap.timeline();
+
+    // Car screech in from left
+    gsap.set('#hero-f1-001-car', { x: -window.innerWidth * 0.8, opacity: 0 });
+    tl.to('#hero-f1-001-car', {
+      x: 0, opacity: 1,
+      duration: 0.9,
+      ease: 'power4.out'
+    }, 0);
+
+    // Background number count-up feel
+    gsap.set('#hero-f1-001-numbg', { opacity: 0 });
+    tl.to('#hero-f1-001-numbg', { opacity: 1, duration: 0.4, ease: 'power2.out' }, 0.5);
+
+    // HUDs
+    tl.to(['#hero-f1-001-lap', '#hero-f1-001-rpm'], {
+      opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: 'power2.out',
+      onStart: () => { gsap.set(['#hero-f1-001-lap', '#hero-f1-001-rpm'], { y: -10 }); }
+    }, 0.7);
+
+    // Eyebrow
+    gsap.set('#hero-f1-001-eyebrow', { x: -20 });
+    tl.to('#hero-f1-001-eyebrow', { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, 0.8);
+
+    // Title lines
+    gsap.set('#hero-f1-001-title', { y: 40, skewX: -4 });
+    tl.to('#hero-f1-001-title', {
+      opacity: 1, y: 0, skewX: 0,
+      duration: 0.85,
+      ease: 'expo.out'
+    }, 1.0);
+
+    // Divider
+    gsap.set('#hero-f1-001-divider', { scaleX: 0, transformOrigin: 'left' });
+    tl.to('#hero-f1-001-divider', { opacity: 1, scaleX: 1, duration: 0.5, ease: 'power3.out' }, 1.35);
+
+    // Subtitle
+    gsap.set('#hero-f1-001-subtitle', { y: 12 });
+    tl.to('#hero-f1-001-subtitle', { opacity: 0.65, y: 0, duration: 0.7, ease: 'power2.out' }, 1.5);
+
+    // Recipient
+    gsap.set('#hero-f1-001-recipient', { y: 16 });
+    tl.to('#hero-f1-001-recipient', { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.4)' }, 1.7);
+
+    // Hint
+    tl.to('#hero-f1-001-hint', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 2.4);
+
+    // Start ambient systems
+    tl.call(() => {
+      startSpeedLines();
+      startExhaust();
+      animateRPM();
+      tickLapTime();
+
+      // Car idle vibration
+      gsap.to('#hero-f1-001-car', {
+        y: -3, duration: 0.08, ease: 'none',
+        yoyo: true, repeat: -1
+      });
+
+      // Accent word flicker pulse
+      gsap.to('.hero-f1-001-title-accent', {
+        filter: 'drop-shadow(0 0 40px var(--accent)) brightness(1.3)',
+        duration: 0.7,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+
+      // RPM number-bg subtle drift
+      gsap.to('#hero-f1-001-numbg', {
+        x: 14, duration: 8, ease: 'sine.inOut',
+        yoyo: true, repeat: -1
+      });
+
+    }, [], 1.0);
+
+  });
+
+})();
+</script>

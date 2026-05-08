@@ -1,0 +1,865 @@
+<!--
+  Component: loading_kpop_001
+  Type: loading
+  Aesthetic: Neon Idol Stage
+  Obsession: K-Pop
+  Tone: electric, euphoric, cinematic
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<style>
+  .lkp001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: none;
+  }
+
+  .lkp001-stage-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 35%;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.9) 0%,
+      transparent 100%
+    );
+  }
+
+  .lkp001-stage-floor::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--accent) 30%,
+      var(--primary) 50%,
+      var(--accent) 70%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .lkp001-stage-floor.lkp001-lit::before {
+    opacity: 1;
+  }
+
+  .lkp001-perspective-grid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .lkp001-spotlights {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .lkp001-spot {
+    position: absolute;
+    top: -10%;
+    width: clamp(60px, 10vw, 140px);
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: top center;
+  }
+
+  .lkp001-spot-inner {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+  }
+
+  .lkp001-spot:nth-child(1) { left: 8%; }
+  .lkp001-spot:nth-child(2) { left: 22%; }
+  .lkp001-spot:nth-child(3) { left: 38%; }
+  .lkp001-spot:nth-child(4) { left: 54%; }
+  .lkp001-spot:nth-child(5) { left: 68%; }
+  .lkp001-spot:nth-child(6) { left: 82%; }
+
+  .lkp001-spot:nth-child(1) .lkp001-spot-inner { background: linear-gradient(180deg, rgba(255,50,180,0.18) 0%, transparent 100%); }
+  .lkp001-spot:nth-child(2) .lkp001-spot-inner { background: linear-gradient(180deg, rgba(80,200,255,0.15) 0%, transparent 100%); }
+  .lkp001-spot:nth-child(3) .lkp001-spot-inner { background: linear-gradient(180deg, rgba(180,80,255,0.18) 0%, transparent 100%); }
+  .lkp001-spot:nth-child(4) .lkp001-spot-inner { background: linear-gradient(180deg, rgba(255,220,50,0.12) 0%, transparent 100%); }
+  .lkp001-spot:nth-child(5) .lkp001-spot-inner { background: linear-gradient(180deg, rgba(80,255,180,0.14) 0%, transparent 100%); }
+  .lkp001-spot:nth-child(6) .lkp001-spot-inner { background: linear-gradient(180deg, rgba(255,80,100,0.16) 0%, transparent 100%); }
+
+  .lkp001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+      transparent 35%,
+      rgba(0,0,0,0.65) 100%
+    );
+  }
+
+  .lkp001-lightsticks {
+    position: absolute;
+    bottom: clamp(16px, 4vh, 48px);
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: clamp(6px, 1.4vw, 18px);
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .lkp001-stick {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .lkp001-stick-bulb {
+    width: clamp(6px, 1vw, 12px);
+    height: clamp(6px, 1vw, 12px);
+    border-radius: 50%;
+  }
+
+  .lkp001-stick-rod {
+    width: 1.5px;
+    height: clamp(14px, 2.5vh, 30px);
+    background: rgba(255,255,255,0.15);
+    border-radius: 1px;
+  }
+
+  .lkp001-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  .lkp001-particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .lkp001-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(12px, 2.5vh, 24px);
+    text-align: center;
+    padding: 0 clamp(24px, 8vw, 100px);
+  }
+
+  .lkp001-fandom-badge {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 16px);
+    opacity: 0;
+  }
+
+  .lkp001-badge-line {
+    width: clamp(20px, 4vw, 50px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+  }
+
+  .lkp001-badge-line:last-child {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .lkp001-badge-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.48rem, 0.9vw, 0.62rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .lkp001-title-wrap {
+    position: relative;
+  }
+
+  .lkp001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    color: var(--text);
+    letter-spacing: 0.04em;
+    margin: 0;
+    line-height: 1.0;
+    opacity: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .lkp001-title-neon {
+    position: absolute;
+    inset: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    letter-spacing: 0.04em;
+    line-height: 1.0;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(6px);
+  }
+
+  .lkp001-title span {
+    color: var(--accent);
+    text-shadow: 0 0 20px var(--accent);
+  }
+
+  .lkp001-hangul-row {
+    display: flex;
+    gap: clamp(8px, 2vw, 22px);
+    opacity: 0;
+    align-items: center;
+  }
+
+  .lkp001-hangul {
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 1.8vw, 1.3rem);
+    color: var(--text);
+    opacity: 0.22;
+    letter-spacing: 0.12em;
+    transition: opacity 0.3s;
+  }
+
+  .lkp001-hangul.lkp001-active {
+    opacity: 1;
+    color: var(--accent);
+    text-shadow: 0 0 14px var(--accent);
+  }
+
+  .lkp001-dot-sep {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .lkp001-loading-line {
+    font-family: var(--font-body);
+    font-size: clamp(0.72rem, 1.5vw, 0.95rem);
+    color: var(--text);
+    opacity: 0;
+    letter-spacing: 0.08em;
+    font-style: italic;
+    max-width: 420px;
+    line-height: 1.6;
+  }
+
+  .lkp001-bar-system {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    width: clamp(180px, 34vw, 360px);
+  }
+
+  .lkp001-bar-track {
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .lkp001-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), #ff50b4);
+    box-shadow: 0 0 10px var(--accent), 0 0 24px var(--accent);
+    position: relative;
+  }
+
+  .lkp001-bar-glow {
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent), 0 0 24px var(--accent);
+  }
+
+  .lkp001-bar-meta {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .lkp001-bar-label {
+    font-size: clamp(0.45rem, 0.8vw, 0.58rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.35;
+    font-family: var(--font-body);
+  }
+
+  .lkp001-bar-pct {
+    font-size: clamp(0.45rem, 0.8vw, 0.58rem);
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    font-family: var(--font-body);
+    opacity: 0.8;
+  }
+
+  .lkp001-lightrail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    display: flex;
+    gap: 2px;
+    z-index: 20;
+    opacity: 0;
+  }
+
+  .lkp001-rail-cell {
+    flex: 1;
+    height: 100%;
+    border-radius: 1px;
+    background: var(--accent);
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+
+  .lkp001-sig {
+    position: absolute;
+    bottom: clamp(10px, 2vh, 20px);
+    right: clamp(16px, 3vw, 36px);
+    font-size: clamp(0.45rem, 0.8vw, 0.58rem);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0;
+    white-space: nowrap;
+    z-index: 10;
+    font-family: var(--font-body);
+  }
+
+  .lkp001-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+
+  .lkp001-cursor-inner {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+  }
+
+  .lkp001-cursor-ring {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+
+  .lkp001-note {
+    position: absolute;
+    font-size: clamp(0.7rem, 1.2vw, 1rem);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    color: var(--accent);
+    filter: blur(0px);
+  }
+</style>
+<div class="lkp001-root" id="lkp001-root">
+<canvas id="lkp001-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
+  <div class="lkp001-spotlights" id="lkp001-spots">
+    <div class="lkp001-spot"><div class="lkp001-spot-inner"></div></div>
+    <div class="lkp001-spot"><div class="lkp001-spot-inner"></div></div>
+    <div class="lkp001-spot"><div class="lkp001-spot-inner"></div></div>
+    <div class="lkp001-spot"><div class="lkp001-spot-inner"></div></div>
+    <div class="lkp001-spot"><div class="lkp001-spot-inner"></div></div>
+    <div class="lkp001-spot"><div class="lkp001-spot-inner"></div></div>
+  </div>
+  <div class="lkp001-perspective-grid" id="lkp001-grid"></div>
+  <div class="lkp001-stage-floor" id="lkp001-floor"></div>
+  <div class="lkp001-vignette"></div>
+  <div class="lkp001-particles" id="lkp001-particles"></div>
+  <div class="lkp001-lightrail" id="lkp001-rail">
+    <div class="lkp001-rail-cell" style="background:#ff32b4"></div>
+    <div class="lkp001-rail-cell" style="background:#50c8ff"></div>
+    <div class="lkp001-rail-cell" style="background:#b450ff"></div>
+    <div class="lkp001-rail-cell" style="background:#ffdc32"></div>
+    <div class="lkp001-rail-cell" style="background:#50ffb4"></div>
+    <div class="lkp001-rail-cell" style="background:#ff5064"></div>
+    <div class="lkp001-rail-cell" style="background:#ff32b4"></div>
+    <div class="lkp001-rail-cell" style="background:#50c8ff"></div>
+    <div class="lkp001-rail-cell" style="background:#b450ff"></div>
+    <div class="lkp001-rail-cell" style="background:#ffdc32"></div>
+    <div class="lkp001-rail-cell" style="background:#50ffb4"></div>
+    <div class="lkp001-rail-cell" style="background:#ff5064"></div>
+  </div>
+  <div class="lkp001-center" id="lkp001-center"><div class="lkp001-fandom-badge" id="lkp001-badge">
+  <div class="lkp001-badge-line"></div>
+  <span class="lkp001-badge-text">★ &nbsp; an idol-worthy message &nbsp; ★</span>
+  <div class="lkp001-badge-line"></div>
+</div>
+
+<div class="lkp001-title-wrap" id="lkp001-title-wrap">
+  <div class="lkp001-title-neon" id="lkp001-title-neon">For --RECIPIENT_NAME--</div>
+  <h1 class="lkp001-title" id="lkp001-title">For <span>--RECIPIENT_NAME--</span></h1>
+</div>
+
+<div class="lkp001-hangul-row" id="lkp001-hangul-row">
+  <span class="lkp001-hangul" id="lkp001-h1">당신을</span>
+  <div class="lkp001-dot-sep"></div>
+  <span class="lkp001-hangul" id="lkp001-h2">위한</span>
+  <div class="lkp001-dot-sep"></div>
+  <span class="lkp001-hangul" id="lkp001-h3">이야기</span>
+  <div class="lkp001-dot-sep"></div>
+  <span class="lkp001-hangul" id="lkp001-h4">입니다</span>
+</div>
+
+<p class="lkp001-loading-line" id="lkp001-loading-line">--LOADING_LINE--</p>
+
+<div class="lkp001-bar-system" id="lkp001-bar-system">
+  <div class="lkp001-bar-track">
+    <div class="lkp001-bar-fill" id="lkp001-bar-fill">
+      <div class="lkp001-bar-glow"></div>
+    </div>
+  </div>
+  <div class="lkp001-bar-meta">
+    <span class="lkp001-bar-label">loading stage</span>
+    <span class="lkp001-bar-pct" id="lkp001-pct">0%</span>
+  </div>
+</div></div>
+  <div class="lkp001-lightsticks" id="lkp001-sticks"></div>
+  <div class="lkp001-sig" id="lkp001-sig">The Glitch Protocol &nbsp;·&nbsp; Idol Stage</div>
+  <div class="lkp001-cursor" id="lkp001-cursor"><div class="lkp001-cursor-inner"></div></div>
+  <div class="lkp001-cursor-ring" id="lkp001-cursor-ring"></div>
+</div>
+<script>
+(function () {
+
+  const NEON_COLORS = ['#ff32b4','#50c8ff','#b450ff','#ffdc32','#50ffb4','#ff5064'];
+  const NOTES       = ['♪','♫','♩','♬','✦','★','⟡'];
+  const HANGUL_IDS  = ['lkp001-h1','lkp001-h2','lkp001-h3','lkp001-h4'];
+
+  // --- Build perspective grid via canvas ---
+  const canvas = document.getElementById('lkp001-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resizeCanvas() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function drawGrid(alpha) {
+    ctx.clearRect(0, 0, W, H);
+    const vp = { x: W / 2, y: H * 0.72 };
+    const rows = 10, cols = 16;
+    const bot  = H;
+    const top  = H * 0.52;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    for (let r = 0; r <= rows; r++) {
+      const t = r / rows;
+      const y = top + (bot - top) * t;
+      const spread = W * 0.9 * t;
+      const x0 = vp.x - spread / 2;
+      const x1 = vp.x + spread / 2;
+      ctx.beginPath();
+      ctx.moveTo(x0, y);
+      ctx.lineTo(x1, y);
+      ctx.strokeStyle = NEON_COLORS[r % NEON_COLORS.length];
+      ctx.lineWidth   = 0.5;
+      ctx.globalAlpha = alpha * (0.06 + 0.12 * t);
+      ctx.stroke();
+    }
+
+    for (let c = 0; c <= cols; c++) {
+      const t = c / cols;
+      const bx = W * 0.05 + W * 0.9 * t;
+      ctx.beginPath();
+      ctx.moveTo(vp.x, top);
+      ctx.lineTo(bx, bot);
+      ctx.strokeStyle = NEON_COLORS[c % NEON_COLORS.length];
+      ctx.lineWidth   = 0.5;
+      ctx.globalAlpha = alpha * 0.07;
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  let gridAlpha  = 0;
+  let gridTarget = 0;
+
+  function animGrid() {
+    gridAlpha += (gridTarget - gridAlpha) * 0.04;
+    drawGrid(gridAlpha);
+    requestAnimationFrame(animGrid);
+  }
+
+  resizeCanvas();
+  animGrid();
+  window.addEventListener('resize', resizeCanvas);
+
+  // --- Build lightsticks ---
+  function buildSticks() {
+    const container = document.getElementById('lkp001-sticks');
+    const count     = Math.floor(window.innerWidth / clamp(20, 2.5, 40)) ;
+    const safeCount = Math.min(Math.max(count, 14), 40);
+    for (let i = 0; i < safeCount; i++) {
+      const stick = document.createElement('div');
+      stick.className = 'lkp001-stick';
+      const bulb = document.createElement('div');
+      bulb.className = 'lkp001-stick-bulb';
+      const color = NEON_COLORS[i % NEON_COLORS.length];
+      bulb.style.background  = color;
+      bulb.style.boxShadow   = `0 0 8px ${color}, 0 0 16px ${color}`;
+      const rod = document.createElement('div');
+      rod.className = 'lkp001-stick-rod';
+      stick.appendChild(bulb);
+      stick.appendChild(rod);
+      container.appendChild(stick);
+    }
+  }
+
+  function clamp(val, min, max) {
+    return Math.min(Math.max(val, min), max);
+  }
+
+  buildSticks();
+
+  // --- Particle burst ---
+  function spawnParticle() {
+    const field = document.getElementById('lkp001-particles');
+    const el    = document.createElement('div');
+    el.className = 'lkp001-particle';
+    const size   = Math.random() * 4 + 1.5;
+    const color  = NEON_COLORS[Math.floor(Math.random() * NEON_COLORS.length)];
+    el.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random() * 100}%;
+      top:${Math.random() * 100}%;
+      background:${color};
+      box-shadow:0 0 ${size * 3}px ${color};
+      border-radius:50%;
+    `;
+    field.appendChild(el);
+    gsap.fromTo(el,
+      { opacity: 0, scale: 0, y: 0 },
+      {
+        opacity: 0.8,
+        scale: 1,
+        y: -(40 + Math.random() * 80),
+        x: (Math.random() - 0.5) * 60,
+        duration: 1.4 + Math.random() * 1,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.to(el, { opacity: 0, scale: 0, duration: 0.6, onComplete: () => el.remove() });
+        }
+      }
+    );
+  }
+
+  // --- Floating music notes ---
+  function spawnNote() {
+    const root = document.getElementById('lkp001-root');
+    const el   = document.createElement('div');
+    el.className  = 'lkp001-note';
+    el.textContent = NOTES[Math.floor(Math.random() * NOTES.length)];
+    el.style.left  = Math.random() * 88 + 4 + '%';
+    el.style.top   = Math.random() * 65 + 15 + '%';
+    el.style.color = NEON_COLORS[Math.floor(Math.random() * NEON_COLORS.length)];
+    root.appendChild(el);
+    gsap.fromTo(el,
+      { opacity: 0, y: 0, scale: 0.6 },
+      {
+        opacity: 0.55,
+        y: -30,
+        scale: 1,
+        duration: 2.5 + Math.random() * 1.5,
+        ease: 'power1.out',
+        onComplete: () => {
+          gsap.to(el, {
+            opacity: 0, y: '-=20', duration: 1,
+            onComplete: () => el.remove()
+          });
+        }
+      }
+    );
+  }
+
+  // --- Cursor ---
+  const cursor     = document.getElementById('lkp001-cursor');
+  const cursorRing = document.getElementById('lkp001-cursor-ring');
+  let   cursorOn   = false;
+
+  document.addEventListener('mousemove', (e) => {
+    if (!cursorOn) return;
+    gsap.to(cursor,     { x: e.clientX, y: e.clientY, duration: 0.08, ease: 'none' });
+    gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.2,  ease: 'power2.out' });
+  });
+
+  // --- Percent counter ---
+  const pctEl = document.getElementById('lkp001-pct');
+  function animatePercent(dur) {
+    gsap.to({ v: 0 }, {
+      v: 100, duration: dur, ease: 'power1.inOut',
+      onUpdate: function () {
+        if (pctEl) pctEl.textContent = Math.round(this.targets()[0].v) + '%';
+      }
+    });
+  }
+
+  // --- Hangul cycler ---
+  let hangulCycle;
+  function startHangulCycle() {
+    let idx = 0;
+    hangulCycle = setInterval(() => {
+      HANGUL_IDS.forEach(id => document.getElementById(id)?.classList.remove('lkp001-active'));
+      const el = document.getElementById(HANGUL_IDS[idx % HANGUL_IDS.length]);
+      if (el) el.classList.add('lkp001-active');
+      idx++;
+    }, 600);
+  }
+
+  // --- Spotlight wave ---
+  function startSpotWave() {
+    const spots = document.querySelectorAll('.lkp001-spot');
+    spots.forEach((spot, i) => {
+      gsap.to(spot, {
+        rotation: `random(-12, 12)`,
+        duration: 1.8 + i * 0.2,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: i * 0.22,
+      });
+      gsap.to(spot, {
+        opacity: `random(0.4, 0.85)`,
+        duration: 1.2 + i * 0.15,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: i * 0.18,
+      });
+    });
+  }
+
+  // --- Main entrance ---
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 0) return;
+
+    cursorOn = true;
+    gsap.to(cursor,     { opacity: 1, duration: 0.4, delay: 0.2 });
+    gsap.to(cursorRing, { opacity: 0.5, duration: 0.4, delay: 0.4 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // Rail flash
+    tl.to('#lkp001-rail', { opacity: 1, duration: 0.3 }, 0);
+    tl.to('.lkp001-rail-cell', {
+      scaleY: 1,
+      opacity: 1,
+      duration: 0.5,
+      stagger: { each: 0.04, from: 'center' },
+      ease: 'back.out(2)',
+    }, 0.1);
+
+    // Grid fade in
+    tl.call(() => { gridTarget = 1; }, [], 0.3);
+    tl.to('#lkp001-floor', { opacity: 1, duration: 0.8 }, 0.3);
+    tl.call(() => document.getElementById('lkp001-floor').classList.add('lkp001-lit'), [], 0.6);
+
+    // Spotlights
+    tl.to('.lkp001-spot', {
+      opacity: 0.6,
+      duration: 0.9,
+      stagger: { each: 0.12, from: 'edges' },
+      ease: 'power2.out',
+    }, 0.5);
+    tl.call(() => startSpotWave(), [], 1.4);
+
+    // Badge
+    tl.to('#lkp001-badge', { opacity: 1, duration: 0.6 }, 0.8);
+    tl.from('#lkp001-badge', { y: 10, duration: 0.6 }, 0.8);
+
+    // Title neon glow under
+    tl.to('#lkp001-title-neon', { opacity: 0.25, duration: 0.5 }, 1.1);
+
+    // Title
+    tl.to('#lkp001-title', { opacity: 1, duration: 0.7 }, 1.1);
+    tl.from('#lkp001-title', { y: 28, scale: 0.94, duration: 0.8, ease: 'expo.out' }, 1.1);
+
+    // Hangul row
+    tl.to('#lkp001-hangul-row', { opacity: 1, duration: 0.6 }, 1.7);
+    tl.call(() => startHangulCycle(), [], 1.9);
+
+    // Loading line
+    tl.to('#lkp001-loading-line', { opacity: 0.65, duration: 0.7 }, 2.0);
+    tl.from('#lkp001-loading-line', { y: 10, duration: 0.7 }, 2.0);
+
+    // Bar
+    tl.to('#lkp001-bar-system', { opacity: 1, duration: 0.5 }, 2.3);
+    tl.to('#lkp001-bar-fill',   { width: '100%', duration: 3.2, ease: 'power1.inOut' }, 2.4);
+    tl.call(() => animatePercent(3.2), [], 2.4);
+
+    // Lightsticks
+    tl.to('#lkp001-sticks', { opacity: 1, duration: 0.7 }, 2.2);
+    tl.from('.lkp001-stick', {
+      y: 20, opacity: 0, duration: 0.6,
+      stagger: { each: 0.04, from: 'center' },
+    }, 2.2);
+
+    // Sig
+    tl.to('#lkp001-sig', { opacity: 0.25, duration: 0.5 }, 2.8);
+
+    // Particle bursts
+    tl.call(() => {
+      for (let i = 0; i < 8; i++) {
+        gsap.delayedCall(i * 0.12, spawnParticle);
+      }
+      setInterval(spawnParticle, 700);
+    }, [], 1.2);
+
+    // Notes
+    tl.call(() => {
+      spawnNote();
+      setInterval(spawnNote, 1800);
+    }, [], 1.5);
+
+    // --- Idle / ambient ---
+
+    // Lightstick wave
+    tl.call(() => {
+      document.querySelectorAll('.lkp001-stick-bulb').forEach((b, i) => {
+        gsap.to(b, {
+          opacity: 0.25,
+          scale: 0.7,
+          duration: 0.5 + Math.random() * 0.5,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: i * 0.06,
+        });
+        gsap.to(b.parentElement, {
+          y: -6,
+          duration: 0.8 + Math.random() * 0.4,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: i * 0.07,
+        });
+      });
+    }, [], 2.8);
+
+    // Rail color loop
+    tl.call(() => {
+      document.querySelectorAll('.lkp001-rail-cell').forEach((cell, i) => {
+        gsap.to(cell, {
+          opacity: 0.3,
+          duration: 0.4 + Math.random() * 0.4,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: i * 0.08,
+        });
+      });
+    }, [], 1.2);
+
+    // Title name pulse
+    tl.call(() => {
+      const span = document.querySelector('#lkp001-title span');
+      if (!span) return;
+      gsap.to(span, {
+        textShadow: '0 0 30px var(--accent), 0 0 60px var(--accent)',
+        duration: 1.2,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+      });
+    }, [], 2.2);
+
+    // Neon title glow breathe
+    tl.call(() => {
+      gsap.to('#lkp001-title-neon', {
+        opacity: 0.12,
+        filter: 'blur(14px)',
+        duration: 1.8,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+      });
+    }, [], 2.0);
+
+    // Cursor ring color cycle
+    tl.call(() => {
+      let ci = 0;
+      setInterval(() => {
+        const c = NEON_COLORS[ci++ % NEON_COLORS.length];
+        gsap.to(cursorRing, { borderColor: c, duration: 0.4 });
+      }, 600);
+      gsap.to(cursorRing, {
+        scale: 1.5,
+        opacity: 0.15,
+        duration: 1,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+      });
+    }, [], 1.0);
+
+  });
+
+})();
+</script>

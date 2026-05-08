@@ -1,0 +1,634 @@
+<!-- Component: mem_warm_002 
+ Type: memories 
+ Aesthetic: warm minimalist / golden hour / soft grain 
+ Obsession: Soft fade 
+ Tone: tender, quiet, golden 
+ Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- -->
+ <style>
+  .mw002-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Warm grain */
+  .mw002-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.055;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    mix-blend-mode: soft-light;
+  }
+
+  /* Radial warm bloom — golden hour center light */
+  .mw002-bloom {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,210,130,0.09) 0%, rgba(255,180,80,0.04) 38%, transparent 68%);
+  }
+
+  /* Edge fade vignette — very soft */
+  .mw002-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.58) 100%);
+  }
+
+  /* Horizontal halation bar — soft overexposed band */
+  .mw002-halation {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: clamp(60px, 10vh, 120px);
+    transform: translateY(-50%);
+    background: linear-gradient(to bottom, transparent, rgba(255,210,130,0.04), transparent);
+    z-index: 2;
+    pointer-events: none;
+    filter: blur(20px);
+  }
+
+  /* Main content — three memory panels in a horizontal row */
+  .mw002-stage {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    width: min(94vw, 1020px);
+    height: min(62vh, 520px);
+  }
+
+  /* Divider between panels */
+  .mw002-divider {
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.1) 70%, transparent);
+    flex-shrink: 0;
+    align-self: stretch;
+    opacity: 0;
+  }
+
+  /* Each memory panel */
+  .mw002-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(14px, 2.5vh, 28px);
+    padding: clamp(20px, 3.5vh, 44px) clamp(18px, 2.5vw, 40px);
+    position: relative;
+    cursor: default;
+    transition: background 0.6s ease;
+  }
+
+  .mw002-panel:hover {
+    background: rgba(255,210,130,0.03);
+  }
+
+  /* Panel number — tiny top label */
+  .mw002-panel-num {
+    position: absolute;
+    top: clamp(14px, 2.5vh, 28px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.75vw, 9px);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.18);
+    white-space: nowrap;
+    opacity: 0;
+  }
+
+  /* The fade circle — core visual motif */
+  .mw002-fade-circle {
+    position: relative;
+    width: clamp(80px, 12vw, 150px);
+    height: clamp(80px, 12vw, 150px);
+    flex-shrink: 0;
+  }
+
+  .mw002-fade-circle-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  /* Each panel gets a slightly different warm tint */
+  .mw002-p1 .mw002-fade-circle-ring {
+    background: radial-gradient(circle at center, rgba(255,200,100,0.22) 0%, rgba(255,180,70,0.08) 50%, transparent 72%);
+    box-shadow: 0 0 0 1px rgba(255,200,100,0.12);
+  }
+  .mw002-p2 .mw002-fade-circle-ring {
+    background: radial-gradient(circle at center, rgba(255,170,120,0.25) 0%, rgba(240,140,80,0.08) 50%, transparent 72%);
+    box-shadow: 0 0 0 1px rgba(255,170,120,0.14);
+  }
+  .mw002-p3 .mw002-fade-circle-ring {
+    background: radial-gradient(circle at center, rgba(220,200,160,0.22) 0%, rgba(200,175,120,0.08) 50%, transparent 72%);
+    box-shadow: 0 0 0 1px rgba(220,200,160,0.12);
+  }
+
+  /* Inner glow orb */
+  .mw002-fade-orb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    opacity: 0;
+    filter: blur(6px);
+  }
+  .mw002-p1 .mw002-fade-orb {
+    width: 38%;
+    height: 38%;
+    background: rgba(255,200,100,0.35);
+  }
+  .mw002-p2 .mw002-fade-orb {
+    width: 42%;
+    height: 42%;
+    background: rgba(255,170,120,0.4);
+  }
+  .mw002-p3 .mw002-fade-orb {
+    width: 36%;
+    height: 36%;
+    background: rgba(220,200,160,0.32);
+  }
+
+  /* Photo or placeholder inside the circle */
+  .mw002-circle-photo {
+    position: absolute;
+    inset: 14%;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .mw002-circle-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.75) brightness(0.85) sepia(0.15);
+    border-radius: 50%;
+  }
+
+  .mw002-circle-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.025);
+  }
+
+  .mw002-circle-placeholder svg {
+    width: 65%;
+    height: 65%;
+  }
+
+  /* Thin arc around circle */
+  .mw002-circle-arc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    opacity: 0;
+  }
+  .mw002-p1 .mw002-circle-arc { border-color: rgba(255,200,100,0.2); }
+  .mw002-p2 .mw002-circle-arc { border-color: rgba(255,170,120,0.22); }
+  .mw002-p3 .mw002-circle-arc { border-color: rgba(220,200,160,0.2); }
+
+  /* Memory text */
+  .mw002-memory-text {
+    font-family: var(--font-body);
+    font-size: clamp(11px, 1.15vw, 15px);
+    line-height: 1.72;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    font-style: italic;
+    max-width: 26ch;
+    opacity: 0;
+  }
+
+  /* Soft rule beneath orb */
+  .mw002-soft-rule {
+    width: clamp(24px, 4vw, 48px);
+    height: 1px;
+    opacity: 0;
+    flex-shrink: 0;
+  }
+  .mw002-p1 .mw002-soft-rule { background: linear-gradient(90deg, transparent, rgba(255,200,100,0.4), transparent); }
+  .mw002-p2 .mw002-soft-rule { background: linear-gradient(90deg, transparent, rgba(255,170,120,0.45), transparent); }
+  .mw002-p3 .mw002-soft-rule { background: linear-gradient(90deg, transparent, rgba(220,200,160,0.4), transparent); }
+
+  /* Section label top */
+  .mw002-label {
+    position: absolute;
+    top: clamp(24px, 4.5vh, 52px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .mw002-label-text {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.85vw, 10px);
+    letter-spacing: 0.48em;
+    text-transform: uppercase;
+    color: rgba(255,210,130,0.28);
+    opacity: 0;
+  }
+
+  /* Bottom captions */
+  .mw002-captions {
+    position: absolute;
+    bottom: clamp(18px, 3.5vh, 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    display: flex;
+    gap: clamp(20px, 5vw, 72px);
+    white-space: nowrap;
+  }
+
+  .mw002-cap {
+    font-size: clamp(8px, 0.8vw, 10px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,210,130,0.2);
+    font-family: var(--font-heading);
+    opacity: 0;
+  }
+
+  /* Hover — warm glow boost per panel */
+  .mw002-panel:hover .mw002-fade-circle-ring {
+    opacity: 1 !important;
+  }
+  .mw002-panel:hover .mw002-memory-text {
+    color: rgba(255,255,255,0.78);
+    transition: color 0.5s ease;
+  }
+
+  /* Floating warm particles */
+  .mw002-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .mw002-particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  /* Thin horizontal golden lines — cross-screen */
+  .mw002-golden-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .mw002-gl1 {
+    top: clamp(80px, 14vh, 130px);
+    background: linear-gradient(90deg, transparent 0%, rgba(255,210,130,0.07) 20%, rgba(255,210,130,0.07) 80%, transparent 100%);
+  }
+  .mw002-gl2 {
+    bottom: clamp(80px, 14vh, 130px);
+    background: linear-gradient(90deg, transparent 0%, rgba(255,210,130,0.07) 20%, rgba(255,210,130,0.07) 80%, transparent 100%);
+  }
+</style>
+<div class="mw002-root" id="mw002">
+  <div class="mw002-grain"></div>
+  <div class="mw002-bloom"></div>
+  <div class="mw002-halation"></div>
+  <div class="mw002-vignette"></div>
+  <div class="mw002-particles" id="mw002-particles"></div>
+  <div class="mw002-golden-line mw002-gl1" id="mw002-gl1"></div>
+  <div class="mw002-golden-line mw002-gl2" id="mw002-gl2"></div>
+  <!-- Section label -->
+  <div class="mw002-label">
+    <div class="mw002-label-text" id="mw002-label">softly, still</div>
+  </div>
+  <!-- Three memory panels -->
+  <div class="mw002-stage" id="mw002-stage"><!-- Panel 1 -->
+<div class="mw002-panel mw002-p1" id="mw002-p1">
+  <div class="mw002-panel-num" id="mw002-pn1">i</div>
+  <div class="mw002-fade-circle" id="mw002-fc1">
+    <div class="mw002-fade-circle-ring" id="mw002-ring1"></div>
+    <div class="mw002-fade-orb" id="mw002-orb1"></div>
+    <div class="mw002-circle-arc" id="mw002-arc1"></div>
+    <div class="mw002-circle-photo" id="mw002-ph1">
+      <div class="mw002-circle-placeholder">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="18" stroke="rgba(255,200,100,0.3)" stroke-width="0.8"/>
+          <circle cx="30" cy="30" r="9" stroke="rgba(255,200,100,0.2)" stroke-width="0.6"/>
+          <circle cx="30" cy="12" r="2" fill="rgba(255,200,100,0.35)"/>
+          <circle cx="30" cy="48" r="2" fill="rgba(255,200,100,0.35)"/>
+          <circle cx="12" cy="30" r="2" fill="rgba(255,200,100,0.35)"/>
+          <circle cx="48" cy="30" r="2" fill="rgba(255,200,100,0.35)"/>
+          <circle cx="30" cy="30" r="3" fill="rgba(255,200,100,0.22)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="mw002-soft-rule" id="mw002-sr1"></div>
+  <div class="mw002-memory-text" id="mw002-mt1">"--MEMORY_1--"</div>
+</div>
+
+<div class="mw002-divider" id="mw002-div1"></div>
+
+<!-- Panel 2 — center -->
+<div class="mw002-panel mw002-p2" id="mw002-p2">
+  <div class="mw002-panel-num" id="mw002-pn2">ii</div>
+  <div class="mw002-fade-circle" id="mw002-fc2" style="width:clamp(96px,14vw,170px);height:clamp(96px,14vw,170px)">
+    <div class="mw002-fade-circle-ring" id="mw002-ring2"></div>
+    <div class="mw002-fade-orb" id="mw002-orb2"></div>
+    <div class="mw002-circle-arc" id="mw002-arc2"></div>
+    <div class="mw002-circle-photo" id="mw002-ph2">
+      <div class="mw002-circle-placeholder">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="20" stroke="rgba(255,170,120,0.28)" stroke-width="0.8"/>
+          <path d="M14 30 Q22 18 30 30 Q38 42 46 30" stroke="rgba(255,170,120,0.35)" stroke-width="0.8" fill="none"/>
+          <circle cx="30" cy="30" r="4" fill="rgba(255,170,120,0.25)"/>
+          <circle cx="14" cy="30" r="2" fill="rgba(255,170,120,0.3)"/>
+          <circle cx="46" cy="30" r="2" fill="rgba(255,170,120,0.3)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="mw002-soft-rule" id="mw002-sr2"></div>
+  <div class="mw002-memory-text" id="mw002-mt2">"--MEMORY_2--"</div>
+</div>
+
+<div class="mw002-divider" id="mw002-div2"></div>
+
+<!-- Panel 3 -->
+<div class="mw002-panel mw002-p3" id="mw002-p3">
+  <div class="mw002-panel-num" id="mw002-pn3">iii</div>
+  <div class="mw002-fade-circle" id="mw002-fc3">
+    <div class="mw002-fade-circle-ring" id="mw002-ring3"></div>
+    <div class="mw002-fade-orb" id="mw002-orb3"></div>
+    <div class="mw002-circle-arc" id="mw002-arc3"></div>
+    <div class="mw002-circle-photo" id="mw002-ph3">
+      <div class="mw002-circle-placeholder">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="16" stroke="rgba(220,200,160,0.28)" stroke-width="0.8"/>
+          <circle cx="30" cy="30" r="8" stroke="rgba(220,200,160,0.2)" stroke-width="0.5" stroke-dasharray="2 3"/>
+          <circle cx="20" cy="22" r="1.5" fill="rgba(220,200,160,0.4)"/>
+          <circle cx="38" cy="20" r="1.5" fill="rgba(220,200,160,0.4)"/>
+          <circle cx="40" cy="38" r="1.5" fill="rgba(220,200,160,0.4)"/>
+          <circle cx="22" cy="40" r="1.5" fill="rgba(220,200,160,0.4)"/>
+          <line x1="20" y1="22" x2="38" y2="20" stroke="rgba(220,200,160,0.2)" stroke-width="0.5"/>
+          <line x1="38" y1="20" x2="40" y2="38" stroke="rgba(220,200,160,0.2)" stroke-width="0.5"/>
+          <line x1="40" y1="38" x2="22" y2="40" stroke="rgba(220,200,160,0.2)" stroke-width="0.5"/>
+          <line x1="22" y1="40" x2="20" y2="22" stroke="rgba(220,200,160,0.2)" stroke-width="0.5"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="mw002-soft-rule" id="mw002-sr3"></div>
+  <div class="mw002-memory-text" id="mw002-mt3">"--MEMORY_3--"</div>
+</div></div>
+  <!-- Captions -->
+  <div class="mw002-captions">
+    <div class="mw002-cap" id="mw002-cap1">--MEMORY_CAPTION_1--</div>
+    <div class="mw002-cap" id="mw002-cap2">--MEMORY_CAPTION_2--</div>
+  </div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 3;
+
+  // Build warm particles
+  function buildParticles() {
+    const container = document.getElementById('mw002-particles');
+    if (!container) return;
+    const colors = [
+      'rgba(255,210,130,0.6)',
+      'rgba(255,180,100,0.5)',
+      'rgba(255,230,170,0.5)',
+      'rgba(220,190,130,0.4)'
+    ];
+    for (let i = 0; i < 32; i++) {
+      const p = document.createElement('div');
+      p.className = 'mw002-particle';
+      const sz = Math.random() * 3.5 + 1;
+      p.style.cssText = `
+        width:${sz}px;
+        height:${sz}px;
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        filter:blur(${Math.random()*1.5}px);
+      `;
+      container.appendChild(p);
+    }
+  }
+  buildParticles();
+
+  // Cursor parallax — very gentle
+  const root = document.getElementById('mw002');
+  const stage = document.getElementById('mw002-stage');
+  if (root && stage) {
+    root.addEventListener('mousemove', function(e) {
+      const rect = root.getBoundingClientRect();
+      const cx = (e.clientX - rect.left) / rect.width - 0.5;
+      const cy = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to('#mw002-p1', { x: cx * -10, y: cy * -6, duration: 1.8, ease: 'power2.out' });
+      gsap.to('#mw002-p2', { x: cx * -6,  y: cy * -4, duration: 2.0, ease: 'power2.out' });
+      gsap.to('#mw002-p3', { x: cx * -12, y: cy * -7, duration: 1.6, ease: 'power2.out' });
+      gsap.to('.mw002-bloom', { x: cx * 18, y: cy * 12, duration: 2.2, ease: 'power2.out' });
+    });
+  }
+
+  // Hover — circle scale
+  ['mw002-p1','mw002-p2','mw002-p3'].forEach(id => {
+    const panel = document.getElementById(id);
+    if (!panel) return;
+    const fc = panel.querySelector('.mw002-fade-circle');
+    panel.addEventListener('mouseenter', function() {
+      gsap.to(fc, { scale: 1.06, duration: 0.6, ease: 'power2.out' });
+    });
+    panel.addEventListener('mouseleave', function() {
+      gsap.to(fc, { scale: 1.0, duration: 0.7, ease: 'power2.inOut' });
+    });
+  });
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    const tl = gsap.timeline();
+
+    // 1. Label breathes in
+    tl.fromTo('#mw002-label',
+      { opacity: 0, letterSpacing: '0.75em' },
+      { opacity: 1, letterSpacing: '0.48em', duration: 1.6, ease: 'power3.out' },
+      0.2
+    );
+
+    // 2. Golden lines draw across
+    tl.fromTo(['#mw002-gl1','#mw002-gl2'],
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 1.4, ease: 'power3.out', stagger: 0.2, transformOrigin: 'center' },
+      0.4
+    );
+
+    // 3. Panels fade in — staggered, each rising softly
+    tl.fromTo(['#mw002-p1','#mw002-p2','#mw002-p3'],
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 1.4, ease: 'expo.out', stagger: 0.18 },
+      0.55
+    );
+
+    // 4. Panel numbers
+    tl.fromTo(['#mw002-pn1','#mw002-pn2','#mw002-pn3'],
+      { opacity: 0, y: -6 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.15 },
+      0.9
+    );
+
+    // 5. Rings bloom out
+    tl.fromTo(['#mw002-ring1','#mw002-ring2','#mw002-ring3'],
+      { opacity: 0, scale: 0.5 },
+      { opacity: 1, scale: 1, duration: 1.4, ease: 'expo.out', stagger: 0.2, transformOrigin: 'center' },
+      0.75
+    );
+
+    // 6. Arcs appear
+    tl.fromTo(['#mw002-arc1','#mw002-arc2','#mw002-arc3'],
+      { opacity: 0, scale: 1.3 },
+      { opacity: 1, scale: 1, duration: 1.2, ease: 'expo.out', stagger: 0.18, transformOrigin: 'center' },
+      0.9
+    );
+
+    // 7. Orbs glow on
+    tl.fromTo(['#mw002-orb1','#mw002-orb2','#mw002-orb3'],
+      { opacity: 0, scale: 0 },
+      { opacity: 1, scale: 1, duration: 1.0, ease: 'expo.out', stagger: 0.2, transformOrigin: 'center' },
+      1.0
+    );
+
+    // 8. Soft rules draw
+    tl.fromTo(['#mw002-sr1','#mw002-sr2','#mw002-sr3'],
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.9, ease: 'power3.out', stagger: 0.18, transformOrigin: 'center' },
+      1.1
+    );
+
+    // 9. Memory text fades in softly
+    tl.fromTo(['#mw002-mt1','#mw002-mt2','#mw002-mt3'],
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.22 },
+      1.2
+    );
+
+    // 10. Dividers
+    tl.fromTo(['#mw002-div1','#mw002-div2'],
+      { opacity: 0, scaleY: 0 },
+      { opacity: 1, scaleY: 1, duration: 1.0, ease: 'expo.out', stagger: 0.15, transformOrigin: 'center' },
+      1.0
+    );
+
+    // 11. Captions
+    tl.fromTo(['#mw002-cap1','#mw002-cap2'],
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', stagger: 0.16 },
+      1.5
+    );
+
+    // 12. Ambient — orbs breathe
+    ['mw002-orb1','mw002-orb2','mw002-orb3'].forEach((id, i) => {
+      gsap.to('#' + id, {
+        scale: 1.25,
+        opacity: 0.7,
+        duration: 2.8 + i * 0.4,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: 1.8 + i * 0.5,
+        transformOrigin: 'center'
+      });
+    });
+
+    // 13. Ambient — rings pulse softly
+    ['mw002-ring1','mw002-ring2','mw002-ring3'].forEach((id, i) => {
+      gsap.to('#' + id, {
+        scale: 1.08,
+        opacity: 0.75,
+        duration: 3.5 + i * 0.3,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: 2.2 + i * 0.6,
+        transformOrigin: 'center'
+      });
+    });
+
+    // 14. Floating particles ambient
+    document.querySelectorAll('.mw002-particle').forEach((p, i) => {
+      gsap.to(p, {
+        opacity: Math.random() * 0.45 + 0.08,
+        y: -(Math.random() * 130 + 40),
+        x: (Math.random() - 0.5) * 50,
+        duration: Math.random() * 6 + 5,
+        delay: Math.random() * 3 + 1.2,
+        ease: 'power1.inOut',
+        repeat: -1,
+        repeatDelay: Math.random() * 4 + 2,
+        onRepeat: function() {
+          gsap.set(p, {
+            y: 0, opacity: 0,
+            left: (Math.random() * 100) + '%'
+          });
+        }
+      });
+    });
+
+    // 15. Center panel subtle float
+    gsap.to('#mw002-p2', {
+      y: -7,
+      duration: 3.4,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 2.2
+    });
+
+    // 16. Bloom wanders slowly
+    gsap.to('.mw002-bloom', {
+      scaleX: 1.15,
+      scaleY: 1.2,
+      opacity: 0.8,
+      duration: 5,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 1.5,
+      transformOrigin: 'center'
+    });
+  });
+
+})();
+</script>

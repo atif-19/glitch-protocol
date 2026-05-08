@@ -1,0 +1,579 @@
+<!--
+  Component: hero-taylorswift-001
+  Type: hero
+  Aesthetic: dreamy pop
+  Obsession: Taylor Swift
+  Tone: sparkly, intimate, cinematic
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  #hero-taylorswift-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }#hero-taylorswift-001 .ts1-canvas {
+position: absolute;
+inset: 0;
+z-index: 1;
+pointer-events: none;
+}#hero-taylorswift-001 .ts1-glow {
+position: absolute;
+inset: 0;
+background:
+radial-gradient(ellipse 65% 55% at 50% 48%,
+color-mix(in srgb, var(--primary) 22%, transparent), transparent 65%),
+radial-gradient(ellipse 30% 28% at 12% 80%,
+color-mix(in srgb, var(--accent) 12%, transparent), transparent 55%),
+radial-gradient(ellipse 25% 22% at 88% 18%,
+color-mix(in srgb, var(--accent) 10%, transparent), transparent 50%),
+radial-gradient(ellipse 40% 18% at 50% 0%,
+color-mix(in srgb, var(--primary) 14%, transparent), transparent 60%);
+pointer-events: none;
+z-index: 0;
+}#hero-taylorswift-001 .ts1-vignette {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse 90% 90% at 50% 50%,
+transparent 22%,
+color-mix(in srgb, var(--bg) 72%, transparent) 72%,
+color-mix(in srgb, var(--bg) 97%, transparent) 100%);
+pointer-events: none;
+z-index: 4;
+}/* ── Era ribbon top ── */
+#hero-taylorswift-001 .ts1-era-ribbon {
+position: absolute;
+top: clamp(1.4rem, 3.5vh, 2.8rem);
+left: 50%;
+transform: translateX(-50%);
+z-index: 10;
+display: flex;
+align-items: center;
+gap: clamp(0.5rem, 1.2vw, 0.9rem);
+opacity: 0;
+white-space: nowrap;
+}#hero-taylorswift-001 .ts1-era-dot {
+width: clamp(3px, 0.45vw, 4px);
+height: clamp(3px, 0.45vw, 4px);
+border-radius: 50%;
+background: color-mix(in srgb, var(--accent) 60%, transparent);
+flex-shrink: 0;
+}#hero-taylorswift-001 .ts1-era-text {
+font-size: clamp(0.5rem, 0.85vw, 0.6rem);
+letter-spacing: 0.36em;
+text-transform: uppercase;
+color: color-mix(in srgb, var(--accent) 70%, transparent);
+font-family: var(--font-body);
+}/* ── Guitar / lyre sigil bg ── */
+#hero-taylorswift-001 .ts1-sigil {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+z-index: 2;
+pointer-events: none;
+opacity: 0;
+width: clamp(260px, 52vw, 520px);
+height: clamp(260px, 52vw, 520px);
+}#hero-taylorswift-001 .ts1-sigil svg {
+width: 100%;
+height: 100%;
+}/* ── Center content ── */
+#hero-taylorswift-001 .ts1-center {
+position: relative;
+z-index: 10;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: clamp(1.5rem, 5vw, 3rem);
+max-width: min(820px, 92vw);
+gap: clamp(0.6rem, 1.5vw, 1.1rem);
+}#hero-taylorswift-001 .ts1-eyebrow {
+font-size: clamp(0.52rem, 1vw, 0.64rem);
+letter-spacing: 0.44em;
+text-transform: uppercase;
+color: var(--accent);
+opacity: 0;
+}/* name with inline sparkle slots */
+#hero-taylorswift-001 .ts1-name-row {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: clamp(0.4rem, 1vw, 0.8rem);
+opacity: 0;
+}#hero-taylorswift-001 .ts1-name {
+font-family: var(--font-heading);
+font-size: clamp(3rem, 10.5vw, 8rem);
+font-weight: 400;
+color: var(--text);
+line-height: 0.9;
+letter-spacing: -0.01em;
+position: relative;
+}#hero-taylorswift-001 .ts1-star-inline {
+font-size: clamp(0.8rem, 1.6vw, 1.2rem);
+color: var(--accent);
+opacity: 0.7;
+align-self: flex-start;
+margin-top: clamp(0.5rem, 1.2vw, 1rem);
+flex-shrink: 0;
+}/* lyric strip */
+#hero-taylorswift-001 .ts1-lyric-strip {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: clamp(0.2rem, 0.5vw, 0.4rem);
+opacity: 0;
+}#hero-taylorswift-001 .ts1-title {
+font-family: var(--font-heading);
+font-size: clamp(0.88rem, 2.1vw, 1.45rem);
+font-weight: 400;
+color: color-mix(in srgb, var(--text) 72%, transparent);
+letter-spacing: 0.08em;
+font-style: italic;
+}#hero-taylorswift-001 .ts1-subtitle {
+font-family: var(--font-body);
+font-size: clamp(0.68rem, 1.4vw, 0.88rem);
+color: color-mix(in srgb, var(--text) 44%, transparent);
+letter-spacing: 0.06em;
+}#hero-taylorswift-001 .ts1-accent {
+color: var(--accent);
+font-style: normal;
+}/* friendship bracelet row */
+#hero-taylorswift-001 .ts1-bracelet {
+display: flex;
+align-items: center;
+gap: clamp(3px, 0.55vw, 5px);
+opacity: 0;
+margin-top: clamp(0.2rem, 0.5vw, 0.4rem);
+}#hero-taylorswift-001 .ts1-bead {
+width: clamp(7px, 1.1vw, 11px);
+height: clamp(7px, 1.1vw, 11px);
+border-radius: 50%;
+flex-shrink: 0;
+}#hero-taylorswift-001 .ts1-bead-letter {
+width: clamp(9px, 1.3vw, 13px);
+height: clamp(9px, 1.3vw, 13px);
+border-radius: 50%;
+border: 0.5px solid color-mix(in srgb, var(--accent) 50%, transparent);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: clamp(0.32rem, 0.55vw, 0.42rem);
+font-family: var(--font-body);
+letter-spacing: 0;
+color: var(--accent);
+flex-shrink: 0;
+}#hero-taylorswift-001 .ts1-cta {
+font-size: clamp(0.52rem, 0.95vw, 0.62rem);
+letter-spacing: 0.32em;
+text-transform: uppercase;
+color: color-mix(in srgb, var(--text) 28%, transparent);
+opacity: 0;
+margin-top: clamp(0.4rem, 1vw, 0.8rem);
+}/* sparkle burst elements */
+#hero-taylorswift-001 .ts1-sparkle {
+position: absolute;
+pointer-events: none;
+z-index: 11;
+opacity: 0;
+}#hero-taylorswift-001 .ts1-sparkle svg {
+width: 100%;
+height: 100%;
+}/* scroll of stars bottom */
+#hero-taylorswift-001 .ts1-star-trail {
+position: absolute;
+bottom: clamp(1.4rem, 3.5vh, 2.8rem);
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+gap: clamp(6px, 1.2vw, 11px);
+align-items: center;
+z-index: 10;
+opacity: 0;
+}#hero-taylorswift-001 .ts1-trail-star {
+width: clamp(4px, 0.6vw, 6px);
+height: clamp(4px, 0.6vw, 6px);
+background: color-mix(in srgb, var(--accent) 45%, transparent);
+clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+}
+</style><section id="hero-taylorswift-001">  <div class="ts1-glow"></div>
+  <div class="ts1-vignette"></div>
+  <canvas class="ts1-canvas" id="ts1-canvas"></canvas>  <!-- bg sigil -->
+  <div class="ts1-sigil" id="ts1-sigil">
+    <svg viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="260" cy="260" r="248"
+        stroke="color-mix(in srgb,var(--primary) 8%,transparent)"
+        stroke-width="0.5" stroke-dasharray="3 7"/>
+      <circle cx="260" cy="260" r="210"
+        stroke="color-mix(in srgb,var(--accent) 7%,transparent)"
+        stroke-width="0.4" stroke-dasharray="1 9"/>
+      <circle cx="260" cy="260" r="170"
+        stroke="color-mix(in srgb,var(--primary) 6%,transparent)"
+        stroke-width="0.3"/>
+      <!-- 13 pointed star for TS easter egg -->
+      <path d="M260 90
+        L271 140 L320 120 L290 162 L340 172 L300 200
+        L345 222 L296 235 L326 278 L278 268 L278 320
+        L260 276 L242 320 L242 268 L194 278 L224 235
+        L175 222 L220 200 L180 172 L230 162 L200 120
+        L249 140 Z"
+        stroke="color-mix(in srgb,var(--accent) 10%,transparent)"
+        stroke-width="0.5" fill="color-mix(in srgb,var(--accent) 3%,transparent)"/>
+      <!-- guitar body suggestion -->
+      <ellipse cx="260" cy="310" rx="38" ry="48"
+        stroke="color-mix(in srgb,var(--accent) 12%,transparent)"
+        stroke-width="0.5" fill="none"/>
+      <ellipse cx="260" cy="210" rx="28" ry="36"
+        stroke="color-mix(in srgb,var(--accent) 10%,transparent)"
+        stroke-width="0.4" fill="none"/>
+      <line x1="260" y1="158" x2="260" y2="362"
+        stroke="color-mix(in srgb,var(--accent) 14%,transparent)"
+        stroke-width="0.4"/>
+      <!-- strings -->
+      <line x1="250" y1="170" x2="250" y2="355"
+        stroke="color-mix(in srgb,var(--primary) 7%,transparent)"
+        stroke-width="0.3"/>
+      <line x1="270" y1="170" x2="270" y2="355"
+        stroke="color-mix(in srgb,var(--primary) 7%,transparent)"
+        stroke-width="0.3"/>
+      <!-- central 13 -->
+      <circle cx="260" cy="260" r="16"
+        fill="color-mix(in srgb,var(--accent) 8%,transparent)"
+        stroke="color-mix(in srgb,var(--accent) 22%,transparent)"
+        stroke-width="0.5"/>
+      <text x="260" y="265"
+        text-anchor="middle"
+        font-size="11"
+        fill="color-mix(in srgb,var(--accent) 45%,transparent)"
+        font-family="serif">13</text>
+    </svg>
+  </div>  <!-- era ribbon -->
+  <div class="ts1-era-ribbon" id="ts1-era-ribbon">
+    <div class="ts1-era-dot"></div>
+    <div class="ts1-era-text">The Eras Tour · A message for you</div>
+    <div class="ts1-era-dot"></div>
+  </div>  <div class="ts1-center"><div class="ts1-eyebrow" id="ts1-eyebrow">Long story short</div>
+
+<div class="ts1-name-row" id="ts1-name-row">
+  <span class="ts1-star-inline" id="ts1-star-l">✦</span>
+  <h1 class="ts1-name" id="ts1-name">--RECIPIENT_NAME--</h1>
+  <span class="ts1-star-inline" id="ts1-star-r">✦</span>
+</div>
+
+<div class="ts1-lyric-strip" id="ts1-lyric-strip">
+  <div class="ts1-title">--TITLE--</div>
+  <div class="ts1-subtitle">--SUBTITLE-- <span class="ts1-accent">--ACCENT_WORD--</span></div>
+</div>
+
+<!-- friendship bracelet spelling L·O·V·E -->
+<div class="ts1-bracelet" id="ts1-bracelet">
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--accent) 55%,transparent)"></div>
+  <div class="ts1-bead-letter">L</div>
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--primary) 45%,transparent)"></div>
+  <div class="ts1-bead-letter">O</div>
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--accent) 40%,transparent)"></div>
+  <div class="ts1-bead-letter">V</div>
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--primary) 50%,transparent)"></div>
+  <div class="ts1-bead-letter">E</div>
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--accent) 55%,transparent)"></div>
+  <div class="ts1-bead-letter">Y</div>
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--primary) 40%,transparent)"></div>
+  <div class="ts1-bead-letter">O</div>
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--accent) 45%,transparent)"></div>
+  <div class="ts1-bead-letter">U</div>
+  <div class="ts1-bead" style="background:color-mix(in srgb,var(--primary) 55%,transparent)"></div>
+</div>
+
+<div class="ts1-cta" id="ts1-cta">Tap to continue</div></div>
+  <!-- bottom star trail -->
+  <div class="ts1-star-trail" id="ts1-star-trail">
+    <div class="ts1-trail-star"></div>
+    <div class="ts1-trail-star"></div>
+    <div class="ts1-trail-star"></div>
+    <div class="ts1-trail-star"></div>
+    <div class="ts1-trail-star"></div>
+    <div class="ts1-trail-star"></div>
+    <div class="ts1-trail-star"></div>
+  </div>
+</section>
+<script>
+(function () {
+  const INDEX = 1;
+
+  // ── Glitter / sparkle canvas ───────────────────────────────────
+  const canvas = document.getElementById('ts1-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const TOTAL = 140;
+  const pool  = [];
+
+  function mkPt(boot) {
+    const warm = Math.random();
+    return {
+      x:  Math.random() * (W || 800),
+      y:  boot ? Math.random() * (H || 800) : (H || 800) + 8,
+      r:  Math.random() * 1.8 + 0.2,
+      vx: (Math.random() - 0.5) * 0.14,
+      vy: -(Math.random() * 0.22 + 0.04),
+      op: Math.random() * 0.52 + 0.08,
+      ts: Math.random() * 0.014 + 0.005,
+      tp: Math.random() * Math.PI * 2,
+      // colour palette: gold, rose, violet, white
+      hue: warm < 0.3 ? 0 : warm < 0.55 ? 1 : warm < 0.78 ? 2 : 3
+    };
+  }
+
+  const COLOURS = [
+    '255,210,80,',   // gold
+    '255,160,180,',  // rose
+    '190,140,255,',  // violet
+    '240,230,255,'   // white
+  ];
+
+  for (let i = 0; i < TOTAL; i++) pool.push(mkPt(true));
+
+  let running = false;
+
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    const t = performance.now() * 0.001;
+    for (let i = 0; i < pool.length; i++) {
+      const p = pool[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -8) { pool[i] = mkPt(false); continue; }
+      const fl = 0.35 + 0.65 * Math.sin(t * p.ts * 60 + p.tp);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fillStyle = 'rgba(' + COLOURS[p.hue] + (p.op * fl).toFixed(3) + ')';
+      ctx.fill();
+    }
+    if (running) requestAnimationFrame(tick);
+  }
+
+  // ── SVG sparkle burst helper ───────────────────────────────────
+  function spawnSparkle(x, y, size) {
+    const section = document.getElementById('hero-taylorswift-001');
+    const el = document.createElement('div');
+    el.className = 'ts1-sparkle';
+    const s = size || (clamp(12, 2, 28));
+    el.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:' + s + 'px;height:' + s + 'px;transform:translate(-50%,-50%)';
+    el.innerHTML = '<svg viewBox="0 0 20 20" fill="none"><path d="M10 1 L11.2 8.8 L19 10 L11.2 11.2 L10 19 L8.8 11.2 L1 10 L8.8 8.8 Z" fill="color-mix(in srgb,var(--accent) 80%,transparent)"/></svg>';
+    section.appendChild(el);
+    gsap.fromTo(el,
+      { opacity: 0, scale: 0, rotation: 0 },
+      {
+        opacity: 1, scale: 1, rotation: 45,
+        duration: 0.35, ease: 'back.out(2)',
+        yoyo: true, repeat: 1,
+        onComplete: function () { el.remove(); }
+      }
+    );
+  }
+
+  function clamp(min, vw, max) {
+    return Math.min(max, Math.max(min, window.innerWidth * vw / 100));
+  }
+
+  function burstSparkles() {
+    const positions = [
+      [W * 0.18, H * 0.22], [W * 0.82, H * 0.18],
+      [W * 0.12, H * 0.65], [W * 0.88, H * 0.72],
+      [W * 0.35, H * 0.12], [W * 0.65, H * 0.88],
+      [W * 0.50, H * 0.15], [W * 0.25, H * 0.85]
+    ];
+    positions.forEach(function (p, i) {
+      setTimeout(function () {
+        spawnSparkle(p[0], p[1], clamp(10, 1.8, 22));
+      }, i * 120);
+    });
+  }
+
+  // ── Bracelet bead stagger entrance ────────────────────────────
+  function animateBeads() {
+    const beads = document.querySelectorAll('#hero-taylorswift-001 .ts1-bead, #hero-taylorswift-001 .ts1-bead-letter');
+    gsap.fromTo(beads,
+      { opacity: 0, scale: 0, y: 6 },
+      {
+        opacity: 1, scale: 1, y: 0,
+        duration: 0.4,
+        ease: 'back.out(2)',
+        stagger: 0.055,
+        delay: 0.1
+      }
+    );
+  }
+
+  // ── Trail stars stagger twinkle ────────────────────────────────
+  function animateTrail() {
+    const stars = document.querySelectorAll('#hero-taylorswift-001 .ts1-trail-star');
+    stars.forEach(function (s, i) {
+      gsap.to(s, {
+        opacity: 0.8,
+        scale: 1.6,
+        duration: 0.6 + i * 0.08,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: i * 0.18
+      });
+    });
+  }
+
+  // ── Entrance ───────────────────────────────────────────────────
+  function enterSection() {
+    running = true;
+    tick();
+
+    gsap.set([
+      '#ts1-eyebrow','#ts1-name-row','#ts1-lyric-strip',
+      '#ts1-bracelet','#ts1-cta','#ts1-era-ribbon','#ts1-star-trail'
+    ], { opacity: 0, y: 14 });
+
+    gsap.set('#ts1-sigil', { opacity: 0, scale: 0.8, rotation: -8 });
+    gsap.set(['#ts1-star-l','#ts1-star-r'], { opacity: 0, scale: 0 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#ts1-sigil', {
+        opacity: 1, scale: 1, rotation: 0,
+        duration: 1.8, ease: 'power2.out'
+      }, 0)
+
+      .to('#ts1-era-ribbon',  { opacity: 1, y: 0, duration: 0.7 }, 0.4)
+      .to('#ts1-eyebrow',     { opacity: 1, y: 0, duration: 0.7 }, 0.65)
+      .to('#ts1-name-row',    { opacity: 1, y: 0, duration: 1.0, ease: 'power4.out' }, 0.9)
+
+      .to('#ts1-star-l', {
+          opacity: 0.7, scale: 1,
+          duration: 0.5, ease: 'back.out(2)'
+        }, 1.05)
+      .to('#ts1-star-r', {
+          opacity: 0.7, scale: 1,
+          duration: 0.5, ease: 'back.out(2)'
+        }, 1.15)
+
+      .to('#ts1-lyric-strip', { opacity: 1, y: 0, duration: 0.75 }, 1.35)
+      .to('#ts1-bracelet',    { opacity: 1, y: 0, duration: 0.1  }, 1.6)
+      .call(animateBeads, [], 1.65)
+      .to('#ts1-star-trail',  { opacity: 1, y: 0, duration: 0.6  }, 1.75)
+      .call(animateTrail, [], 1.8)
+      .to('#ts1-cta',         { opacity: 1, y: 0, duration: 0.7  }, 2.0)
+      .call(burstSparkles, [], 1.4);
+
+    // ── Ambient: sigil slow rotation ──────────────────────────────
+    gsap.to('#ts1-sigil', {
+      rotation: 360,
+      duration: 70,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%',
+      delay: 2
+    });
+
+    // ── Ambient: name shimmer ──────────────────────────────────────
+    gsap.to('#ts1-name', {
+      opacity: 0.86,
+      duration: 3.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2.5
+    });
+
+    // ── Ambient: inline stars pulse ────────────────────────────────
+    gsap.to(['#ts1-star-l','#ts1-star-r'], {
+      scale: 1.4,
+      opacity: 1,
+      duration: 1.6,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2,
+      stagger: 0.3
+    });
+
+    // ── Ambient: era ribbon fade ───────────────────────────────────
+    gsap.to('#ts1-era-ribbon', {
+      opacity: 0.5,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 3
+    });
+
+    // recurring sparkle burst every 3.5s
+    setInterval(function () {
+      if (running) burstSparkles();
+    }, 3500);
+  }
+
+  // ── Interaction: tap name ─────────────────────────────────────
+  document.getElementById('ts1-name').addEventListener('click', function (e) {
+    e.stopPropagation();
+    gsap.to('#ts1-name', {
+      scale: 1.06,
+      duration: 0.22,
+      ease: 'power2.out',
+      yoyo: true,
+      repeat: 1,
+      onComplete: function () { gsap.set('#ts1-name', { scale: 1 }); }
+    });
+    burstSparkles();
+    for (let i = 0; i < 16; i++) {
+      const p = mkPt(false);
+      p.x  = W / 2 + (Math.random() - 0.5) * 120;
+      p.y  = H / 2 + (Math.random() - 0.5) * 60;
+      p.vy = -(Math.random() * 2.5 + 1);
+      pool.push(p);
+      if (pool.length > TOTAL + 40) pool.shift();
+    }
+  });
+
+  // ── Hover: name lifts ──────────────────────────────────────────
+  document.getElementById('ts1-name').addEventListener('mouseenter', function () {
+    gsap.to('#ts1-name', { y: -5, duration: 0.4, ease: 'power2.out' });
+  });
+  document.getElementById('ts1-name').addEventListener('mouseleave', function () {
+    gsap.to('#ts1-name', { y: 0,  duration: 0.5, ease: 'power1.out' });
+  });
+
+  // ── Advance ────────────────────────────────────────────────────
+  document.getElementById('hero-taylorswift-001').addEventListener('click', function () {
+    gsap.to('#hero-taylorswift-001', {
+      opacity: 0,
+      duration: 0.85,
+      ease: 'power2.in',
+      onComplete: function () {
+        running = false;
+        if (window.glitchEvents) window.glitchEvents.advance();
+      }
+    });
+  });
+
+  // ── glitch:enter ──────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== INDEX) return;
+    enterSection();
+  });
+
+})();
+</script>

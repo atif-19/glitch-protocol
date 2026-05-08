@@ -1,0 +1,596 @@
+<!-- Component: mem_cinematic_002 
+ Type: memories 
+ Aesthetic: cinematic noir / film grain / letterbox 
+ Obsession: cinema, film photography, vintage media, storytelling 
+ Occasion: both 
+ Tone: nostalgic, intimate, cinematic 
+ Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- -->
+<style>
+  .mem-cin-002-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Film grain overlay */
+  .mem-cin-002-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    mix-blend-mode: overlay;
+  }
+
+  /* Letterbox bars */
+  .mem-cin-002-letterbox-top,
+  .mem-cin-002-letterbox-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    background: #000;
+    pointer-events: none;
+  }
+  .mem-cin-002-letterbox-top {
+    top: 0;
+    height: clamp(24px, 5vh, 52px);
+  }
+  .mem-cin-002-letterbox-bottom {
+    bottom: 0;
+    height: clamp(24px, 5vh, 52px);
+  }
+
+  /* Vignette */
+  .mem-cin-002-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 38%, rgba(0,0,0,0.72) 100%);
+  }
+
+  /* Scene reel — horizontal strip of frames */
+  .mem-cin-002-reel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Sprocket holes top/bottom strip */
+  .mem-cin-002-sprocket {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .mem-cin-002-sprocket-top { top: clamp(28px, 5.5vh, 58px); }
+  .mem-cin-002-sprocket-bottom { bottom: clamp(28px, 5.5vh, 58px); }
+
+  .mem-cin-002-hole {
+    width: clamp(10px, 1.4vw, 18px);
+    height: clamp(7px, 1vh, 12px);
+    border: 1.5px solid rgba(255,255,255,0.13);
+    border-radius: 2px;
+    background: rgba(0,0,0,0.55);
+  }
+
+  /* Frame strip */
+  .mem-cin-002-strip {
+    position: relative;
+    display: flex;
+    gap: clamp(12px, 2.5vw, 32px);
+    align-items: center;
+    z-index: 5;
+    padding: 0 clamp(20px, 5vw, 80px);
+  }
+
+  /* Individual film frame */
+  .mem-cin-002-frame {
+    position: relative;
+    flex: 0 0 auto;
+    width: clamp(160px, 26vw, 340px);
+    height: clamp(210px, 35vh, 420px);
+    border: 2px solid rgba(255,255,255,0.12);
+    overflow: hidden;
+    cursor: pointer;
+    transform-origin: center bottom;
+    background: rgba(10,8,6,0.9);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  .mem-cin-002-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Frame photo */
+  .mem-cin-002-frame-photo {
+    width: 100%;
+    height: 65%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.28) contrast(1.08) brightness(0.88) grayscale(0.15);
+    transition: filter 0.6s ease;
+  }
+
+  .mem-cin-002-frame:hover .mem-cin-002-frame-photo {
+    filter: sepia(0.1) contrast(1.12) brightness(1.0) grayscale(0);
+  }
+
+  /* Placeholder constellation when photo = NONE */
+  .mem-cin-002-placeholder {
+    width: 100%;
+    height: 65%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a0a12 0%, #0e0e1a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mem-cin-002-placeholder svg {
+    width: 80%;
+    height: 80%;
+    opacity: 0.7;
+  }
+
+  /* Frame bottom info area */
+  .mem-cin-002-frame-info {
+    padding: clamp(8px, 1.5vh, 16px) clamp(10px, 1.5vw, 18px);
+    background: rgba(0,0,0,0.6);
+    height: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .mem-cin-002-scene-tag {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 1vw, 11px);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.75;
+  }
+
+  .mem-cin-002-memory-text {
+    font-family: var(--font-body);
+    font-size: clamp(10px, 1.2vw, 14px);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.82);
+    font-style: italic;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-top: clamp(4px, 0.8vh, 10px);
+  }
+
+  .mem-cin-002-frame-num {
+    font-family: monospace;
+    font-size: clamp(8px, 0.9vw, 10px);
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.1em;
+    align-self: flex-end;
+  }
+
+  /* Center focal frame — slightly larger */
+  .mem-cin-002-frame.mem-cin-002-focal {
+    width: clamp(180px, 30vw, 380px);
+    height: clamp(240px, 42vh, 480px);
+    border-color: rgba(255,255,255,0.22);
+    box-shadow: 0 12px 60px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.08), 0 0 80px -20px var(--accent);
+    z-index: 6;
+  }
+
+  /* Hover tilt effect */
+  .mem-cin-002-frame {
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
+  }
+
+  .mem-cin-002-frame:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 24px 70px rgba(0,0,0,0.9), 0 0 60px -10px var(--accent);
+  }
+
+  /* Scan line sweep */
+  .mem-cin-002-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    z-index: 7;
+    pointer-events: none;
+    top: 0;
+  }
+
+  /* Bottom caption strip */
+  .mem-cin-002-caption-strip {
+    position: absolute;
+    bottom: clamp(34px, 7vh, 72px);
+    left: 0;
+    right: 0;
+    z-index: 6;
+    display: flex;
+    justify-content: center;
+    gap: clamp(16px, 4vw, 60px);
+    padding: 0 clamp(16px, 4vw, 60px);
+  }
+
+  .mem-cin-002-caption {
+    font-size: clamp(9px, 1vw, 12px);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    font-family: var(--font-heading);
+  }
+
+  /* Section label top */
+  .mem-cin-002-label {
+    position: absolute;
+    top: clamp(34px, 7vh, 68px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    text-align: center;
+  }
+
+  .mem-cin-002-label-eyebrow {
+    font-family: var(--font-heading);
+    font-size: clamp(9px, 1vw, 11px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  /* Floating dust particles */
+  .mem-cin-002-dust {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .mem-cin-002-dust-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    opacity: 0;
+  }
+</style>
+<div class="mem-cin-002-root" id="mem-cin-002">
+  <div class="mem-cin-002-grain"></div>
+  <div class="mem-cin-002-vignette"></div>
+  <div class="mem-cin-002-letterbox-top"></div>
+  <div class="mem-cin-002-letterbox-bottom"></div>
+  <div class="mem-cin-002-scanline" id="mem-cin-002-scanline"></div>
+  <!-- Sprocket holes -->
+  <div class="mem-cin-002-sprocket mem-cin-002-sprocket-top" id="mem-cin-002-holes-top"></div>
+  <div class="mem-cin-002-sprocket mem-cin-002-sprocket-bottom" id="mem-cin-002-holes-bottom"></div>
+  <!-- Section label -->
+  <div class="mem-cin-002-label">
+    <div class="mem-cin-002-label-eyebrow" id="mem-cin-002-eyebrow">scenes we'll never forget</div>
+  </div>
+  <!-- Dust particles -->
+  <div class="mem-cin-002-dust" id="mem-cin-002-dust"></div>
+  <!-- Film strip frames -->
+  <div class="mem-cin-002-reel">
+    <div class="mem-cin-002-strip" id="mem-cin-002-strip">
+<!-- Frame 1 -->
+  <div class="mem-cin-002-frame" id="mem-cin-002-f1">
+    <div class="mem-cin-002-placeholder" id="mem-cin-002-photo-wrap-1">
+      <!-- photo or constellation placeholder -->
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" id="mem-cin-002-constellation-1">
+        <circle cx="20" cy="70" r="2" fill="var(--accent)" opacity="0.7"/>
+        <circle cx="55" cy="20" r="1.5" fill="var(--accent)" opacity="0.5"/>
+        <circle cx="90" cy="55" r="2" fill="var(--accent)" opacity="0.8"/>
+        <circle cx="38" cy="48" r="1" fill="white" opacity="0.6"/>
+        <circle cx="75" cy="32" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="60" cy="68" r="1" fill="white" opacity="0.4"/>
+        <circle cx="10" cy="30" r="1" fill="white" opacity="0.3"/>
+        <circle cx="100" cy="20" r="1.5" fill="var(--accent)" opacity="0.4"/>
+        <line x1="20" y1="70" x2="38" y2="48" stroke="var(--accent)" stroke-width="0.4" opacity="0.3"/>
+        <line x1="38" y1="48" x2="55" y2="20" stroke="var(--accent)" stroke-width="0.4" opacity="0.3"/>
+        <line x1="55" y1="20" x2="75" y2="32" stroke="var(--accent)" stroke-width="0.4" opacity="0.25"/>
+        <line x1="75" y1="32" x2="90" y2="55" stroke="var(--accent)" stroke-width="0.4" opacity="0.25"/>
+        <line x1="90" y1="55" x2="60" y2="68" stroke="var(--accent)" stroke-width="0.4" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="mem-cin-002-frame-info">
+      <div class="mem-cin-002-scene-tag">Scene I</div>
+      <div class="mem-cin-002-memory-text">"--MEMORY_1--"</div>
+      <div class="mem-cin-002-frame-num">001 ▪ 24fps</div>
+    </div>
+  </div>
+
+  <!-- Frame 2 — focal center -->
+  <div class="mem-cin-002-frame mem-cin-002-focal" id="mem-cin-002-f2">
+    <div class="mem-cin-002-placeholder" id="mem-cin-002-photo-wrap-2" style="height:65%">
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="45" r="18" stroke="var(--accent)" stroke-width="0.6" opacity="0.18"/>
+        <circle cx="60" cy="45" r="10" stroke="var(--accent)" stroke-width="0.4" opacity="0.28"/>
+        <circle cx="60" cy="45" r="3" fill="var(--accent)" opacity="0.6"/>
+        <circle cx="30" cy="20" r="1.8" fill="white" opacity="0.5"/>
+        <circle cx="95" cy="15" r="1.2" fill="var(--accent)" opacity="0.6"/>
+        <circle cx="15" cy="65" r="1" fill="white" opacity="0.35"/>
+        <circle cx="105" cy="70" r="1.5" fill="white" opacity="0.4"/>
+        <circle cx="50" cy="10" r="1" fill="var(--accent)" opacity="0.5"/>
+        <circle cx="75" cy="80" r="1.2" fill="white" opacity="0.3"/>
+        <line x1="30" y1="20" x2="60" y2="45" stroke="var(--accent)" stroke-width="0.35" opacity="0.2"/>
+        <line x1="95" y1="15" x2="60" y2="45" stroke="var(--accent)" stroke-width="0.35" opacity="0.2"/>
+        <line x1="15" y1="65" x2="60" y2="45" stroke="var(--accent)" stroke-width="0.35" opacity="0.15"/>
+        <line x1="105" y1="70" x2="60" y2="45" stroke="var(--accent)" stroke-width="0.35" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="mem-cin-002-frame-info" style="height:35%">
+      <div class="mem-cin-002-scene-tag">Scene II</div>
+      <div class="mem-cin-002-memory-text">"--MEMORY_2--"</div>
+      <div class="mem-cin-002-frame-num">002 ▪ 24fps</div>
+    </div>
+  </div>
+
+  <!-- Frame 3 -->
+  <div class="mem-cin-002-frame" id="mem-cin-002-f3">
+    <div class="mem-cin-002-placeholder" id="mem-cin-002-photo-wrap-3">
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="25" cy="25" r="1.5" fill="var(--accent)" opacity="0.6"/>
+        <circle cx="60" cy="55" r="2" fill="var(--accent)" opacity="0.8"/>
+        <circle cx="95" cy="20" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="45" cy="72" r="1" fill="white" opacity="0.4"/>
+        <circle cx="80" cy="68" r="1.5" fill="var(--accent)" opacity="0.45"/>
+        <circle cx="10" cy="50" r="1" fill="white" opacity="0.35"/>
+        <circle cx="110" cy="45" r="1" fill="white" opacity="0.3"/>
+        <line x1="25" y1="25" x2="60" y2="55" stroke="var(--accent)" stroke-width="0.4" opacity="0.25"/>
+        <line x1="60" y1="55" x2="80" y2="68" stroke="var(--accent)" stroke-width="0.4" opacity="0.25"/>
+        <line x1="95" y1="20" x2="60" y2="55" stroke="var(--accent)" stroke-width="0.4" opacity="0.2"/>
+        <line x1="45" y1="72" x2="60" y2="55" stroke="var(--accent)" stroke-width="0.4" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="mem-cin-002-frame-info">
+      <div class="mem-cin-002-scene-tag">Scene III</div>
+      <div class="mem-cin-002-memory-text">"--MEMORY_3--"</div>
+      <div class="mem-cin-002-frame-num">003 ▪ 24fps</div>
+    </div>
+  </div>
+
+</div></div>
+  <!-- Caption strip -->
+  <div class="mem-cin-002-caption-strip">
+    <div class="mem-cin-002-caption" id="mem-cin-002-cap1">--MEMORY_CAPTION_1--</div>
+    <div class="mem-cin-002-caption" id="mem-cin-002-cap2">--MEMORY_CAPTION_2--</div>
+  </div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 3;
+  const NUM_HOLES = 18;
+  const NUM_DUST = 22;
+
+  // Generate sprocket holes
+  function buildHoles() {
+    ['mem-cin-002-holes-top', 'mem-cin-002-holes-bottom'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = '';
+      for (let i = 0; i < NUM_HOLES; i++) {
+        const h = document.createElement('div');
+        h.className = 'mem-cin-002-hole';
+        el.appendChild(h);
+      }
+    });
+  }
+
+  // Generate dust particles
+  function buildDust() {
+    const dust = document.getElementById('mem-cin-002-dust');
+    if (!dust) return;
+    dust.innerHTML = '';
+    for (let i = 0; i < NUM_DUST; i++) {
+      const p = document.createElement('div');
+      p.className = 'mem-cin-002-dust-particle';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.top = (Math.random() * 100) + '%';
+      dust.appendChild(p);
+    }
+  }
+
+  buildHoles();
+  buildDust();
+
+  // Handle --PHOTO_1-- placeholder logic
+  // Since this is a template, we check the rendered src at runtime
+  // If photo wrap has a real <img> injected, show it; else show constellation
+  function checkPhotos() {
+    [1,2,3].forEach(i => {
+      const wrap = document.getElementById('mem-cin-002-photo-wrap-' + i);
+      if (!wrap) return;
+      const img = wrap.querySelector('img');
+      if (img && img.src && img.src !== window.location.href && !img.src.endsWith('NONE')) {
+        const svg = wrap.querySelector('svg');
+        if (svg) svg.remove();
+      }
+    });
+  }
+  checkPhotos();
+
+  // Cursor parallax on strip
+  const root = document.getElementById('mem-cin-002');
+  const strip = document.getElementById('mem-cin-002-strip');
+
+  if (root && strip) {
+    root.addEventListener('mousemove', function(e) {
+      const rect = root.getBoundingClientRect();
+      const cx = (e.clientX - rect.left) / rect.width - 0.5;
+      const cy = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to(strip, {
+        x: cx * 18,
+        y: cy * 10,
+        duration: 1.2,
+        ease: 'power2.out'
+      });
+    });
+  }
+
+  // Mouse tilt on frames
+  document.querySelectorAll('.mem-cin-002-frame').forEach(frame => {
+    frame.addEventListener('mousemove', function(e) {
+      const r = frame.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      gsap.to(frame, {
+        rotateY: nx * 10,
+        rotateX: -ny * 8,
+        transformPerspective: 800,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+    });
+    frame.addEventListener('mouseleave', function() {
+      gsap.to(frame, {
+        rotateY: 0,
+        rotateX: 0,
+        duration: 0.7,
+        ease: 'elastic.out(1, 0.6)'
+      });
+    });
+  });
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    const tl = gsap.timeline();
+
+    // 1. Scanline sweep entrance
+    tl.fromTo('#mem-cin-002-scanline',
+      { top: '-4px', opacity: 0 },
+      { top: '104%', opacity: 1, duration: 1.1, ease: 'none' }
+    );
+
+    // 2. Letterboxes open
+    tl.fromTo('.mem-cin-002-letterbox-top',
+      { scaleY: 3 },
+      { scaleY: 1, duration: 0.9, ease: 'expo.out', transformOrigin: 'top' },
+      0
+    );
+    tl.fromTo('.mem-cin-002-letterbox-bottom',
+      { scaleY: 3 },
+      { scaleY: 1, duration: 0.9, ease: 'expo.out', transformOrigin: 'bottom' },
+      0
+    );
+
+    // 3. Eyebrow label fade in
+    tl.fromTo('#mem-cin-002-eyebrow',
+      { opacity: 0, y: -6, letterSpacing: '0.6em' },
+      { opacity: 0.75, y: 0, letterSpacing: '0.35em', duration: 1, ease: 'power3.out' },
+      0.5
+    );
+
+    // 4. Frames stagger in from below with slight rotation
+    tl.fromTo(['#mem-cin-002-f1', '#mem-cin-002-f3'],
+      { opacity: 0, y: 60, rotation: -2 },
+      { opacity: 1, y: 0, rotation: 0, duration: 1.1, ease: 'expo.out', stagger: 0.18 },
+      0.65
+    );
+    tl.fromTo('#mem-cin-002-f2',
+      { opacity: 0, y: 40, scale: 0.92 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: 'expo.out' },
+      0.72
+    );
+
+    // 5. Captions slide up
+    tl.fromTo(['#mem-cin-002-cap1', '#mem-cin-002-cap2'],
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.15 },
+      1.2
+    );
+
+    // 6. Dust particles ambient float
+    document.querySelectorAll('.mem-cin-002-dust-particle').forEach((p, i) => {
+      gsap.to(p, {
+        opacity: Math.random() * 0.5 + 0.1,
+        y: -(Math.random() * 120 + 40),
+        x: (Math.random() - 0.5) * 50,
+        duration: Math.random() * 4 + 3,
+        delay: Math.random() * 2 + 1.0,
+        ease: 'power1.in',
+        onComplete: function() {
+          gsap.set(p, { opacity: 0, y: 0 });
+          // loop
+          gsap.to(p, {
+            opacity: Math.random() * 0.4 + 0.1,
+            y: -(Math.random() * 100 + 30),
+            x: (Math.random() - 0.5) * 40,
+            duration: Math.random() * 5 + 4,
+            delay: Math.random() * 3,
+            ease: 'power1.in',
+            repeat: -1,
+            repeatDelay: Math.random() * 4 + 1,
+            onRepeat: function() {
+              gsap.set(p, { x: (Math.random() * 100) + '%', y: 0, opacity: 0 });
+            }
+          });
+        }
+      });
+    });
+
+    // 7. Ambient: focal frame subtle breathing
+    gsap.to('#mem-cin-002-f2', {
+      boxShadow: '0 12px 60px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.08), 0 0 120px -10px var(--accent)',
+      duration: 2.4,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 1.8
+    });
+
+    // 8. Scanline repeating ambient
+    gsap.to('#mem-cin-002-scanline', {
+      top: '104%',
+      opacity: 0.5,
+      duration: 3.5,
+      ease: 'none',
+      repeat: -1,
+      delay: 2.5,
+      onRepeat: function() {
+        gsap.set('#mem-cin-002-scanline', { top: '-4px', opacity: 0 });
+      }
+    });
+
+    // 9. Sprocket holes flicker
+    document.querySelectorAll('.mem-cin-002-hole').forEach((h, i) => {
+      gsap.to(h, {
+        opacity: Math.random() * 0.5 + 0.3,
+        duration: Math.random() * 1.5 + 0.8,
+        yoyo: true,
+        repeat: -1,
+        delay: i * 0.06,
+        ease: 'sine.inOut'
+      });
+    });
+  });
+
+})();
+</script>

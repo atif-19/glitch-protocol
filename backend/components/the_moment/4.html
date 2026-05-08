@@ -1,0 +1,646 @@
+<!--
+  Component: tm_birthday_004
+  Type: the_moment
+  Aesthetic: Countdown Reveal — mission control, dramatic timer, explosive finale
+  Obsession: Birthday / Anticipation
+  Tone: dramatic, electric, celebratory
+  Occasion: birthday
+  Variables: --RECIPIENT_NAME-- --MOMENT_COPY-- --MOMENT_CTA--
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&family=Jost:wght@200;300&display=swap');
+
+  :root {
+    --primary: #f0ede8;
+    --accent: #f0c040;
+    --bg: #07080a;
+    --text: #8a9090;
+    --font-heading: 'Bebas Neue', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .tm-bd4-root {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  .tm-bd4-cursor {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px var(--accent);
+    transition: width 0.25s, height 0.25s;
+  }
+  .tm-bd4-cursor.expand { width: 28px; height: 28px; opacity: 0.4; }
+
+  /* Grid overlay */
+  .tm-bd4-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(240,192,64,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,192,64,0.04) 1px, transparent 1px);
+    background-size: clamp(30px, 5vw, 60px) clamp(30px, 5vw, 60px);
+    z-index: 0;
+    animation: tm-bd4-grid-pulse 6s ease-in-out infinite;
+  }
+  @keyframes tm-bd4-grid-pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Radial sweep */
+  .tm-bd4-sweep {
+    position: absolute;
+    width: clamp(500px, 90vw, 1200px);
+    height: clamp(500px, 90vw, 1200px);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      rgba(240,192,64,0.06) 0deg,
+      transparent 60deg
+    );
+    z-index: 1;
+    opacity: 0;
+    animation: tm-bd4-sweep-spin 4s linear infinite;
+  }
+  @keyframes tm-bd4-sweep-spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  /* Vignette */
+  .tm-bd4-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 30%, rgba(0,0,0,0.92) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Corner brackets */
+  .tm-bd4-bracket {
+    position: absolute;
+    width: clamp(30px, 5vw, 55px);
+    height: clamp(30px, 5vw, 55px);
+    z-index: 8;
+    opacity: 0;
+  }
+  .tm-bd4-bracket::before,
+  .tm-bd4-bracket::after {
+    content: '';
+    position: absolute;
+    background: rgba(240,192,64,0.5);
+  }
+  .tm-bd4-bracket::before { width: 100%; height: 1px; top: 0; left: 0; }
+  .tm-bd4-bracket::after  { width: 1px; height: 100%; top: 0; left: 0; }
+  .tm-bd4-bracket.tl { top: clamp(16px,2.5vh,28px); left: clamp(16px,2.5vw,28px); }
+  .tm-bd4-bracket.tr { top: clamp(16px,2.5vh,28px); right: clamp(16px,2.5vw,28px); transform: scaleX(-1); }
+  .tm-bd4-bracket.bl { bottom: clamp(16px,2.5vh,28px); left: clamp(16px,2.5vw,28px); transform: scaleY(-1); }
+  .tm-bd4-bracket.br { bottom: clamp(16px,2.5vh,28px); right: clamp(16px,2.5vw,28px); transform: scale(-1); }
+
+  /* Horizontal scan line */
+  .tm-bd4-scanline {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(240,192,64,0.4), transparent);
+    z-index: 7;
+    opacity: 0;
+    top: 50%;
+    box-shadow: 0 0 8px rgba(240,192,64,0.3);
+  }
+
+  /* Particle canvas */
+  .tm-bd4-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Main layout */
+  .tm-bd4-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(12px, 2.5vh, 22px);
+    width: min(700px, 90vw);
+    text-align: center;
+  }
+
+  /* Status bar */
+  .tm-bd4-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+  }
+  .tm-bd4-status-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: tm-bd4-blink 1s step-end infinite;
+    box-shadow: 0 0 6px var(--accent);
+  }
+  @keyframes tm-bd4-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .tm-bd4-status-text {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.4em;
+    color: rgba(240,192,64,0.5);
+    text-transform: uppercase;
+  }
+
+  /* Countdown digits */
+  .tm-bd4-countdown {
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 1.5vw, 18px);
+    opacity: 0;
+  }
+  .tm-bd4-digit-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .tm-bd4-digit {
+    font-family: var(--font-heading);
+    font-size: clamp(52px, 12vw, 120px);
+    line-height: 1;
+    color: var(--primary);
+    position: relative;
+    display: inline-block;
+    min-width: clamp(52px, 10vw, 110px);
+    text-align: center;
+    text-shadow: 0 0 40px rgba(240,192,64,0.2);
+    transition: color 0.1s, text-shadow 0.3s;
+  }
+  .tm-bd4-digit.flash {
+    color: var(--accent);
+    text-shadow: 0 0 60px rgba(240,192,64,0.8), 0 0 120px rgba(240,192,64,0.4);
+  }
+  .tm-bd4-digit-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(8px, 1vw, 10px);
+    letter-spacing: 0.35em;
+    color: rgba(138,144,144,0.5);
+    text-transform: uppercase;
+  }
+  .tm-bd4-colon {
+    font-family: var(--font-heading);
+    font-size: clamp(40px, 9vw, 90px);
+    color: rgba(240,192,64,0.3);
+    line-height: 1;
+    margin-bottom: clamp(14px, 2.5vh, 22px);
+    animation: tm-bd4-blink 1s step-end infinite;
+  }
+
+  /* Progress track */
+  .tm-bd4-track {
+    width: 100%;
+    height: 2px;
+    background: rgba(240,192,64,0.1);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+  }
+  .tm-bd4-track-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(240,192,64,0.3), var(--accent));
+    box-shadow: 0 0 10px var(--accent);
+    transition: width 0.2s linear;
+  }
+  .tm-bd4-track-glow {
+    position: absolute;
+    right: 0; top: -3px; bottom: -3px;
+    width: 20px;
+    background: radial-gradient(ellipse, rgba(240,192,64,0.8), transparent);
+  }
+
+  /* Reveal block — hidden until countdown ends */
+  .tm-bd4-reveal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 2vh, 18px);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tm-bd4-reveal.active { pointer-events: auto; }
+
+  .tm-bd4-reveal-name {
+    font-family: var(--font-heading);
+    font-size: clamp(32px, 7vw, 72px);
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-shadow: 0 0 50px rgba(240,192,64,0.5);
+  }
+
+  .tm-bd4-reveal-msg {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(15px, 2.2vw, 22px);
+    line-height: 1.6;
+    color: var(--text);
+    max-width: 520px;
+  }
+  .tm-bd4-reveal-msg strong {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .tm-bd4-divider {
+    display: flex; align-items: center; gap: 10px;
+    width: 80%; opacity: 0;
+  }
+  .tm-bd4-divider-line { flex:1; height:1px; background: rgba(240,192,64,0.15); }
+  .tm-bd4-divider-mark {
+    width: 5px; height: 5px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    opacity: 0.6;
+  }
+
+  .tm-bd4-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+  }
+  .tm-bd4-cta-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.35em;
+    color: rgba(138,144,144,0.4);
+    text-transform: uppercase;
+  }
+  .tm-bd4-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: clamp(11px, 1.4vh, 16px) clamp(24px, 3.5vw, 40px);
+    border: 1px solid rgba(240,192,64,0.35);
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: clamp(10px, 1.2vw, 13px);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: none;
+    overflow: hidden;
+    transition: color 0.35s;
+  }
+  .tm-bd4-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--accent);
+    transform: translateX(-101%);
+    transition: transform 0.45s cubic-bezier(0.77,0,0.175,1);
+  }
+  .tm-bd4-btn:hover::before { transform: translateX(0); }
+  .tm-bd4-btn:hover { color: var(--bg); }
+  .tm-bd4-btn span { position: relative; z-index: 1; }
+</style>
+<div class="tm-bd4-root" id="tm-bd4-root">
+  <div class="tm-bd4-cursor" id="tm-bd4-cursor"></div>
+  <div class="tm-bd4-grid"></div>
+  <div class="tm-bd4-sweep" id="tm-bd4-sweep"></div>
+  <div class="tm-bd4-vignette"></div>
+  <canvas class="tm-bd4-canvas" id="tm-bd4-canvas"></canvas>
+  <div class="tm-bd4-bracket tl" id="tm-bd4-br-tl"></div>
+  <div class="tm-bd4-bracket tr" id="tm-bd4-br-tr"></div>
+  <div class="tm-bd4-bracket bl" id="tm-bd4-br-bl"></div>
+  <div class="tm-bd4-bracket br" id="tm-bd4-br-br"></div>
+  <div class="tm-bd4-scanline" id="tm-bd4-scanline"></div>
+  <div class="tm-bd4-content">
+<div class="tm-bd4-status" id="tm-bd4-status">
+  <div class="tm-bd4-status-dot"></div>
+  <span class="tm-bd4-status-text">birthday sequence — initiating</span>
+</div>
+
+<div class="tm-bd4-countdown" id="tm-bd4-countdown">
+  <div class="tm-bd4-digit-block">
+    <div class="tm-bd4-digit" id="tm-bd4-d0">0</div>
+    <div class="tm-bd4-digit-label">days</div>
+  </div>
+  <div class="tm-bd4-colon">:</div>
+  <div class="tm-bd4-digit-block">
+    <div class="tm-bd4-digit" id="tm-bd4-d1">0</div>
+    <div class="tm-bd4-digit-label">hours</div>
+  </div>
+  <div class="tm-bd4-colon">:</div>
+  <div class="tm-bd4-digit-block">
+    <div class="tm-bd4-digit" id="tm-bd4-d2">0</div>
+    <div class="tm-bd4-digit-label">minutes</div>
+  </div>
+  <div class="tm-bd4-colon">:</div>
+  <div class="tm-bd4-digit-block">
+    <div class="tm-bd4-digit" id="tm-bd4-d3">0</div>
+    <div class="tm-bd4-digit-label">seconds</div>
+  </div>
+</div>
+
+<div class="tm-bd4-track" id="tm-bd4-track">
+  <div class="tm-bd4-track-fill" id="tm-bd4-fill">
+    <div class="tm-bd4-track-glow"></div>
+  </div>
+</div>
+
+<!-- Reveal section (shown after countdown) -->
+<div class="tm-bd4-reveal" id="tm-bd4-reveal">
+  <div class="tm-bd4-reveal-name" id="tm-bd4-rname">--RECIPIENT_NAME--</div>
+  <p class="tm-bd4-reveal-msg">--MOMENT_COPY--</p>
+</div>
+
+<div class="tm-bd4-divider" id="tm-bd4-divider">
+  <div class="tm-bd4-divider-line"></div>
+  <div class="tm-bd4-divider-mark"></div>
+  <div class="tm-bd4-divider-line"></div>
+</div>
+
+<div class="tm-bd4-cta-wrap" id="tm-bd4-cta">
+  <span class="tm-bd4-cta-label">--MOMENT_CTA--</span>
+  <button class="tm-bd4-btn" id="tm-bd4-btn">
+    <span>let's celebrate</span>
+  </button>
+</div></div>
+</div>
+<script>
+(function () {
+
+  // Cursor
+  const cursor = document.getElementById('tm-bd4-cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.getElementById('tm-bd4-btn').addEventListener('mouseenter', () => cursor.classList.add('expand'));
+  document.getElementById('tm-bd4-btn').addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+
+  // Canvas burst system
+  const canvas = document.getElementById('tm-bd4-canvas');
+  const ctx = canvas.getContext('2d');
+  let burst = [];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function spawnBurst(x, y, count, colors) {
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 / count) * i + Math.random() * 0.4;
+      const speed = Math.random() * 9 + 3;
+      burst.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: Math.random() * 4 + 1.5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 1,
+        decay: Math.random() * 0.018 + 0.012,
+        gravity: 0.18
+      });
+    }
+  }
+
+  function drawBurst() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    burst.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.life * 0.85;
+      ctx.fill();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.life -= p.decay;
+    });
+    ctx.globalAlpha = 1;
+    burst = burst.filter(p => p.life > 0);
+    if (burst.length > 0) requestAnimationFrame(drawBurst);
+  }
+
+  const burstColors = ['#f0c040', '#fff5c0', '#f0ede8', '#f5a623', '#ffffff', '#ffd700'];
+
+  // Scanline drift
+  function animateScanline() {
+    gsap.fromTo('#tm-bd4-scanline',
+      { top: '-2px', opacity: 0 },
+      { top: '100vh', opacity: 0.6, duration: 2.8, ease: 'none',
+        onComplete: animateScanline }
+    );
+  }
+
+  // Countdown logic
+  let countdownDone = false;
+  const digits = ['tm-bd4-d0', 'tm-bd4-d1', 'tm-bd4-d2', 'tm-bd4-d3'];
+  const values = [3, 0, 0, 5]; // days:hrs:mins:secs = 0:0:0:5 compressed to 5s dramatic count
+  let totalSeconds = 5;
+  let elapsed = 0;
+
+  function padZ(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function setDigits(val) {
+    const d = Math.floor(val / 86400);
+    const h = Math.floor((val % 86400) / 3600);
+    const m = Math.floor((val % 3600) / 60);
+    const s = val % 60;
+    [d, h, m, s].forEach((v, i) => {
+      const el = document.getElementById(digits[i]);
+      const prev = el.textContent;
+      const next = padZ(v);
+      if (prev !== next) {
+        el.classList.add('flash');
+        el.textContent = next;
+        setTimeout(() => el.classList.remove('flash'), 200);
+      }
+    });
+  }
+
+  function runCountdown() {
+    const fill = document.getElementById('tm-bd4-fill');
+    let remaining = totalSeconds;
+
+    // Pre-load digits to something dramatic
+    document.getElementById('tm-bd4-d0').textContent = '00';
+    document.getElementById('tm-bd4-d1').textContent = '00';
+    document.getElementById('tm-bd4-d2').textContent = '00';
+    document.getElementById('tm-bd4-d3').textContent = padZ(remaining);
+
+    const iv = setInterval(() => {
+      remaining--;
+      setDigits(remaining);
+      const pct = ((totalSeconds - remaining) / totalSeconds) * 100;
+      fill.style.width = pct + '%';
+
+      // Haptic-style flash on last 3
+      if (remaining <= 3 && remaining > 0) {
+        gsap.to('#tm-bd4-countdown', {
+          scale: 1.03, duration: 0.08,
+          yoyo: true, repeat: 1, ease: 'power2.inOut'
+        });
+      }
+
+      if (remaining <= 0) {
+        clearInterval(iv);
+        onCountdownEnd();
+      }
+    }, 1000);
+  }
+
+  function onCountdownEnd() {
+    countdownDone = true;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    // Big burst
+    spawnBurst(cx, cy, 120, burstColors);
+    drawBurst();
+    setTimeout(() => spawnBurst(cx - 120, cy - 80, 60, burstColors), 180);
+    setTimeout(() => spawnBurst(cx + 120, cy - 80, 60, burstColors), 320);
+    setTimeout(() => drawBurst(), 100);
+
+    // Flash screen
+    gsap.fromTo('#tm-bd4-root', { backgroundColor: 'rgba(240,192,64,0.18)' },
+      { backgroundColor: 'transparent', duration: 0.6, ease: 'power2.out' });
+
+    // Countdown exits
+    gsap.to('#tm-bd4-countdown', {
+      opacity: 0, y: -30, duration: 0.5, ease: 'power3.in',
+      onComplete: () => {
+        document.getElementById('tm-bd4-countdown').style.display = 'none';
+        revealContent();
+      }
+    });
+
+    gsap.to('#tm-bd4-status', { opacity: 0, duration: 0.3 });
+    gsap.to('#tm-bd4-track', { opacity: 0, duration: 0.3 });
+
+    // Sweep brightens
+    gsap.to('#tm-bd4-sweep', { opacity: 1.5, duration: 0.3, yoyo: true, repeat: 1 });
+  }
+
+  function revealContent() {
+    const tl = gsap.timeline();
+
+    tl.to('#tm-bd4-reveal', {
+      opacity: 1, y: 0, duration: 0.7, ease: 'power3.out'
+    }, 0)
+    .from('#tm-bd4-reveal', { y: 24, duration: 0.7 }, 0);
+
+    tl.to('#tm-bd4-rname', {
+      textShadow: '0 0 80px rgba(240,192,64,0.7)', duration: 1.5,
+      ease: 'sine.inOut', repeat: -1, yoyo: true
+    }, 0.3);
+
+    document.getElementById('tm-bd4-reveal').classList.add('active');
+
+    tl.to('#tm-bd4-divider', { opacity: 1, duration: 0.5 }, 0.5);
+
+    tl.to('#tm-bd4-cta', {
+      opacity: 1, y: 0, duration: 0.6, ease: 'power2.out'
+    }, 0.8)
+    .from('#tm-bd4-cta', { y: 12, duration: 0.6 }, 0.8);
+
+    // More bursts at intervals
+    setTimeout(() => {
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      spawnBurst(cx, cy + 100, 50, burstColors);
+      drawBurst();
+    }, 600);
+  }
+
+  // Parallax grid
+  document.addEventListener('mousemove', e => {
+    const mx = e.clientX / window.innerWidth - 0.5;
+    const my = e.clientY / window.innerHeight - 0.5;
+    gsap.to('.tm-bd4-grid', { x: mx * 15, y: my * 15, duration: 0.8, ease: 'power1.out' });
+  });
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 5) return;
+
+    const tl = gsap.timeline();
+
+    // Brackets snap in
+    tl.to(['.tm-bd4-bracket'], {
+      opacity: 1, duration: 0.3, stagger: 0.08, ease: 'power2.out'
+    }, 0);
+
+    // Sweep on
+    tl.to('#tm-bd4-sweep', { opacity: 1, duration: 0.6 }, 0.2);
+
+    // Status bar
+    tl.to('#tm-bd4-status', {
+      opacity: 1, duration: 0.5, ease: 'power2.out'
+    }, 0.4)
+    .from('#tm-bd4-status', { y: -10, duration: 0.5 }, 0.4);
+
+    // Countdown appears
+    tl.to('#tm-bd4-countdown', {
+      opacity: 1, duration: 0.6, ease: 'power2.out'
+    }, 0.7)
+    .from('#tm-bd4-countdown', { scale: 0.94, duration: 0.6, ease: 'back.out(1.4)' }, 0.7);
+
+    // Track bar
+    tl.to('#tm-bd4-track', {
+      opacity: 1, duration: 0.4
+    }, 0.9);
+
+    // Scanline starts
+    tl.call(() => animateScanline(), [], 0.5);
+
+    // Start countdown after short delay
+    tl.call(() => runCountdown(), [], 1.5);
+
+    // Ambient digit glow
+    tl.call(() => {
+      gsap.to(['.tm-bd4-digit'], {
+        textShadow: '0 0 50px rgba(240,192,64,0.35)',
+        duration: 1.8, ease: 'sine.inOut', repeat: -1, yoyo: true, stagger: 0.2
+      });
+    }, [], 1.0);
+
+    // Grid pulse ambient
+    tl.call(() => {
+      gsap.to('.tm-bd4-grid', {
+        opacity: 0.5, duration: 3,
+        ease: 'sine.inOut', repeat: -1, yoyo: true
+      });
+    }, [], 0);
+
+  });
+
+})();
+</script>

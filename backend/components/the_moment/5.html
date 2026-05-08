@@ -1,0 +1,609 @@
+<!--
+  Component: tm_apology_005
+  Type: the_moment
+  Aesthetic: Rain Window — condensation glass, streaking drops, cold blue melancholy
+  Obsession: Apology / Longing
+  Tone: melancholic, tender, quiet
+  Occasion: apology
+  Variables: --RECIPIENT_NAME-- --MOMENT_COPY-- --MOMENT_CTA--
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;1,400&family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300&display=swap');
+
+  :root {
+    --primary: #dde8f0;
+    --accent: #7eb8d4;
+    --bg: #060c12;
+    --text: #7a9aaa;
+    --font-heading: 'Libre Baskerville', serif;
+    --font-body: 'Cormorant', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .tm-ap5-root {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  .tm-ap5-cursor {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(126,184,212,0.6);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+    box-shadow: 0 0 8px rgba(126,184,212,0.4);
+  }
+  .tm-ap5-cursor.expand {
+    width: 30px; height: 30px; opacity: 0.3;
+  }
+
+  /* Deep night sky bg */
+  .tm-ap5-sky {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(20,40,70,0.7) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(10,30,55,0.5) 0%, transparent 60%),
+      linear-gradient(180deg, #070e18 0%, #060c12 60%, #04080e 100%);
+    z-index: 0;
+  }
+
+  /* Rain canvas */
+  .tm-ap5-rain-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Glass pane */
+  .tm-ap5-glass {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Condensation canvas */
+  .tm-ap5-condensation {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Vignette */
+  .tm-ap5-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.9) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* Window frame */
+  .tm-ap5-frame {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+  }
+  /* Horizontal bar */
+  .tm-ap5-frame::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 1px;
+    background: rgba(126,184,212,0.08);
+    transform: translateY(-50%);
+  }
+  /* Vertical bar */
+  .tm-ap5-frame::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: rgba(126,184,212,0.08);
+    transform: translateX(-50%);
+  }
+
+  /* Window edge glow */
+  .tm-ap5-edge {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .tm-ap5-edge-top {
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 5%, rgba(126,184,212,0.15) 50%, transparent 95%);
+    box-shadow: 0 0 20px rgba(126,184,212,0.1);
+  }
+  .tm-ap5-edge-bottom {
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 5%, rgba(126,184,212,0.12) 50%, transparent 95%);
+  }
+  .tm-ap5-edge-left {
+    top: 0; bottom: 0; left: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 5%, rgba(126,184,212,0.12) 50%, transparent 95%);
+  }
+  .tm-ap5-edge-right {
+    top: 0; bottom: 0; right: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 5%, rgba(126,184,212,0.12) 50%, transparent 95%);
+  }
+
+  /* Main content */
+  .tm-ap5-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(16px, 2.8vh, 28px);
+    width: min(580px, 88vw);
+    text-align: center;
+  }
+
+  /* Finger-drawn name on glass */
+  .tm-ap5-name-wrap {
+    position: relative;
+    opacity: 0;
+  }
+  .tm-ap5-name-canvas {
+    position: absolute;
+    inset: -20px;
+    pointer-events: none;
+  }
+  .tm-ap5-name {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 5.5vw, 58px);
+    font-weight: 400;
+    color: rgba(221,232,240,0.12);
+    letter-spacing: 0.12em;
+    position: relative;
+    text-shadow:
+      0 0 20px rgba(126,184,212,0.25),
+      0 1px 0 rgba(255,255,255,0.05);
+    /* frosted glass text effect */
+    backdrop-filter: blur(1px);
+  }
+  /* Smear underline */
+  .tm-ap5-name::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: rgba(126,184,212,0.2);
+    filter: blur(1px);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.4s ease;
+  }
+  .tm-ap5-name.drawn::after { transform: scaleX(1); }
+
+  /* Eyebrow */
+  .tm-ap5-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+  }
+  .tm-ap5-eyebrow-line {
+    width: clamp(24px, 5vw, 55px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(126,184,212,0.25));
+  }
+  .tm-ap5-eyebrow-line.r {
+    background: linear-gradient(90deg, rgba(126,184,212,0.25), transparent);
+  }
+  .tm-ap5-eyebrow-text {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.4em;
+    color: rgba(126,184,212,0.4);
+    text-transform: uppercase;
+  }
+
+  /* Message */
+  .tm-ap5-message {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(20px, 3.2vw, 36px);
+    line-height: 1.55;
+    color: rgba(221,232,240,0.75);
+    opacity: 0;
+    text-shadow: 0 0 30px rgba(126,184,212,0.15);
+  }
+  .tm-ap5-message em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  /* Breath separator */
+  .tm-ap5-breath {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    width: 70%;
+  }
+  .tm-ap5-breath-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(126,184,212,0.1);
+  }
+  .tm-ap5-breath-drop {
+    width: 4px;
+    height: 6px;
+    background: rgba(126,184,212,0.3);
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  }
+
+  /* CTA */
+  .tm-ap5-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+  }
+  .tm-ap5-cta-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.35em;
+    color: rgba(122,154,170,0.4);
+    text-transform: uppercase;
+  }
+  .tm-ap5-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: clamp(11px, 1.4vh, 16px) clamp(24px, 3.5vw, 40px);
+    border: 1px solid rgba(126,184,212,0.2);
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: none;
+    overflow: hidden;
+    transition: color 0.4s;
+  }
+  .tm-ap5-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(126,184,212,0.15);
+    transform: translateX(-101%);
+    transition: transform 0.5s cubic-bezier(0.77,0,0.175,1);
+  }
+  .tm-ap5-btn:hover::before { transform: translateX(0); }
+  .tm-ap5-btn:hover { color: var(--primary); }
+  .tm-ap5-btn span { position: relative; z-index: 1; }
+
+  /* Ambient city lights behind rain */
+  .tm-ap5-city {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 35%;
+    z-index: 1;
+    opacity: 0;
+    background:
+      radial-gradient(ellipse 30% 20% at 25% 90%, rgba(255,200,80,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 20% 15% at 60% 95%, rgba(126,184,212,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 25% 20% at 80% 88%, rgba(200,150,255,0.03) 0%, transparent 70%);
+  }
+</style>
+<div class="tm-ap5-root" id="tm-ap5-root">
+  <div class="tm-ap5-cursor" id="tm-ap5-cursor"></div>
+  <div class="tm-ap5-sky"></div>
+  <div class="tm-ap5-city" id="tm-ap5-city"></div>
+  <canvas class="tm-ap5-rain-canvas" id="tm-ap5-rain"></canvas>
+  <canvas class="tm-ap5-condensation" id="tm-ap5-cond"></canvas>
+  <div class="tm-ap5-frame" id="tm-ap5-frame"></div>
+  <div class="tm-ap5-edge tm-ap5-edge-top" id="tm-ap5-et"></div>
+  <div class="tm-ap5-edge tm-ap5-edge-bottom" id="tm-ap5-eb"></div>
+  <div class="tm-ap5-edge tm-ap5-edge-left" id="tm-ap5-el"></div>
+  <div class="tm-ap5-edge tm-ap5-edge-right" id="tm-ap5-er"></div>
+  <div class="tm-ap5-vignette"></div>
+  <div class="tm-ap5-content">
+<div class="tm-ap5-eyebrow" id="tm-ap5-eyebrow">
+  <div class="tm-ap5-eyebrow-line"></div>
+  <span class="tm-ap5-eyebrow-text">written in the condensation</span>
+  <div class="tm-ap5-eyebrow-line r"></div>
+</div>
+
+<div class="tm-ap5-name-wrap" id="tm-ap5-namewrap">
+  <div class="tm-ap5-name" id="tm-ap5-name">--RECIPIENT_NAME--</div>
+</div>
+
+<p class="tm-ap5-message" id="tm-ap5-message">--MOMENT_COPY--</p>
+
+<div class="tm-ap5-breath" id="tm-ap5-breath">
+  <div class="tm-ap5-breath-line"></div>
+  <div class="tm-ap5-breath-drop"></div>
+  <div class="tm-ap5-breath-line"></div>
+</div>
+
+<div class="tm-ap5-cta-wrap" id="tm-ap5-cta">
+  <span class="tm-ap5-cta-label">--MOMENT_CTA--</span>
+  <button class="tm-ap5-btn" id="tm-ap5-btn">
+    <span>I'm listening</span>
+  </button>
+</div></div>
+</div>
+<script>
+(function () {
+
+  // Cursor
+  const cursor = document.getElementById('tm-ap5-cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.getElementById('tm-ap5-btn').addEventListener('mouseenter', () => cursor.classList.add('expand'));
+  document.getElementById('tm-ap5-btn').addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+
+  // Rain canvas
+  const rainCanvas = document.getElementById('tm-ap5-rain');
+  const rctx = rainCanvas.getContext('2d');
+  let drops = [];
+  let rainActive = false;
+
+  // Condensation canvas
+  const condCanvas = document.getElementById('tm-ap5-cond');
+  const cctx = condCanvas.getContext('2d');
+  let condDrops = [];
+
+  function resizeAll() {
+    rainCanvas.width = condCanvas.width = window.innerWidth;
+    rainCanvas.height = condCanvas.height = window.innerHeight;
+  }
+  resizeAll();
+  window.addEventListener('resize', resizeAll);
+
+  // --- Rain system ---
+  function spawnDrop() {
+    const x = Math.random() * rainCanvas.width;
+    drops.push({
+      x,
+      y: -Math.random() * rainCanvas.height * 0.5,
+      len: Math.random() * 18 + 8,
+      speed: Math.random() * 12 + 8,
+      opacity: Math.random() * 0.25 + 0.05,
+      width: Math.random() * 0.8 + 0.3,
+      streak: Math.random() > 0.92
+    });
+  }
+
+  function drawRain() {
+    if (!rainActive) return;
+    rctx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+    // Add new drops
+    for (let i = 0; i < 6; i++) spawnDrop();
+
+    drops.forEach(d => {
+      rctx.beginPath();
+      rctx.moveTo(d.x, d.y);
+      rctx.lineTo(d.x - d.len * 0.15, d.y + d.len);
+      rctx.strokeStyle = d.streak
+        ? `rgba(200,230,245,${d.opacity * 1.4})`
+        : `rgba(126,184,212,${d.opacity})`;
+      rctx.lineWidth = d.width;
+      rctx.stroke();
+      d.y += d.speed;
+      if (d.y > rainCanvas.height + 20) {
+        d.y = -20;
+        d.x = Math.random() * rainCanvas.width;
+      }
+    });
+    requestAnimationFrame(drawRain);
+  }
+
+  // Seed initial drops
+  for (let i = 0; i < 180; i++) {
+    spawnDrop();
+    drops[drops.length - 1].y = Math.random() * rainCanvas.height;
+  }
+
+  // --- Condensation / streaks on glass ---
+  function spawnCondDrop() {
+    condDrops.push({
+      x: Math.random() * condCanvas.width,
+      y: Math.random() * condCanvas.height * 0.6,
+      r: Math.random() * 3 + 1,
+      vy: 0,
+      vx: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.4 + 0.1,
+      falling: false,
+      fallDelay: Math.random() * 8000 + 2000,
+      born: Date.now()
+    });
+  }
+
+  function drawCond() {
+    cctx.clearRect(0, 0, condCanvas.width, condCanvas.height);
+    const now = Date.now();
+    condDrops.forEach(d => {
+      // Start falling after delay
+      if (!d.falling && now - d.born > d.fallDelay) {
+        d.falling = true;
+        d.vy = Math.random() * 1.5 + 0.8;
+      }
+      if (d.falling) {
+        d.y += d.vy;
+        d.x += d.vx;
+        d.vy += 0.015;
+        d.r = Math.max(d.r - 0.008, 0.5);
+        // trail
+        cctx.beginPath();
+        cctx.moveTo(d.x, d.y - d.vy * 3);
+        cctx.lineTo(d.x, d.y);
+        cctx.strokeStyle = `rgba(180,220,240,${d.opacity * 0.5})`;
+        cctx.lineWidth = d.r * 0.6;
+        cctx.stroke();
+      }
+      // drop circle
+      cctx.beginPath();
+      cctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      const grad = cctx.createRadialGradient(d.x - d.r * 0.3, d.y - d.r * 0.3, 0, d.x, d.y, d.r);
+      grad.addColorStop(0, `rgba(220,238,248,${d.opacity})`);
+      grad.addColorStop(1, `rgba(126,184,212,${d.opacity * 0.4})`);
+      cctx.fillStyle = grad;
+      cctx.fill();
+
+      if (d.y > condCanvas.height + 20) {
+        d.y = Math.random() * condCanvas.height * 0.4;
+        d.x = Math.random() * condCanvas.width;
+        d.falling = false;
+        d.vy = 0;
+        d.r = Math.random() * 3 + 1;
+        d.born = Date.now();
+        d.fallDelay = Math.random() * 8000 + 2000;
+      }
+    });
+    requestAnimationFrame(drawCond);
+  }
+
+  // Seed condensation drops
+  for (let i = 0; i < 55; i++) spawnCondDrop();
+
+  // Fog/breath effect on glass near content
+  function drawFogPatch() {
+    const cx = condCanvas.width / 2;
+    const cy = condCanvas.height / 2;
+    const fog = cctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(condCanvas.width, condCanvas.height) * 0.28);
+    fog.addColorStop(0, 'rgba(180,215,235,0.025)');
+    fog.addColorStop(1, 'transparent');
+    cctx.fillStyle = fog;
+    cctx.fillRect(0, 0, condCanvas.width, condCanvas.height);
+  }
+
+  // Parallax on sky and rain
+  document.addEventListener('mousemove', e => {
+    const mx = (e.clientX / window.innerWidth - 0.5);
+    const my = (e.clientY / window.innerHeight - 0.5);
+    gsap.to('.tm-ap5-sky', { x: mx * 12, y: my * 8, duration: 1.2, ease: 'power1.out' });
+    gsap.to('.tm-ap5-city', { x: mx * 6, y: my * 4, duration: 1.4, ease: 'power1.out' });
+  });
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 5) return;
+
+    const tl = gsap.timeline();
+
+    // Window edges appear
+    tl.to(['#tm-ap5-et','#tm-ap5-eb','#tm-ap5-el','#tm-ap5-er'], {
+      opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power2.out'
+    }, 0);
+
+    // Frame cross
+    tl.to('#tm-ap5-frame', { opacity: 1, duration: 1.0 }, 0.3);
+
+    // City lights bloom
+    tl.to('#tm-ap5-city', { opacity: 1, duration: 2.0, ease: 'power2.out' }, 0.2);
+
+    // Rain fades in
+    tl.to('#tm-ap5-rain', { opacity: 1, duration: 2.5, ease: 'power2.out' }, 0.5);
+    tl.call(() => {
+      rainActive = true;
+      drawRain();
+    }, [], 0.5);
+
+    // Condensation appears
+    tl.to('#tm-ap5-cond', { opacity: 1, duration: 2.0, ease: 'power2.out' }, 0.8);
+    tl.call(() => drawCond(), [], 0.8);
+
+    // Eyebrow
+    tl.to('#tm-ap5-eyebrow', {
+      opacity: 1, duration: 0.7, ease: 'power2.out'
+    }, 1.4)
+    .from('#tm-ap5-eyebrow', { y: 8, duration: 0.7 }, 1.4);
+
+    // Name — drawn on glass feel
+    tl.to('#tm-ap5-namewrap', {
+      opacity: 1, duration: 1.2, ease: 'power2.out'
+    }, 1.9)
+    .from('#tm-ap5-namewrap', { y: 6, duration: 1.2 }, 1.9);
+    tl.call(() => {
+      document.getElementById('tm-ap5-name').classList.add('drawn');
+    }, [], 2.4);
+
+    // Message
+    tl.to('#tm-ap5-message', {
+      opacity: 1, duration: 1.0, ease: 'power2.out'
+    }, 2.8)
+    .from('#tm-ap5-message', { y: 14, duration: 1.0 }, 2.8);
+
+    // Breath separator
+    tl.to('#tm-ap5-breath', {
+      opacity: 1, duration: 0.6, ease: 'power2.out'
+    }, 3.5);
+
+    // CTA
+    tl.to('#tm-ap5-cta', {
+      opacity: 1, duration: 0.7, ease: 'power2.out'
+    }, 3.9)
+    .from('#tm-ap5-cta', { y: 10, duration: 0.7 }, 3.9);
+
+    // Ambient: name gentle fog pulse
+    tl.call(() => {
+      gsap.to('#tm-ap5-name', {
+        opacity: 0.18, duration: 4,
+        ease: 'sine.inOut', repeat: -1, yoyo: true
+      });
+    }, [], 2.5);
+
+    // Ambient: message breathes
+    tl.call(() => {
+      gsap.to('#tm-ap5-message', {
+        opacity: 0.65, duration: 5,
+        ease: 'sine.inOut', repeat: -1, yoyo: true
+      });
+    }, [], 3.5);
+
+    // Ambient: window edge flicker
+    tl.call(() => {
+      gsap.to(['#tm-ap5-et','#tm-ap5-eb'], {
+        opacity: 0.6, duration: 3,
+        ease: 'sine.inOut', repeat: -1, yoyo: true, stagger: 1.5
+      });
+    }, [], 2.0);
+
+    // Ambient: fog patch redraws periodically
+    tl.call(() => {
+      setInterval(drawFogPatch, 1200);
+    }, [], 1.5);
+
+  });
+
+})();
+</script>

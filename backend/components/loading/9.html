@@ -1,0 +1,723 @@
+<!--
+  Component: loading_glitch_001
+  Type: loading
+  Aesthetic: Glitch Effect Boot
+  Obsession: General
+  Tone: electric, chaotic, cinematic
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<style>
+  :root {
+    --primary: #00ff88;
+    --accent: #ff2d6e;
+    --bg: #050505;
+    --text: #f0f0f0;
+    --font-heading: 'VT323', 'Courier New', monospace;
+    --font-body: 'Share Tech Mono', 'Courier New', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .lg001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* ── CRT scanlines ── */
+  .lg001-crt {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 4px
+    );
+    animation: lg001-crt-flicker 0.15s steps(1) infinite;
+  }
+  @keyframes lg001-crt-flicker {
+    0%   { opacity: 1; }
+    92%  { opacity: 1; }
+    93%  { opacity: 0.85; }
+    94%  { opacity: 1; }
+    97%  { opacity: 1; }
+    98%  { opacity: 0.9; }
+    100% { opacity: 1; }
+  }
+
+  /* ── RGB chromatic aberration overlay ── */
+  .lg001-rgb {
+    position: absolute;
+    inset: 0;
+    z-index: 28;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: screen;
+  }
+  .lg001-rgb-r {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,0,60,0.06);
+    transform: translateX(2px);
+  }
+  .lg001-rgb-b {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,200,255,0.06);
+    transform: translateX(-2px);
+  }
+
+  /* ── Vignette ── */
+  .lg001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 29;
+    pointer-events: none;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.96) 100%);
+  }
+
+  /* ── Noise static canvas ── */
+  .lg001-noise-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.045;
+  }
+
+  /* ── Glitch slice elements ── */
+  .lg001-slice {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background: var(--bg);
+    z-index: 25;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+  /* ── Horizontal interference lines ── */
+  .lg001-interference {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    z-index: 26;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0,255,136,0.4) 20%,
+      rgba(255,45,110,0.5) 50%,
+      rgba(0,200,255,0.4) 80%,
+      transparent 100%
+    );
+  }
+
+  /* ── Grid overlay ── */
+  .lg001-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image:
+      linear-gradient(rgba(0,255,136,1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,1) 1px, transparent 1px);
+    background-size: clamp(32px,5vw,60px) clamp(32px,5vw,60px);
+  }
+
+  /* ── Corner HUD brackets ── */
+  .lg001-corner {
+    position: absolute;
+    width: clamp(24px,3.5vw,48px);
+    height: clamp(24px,3.5vw,48px);
+    z-index: 20;
+    opacity: 0;
+  }
+  .lg001-corner::before,
+  .lg001-corner::after {
+    content: '';
+    position: absolute;
+    background: var(--primary);
+  }
+  .lg001-corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+  .lg001-corner::after  { width: 1px; height: 100%; top: 0; left: 0; }
+  .lg001-corner.tl { top: clamp(14px,2.5vh,32px);    left: clamp(14px,2.5vw,32px); }
+  .lg001-corner.tr { top: clamp(14px,2.5vh,32px);    right: clamp(14px,2.5vw,32px); transform: scaleX(-1); }
+  .lg001-corner.bl { bottom: clamp(14px,2.5vh,32px); left: clamp(14px,2.5vw,32px); transform: scaleY(-1); }
+  .lg001-corner.br { bottom: clamp(14px,2.5vh,32px); right: clamp(14px,2.5vw,32px); transform: scale(-1,-1); }
+
+  /* ── Top status bar ── */
+  .lg001-statusbar {
+    position: absolute;
+    top: clamp(14px,2.5vh,32px);
+    left: 0; right: 0;
+    padding: 0 clamp(56px,8vw,100px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    opacity: 0;
+  }
+  .lg001-status-item {
+    font-size: clamp(7px,0.75vw,10px);
+    letter-spacing: 0.35em;
+    color: var(--primary);
+    opacity: 0.55;
+    text-transform: uppercase;
+  }
+  .lg001-status-item.blink {
+    animation: lg001-blink 1.1s steps(1) infinite;
+  }
+  @keyframes lg001-blink {
+    0%, 49% { opacity: 0.55; }
+    50%, 100% { opacity: 0.1; }
+  }
+
+  /* ── Bottom bar ── */
+  .lg001-bottombar {
+    position: absolute;
+    bottom: clamp(14px,2.5vh,32px);
+    left: 0; right: 0;
+    padding: 0 clamp(56px,8vw,100px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    opacity: 0;
+  }
+
+  /* ── Center stage ── */
+  .lg001-center {
+    position: relative;
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: clamp(10px,2vh,22px);
+    padding: clamp(16px,4vw,48px);
+  }
+
+  /* ── Boot label ── */
+  .lg001-boot-label {
+    font-size: clamp(8px,0.85vw,11px);
+    letter-spacing: 0.6em;
+    color: var(--primary);
+    text-transform: uppercase;
+    opacity: 0;
+  }
+
+  /* ── Main title with glitch layers ── */
+  .lg001-title-wrap {
+    position: relative;
+    opacity: 0;
+  }
+  .lg001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(48px,10vw,140px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+  }
+  /* Chromatic ghost layers */
+  .lg001-title::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    color: var(--accent);
+    clip-path: inset(0 0 60% 0);
+    transform: translateX(-3px);
+    opacity: 0.7;
+    animation: lg001-ghost-r 3.5s steps(1) infinite;
+  }
+  .lg001-title::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    color: #00d4ff;
+    clip-path: inset(60% 0 0 0);
+    transform: translateX(3px);
+    opacity: 0.7;
+    animation: lg001-ghost-b 3.5s steps(1) infinite;
+  }
+  @keyframes lg001-ghost-r {
+    0%,89%  { transform: translateX(-3px); clip-path: inset(0 0 60% 0); opacity: 0.7; }
+    90%     { transform: translateX(-8px) skewX(-6deg); clip-path: inset(10% 0 40% 0); opacity: 0.9; }
+    92%     { transform: translateX(4px); clip-path: inset(0 0 70% 0); opacity: 0.5; }
+    94%     { transform: translateX(-3px); clip-path: inset(0 0 60% 0); opacity: 0.7; }
+    100%    { transform: translateX(-3px); clip-path: inset(0 0 60% 0); opacity: 0.7; }
+  }
+  @keyframes lg001-ghost-b {
+    0%,89%  { transform: translateX(3px); clip-path: inset(60% 0 0 0); opacity: 0.7; }
+    90%     { transform: translateX(8px) skewX(4deg); clip-path: inset(50% 0 10% 0); opacity: 0.9; }
+    92%     { transform: translateX(-4px); clip-path: inset(70% 0 0 0); opacity: 0.5; }
+    94%     { transform: translateX(3px); clip-path: inset(60% 0 0 0); opacity: 0.7; }
+    100%    { transform: translateX(3px); clip-path: inset(60% 0 0 0); opacity: 0.7; }
+  }
+
+  /* ── Subtitle ── */
+  .lg001-subtitle {
+    font-size: clamp(9px,1vw,13px);
+    letter-spacing: 0.4em;
+    color: var(--accent);
+    text-transform: uppercase;
+    opacity: 0;
+  }
+
+  /* ── Terminal boot log ── */
+  .lg001-terminal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(3px,0.5vh,7px);
+    min-width: clamp(240px,40vw,480px);
+    opacity: 0;
+  }
+  .lg001-term-line {
+    font-size: clamp(9px,0.9vw,12px);
+    letter-spacing: 0.12em;
+    display: flex;
+    align-items: center;
+    gap: clamp(6px,0.8vw,10px);
+    white-space: nowrap;
+  }
+  .lg001-term-prompt {
+    color: var(--primary);
+    opacity: 0.7;
+  }
+  .lg001-term-text {
+    color: rgba(240,240,240,0.55);
+  }
+  .lg001-term-text.ok {
+    color: var(--primary);
+  }
+  .lg001-term-text.err {
+    color: var(--accent);
+  }
+  .lg001-term-text.warn {
+    color: #ffcc00;
+  }
+
+  /* ── Loading line ── */
+  .lg001-loading-line {
+    font-size: clamp(10px,1.1vw,14px);
+    color: var(--text);
+    opacity: 0;
+    letter-spacing: 0.25em;
+    max-width: clamp(220px,50vw,540px);
+    line-height: 1.9;
+    font-style: italic;
+  }
+
+  /* ── Progress bar ── */
+  .lg001-prog-wrap {
+    width: clamp(180px,34vw,400px);
+    height: 3px;
+    background: rgba(0,255,136,0.06);
+    position: relative;
+    opacity: 0;
+  }
+  .lg001-prog-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary), #00ffff, var(--primary));
+    background-size: 200% 100%;
+    box-shadow: 0 0 10px rgba(0,255,136,0.7), 0 0 20px rgba(0,255,136,0.3);
+    animation: lg001-prog-shimmer 1.5s linear infinite;
+  }
+  @keyframes lg001-prog-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  /* tick marks */
+  .lg001-prog-ticks {
+    position: absolute;
+    top: 6px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  .lg001-tick {
+    width: 1px;
+    height: 4px;
+    background: rgba(0,255,136,0.2);
+  }
+
+  /* ── Percent counter ── */
+  .lg001-pct {
+    font-size: clamp(10px,1vw,13px);
+    letter-spacing: 0.3em;
+    color: var(--primary);
+    opacity: 0;
+  }
+
+  /* ── Flash overlay ── */
+  .lg001-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    background: #050505;
+    opacity: 1;
+    pointer-events: none;
+  }
+  /* White burst for glitch flash */
+  .lg001-burst {
+    position: absolute;
+    inset: 0;
+    z-index: 59;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+</style>
+<div class="lg001-root" id="lg001-root">
+  <!-- Overlays -->
+  <div class="lg001-flash" id="lg001-flash"></div>
+  <div class="lg001-burst" id="lg001-burst"></div>
+  <div class="lg001-crt"></div>
+  <div class="lg001-vignette"></div>
+  <div class="lg001-grid"></div>
+  <div class="lg001-rgb" id="lg001-rgb">
+    <div class="lg001-rgb-r"></div>
+    <div class="lg001-rgb-b"></div>
+  </div>
+  <!-- Noise canvas -->
+<canvas class="lg001-noise-canvas" id="lg001-noise"></canvas>
+  <!-- Glitch slices (populated by JS) -->
+  <div id="lg001-slices"></div>
+  <!-- Interference lines -->
+  <div class="lg001-interference" id="lg001-if1" style="top:23%"></div>
+  <div class="lg001-interference" id="lg001-if2" style="top:61%"></div>
+  <div class="lg001-interference" id="lg001-if3" style="top:78%"></div>
+  <!-- HUD corners -->
+  <div class="lg001-corner tl" id="lg001-c-tl"></div>
+  <div class="lg001-corner tr" id="lg001-c-tr"></div>
+  <div class="lg001-corner bl" id="lg001-c-bl"></div>
+  <div class="lg001-corner br" id="lg001-c-br"></div>
+  <!-- Status bars -->
+  <div class="lg001-statusbar" id="lg001-statusbar">
+    <div class="lg001-status-item">GLITCH PROTOCOL // v4.6.0</div>
+    <div class="lg001-status-item blink">● REC</div>
+    <div class="lg001-status-item" id="lg001-ts">--:--:--</div>
+  </div>
+  <div class="lg001-bottombar" id="lg001-bottombar">
+    <div class="lg001-status-item">NODE // ACTIVE</div>
+    <div class="lg001-status-item">MEMORY // 99.8% INTACT</div>
+    <div class="lg001-status-item">SIGNAL // LOCKED</div>
+  </div>
+  <!-- Center content -->
+  <div class="lg001-center">
+<div class="lg001-boot-label" id="lg001-bootlabel">// SYSTEM BOOT SEQUENCE INITIATED</div>
+
+<div class="lg001-title-wrap" id="lg001-title-wrap">
+  <div class="lg001-title" id="lg001-title" data-text="--RECIPIENT_NAME--">--RECIPIENT_NAME--</div>
+</div>
+
+<div class="lg001-subtitle" id="lg001-subtitle">TRANSMISSION INCOMING · STAND BY</div>
+
+<div class="lg001-terminal" id="lg001-terminal">
+  <div class="lg001-term-line">
+    <span class="lg001-term-prompt">&gt;_</span>
+    <span class="lg001-term-text ok" id="lg001-t1">KERNEL LOADED .............. OK</span>
+  </div>
+  <div class="lg001-term-line">
+    <span class="lg001-term-prompt">&gt;_</span>
+    <span class="lg001-term-text ok" id="lg001-t2">MEMORY CHECK ............... OK</span>
+  </div>
+  <div class="lg001-term-line">
+    <span class="lg001-term-prompt">&gt;_</span>
+    <span class="lg001-term-text warn" id="lg001-t3">ANOMALY DETECTED ........ WARN</span>
+  </div>
+  <div class="lg001-term-line">
+    <span class="lg001-term-prompt">&gt;_</span>
+    <span class="lg001-term-text err" id="lg001-t4">OVERRIDE APPLIED .......... ERR</span>
+  </div>
+  <div class="lg001-term-line">
+    <span class="lg001-term-prompt">&gt;_</span>
+    <span class="lg001-term-text ok" id="lg001-t5">SIGNAL ESTABLISHED ......... OK</span>
+  </div>
+</div>
+
+<div class="lg001-loading-line" id="lg001-loadline">--LOADING_LINE--</div>
+
+<div class="lg001-prog-wrap" id="lg001-prog-wrap">
+  <div class="lg001-prog-fill" id="lg001-prog-fill"></div>
+  <div class="lg001-prog-ticks" id="lg001-ticks"></div>
+</div>
+
+<div class="lg001-pct" id="lg001-pct">0%</div></div>
+</div>
+<script>
+(function () {
+
+  /* ── Noise canvas ── */
+  const nc = document.getElementById('lg001-noise');
+  const nctx = nc.getContext('2d');
+  function resizeNoise() {
+    nc.width  = window.innerWidth;
+    nc.height = window.innerHeight;
+  }
+  function drawNoise() {
+    const id = nctx.createImageData(nc.width, nc.height);
+    const d  = id.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const v = Math.random() * 255 | 0;
+      d[i] = d[i+1] = d[i+2] = v;
+      d[i+3] = 255;
+    }
+    nctx.putImageData(id, 0, 0);
+    setTimeout(() => requestAnimationFrame(drawNoise), 60);
+  }
+  resizeNoise();
+  requestAnimationFrame(drawNoise);
+  window.addEventListener('resize', resizeNoise);
+
+  /* ── Progress tick marks ── */
+  const ticksEl = document.getElementById('lg001-ticks');
+  for (let i = 0; i < 20; i++) {
+    const t = document.createElement('div');
+    t.className = 'lg001-tick';
+    ticksEl.appendChild(t);
+  }
+
+  /* ── Clock ── */
+  function tickClock() {
+    const el = document.getElementById('lg001-ts');
+    if (!el) return;
+    const n  = new Date();
+    const hh = String(n.getHours()).padStart(2,'0');
+    const mm = String(n.getMinutes()).padStart(2,'0');
+    const ss = String(n.getSeconds()).padStart(2,'0');
+    el.textContent = hh + ':' + mm + ':' + ss;
+    setTimeout(tickClock, 1000);
+  }
+  tickClock();
+
+  /* ── Percent counter ── */
+  function animatePct(duration) {
+    const el  = document.getElementById('lg001-pct');
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / (duration * 1000), 1);
+      el.textContent = Math.floor(p * 100) + '%';
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = '100%';
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ── Random glitch burst ── */
+  function triggerGlitch() {
+    const tl = gsap.timeline();
+    /* RGB shift spike */
+    tl.to('#lg001-rgb', { opacity: 1, duration: 0.05 })
+      .to('.lg001-rgb-r', { x: 8, duration: 0.05 }, '<')
+      .to('.lg001-rgb-b', { x: -8, duration: 0.05 }, '<')
+      .to('#lg001-rgb', { opacity: 0, duration: 0.05 })
+      .to('.lg001-rgb-r', { x: 2, duration: 0.05 }, '<')
+      .to('.lg001-rgb-b', { x: -2, duration: 0.05 }, '<');
+
+    /* Slice displacement */
+    const sliceCount = 3 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < sliceCount; i++) {
+      const s  = document.createElement('div');
+      s.className = 'lg001-slice';
+      const topPct = 5 + Math.random() * 85;
+      const hPx    = 2 + Math.random() * 18;
+      const shift  = (Math.random() - 0.5) * 40;
+      s.style.top    = topPct + 'vh';
+      s.style.height = hPx + 'px';
+      document.getElementById('lg001-slices').appendChild(s);
+      gsap.timeline()
+        .set(s, { opacity: 1, x: shift })
+        .to(s,  { opacity: 0, duration: 0.12, delay: 0.04 })
+        .call(() => s.remove());
+    }
+
+    /* Interference flashes */
+    gsap.to(['#lg001-if1','#lg001-if2','#lg001-if3'], {
+      opacity: 0.8, duration: 0.04,
+      stagger: 0.02,
+      yoyo: true, repeat: 1
+    });
+
+    /* White burst */
+    gsap.fromTo('#lg001-burst',
+      { opacity: 0.3 },
+      { opacity: 0, duration: 0.15, ease: 'power2.out' }
+    );
+
+    /* Title shake */
+    gsap.to('#lg001-title', {
+      x: (Math.random() - 0.5) * 12,
+      skewX: (Math.random() - 0.5) * 4,
+      duration: 0.06,
+      yoyo: true,
+      repeat: 3,
+      ease: 'none',
+      onComplete: () => gsap.set('#lg001-title', { x: 0, skewX: 0 })
+    });
+
+    /* Schedule next glitch */
+    setTimeout(triggerGlitch, 2800 + Math.random() * 4000);
+  }
+
+  /* ── Main entrance ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 0) return;
+    runEntrance();
+  });
+
+  let didRun = false;
+  function runEntrance() {
+    if (didRun) return;
+    didRun = true;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* Hard cut from black with burst */
+    tl.to('#lg001-flash', { opacity: 0, duration: 0.05 }, 0);
+    tl.fromTo('#lg001-burst', { opacity: 0.6 }, { opacity: 0, duration: 0.3, ease: 'power2.out' }, 0.05);
+
+    /* RGB flicker on entry */
+    tl.to('#lg001-rgb', { opacity: 1, duration: 0.04 }, 0.06);
+    tl.to('.lg001-rgb-r', { x: 10, duration: 0.04 }, '<');
+    tl.to('.lg001-rgb-b', { x: -10, duration: 0.04 }, '<');
+    tl.to('#lg001-rgb', { opacity: 0, duration: 0.08 }, 0.10);
+    tl.to('.lg001-rgb-r', { x: 2, duration: 0.08 }, '<');
+    tl.to('.lg001-rgb-b', { x: -2, duration: 0.08 }, '<');
+
+    /* HUD corners snap in */
+    tl.to(['#lg001-c-tl','#lg001-c-tr','#lg001-c-bl','#lg001-c-br'],
+      { opacity: 1, duration: 0.2, stagger: 0.06 }, 0.2);
+
+    /* Status bars slide in */
+    tl.fromTo('#lg001-statusbar',
+      { opacity: 0, y: -8 },
+      { opacity: 1, y: 0, duration: 0.4 }, 0.3);
+    tl.fromTo('#lg001-bottombar',
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: 0.4 }, 0.35);
+
+    /* Boot label typewriter feel */
+    tl.to('#lg001-bootlabel',
+      { opacity: 1, duration: 0.3 }, 0.5);
+
+    /* Title glitch reveal */
+    tl.fromTo('#lg001-title-wrap',
+      { opacity: 0, scaleX: 1.06, skewX: 3 },
+      { opacity: 1, scaleX: 1, skewX: 0, duration: 0.5, ease: 'power4.out' }, 0.7);
+
+    /* Brief rgb spike on title reveal */
+    tl.to('#lg001-rgb', { opacity: 1, duration: 0.05 }, 0.72);
+    tl.to('#lg001-rgb', { opacity: 0, duration: 0.1 }, 0.77);
+
+    /* Subtitle */
+    tl.to('#lg001-subtitle',
+      { opacity: 1, duration: 0.4 }, 1.0);
+
+    /* Terminal lines stagger */
+    tl.to('#lg001-terminal', { opacity: 1, duration: 0.2 }, 1.2);
+    tl.fromTo(['#lg001-t1','#lg001-t2','#lg001-t3','#lg001-t4','#lg001-t5'],
+      { opacity: 0, x: -8 },
+      { opacity: 1, x: 0, duration: 0.3, stagger: 0.18, ease: 'power2.out' }, 1.25);
+
+    /* Loading line */
+    tl.to('#lg001-loadline',
+      { opacity: 0.7, duration: 0.5 }, 2.3);
+
+    /* Progress bar */
+    tl.to('#lg001-prog-wrap',
+      { opacity: 1, duration: 0.3 }, 2.5);
+    tl.to('#lg001-prog-fill',
+      { width: '100%', duration: 3.0, ease: 'power1.inOut' }, 2.6);
+
+    /* Percent counter */
+    tl.to('#lg001-pct',
+      { opacity: 1, duration: 0.3 }, 2.6);
+    tl.call(() => { animatePct(3.0); }, [], 2.6);
+
+    /* Start ambient glitch loop */
+    tl.call(() => {
+
+      /* Corner breathe */
+      gsap.to('.lg001-corner', {
+        opacity: 0.45, duration: 1.6, repeat: -1, yoyo: true,
+        ease: 'sine.inOut', stagger: 0.3
+      });
+
+      /* Title ambient float */
+      gsap.to('#lg001-title', {
+        y: -5, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Grid pulse */
+      gsap.to('.lg001-grid', {
+        opacity: 0.05, duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* RGB slow ambient shift */
+      gsap.to('#lg001-rgb', {
+        opacity: 0.4, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Random glitch bursts */
+      setTimeout(triggerGlitch, 1500);
+
+    }, [], 2.0);
+  }
+
+  setTimeout(function () { if (!didRun) runEntrance(); }, 300);
+
+  /* ── Cursor parallax + glitch on move ── */
+  let lastMove = 0;
+  document.addEventListener('mousemove', function (ev) {
+    const cx = (ev.clientX / window.innerWidth  - 0.5) * 2;
+    const cy = (ev.clientY / window.innerHeight - 0.5) * 2;
+
+    gsap.to('#lg001-title', {
+      x: cx * 8, y: cy * 5,
+      duration: 1.1, ease: 'power2.out', overwrite: 'auto'
+    });
+    gsap.to('.lg001-grid', {
+      x: cx * 12, y: cy * 8,
+      duration: 2, ease: 'power2.out'
+    });
+    gsap.to('.lg001-rgb-r', {
+      x: 2 + cx * 4, duration: 0.8, ease: 'power2.out'
+    });
+    gsap.to('.lg001-rgb-b', {
+      x: -2 + cx * -4, duration: 0.8, ease: 'power2.out'
+    });
+
+    /* Micro glitch on fast movement */
+    const now = Date.now();
+    const dx  = Math.abs(ev.movementX) + Math.abs(ev.movementY);
+    if (dx > 30 && now - lastMove > 600) {
+      lastMove = now;
+      gsap.to('#lg001-rgb', { opacity: 0.9, duration: 0.04, yoyo: true, repeat: 1 });
+    }
+  });
+
+})();
+</script>

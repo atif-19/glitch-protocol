@@ -1,0 +1,487 @@
+<!-- Component: ending-cinematic-005
+ Type: ending
+ Aesthetic: Cinematic
+ Tone: intimate, melancholic, reverent
+ Occasion: both
+ Obsession: spotlight, dramatic fade, film noir, golden light
+ Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME-- -->
+ <style>
+  .ec005-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  .ec005-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, transparent 35%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.92) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ec005-spotlight {
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(260px, 55vw, 700px);
+    height: clamp(420px, 130vh, 1200px);
+    background: conic-gradient(from -12deg at 50% 0%, transparent 0deg, var(--accent) 18deg, var(--primary) 28deg, var(--accent) 38deg, transparent 56deg);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+    filter: blur(18px);
+    mix-blend-mode: screen;
+    transform-origin: top center;
+  }
+
+  .ec005-spotlight-core {
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(80px, 18vw, 220px);
+    height: clamp(300px, 100vh, 900px);
+    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+    filter: blur(8px);
+    transform-origin: top center;
+  }
+
+  .ec005-dust {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .ec005-mote {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ec005-film-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  .ec005-lines {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .ec005-hline {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+  }
+
+  .ec005-content {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(12px, 2.8vh, 26px);
+    padding: clamp(20px, 5vw, 60px);
+    max-width: min(90vw, 700px);
+  }
+
+  .ec005-eyebrow {
+    font-family: var(--font-heading);
+    font-size: clamp(0.58rem, 1.2vw, 0.75rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateY(14px);
+    font-weight: 600;
+  }
+
+  .ec005-name {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 10vw, 7.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    opacity: 0;
+    transform: translateY(36px) scale(0.94);
+    position: relative;
+    filter: drop-shadow(0 0 48px var(--accent));
+  }
+
+  .ec005-name-inner {
+    display: inline-block;
+    background: linear-gradient(160deg, var(--text) 0%, var(--accent) 55%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .ec005-rule {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 20px);
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0.3);
+  }
+
+  .ec005-rule-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+  }
+
+  .ec005-rule-line:last-child {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .ec005-rule-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent), 0 0 24px var(--accent);
+    flex-shrink: 0;
+  }
+
+  .ec005-ending-line {
+    font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(18px);
+    line-height: 1.75;
+    max-width: 540px;
+    font-style: italic;
+    letter-spacing: 0.01em;
+  }
+
+  .ec005-song-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    transform: translateY(14px);
+    margin-top: clamp(4px, 1vh, 12px);
+    cursor: default;
+    user-select: none;
+  }
+
+  .ec005-song-disc {
+    position: relative;
+    width: clamp(44px, 7vw, 60px);
+    height: clamp(44px, 7vw, 60px);
+    border-radius: 50%;
+    background: conic-gradient(var(--primary) 0deg, var(--accent) 120deg, var(--primary) 240deg, var(--accent) 360deg);
+    flex-shrink: 0;
+    box-shadow: 0 0 22px var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .ec005-song-disc::after {
+    content: '';
+    width: 32%;
+    height: 32%;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+  }
+
+  .ec005-song-disc:hover {
+    box-shadow: 0 0 40px var(--accent), 0 0 70px var(--primary);
+  }
+
+  .ec005-song-info {
+    text-align: left;
+  }
+
+  .ec005-song-label {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(0.52rem, 1vw, 0.68rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .ec005-song-name {
+    font-size: clamp(0.82rem, 1.7vw, 1.05rem);
+    color: var(--text);
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+  .ec005-bottom {
+    position: absolute;
+    bottom: clamp(18px, 4vh, 36px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ec005-fin {
+    font-family: var(--font-heading);
+    font-size: clamp(0.58rem, 1.1vw, 0.72rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.3;
+  }
+
+  .ec005-progress {
+    width: clamp(60px, 12vw, 100px);
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .ec005-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 2px;
+  }
+
+  .ec005-flash {
+    position: absolute;
+    inset: 0;
+    background: var(--text);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+  }
+</style>
+<div class="ec005-wrap" id="ec005-wrap">
+  <div class="ec005-flash" id="ec005-flash"></div>
+  <div class="ec005-vignette"></div>
+  <div class="ec005-spotlight" id="ec005-spotlight"></div>
+  <div class="ec005-spotlight-core" id="ec005-spotlight-core"></div>
+  <div class="ec005-film-grain"></div>
+  <div class="ec005-dust" id="ec005-dust"></div>
+  <div class="ec005-lines" id="ec005-lines"></div>
+  <div class="ec005-content">
+    <div class="ec005-eyebrow" id="ec005-eyebrow">✦ &nbsp; this was made for you &nbsp; ✦</div><div class="ec005-name" id="ec005-name">
+  <span class="ec005-name-inner">--RECIPIENT_NAME--</span>
+</div>
+
+<div class="ec005-rule" id="ec005-rule">
+  <div class="ec005-rule-line"></div>
+  <div class="ec005-rule-dot"></div>
+  <div class="ec005-rule-line"></div>
+</div>
+
+<div class="ec005-ending-line" id="ec005-ending-line">--ENDING_LINE--</div>
+
+<div class="ec005-song-row" id="ec005-song-row">
+  <div class="ec005-song-disc" id="ec005-song-disc"></div>
+  <div class="ec005-song-info">
+    <span class="ec005-song-label">your song</span>
+    <span class="ec005-song-name">--SONG_NAME--</span>
+  </div>
+</div></div>
+  <div class="ec005-bottom" id="ec005-bottom">
+    <div class="ec005-fin">fin &nbsp;·&nbsp; the end</div>
+    <div class="ec005-progress">
+      <div class="ec005-progress-fill" id="ec005-progress-fill"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  let initialized = false;
+
+  function buildDust() {
+    const layer = document.getElementById('ec005-dust');
+    if (!layer) return;
+    for (let i = 0; i < 55; i++) {
+      const m = document.createElement('div');
+      m.className = 'ec005-mote';
+      const size = Math.random() * 2.2 + 0.6;
+      m.style.cssText = `
+        width:${size}px;
+        height:${size}px;
+        left:${20 + Math.random() * 60}%;
+        top:${Math.random() * 100}%;
+      `;
+      layer.appendChild(m);
+
+      gsap.set(m, { opacity: 0 });
+      gsap.to(m, {
+        opacity: Math.random() * 0.45 + 0.08,
+        y: -(30 + Math.random() * 80),
+        x: (Math.random() - 0.5) * 40,
+        duration: 4 + Math.random() * 6,
+        delay: Math.random() * 5,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+    }
+  }
+
+  function buildLines() {
+    const container = document.getElementById('ec005-lines');
+    if (!container) return;
+    const positions = [18, 42, 68, 85];
+    positions.forEach((top, i) => {
+      const line = document.createElement('div');
+      line.className = 'ec005-hline';
+      line.style.top = top + '%';
+      container.appendChild(line);
+      gsap.to(line, {
+        opacity: 0.06 + i * 0.015,
+        duration: 2.5,
+        delay: 2 + i * 0.4,
+        ease: 'power2.out'
+      });
+    });
+  }
+
+  function animateDisc() {
+    gsap.to('#ec005-song-disc', {
+      rotation: 360,
+      duration: 7,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: 'center center'
+    });
+  }
+
+  function ambientSpotlightBreath() {
+    gsap.to('#ec005-spotlight', {
+      opacity: 0.28,
+      scaleX: 1.06,
+      duration: 3.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+    gsap.to('#ec005-spotlight-core', {
+      opacity: 0.55,
+      duration: 2.8,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 0.6
+    });
+  }
+
+  function cursorReact() {
+    const wrap = document.getElementById('ec005-wrap');
+    if (!wrap) return;
+    wrap.addEventListener('mousemove', (e) => {
+      const cx = (e.clientX / window.innerWidth - 0.5);
+      const cy = (e.clientY / window.innerHeight - 0.5);
+      gsap.to('#ec005-spotlight', {
+        x: cx * 60,
+        duration: 1.8,
+        ease: 'power2.out'
+      });
+      gsap.to('#ec005-spotlight-core', {
+        x: cx * 35,
+        duration: 2,
+        ease: 'power2.out'
+      });
+      gsap.to('#ec005-name', {
+        x: cx * 12,
+        y: cy * 8,
+        duration: 1.4,
+        ease: 'power2.out'
+      });
+    });
+  }
+
+  function progressFill() {
+    gsap.to('#ec005-progress-fill', {
+      width: '100%',
+      duration: 12,
+      ease: 'none',
+      delay: 1.5,
+      repeat: -1
+    });
+  }
+
+  function enter() {
+    if (initialized) return;
+    initialized = true;
+
+    buildDust();
+    buildLines();
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#ec005-flash', { opacity: 0.08, duration: 0.12 }, 0)
+      .to('#ec005-flash', { opacity: 0, duration: 0.6 }, 0.12)
+
+      .to('#ec005-spotlight', { opacity: 0.22, duration: 2.2, ease: 'power2.out' }, 0.1)
+      .to('#ec005-spotlight-core', { opacity: 0.5, duration: 1.8, ease: 'power2.out' }, 0.25)
+
+      .to('#ec005-eyebrow', { opacity: 1, y: 0, duration: 0.75 }, 0.5)
+      .to('#ec005-name', { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'back.out(1.5)' }, 0.8)
+      .to('#ec005-rule', { opacity: 1, scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 1.3)
+      .to('#ec005-ending-line', { opacity: 1, y: 0, duration: 0.85 }, 1.6)
+      .to('#ec005-song-row', { opacity: 1, y: 0, duration: 0.7 }, 2.0)
+      .to('#ec005-bottom', { opacity: 1, duration: 0.6 }, 2.3);
+
+    tl.call(() => {
+      animateDisc();
+      ambientSpotlightBreath();
+      cursorReact();
+      progressFill();
+
+      gsap.to('#ec005-name', {
+        filter: 'drop-shadow(0 0 70px var(--accent))',
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: 0.5
+      });
+    }, null, 2.5);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 7) return;
+    enter();
+  });
+})();
+</script>

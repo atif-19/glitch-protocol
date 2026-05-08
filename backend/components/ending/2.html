@@ -1,0 +1,685 @@
+<!-- Component: ending-cinematic-003
+     Type: ending
+     Aesthetic: Director Cut / Cinematic
+     Obsession: Film / Cinema
+     Tone: nostalgic, intimate, cinematic
+     Occasion: both
+     Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME--
+-->
+<style>
+  /* =====================================================
+     ENDING-CINEMATIC-003 | Director Cut Aesthetic
+     Full-screen cinematic ending with film grain, 
+     letterbox bars, rolling credits feel
+     ===================================================== */
+
+  /* Root scoped variables for this component */
+  .ec003-root {
+    --ec003-gold: var(--accent);
+    --ec003-dark: var(--bg);
+    --ec003-text: var(--text);
+    --ec003-heading: var(--font-heading);
+    --ec003-body: var(--font-body);
+    --ec003-bar-height: clamp(40px, 8vh, 80px);
+  }
+
+  /* Full screen container */
+  .ec003-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  /* ── Film grain overlay ── */
+  .ec003-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    animation: ec003-grainShift 0.12s steps(1) infinite;
+  }
+
+  @keyframes ec003-grainShift {
+    0%   { background-position: 0 0; }
+    25%  { background-position: -30px 15px; }
+    50%  { background-position: 15px -20px; }
+    75%  { background-position: -15px 30px; }
+    100% { background-position: 20px -10px; }
+  }
+
+  /* ── Cinematic letterbox bars (top & bottom) ── */
+  .ec003-bar-top,
+  .ec003-bar-bottom {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: var(--ec003-bar-height);
+    background: #000;
+    z-index: 10;
+    transform-origin: center;
+  }
+
+  .ec003-bar-top    { top: 0; transform: scaleY(0); }
+  .ec003-bar-bottom { bottom: 0; transform: scaleY(0); }
+
+  /* ── Vignette ── */
+  .ec003-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 38%,
+      rgba(0,0,0,0.55) 75%,
+      rgba(0,0,0,0.92) 100%
+    );
+  }
+
+  /* ── Ambient light orb ── */
+  .ec003-orb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: clamp(280px, 55vw, 700px);
+    height: clamp(280px, 55vw, 700px);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--primary) 18%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 6%, transparent) 50%,
+      transparent 70%
+    );
+    filter: blur(clamp(30px, 6vw, 80px));
+    z-index: 1;
+    opacity: 0;
+    animation: ec003-orbPulse 5s ease-in-out infinite;
+  }
+
+  @keyframes ec003-orbPulse {
+    0%, 100% { transform: scale(1);   opacity: 0.45; }
+    50%       { transform: scale(1.12); opacity: 0.75; }
+  }
+
+  /* ── Horizontal scan line (projector feel) ── */
+  .ec003-scanline {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 40%,
+      color-mix(in srgb, var(--accent) 50%, transparent) 50%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 60%,
+      transparent 100%
+    );
+    z-index: 4;
+    opacity: 0;
+    top: -2px;
+    animation: ec003-scan 4.5s linear infinite;
+  }
+
+  @keyframes ec003-scan {
+    0%   { top: -2px; opacity: 0; }
+    5%   { opacity: 0.6; }
+    95%  { opacity: 0.6; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* ── Film sprocket holes (left & right edge) ── */
+  .ec003-sprockets {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(8px, 2vh, 18px);
+    padding: clamp(6px, 1.5vh, 14px) clamp(4px, 1vw, 12px);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ec003-sprockets.ec003-left  { left: 0; }
+  .ec003-sprockets.ec003-right { right: 0; }
+
+  .ec003-sprocket-hole {
+    width: clamp(8px, 1.2vw, 16px);
+    height: clamp(12px, 2vh, 22px);
+    border-radius: 3px;
+    border: 1.5px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    flex-shrink: 0;
+  }
+
+  /* ── Main content stage ── */
+  .ec003-stage {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(16px, 4vw, 64px);
+    gap: clamp(16px, 3vh, 36px);
+    width: 100%;
+    max-width: clamp(320px, 80vw, 860px);
+  }
+
+  /* ── Director label ── */
+  .ec003-director-label {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1.1vw, 13px);
+    letter-spacing: clamp(4px, 0.8vw, 10px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: clamp(4px, 1vh, 12px);
+  }
+
+  /* ── Recipient name ── */
+  .ec003-name {
+    font-family: var(--font-heading);
+    font-size: clamp(11px, 1.6vw, 18px);
+    letter-spacing: clamp(6px, 1.2vw, 18px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.55;
+    opacity: 0;
+    margin-bottom: clamp(-6px, -0.5vh, -2px);
+  }
+
+  /* ── Decorative rule ── */
+  .ec003-rule {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 24px);
+    width: 100%;
+    max-width: clamp(180px, 45vw, 480px);
+    opacity: 0;
+  }
+
+  .ec003-rule-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent),
+      transparent
+    );
+    opacity: 0.5;
+  }
+
+  .ec003-rule-diamond {
+    width: clamp(5px, 0.7vw, 9px);
+    height: clamp(5px, 0.7vw, 9px);
+    border: 1.5px solid var(--accent);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    animation: ec003-diamondGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes ec003-diamondGlow {
+    0%, 100% { box-shadow: 0 0 4px 0px var(--accent); }
+    50%       { box-shadow: 0 0 10px 2px var(--accent); }
+  }
+
+  /* ── Ending line (main message) ── */
+  .ec003-ending-line {
+    font-family: var(--font-heading);
+    font-size: clamp(22px, 4.5vw, 64px);
+    line-height: 1.15;
+    color: var(--text);
+    font-weight: 400;
+    opacity: 0;
+    letter-spacing: clamp(-0.5px, 0.05vw, 1px);
+    max-width: 100%;
+  }
+
+  /* ── Song attribution ── */
+  .ec003-song-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(4px, 0.8vh, 10px);
+    opacity: 0;
+    margin-top: clamp(4px, 1vh, 16px);
+  }
+
+  .ec003-song-label {
+    font-family: var(--font-body);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: clamp(3px, 0.6vw, 8px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .ec003-song-name {
+    font-family: var(--font-heading);
+    font-size: clamp(12px, 1.6vw, 20px);
+    font-style: italic;
+    color: var(--text);
+    opacity: 0.85;
+    letter-spacing: 1px;
+  }
+
+  /* ── Vinyl record icon ── */
+  .ec003-vinyl {
+    width: clamp(20px, 3vw, 36px);
+    height: clamp(20px, 3vw, 36px);
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--bg) 0%,
+      color-mix(in srgb, var(--accent) 20%, var(--bg)) 25%,
+      var(--bg) 50%,
+      color-mix(in srgb, var(--accent) 20%, var(--bg)) 75%,
+      var(--bg) 100%
+    );
+    border: 1.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    position: relative;
+    animation: ec003-vinylSpin 4s linear infinite;
+    flex-shrink: 0;
+  }
+
+  .ec003-vinyl::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 28%;
+    height: 28%;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.8;
+  }
+
+  @keyframes ec003-vinylSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* ── Rolling credits strip ── */
+  .ec003-credits {
+    position: absolute;
+    bottom: calc(var(--ec003-bar-height) + clamp(8px, 1.5vh, 20px));
+    left: 50%;
+    translate: -50% 0;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(3px, 0.5vh, 7px);
+    opacity: 0;
+  }
+
+  .ec003-credit-item {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.75vw, 10px);
+    letter-spacing: clamp(2px, 0.4vw, 5px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.3;
+    white-space: nowrap;
+  }
+
+  .ec003-credit-item span {
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  /* ── "The End" super title ── */
+  .ec003-theend {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 1vw, 12px);
+    letter-spacing: clamp(8px, 1.5vw, 20px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    position: absolute;
+    top: calc(var(--ec003-bar-height) + clamp(10px, 2vh, 28px));
+    left: 50%;
+    translate: -50% 0;
+    z-index: 6;
+    white-space: nowrap;
+  }
+
+  /* ── Custom cursor ── */
+  .ec003-cursor {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    width: clamp(16px, 2vw, 24px);
+    height: clamp(16px, 2vw, 24px);
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    translate: -50% -50%;
+    transition: width 0.25s, height 0.25s, border-color 0.25s, background 0.25s;
+    mix-blend-mode: screen;
+  }
+
+  .ec003-cursor-dot {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    translate: -50% -50%;
+  }
+
+  /* ── Particle sparkles ── */
+  .ec003-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+  }
+</style>
+<div class="ec003-root" id="ec003-root">
+  <!-- Film grain texture overlay -->
+  <div class="ec003-grain"></div>
+  <!-- Letterbox bars for cinematic crop -->
+  <div class="ec003-bar-top"  id="ec003-barTop"></div>
+  <div class="ec003-bar-bottom" id="ec003-barBottom"></div>
+  <!-- Cinematic vignette -->
+  <div class="ec003-vignette"></div>
+  <!-- Ambient light orb -->
+  <div class="ec003-orb" id="ec003-orb"></div>
+  <!-- Projector scan line -->
+  <div class="ec003-scanline"></div>
+  <!-- Left sprocket strip -->
+  <div class="ec003-sprockets ec003-left" id="ec003-sprLeft"></div>
+  <!-- Right sprocket strip -->
+  <div class="ec003-sprockets ec003-right" id="ec003-sprRight"></div>
+  <!-- "The End" top label -->
+  <div class="ec003-theend" id="ec003-theend">The End</div>
+  <!-- Main content stage -->
+  <div class="ec003-stage" id="ec003-stage">
+<!-- Director cut label -->
+<div class="ec003-director-label" id="ec003-dirLabel">Director's Cut</div>
+
+<!-- Recipient name in sparse caps -->
+<div class="ec003-name" id="ec003-name">--RECIPIENT_NAME--</div>
+
+<!-- Decorative divider -->
+<div class="ec003-rule" id="ec003-rule">
+  <div class="ec003-rule-line"></div>
+  <div class="ec003-rule-diamond"></div>
+  <div class="ec003-rule-line"></div>
+</div>
+
+<!-- The ending line — main emotional payload -->
+<div class="ec003-ending-line" id="ec003-endingLine">--ENDING_LINE--</div>
+
+<!-- Song attribution -->
+<div class="ec003-song-wrap" id="ec003-songWrap">
+  <div class="ec003-song-label">Soundtrack</div>
+  <div style="display:flex;align-items:center;gap:clamp(8px,1.2vw,16px);">
+    <div class="ec003-vinyl"></div>
+    <div class="ec003-song-name">--SONG_NAME--</div>
+  </div>
+</div></div>
+  <!-- Bottom rolling credits -->
+  <div class="ec003-credits" id="ec003-credits">
+    <div class="ec003-credit-item">Written &amp; Directed by <span>Someone Who Cares</span></div>
+    <div class="ec003-credit-item">Starring <span>--RECIPIENT_NAME--</span></div>
+    <div class="ec003-credit-item">A Glitch Protocol Production</div>
+  </div>
+  <!-- Custom cursor ring -->
+  <div class="ec003-cursor" id="ec003-cursor"></div>
+  <div class="ec003-cursor-dot" id="ec003-cursorDot"></div>
+</div>
+<script>
+(function () {
+  /* =====================================================
+     ENDING-CINEMATIC-003 | Director Cut
+     All animations gate on glitch:enter index 7
+     ===================================================== */
+
+  /* ── Section index for this component ── */
+  var SECTION_INDEX = 7;
+
+  /* ── Cached DOM refs ── */
+  var root       = document.getElementById('ec003-root');
+  var barTop     = document.getElementById('ec003-barTop');
+  var barBottom  = document.getElementById('ec003-barBottom');
+  var orb        = document.getElementById('ec003-orb');
+  var sprLeft    = document.getElementById('ec003-sprLeft');
+  var sprRight   = document.getElementById('ec003-sprRight');
+  var theend     = document.getElementById('ec003-theend');
+  var stage      = document.getElementById('ec003-stage');
+  var dirLabel   = document.getElementById('ec003-dirLabel');
+  var nameEl     = document.getElementById('ec003-name');
+  var rule       = document.getElementById('ec003-rule');
+  var endingLine = document.getElementById('ec003-endingLine');
+  var songWrap   = document.getElementById('ec003-songWrap');
+  var credits    = document.getElementById('ec003-credits');
+  var cursor     = document.getElementById('ec003-cursor');
+  var cursorDot  = document.getElementById('ec003-cursorDot');
+
+  /* ── Build sprocket holes dynamically ── */
+  function buildSprockets (container) {
+    /* Fill the column with enough holes to span full height */
+    var count = Math.ceil(window.innerHeight / 30) + 4;
+    for (var i = 0; i < count; i++) {
+      var hole = document.createElement('div');
+      hole.className = 'ec003-sprocket-hole';
+      container.appendChild(hole);
+    }
+  }
+  buildSprockets(sprLeft);
+  buildSprockets(sprRight);
+
+  /* ── Custom cursor tracking ── */
+  document.addEventListener('mousemove', function (e) {
+    gsap.to(cursor,    { x: e.clientX, y: e.clientY, duration: 0.25, ease: 'power2.out' });
+    gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0.08, ease: 'none' });
+  });
+
+  /* Cursor scale on hover interactive elements */
+  root.addEventListener('mouseenter', function () {
+    gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
+  });
+
+  /* ── Spawn floating particles from mouse ── */
+  var lastParticle = 0;
+  document.addEventListener('mousemove', function (e) {
+    var now = Date.now();
+    if (now - lastParticle < 120) return;   /* throttle */
+    lastParticle = now;
+
+    var p = document.createElement('div');
+    p.className = 'ec003-particle';
+    var sz = Math.random() * 4 + 2;
+    p.style.width  = sz + 'px';
+    p.style.height = sz + 'px';
+    p.style.left   = e.clientX + 'px';
+    p.style.top    = e.clientY + 'px';
+    root.appendChild(p);
+
+    gsap.fromTo(p,
+      { opacity: 0.8, scale: 1, x: 0, y: 0 },
+      {
+        opacity: 0,
+        scale: 0,
+        x: (Math.random() - 0.5) * 40,
+        y: (Math.random() - 0.5) * 40 - 20,
+        duration: 1.2,
+        ease: 'power2.out',
+        onComplete: function () { p.parentNode && p.parentNode.removeChild(p); }
+      }
+    );
+  });
+
+  /* ── Parallax orb on mouse move ── */
+  document.addEventListener('mousemove', function (e) {
+    var cx = window.innerWidth  / 2;
+    var cy = window.innerHeight / 2;
+    var dx = (e.clientX - cx) / cx;   /* -1 … +1 */
+    var dy = (e.clientY - cy) / cy;
+    gsap.to(orb, {
+      x: dx * 28,
+      y: dy * 18,
+      duration: 1.8,
+      ease: 'power2.out'
+    });
+  });
+
+  /* ── Glitch:enter handler ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    /* Master timeline for entrance sequence */
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1. Letterbox bars close in from top & bottom */
+    tl.to([barTop, barBottom], {
+      scaleY: 1,
+      duration: 0.55,
+      ease: 'power4.inOut',
+      transformOrigin: function (i) { return i === 0 ? 'top center' : 'bottom center'; }
+    });
+
+    /* 2. Fade in ambient orb */
+    tl.to(orb, { opacity: 1, duration: 1.2, ease: 'power2.inOut' }, '-=0.2');
+
+    /* 3. Sprocket holes fade in — film strip feel */
+    tl.to([sprLeft, sprRight], { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.8');
+
+    /* 4. "The End" label drifts up */
+    tl.fromTo(theend,
+      { opacity: 0, y: -12 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' },
+      '-=0.4'
+    );
+
+    /* 5. Director label */
+    tl.fromTo(dirLabel,
+      { opacity: 0, letterSpacing: '0.2em' },
+      { opacity: 1, letterSpacing: '', duration: 0.8 },
+      '-=0.3'
+    );
+
+    /* 6. Recipient name */
+    tl.fromTo(nameEl,
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.7 },
+      '-=0.4'
+    );
+
+    /* 7. Decorative rule expands */
+    tl.fromTo(rule,
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.7, ease: 'power2.inOut' },
+      '-=0.3'
+    );
+
+    /* 8. Ending line — word by word stagger */
+    var words = endingLine.textContent.trim().split(/\s+/);
+    endingLine.innerHTML = words.map(function (w) {
+      return '<span style="display:inline-block;opacity:0;margin-right:0.22em;">' + w + '</span>';
+    }).join('');
+
+    tl.to(endingLine, { opacity: 1, duration: 0 }, '-=0.1');
+    tl.fromTo(
+      endingLine.querySelectorAll('span'),
+      { opacity: 0, y: 22, rotateX: -35 },
+      {
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        duration: 0.65,
+        stagger: 0.07,
+        ease: 'power3.out'
+      },
+      '-=0.1'
+    );
+
+    /* 9. Song wrap fades in */
+    tl.fromTo(songWrap,
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.9 },
+      '-=0.15'
+    );
+
+    /* 10. Credits roll up subtly from below */
+    tl.fromTo(credits,
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power2.out' },
+      '-=0.3'
+    );
+
+    /* ── IDLE: continuous ambient shimmer on ending line ── */
+    tl.add(function () {
+      /* Gentle brightness pulse on the ending line */
+      gsap.to(endingLine, {
+        filter: 'brightness(1.15)',
+        duration: 2.8,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+      /* Slow sprocket drift (film advancing illusion) */
+      gsap.to([sprLeft, sprRight], {
+        y: '+=24',
+        duration: 3.5,
+        ease: 'none',
+        repeat: -1,
+        modifiers: {
+          y: function (y) { return (parseFloat(y) % 30) + 'px'; }
+        }
+      });
+
+      /* Subtle stage float */
+      gsap.to(stage, {
+        y: -8,
+        duration: 4,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut'
+      });
+    });
+
+    /* ── IDLE: glitch flash on "The End" label ── */
+    tl.add(function () {
+      function glitchFlash () {
+        var delay = 3.5 + Math.random() * 5;
+        gsap.delayedCall(delay, function () {
+          var gt = gsap.timeline();
+          gt.to(theend, { skewX: 6, opacity: 0.5, duration: 0.05 })
+            .to(theend, { skewX: -4, opacity: 1,   duration: 0.05 })
+            .to(theend, { skewX: 0,  opacity: 1,   duration: 0.05 });
+          glitchFlash();
+        });
+      }
+      glitchFlash();
+    });
+
+  }); /* end glitch:enter */
+
+})();
+</script>

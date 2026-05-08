@@ -1,0 +1,492 @@
+<!--
+  Component: wsi_darkacademia_001
+  Type: who_she_is
+  Aesthetic: Dark Academia
+  Obsession: Notebook / Written Word / Candlelight Scholarship
+  Tone: reverent, literary, intimate
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --PERSONALITY-- --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<style>
+  /* wsi_darkacademia_001 root */
+  .wsi-da-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* Parchment texture layer */
+  .wsi-da-001-parchment {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent calc(clamp(20px, 2.8vh, 36px) - 1px),
+        color-mix(in srgb, var(--accent) 7%, transparent) calc(clamp(20px, 2.8vh, 36px) - 1px),
+        color-mix(in srgb, var(--accent) 7%, transparent) clamp(20px, 2.8vh, 36px)
+      );
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Red margin rule */
+  .wsi-da-001-margin-rule {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: clamp(52px, 8vw, 110px);
+    width: 1.5px;
+    background: color-mix(in srgb, var(--primary) 22%, transparent);
+    transform-origin: top center;
+    transform: scaleY(0);
+  }
+
+  /* Header binding strip */
+  .wsi-da-001-binding {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: clamp(4px, 0.7vh, 8px);
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* Floating ink particles */
+  .wsi-da-001-particle {
+    position: absolute;
+    width: clamp(2px, 0.35vw, 5px);
+    height: clamp(2px, 0.35vw, 5px);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Corner ornament */
+  .wsi-da-001-corner {
+    position: absolute;
+    width: clamp(40px, 6vw, 80px);
+    height: clamp(40px, 6vw, 80px);
+    opacity: 0;
+  }
+  .wsi-da-001-corner-tl { top: clamp(12px, 2vh, 28px); left: clamp(12px, 2vw, 28px); }
+  .wsi-da-001-corner-tr { top: clamp(12px, 2vh, 28px); right: clamp(12px, 2vw, 28px); transform: scaleX(-1); }
+  .wsi-da-001-corner-br { bottom: clamp(12px, 2vh, 28px); right: clamp(12px, 2vw, 28px); transform: scale(-1,-1); }
+
+  /* Main notebook card */
+  .wsi-da-001-card {
+    position: relative;
+    z-index: 10;
+    width: clamp(300px, 80vw, 720px);
+    padding: clamp(28px, 5vh, 60px) clamp(28px, 6vw, 72px) clamp(28px, 5vh, 60px) clamp(56px, 11vw, 120px);
+    opacity: 0;
+  }
+
+  /* Section label */
+  .wsi-da-001-eyebrow {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1.2vw, 13px);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 70%, transparent);
+    margin: 0 0 clamp(14px, 2.5vh, 30px);
+    opacity: 0;
+  }
+
+  /* Recipient name — heading style */
+  .wsi-da-001-name {
+    font-family: var(--font-heading);
+    font-size: clamp(26px, 5.5vw, 68px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.08;
+    margin: 0 0 clamp(6px, 1.2vh, 14px);
+    opacity: 0;
+  }
+
+  /* Decorative dash rule */
+  .wsi-da-001-rule {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 18px);
+    margin: 0 0 clamp(16px, 3vh, 38px);
+    opacity: 0;
+  }
+  .wsi-da-001-rule-line {
+    flex: 1;
+    height: 1px;
+    background: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .wsi-da-001-rule-glyph {
+    font-size: clamp(12px, 1.6vw, 18px);
+    color: var(--accent);
+    font-family: serif;
+  }
+
+  /* Personality description */
+  .wsi-da-001-personality {
+    font-family: var(--font-body);
+    font-size: clamp(13px, 1.9vw, 19px);
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--text) 75%, transparent);
+    font-style: italic;
+    margin: 0 0 clamp(20px, 3.8vh, 48px);
+    opacity: 0;
+  }
+
+  /* Detail entries — handwritten feel */
+  .wsi-da-001-details {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.8vh, 22px);
+  }
+
+  .wsi-da-001-detail-row {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(10px, 1.5vw, 18px);
+    opacity: 0;
+  }
+
+  .wsi-da-001-detail-index {
+    font-family: var(--font-heading);
+    font-size: clamp(9px, 1vw, 12px);
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    min-width: clamp(18px, 2.5vw, 30px);
+    flex-shrink: 0;
+  }
+
+  .wsi-da-001-detail-dot {
+    width: clamp(4px, 0.6vw, 7px);
+    height: clamp(4px, 0.6vw, 7px);
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .wsi-da-001-detail-text {
+    font-family: var(--font-body);
+    font-size: clamp(12px, 1.7vw, 17px);
+    color: color-mix(in srgb, var(--text) 82%, transparent);
+    line-height: 1.55;
+    transition: color 0.3s ease;
+  }
+
+  .wsi-da-001-detail-row:hover .wsi-da-001-detail-text {
+    color: var(--text);
+  }
+  .wsi-da-001-detail-row:hover .wsi-da-001-detail-dot {
+    background: var(--accent);
+  }
+
+  /* Footnote / signature area */
+  .wsi-da-001-footnote {
+    margin-top: clamp(22px, 4vh, 52px);
+    padding-top: clamp(12px, 2vh, 24px);
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 25%, transparent);
+    display: flex;
+    justify-content: flex-end;
+    opacity: 0;
+  }
+
+  .wsi-da-001-footnote-text {
+    font-family: var(--font-heading);
+    font-size: clamp(9px, 1.1vw, 12px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  /* Candle glow pulse */
+  .wsi-da-001-candle {
+    position: absolute;
+    bottom: clamp(14px, 3vh, 40px);
+    left: clamp(14px, 3vw, 40px);
+    width: clamp(18px, 2.5vw, 30px);
+    height: clamp(18px, 2.5vw, 30px);
+    opacity: 0;
+  }
+
+  /* Cursor ink trail */
+  .wsi-da-001-ink-drop {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 999;
+    transform: translate(-50%, -50%);
+  }
+</style>
+<div class="wsi-da-001-root" id="wsi-da-001-root">
+  <!-- Parchment line texture -->
+  <div class="wsi-da-001-parchment" id="wsi-da-001-parchment"></div>
+  <!-- Margin rule -->
+  <div class="wsi-da-001-margin-rule" id="wsi-da-001-margin-rule"></div>
+  <!-- Top binding strip -->
+  <div class="wsi-da-001-binding" id="wsi-da-001-binding"></div>
+  <!-- Corner ornaments (inline SVG) -->
+  <svg class="wsi-da-001-corner wsi-da-001-corner-tl" id="wsi-da-001-corner-tl" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 76 L4 4 L76 4" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.45"/>
+    <circle cx="4" cy="4" r="3" fill="var(--accent)" opacity="0.6"/>
+    <path d="M14 4 Q14 14 4 14" stroke="var(--accent)" stroke-width="0.8" fill="none" opacity="0.3"/>
+    <path d="M4 24 L10 18" stroke="var(--accent)" stroke-width="0.8" opacity="0.3"/>
+  </svg>
+  <svg class="wsi-da-001-corner wsi-da-001-corner-tr" id="wsi-da-001-corner-tr" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 76 L4 4 L76 4" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.45"/>
+    <circle cx="4" cy="4" r="3" fill="var(--accent)" opacity="0.6"/>
+    <path d="M14 4 Q14 14 4 14" stroke="var(--accent)" stroke-width="0.8" fill="none" opacity="0.3"/>
+  </svg>
+  <svg class="wsi-da-001-corner wsi-da-001-corner-br" id="wsi-da-001-corner-br" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 76 L4 4 L76 4" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.45"/>
+    <circle cx="4" cy="4" r="3" fill="var(--accent)" opacity="0.6"/>
+  </svg>
+  <!-- Candle flame SVG -->
+  <svg class="wsi-da-001-candle" id="wsi-da-001-candle" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="15" cy="22" rx="5" ry="6" fill="color-mix(in srgb, var(--accent) 30%, transparent)"/>
+    <rect x="13" y="22" width="4" height="8" rx="1" fill="color-mix(in srgb, var(--accent) 40%, transparent)"/>
+    <path d="M15 4 C13 8 11 11 12 15 C12.5 17.5 15 19 15 19 C15 19 17.5 17.5 18 15 C19 11 17 8 15 4Z" fill="var(--accent)" opacity="0.85"/>
+    <path d="M15 8 C14 10.5 13.5 13 14.5 15.5 C15 16.8 15 19 15 19" stroke="color-mix(in srgb, var(--text) 35%, transparent)" stroke-width="0.8" fill="none"/>
+  </svg>
+  <!-- Floating ink particles (populated via JS) -->
+  <div id="wsi-da-001-particles"></div>
+  <!-- Main content card -->
+  <div class="wsi-da-001-card" id="wsi-da-001-card">
+<!-- Eyebrow label -->
+<p class="wsi-da-001-eyebrow" id="wsi-da-001-eyebrow">— a portrait in ink —</p>
+
+<!-- Recipient name heading -->
+<h2 class="wsi-da-001-name" id="wsi-da-001-name">--RECIPIENT_NAME--</h2>
+
+<!-- Decorative rule -->
+<div class="wsi-da-001-rule" id="wsi-da-001-rule">
+  <div class="wsi-da-001-rule-line"></div>
+  <span class="wsi-da-001-rule-glyph">✦</span>
+  <div class="wsi-da-001-rule-line"></div>
+</div>
+
+<!-- Personality quote -->
+<p class="wsi-da-001-personality" id="wsi-da-001-personality">--PERSONALITY--</p>
+
+<!-- Three detail entries -->
+<div class="wsi-da-001-details">
+
+  <div class="wsi-da-001-detail-row" id="wsi-da-001-detail-1">
+    <span class="wsi-da-001-detail-index">i.</span>
+    <div class="wsi-da-001-detail-dot"></div>
+    <span class="wsi-da-001-detail-text">--DETAIL_1--</span>
+  </div>
+
+  <div class="wsi-da-001-detail-row" id="wsi-da-001-detail-2">
+    <span class="wsi-da-001-detail-index">ii.</span>
+    <div class="wsi-da-001-detail-dot"></div>
+    <span class="wsi-da-001-detail-text">--DETAIL_2--</span>
+  </div>
+
+  <div class="wsi-da-001-detail-row" id="wsi-da-001-detail-3">
+    <span class="wsi-da-001-detail-index">iii.</span>
+    <div class="wsi-da-001-detail-dot"></div>
+    <span class="wsi-da-001-detail-text">--DETAIL_3--</span>
+  </div>
+
+</div>
+
+<!-- Footnote signature -->
+<div class="wsi-da-001-footnote" id="wsi-da-001-footnote">
+  <span class="wsi-da-001-footnote-text">observed with great care</span>
+</div></div>
+</div>
+<!-- Cursor ink drops (injected via JS) -->
+<div id="wsi-da-001-drops"></div>
+<script>
+(function() {
+
+  /* ─── Particle seeding ─── */
+  var particleContainer = document.getElementById('wsi-da-001-particles');
+  var positions = [
+    { top: '12%', left: '5%' }, { top: '30%', left: '92%' },
+    { top: '55%', left: '3%' }, { top: '78%', left: '88%' },
+    { top: '88%', left: '15%' }, { top: '20%', left: '78%' },
+    { top: '65%', left: '96%' }, { top: '44%', left: '8%' },
+    { top: '8%', left: '55%' }, { top: '93%', left: '48%' }
+  ];
+  var particles = [];
+  positions.forEach(function(pos, i) {
+    var el = document.createElement('div');
+    el.className = 'wsi-da-001-particle';
+    el.style.top = pos.top;
+    el.style.left = pos.left;
+    particleContainer.appendChild(el);
+    particles.push(el);
+  });
+
+  /* ─── Cursor ink trail ─── */
+  var dropsContainer = document.getElementById('wsi-da-001-drops');
+  var drops = [];
+  var MAX_DROPS = 8;
+  for (var d = 0; d < MAX_DROPS; d++) {
+    var drop = document.createElement('div');
+    drop.className = 'wsi-da-001-ink-drop';
+    dropsContainer.appendChild(drop);
+    drops.push({ el: drop, active: false });
+  }
+  var dropIdx = 0;
+  var lastX = -999, lastY = -999;
+  function handleMouseMove(e) {
+    var dx = e.clientX - lastX;
+    var dy = e.clientY - lastY;
+    if (Math.sqrt(dx*dx + dy*dy) < 18) return;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    var drop = drops[dropIdx % MAX_DROPS];
+    dropIdx++;
+    drop.el.style.left = e.clientX + 'px';
+    drop.el.style.top = e.clientY + 'px';
+    gsap.killTweensOf(drop.el);
+    gsap.fromTo(drop.el,
+      { opacity: 0.55, scale: 1 },
+      { opacity: 0, scale: 0.2, duration: 0.9, ease: 'power2.out' }
+    );
+  }
+  document.addEventListener('mousemove', handleMouseMove);
+
+  /* ─── Main entrance on glitch:enter ─── */
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 2) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1 — Parchment lines fade in */
+    tl.to('#wsi-da-001-parchment', { opacity: 1, duration: 1.2 }, 0);
+
+    /* 2 — Binding strip sweeps in */
+    tl.to('#wsi-da-001-binding', { scaleX: 1, duration: 0.55, ease: 'power2.inOut' }, 0.1);
+
+    /* 3 — Margin rule draws down */
+    tl.to('#wsi-da-001-margin-rule', { scaleY: 1, duration: 1.1, ease: 'power2.inOut' }, 0.2);
+
+    /* 4 — Corners appear */
+    tl.to(
+      ['#wsi-da-001-corner-tl', '#wsi-da-001-corner-tr', '#wsi-da-001-corner-br'],
+      { opacity: 1, duration: 0.7, stagger: 0.12, ease: 'power2.out' },
+      0.4
+    );
+
+    /* 5 — Card slides up */
+    tl.fromTo('#wsi-da-001-card',
+      { y: 28, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.9 },
+      0.55
+    );
+
+    /* 6 — Eyebrow */
+    tl.to('#wsi-da-001-eyebrow', { opacity: 1, duration: 0.55 }, 0.72);
+
+    /* 7 — Name writes in with clip */
+    tl.fromTo('#wsi-da-001-name',
+      { clipPath: 'inset(0 100% 0 0)', opacity: 1 },
+      { clipPath: 'inset(0 0% 0 0)', opacity: 1, duration: 0.85, ease: 'power2.inOut' },
+      0.88
+    );
+
+    /* 8 — Rule expands */
+    tl.fromTo('#wsi-da-001-rule',
+      { scaleX: 0, opacity: 0, transformOrigin: 'center' },
+      { scaleX: 1, opacity: 1, duration: 0.5 },
+      1.08
+    );
+
+    /* 9 — Personality fades in */
+    tl.to('#wsi-da-001-personality', { opacity: 1, y: 0, duration: 0.65 }, 1.22);
+    gsap.set('#wsi-da-001-personality', { y: 10 });
+
+    /* 10 — Detail rows stagger in */
+    tl.to(
+      ['#wsi-da-001-detail-1', '#wsi-da-001-detail-2', '#wsi-da-001-detail-3'],
+      { opacity: 1, x: 0, duration: 0.5, stagger: 0.16 },
+      1.5
+    );
+    gsap.set(
+      ['#wsi-da-001-detail-1', '#wsi-da-001-detail-2', '#wsi-da-001-detail-3'],
+      { x: -14 }
+    );
+
+    /* 11 — Footnote */
+    tl.to('#wsi-da-001-footnote', { opacity: 1, duration: 0.5 }, 2.0);
+
+    /* 12 — Candle */
+    tl.to('#wsi-da-001-candle', { opacity: 1, duration: 0.6 }, 1.8);
+
+    /* ─── Idle: floating particles ─── */
+    tl.call(function() {
+      particles.forEach(function(p, i) {
+        var delay = i * 0.22;
+        var dur = 3.5 + Math.random() * 2.5;
+        gsap.to(p, {
+          opacity: 0.55 + Math.random() * 0.35,
+          y: -(8 + Math.random() * 14),
+          duration: dur,
+          delay: delay,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1
+        });
+      });
+    }, [], 1.6);
+
+    /* ─── Idle: candle flame flicker ─── */
+    tl.call(function() {
+      gsap.to('#wsi-da-001-candle', {
+        scaleY: 0.88,
+        scaleX: 1.08,
+        transformOrigin: 'bottom center',
+        duration: 0.35,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        repeatDelay: 0.1
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: parchment very slow pulse ─── */
+    tl.call(function() {
+      gsap.to('#wsi-da-001-parchment', {
+        opacity: 0.85,
+        duration: 4,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }, [], 1.5);
+
+    /* ─── Idle: name subtle shimmer ─── */
+    tl.call(function() {
+      gsap.to('#wsi-da-001-name', {
+        color: 'var(--text)',
+        textShadow: '0 0 18px color-mix(in srgb, var(--accent) 22%, transparent)',
+        duration: 2.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        repeatDelay: 1.5
+      });
+    }, [], 2.2);
+
+  }); /* end glitch:enter */
+
+})();
+</script>

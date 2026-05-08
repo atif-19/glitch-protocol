@@ -1,0 +1,414 @@
+<!--
+  Component: cm_dramatic_002
+  Type: core_message
+  Aesthetic: Dramatic cinematic
+  Obsession: Split words
+  Tone: intense, cinematic, fractured
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --MESSAGE_MAIN-- --MESSAGE_LINE_2-- --MESSAGE_LINE_3--
+-->
+<style>
+  .cm-dramatic-002-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .cm-dramatic-002-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.92) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .cm-dramatic-002-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .cm-dramatic-002-bg-strip {
+    position: absolute;
+    left: 0;
+    width: 0%;
+    background: var(--accent);
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .cm-dramatic-002-bg-strip-1 { top: 0; height: 50%; }
+  .cm-dramatic-002-bg-strip-2 { bottom: 0; height: 50%; }
+
+  .cm-dramatic-002-split-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    background: var(--accent);
+    opacity: 0;
+    z-index: 6;
+    transform-origin: left center;
+  }
+
+  .cm-dramatic-002-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: min(900px, 90vw);
+    width: 100%;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+
+  .cm-dramatic-002-label {
+    font-family: var(--font-body);
+    font-size: clamp(0.58rem, 0.95vw, 0.72rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: clamp(2rem, 5vh, 4rem);
+  }
+
+  .cm-dramatic-002-word-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin-bottom: clamp(2rem, 6vh, 4.5rem);
+    overflow: hidden;
+  }
+
+  .cm-dramatic-002-word-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    line-height: 1;
+  }
+
+  .cm-dramatic-002-word-top {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 10vw, 8.5rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    clip-path: inset(0 0 50% 0);
+    opacity: 0;
+    transform: translateY(100%);
+    will-change: transform, opacity;
+    line-height: 0.95;
+  }
+
+  .cm-dramatic-002-word-bottom {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 10vw, 8.5rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    clip-path: inset(50% 0 0 0);
+    opacity: 0;
+    transform: translateY(-100%);
+    will-change: transform, opacity;
+    line-height: 0.95;
+  }
+
+  .cm-dramatic-002-word-accent .cm-dramatic-002-word-top,
+  .cm-dramatic-002-word-accent .cm-dramatic-002-word-bottom {
+    color: var(--accent);
+  }
+
+  .cm-dramatic-002-word-ghost {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 10vw, 8.5rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+    opacity: 0;
+    line-height: 0.95;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .cm-dramatic-002-divider-wrap {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.5vw, 24px);
+    margin-bottom: clamp(1.5rem, 4vh, 3rem);
+    opacity: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cm-dramatic-002-divider-line {
+    flex: 1;
+    max-width: clamp(60px, 12vw, 160px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+    opacity: 0.4;
+  }
+
+  .cm-dramatic-002-divider-line-r {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .cm-dramatic-002-divider-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .cm-dramatic-002-body {
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.4rem, 1.2vh, 0.9rem);
+  }
+
+  .cm-dramatic-002-line-2,
+  .cm-dramatic-002-line-3 {
+    font-family: var(--font-body);
+    font-size: clamp(0.78rem, 1.5vw, 1rem);
+    font-weight: 300;
+    color: rgba(240, 234, 248, 0.55);
+    letter-spacing: 0.07em;
+    line-height: 1.8;
+  }
+
+  .cm-dramatic-002-recipient {
+    margin-top: clamp(2rem, 6vh, 4rem);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 18px);
+  }
+
+  .cm-dramatic-002-recipient-bar {
+    width: clamp(22px, 4vw, 48px);
+    height: 1.5px;
+    background: var(--accent);
+    opacity: 0.45;
+  }
+
+  .cm-dramatic-002-recipient-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.58rem, 1vw, 0.72rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+  }
+
+  .cm-dramatic-002-scanline {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .cm-dramatic-002-cursor-v {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+    transform: scaleY(0.3);
+  }
+
+  .cm-dramatic-002-number {
+    position: absolute;
+    font-family: var(--font-body);
+    font-size: clamp(5rem, 18vw, 16rem);
+    font-weight: 800;
+    color: var(--accent);
+    opacity: 0.025;
+    letter-spacing: -0.05em;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+<div class="cm-dramatic-002-root" id="cm-dramatic-002-root">
+  <div class="cm-dramatic-002-grain"></div>
+  <div class="cm-dramatic-002-vignette"></div>
+  <div class="cm-dramatic-002-bg-strip cm-dramatic-002-bg-strip-1" id="cm-d2-strip-1"></div>
+  <div class="cm-dramatic-002-bg-strip cm-dramatic-002-bg-strip-2" id="cm-d2-strip-2"></div>
+  <div class="cm-dramatic-002-split-line" id="cm-d2-split-line"></div>
+  <div class="cm-dramatic-002-scanline" id="cm-d2-scanline"></div>
+  <div class="cm-dramatic-002-cursor-v" id="cm-d2-cursor-v"></div>
+  <div class="cm-dramatic-002-number">04</div>
+  <div class="cm-dramatic-002-center">
+<div class="cm-dramatic-002-label" id="cm-d2-label">
+  — &nbsp; for --RECIPIENT_NAME-- &nbsp; —
+</div>
+
+<div class="cm-dramatic-002-word-block" id="cm-d2-word-block">
+
+  <div class="cm-dramatic-002-word-row" id="cm-d2-row-1">
+    <span class="cm-dramatic-002-word-top" id="cm-d2-w1-top">--MESSAGE_MAIN--</span>
+    <span class="cm-dramatic-002-word-bottom" id="cm-d2-w1-bot">--MESSAGE_MAIN--</span>
+  </div>
+
+  <div class="cm-dramatic-002-word-row cm-dramatic-002-word-accent" id="cm-d2-row-2" style="margin-top: clamp(0.2rem, 1vh, 0.6rem);">
+    <span class="cm-dramatic-002-word-top" id="cm-d2-w2-top">--MESSAGE_LINE_2--</span>
+    <span class="cm-dramatic-002-word-bottom" id="cm-d2-w2-bot">--MESSAGE_LINE_2--</span>
+  </div>
+
+</div>
+
+<div class="cm-dramatic-002-divider-wrap" id="cm-d2-divider">
+  <div class="cm-dramatic-002-divider-line"></div>
+  <div class="cm-dramatic-002-divider-dot"></div>
+  <div class="cm-dramatic-002-divider-dot" style="opacity:0.4;"></div>
+  <div class="cm-dramatic-002-divider-dot" style="opacity:0.2;"></div>
+  <div class="cm-dramatic-002-divider-line cm-dramatic-002-divider-line-r"></div>
+</div>
+
+<div class="cm-dramatic-002-body" id="cm-d2-body">
+  <div class="cm-dramatic-002-line-2">--MESSAGE_LINE_3--</div>
+</div>
+
+<div class="cm-dramatic-002-recipient" id="cm-d2-recipient">
+  <div class="cm-dramatic-002-recipient-bar"></div>
+  <div class="cm-dramatic-002-recipient-text">--RECIPIENT_NAME--</div>
+  <div class="cm-dramatic-002-recipient-bar"></div>
+</div></div>
+</div>
+<script>
+(function () {
+
+  function runEntrance() {
+    var tl = gsap.timeline();
+
+    gsap.set('#cm-d2-label', { opacity: 0, y: -12 });
+    gsap.set('#cm-d2-divider', { opacity: 0 });
+    gsap.set('#cm-d2-body', { opacity: 0, y: 14 });
+    gsap.set('#cm-d2-recipient', { opacity: 0 });
+    gsap.set('#cm-d2-cursor-v', { opacity: 0 });
+
+    tl.to('#cm-d2-strip-1', { width: '100%', duration: 0.6, ease: 'power4.inOut' }, 0);
+    tl.to('#cm-d2-strip-2', { width: '100%', duration: 0.6, ease: 'power4.inOut' }, 0.08);
+
+    tl.to('#cm-d2-split-line', { opacity: 0.55, duration: 0.25, ease: 'none' }, 0.55);
+    tl.to('#cm-d2-split-line', { opacity: 0, duration: 0.18, ease: 'none' }, 0.95);
+
+    tl.to('#cm-d2-w1-top', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.65);
+    tl.to('#cm-d2-w1-bot', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.72);
+
+    tl.to('#cm-d2-split-line', { opacity: 0.3, duration: 0.12, ease: 'none' }, 1.3);
+    tl.to('#cm-d2-split-line', { opacity: 0, duration: 0.15, ease: 'none' }, 1.44);
+
+    tl.to('#cm-d2-w2-top', { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' }, 1.2);
+    tl.to('#cm-d2-w2-bot', { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' }, 1.28);
+
+    tl.to('#cm-d2-label', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 1.5);
+    tl.to('#cm-d2-divider', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 1.75);
+    tl.to('#cm-d2-body', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 1.95);
+    tl.to('#cm-d2-recipient', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 2.3);
+
+    gsap.to('#cm-d2-strip-1', { opacity: 0.02, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2 });
+    gsap.to('#cm-d2-strip-2', { opacity: 0.07, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2.5 });
+
+    function runScanline() {
+      var el = document.getElementById('cm-d2-scanline');
+      gsap.set(el, { top: '-2px', opacity: 0 });
+      gsap.to(el, {
+        top: '100%',
+        opacity: 0.12,
+        duration: 1.8,
+        ease: 'none',
+        onComplete: function () {
+          gsap.to(el, { opacity: 0, duration: 0.2, onComplete: function () {
+            setTimeout(runScanline, 5000 + Math.random() * 6000);
+          }});
+        }
+      });
+    }
+    setTimeout(runScanline, 3000);
+
+    function runSplitGlitch() {
+      var g = gsap.timeline({ onComplete: function () {
+        setTimeout(runSplitGlitch, 5000 + Math.random() * 7000);
+      }});
+      g.to('#cm-d2-w1-top', { y: -4, x: 3, duration: 0.06 })
+       .to('#cm-d2-w1-bot', { y: 4, x: -3, duration: 0.06 }, '<')
+       .to('#cm-d2-split-line', { opacity: 0.4, duration: 0.06 }, '<')
+       .to('#cm-d2-w1-top', { y: 0, x: 0, duration: 0.08 })
+       .to('#cm-d2-w1-bot', { y: 0, x: 0, duration: 0.08 }, '<')
+       .to('#cm-d2-split-line', { opacity: 0, duration: 0.08 }, '<')
+       .to('#cm-d2-w1-top', { y: -2, x: -2, duration: 0.05 })
+       .to('#cm-d2-w1-bot', { y: 2, x: 2, duration: 0.05 }, '<')
+       .to('#cm-d2-w1-top', { y: 0, x: 0, duration: 0.07 })
+       .to('#cm-d2-w1-bot', { y: 0, x: 0, duration: 0.07 }, '<');
+    }
+    setTimeout(runSplitGlitch, 4000);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail && e.detail.index !== 4) return;
+    runEntrance();
+  });
+
+  var root = document.getElementById('cm-dramatic-002-root');
+  var cursorV = document.getElementById('cm-d2-cursor-v');
+
+  root.addEventListener('mousemove', function (e) {
+    var rect = root.getBoundingClientRect();
+    var mx = e.clientX - rect.left;
+    var my = e.clientY - rect.top;
+    var cx = (mx / rect.width - 0.5) * 2;
+    var cy = (my / rect.height - 0.5) * 2;
+
+    gsap.to(cursorV, { left: mx, opacity: 0.07, scaleY: 1, duration: 0.4, ease: 'power2.out' });
+
+    gsap.to('#cm-d2-w1-top', { x: cx * 8, skewX: cx * 1.5, duration: 0.9, ease: 'power2.out' });
+    gsap.to('#cm-d2-w1-bot', { x: -cx * 8, skewX: -cx * 1.5, duration: 0.9, ease: 'power2.out' });
+    gsap.to('#cm-d2-w2-top', { x: cx * 5, skewX: cx * 1, duration: 0.9, ease: 'power2.out' });
+    gsap.to('#cm-d2-w2-bot', { x: -cx * 5, skewX: -cx * 1, duration: 0.9, ease: 'power2.out' });
+    gsap.to('#cm-d2-body', { x: cx * 4, duration: 1, ease: 'power2.out' });
+    gsap.to('#cm-d2-split-line', { opacity: Math.abs(cx) * 0.12, duration: 0.4 });
+  });
+
+  root.addEventListener('mouseleave', function () {
+    gsap.to(cursorV, { opacity: 0, scaleY: 0.3, duration: 0.5 });
+    gsap.to(['#cm-d2-w1-top','#cm-d2-w1-bot','#cm-d2-w2-top','#cm-d2-w2-bot'], { x: 0, skewX: 0, duration: 0.8, ease: 'power3.out' });
+    gsap.to('#cm-d2-body', { x: 0, duration: 0.8, ease: 'power3.out' });
+    gsap.to('#cm-d2-split-line', { opacity: 0, duration: 0.4 });
+  });
+
+  setTimeout(runEntrance, 300);
+})();
+</script>

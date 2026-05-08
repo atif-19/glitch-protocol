@@ -1,0 +1,570 @@
+<!--
+  Component: wsi_typewriter_001
+  Type: who_she_is
+  Aesthetic: Typewriter
+  Obsession: Typing Effect / Mechanical Keys / Ink on Paper
+  Tone: nostalgic, deliberate, intimate
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --PERSONALITY-- --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<style>
+  /* wsi-tw-001 — root */
+  .wsi-tw-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* Paper texture overlay — faint horizontal lines */
+  .wsi-tw-001-paper {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent calc(clamp(22px, 3vh, 38px) - 1px),
+      color-mix(in srgb, var(--text) 4%, transparent) calc(clamp(22px, 3vh, 38px) - 1px),
+      color-mix(in srgb, var(--text) 4%, transparent) clamp(22px, 3vh, 38px)
+    );
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* Left red margin rule */
+  .wsi-tw-001-margin {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: clamp(48px, 7.5vw, 100px);
+    width: 1.5px;
+    background: color-mix(in srgb, var(--primary) 28%, transparent);
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  /* Top edge — paper tear shadow */
+  .wsi-tw-001-paper-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: clamp(3px, 0.5vh, 6px);
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* Carriage return indicator — top right */
+  .wsi-tw-001-carriage {
+    position: absolute;
+    top: clamp(14px, 2.5vh, 30px);
+    right: clamp(14px, 2.5vw, 30px);
+    display: flex;
+    align-items: center;
+    gap: clamp(5px, 0.8vw, 10px);
+    opacity: 0;
+  }
+  .wsi-tw-001-carriage-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(7px, 0.85vw, 10px);
+    letter-spacing: 0.2em;
+    color: color-mix(in srgb, var(--accent) 45%, transparent);
+    text-transform: uppercase;
+  }
+  .wsi-tw-001-carriage-dots {
+    display: flex;
+    gap: clamp(3px, 0.4vw, 5px);
+  }
+  .wsi-tw-001-carriage-dot {
+    width: clamp(3px, 0.4vw, 5px);
+    height: clamp(3px, 0.4vw, 5px);
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  /* Corner stamps */
+  .wsi-tw-001-stamp {
+    position: absolute;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(7px, 0.8vw, 10px);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 30%, transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .wsi-tw-001-stamp-bl {
+    bottom: clamp(14px, 2.5vh, 30px);
+    left: clamp(14px, 2.5vw, 30px);
+  }
+  .wsi-tw-001-stamp-br {
+    bottom: clamp(14px, 2.5vh, 30px);
+    right: clamp(14px, 2.5vw, 30px);
+  }
+
+  /* Key strike flash — subtle */
+  .wsi-tw-001-flash {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Main content layout */
+  .wsi-tw-001-layout {
+    position: relative;
+    z-index: 10;
+    width: clamp(300px, 78vw, 760px);
+    padding: 0 clamp(18px, 3vw, 44px) 0 clamp(62px, 11vw, 124px);
+  }
+
+  /* Section tag */
+  .wsi-tw-001-tag {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(8px, 0.95vw, 11px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 65%, transparent);
+    margin: 0 0 clamp(12px, 2vh, 24px);
+    opacity: 0;
+  }
+
+  /* Name — massive typewriter */
+  .wsi-tw-001-name-wrap {
+    overflow: hidden;
+    margin: 0 0 clamp(8px, 1.4vh, 18px);
+    position: relative;
+  }
+
+  .wsi-tw-001-name {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: clamp(36px, 8.5vw, 106px);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin: 0;
+    display: block;
+    transform: translateY(105%);
+    white-space: nowrap;
+  }
+
+  /* Blinking cursor after name */
+  .wsi-tw-001-cursor {
+    display: inline-block;
+    width: clamp(3px, 0.45vw, 6px);
+    height: clamp(28px, 6.5vw, 80px);
+    background: var(--accent);
+    margin-left: clamp(3px, 0.4vw, 6px);
+    vertical-align: middle;
+    opacity: 0;
+  }
+  .wsi-tw-001-cursor-blink {
+    animation: wsi-tw-001-blink 0.85s step-end infinite;
+  }
+  @keyframes wsi-tw-001-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* Ribbon strike-through decoration */
+  .wsi-tw-001-ribbon {
+    width: 0%;
+    height: clamp(2px, 0.3vh, 4px);
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+    margin: 0 0 clamp(14px, 2.5vh, 30px);
+  }
+
+  /* Personality — typed line style */
+  .wsi-tw-001-personality-wrap {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(12px, 1.75vw, 18px);
+    line-height: 1.72;
+    color: color-mix(in srgb, var(--text) 68%, transparent);
+    margin: 0 0 clamp(20px, 3.5vh, 46px);
+    min-height: clamp(24px, 3.5vh, 48px);
+    position: relative;
+  }
+  /* Inline cursor for typing effect */
+  .wsi-tw-001-type-cursor {
+    display: inline-block;
+    width: clamp(7px, 0.95vw, 11px);
+    height: 1.1em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    opacity: 1;
+    margin-left: 1px;
+  }
+  .wsi-tw-001-type-cursor-blink {
+    animation: wsi-tw-001-blink 0.65s step-end infinite;
+  }
+
+  /* Details section */
+  .wsi-tw-001-details {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.5vh, 18px);
+  }
+
+  .wsi-tw-001-detail {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(8px, 1.4vw, 18px);
+    opacity: 0;
+  }
+
+  /* Typewriter list marker */
+  .wsi-tw-001-detail-marker {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(10px, 1.1vw, 13px);
+    color: var(--accent);
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+    min-width: clamp(18px, 2.5vw, 30px);
+    transition: color 0.25s;
+  }
+
+  .wsi-tw-001-detail-dashes {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(10px, 1.1vw, 13px);
+    color: color-mix(in srgb, var(--text) 22%, transparent);
+    flex-shrink: 0;
+    letter-spacing: 0.08em;
+    transition: color 0.25s;
+  }
+
+  .wsi-tw-001-detail-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(11px, 1.5vw, 15px);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--text) 68%, transparent);
+    transition: color 0.25s;
+  }
+
+  .wsi-tw-001-detail:hover .wsi-tw-001-detail-marker { color: var(--text); }
+  .wsi-tw-001-detail:hover .wsi-tw-001-detail-dashes {
+    color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .wsi-tw-001-detail:hover .wsi-tw-001-detail-text { color: var(--text); }
+
+  /* Footer typed line */
+  .wsi-tw-001-footer {
+    margin-top: clamp(18px, 3.2vh, 42px);
+    padding-top: clamp(10px, 1.8vh, 20px);
+    border-top: 1px dashed color-mix(in srgb, var(--text) 14%, transparent);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+  }
+  .wsi-tw-001-footer-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(7px, 0.85vw, 10px);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 28%, transparent);
+  }
+  .wsi-tw-001-footer-keys {
+    display: flex;
+    gap: clamp(4px, 0.6vw, 8px);
+  }
+  .wsi-tw-001-footer-key {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(7px, 0.8vw, 9px);
+    padding: clamp(2px, 0.3vh, 4px) clamp(4px, 0.6vw, 7px);
+    border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
+    border-radius: 3px;
+    color: color-mix(in srgb, var(--text) 35%, transparent);
+    letter-spacing: 0.12em;
+  }
+
+  /* Cursor parallax glow */
+  .wsi-tw-001-glow {
+    position: fixed;
+    width: clamp(140px, 18vw, 240px);
+    height: clamp(140px, 18vw, 240px);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 7%, transparent) 0%,
+      transparent 68%
+    );
+    pointer-events: none;
+    z-index: 4;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+</style>
+<div class="wsi-tw-001-root" id="wsi-tw-001-root">
+  <!-- Paper lines texture -->
+  <div class="wsi-tw-001-paper"></div>
+  <!-- Left margin rule -->
+  <div class="wsi-tw-001-margin" id="wsi-tw-001-margin"></div>
+  <!-- Top accent bar -->
+  <div class="wsi-tw-001-paper-top" id="wsi-tw-001-paper-top"></div>
+  <!-- Key flash -->
+  <div class="wsi-tw-001-flash" id="wsi-tw-001-flash"></div>
+  <!-- Carriage indicator -->
+  <div class="wsi-tw-001-carriage" id="wsi-tw-001-carriage">
+    <span class="wsi-tw-001-carriage-label">carriage</span>
+    <div class="wsi-tw-001-carriage-dots">
+      <div class="wsi-tw-001-carriage-dot"></div>
+      <div class="wsi-tw-001-carriage-dot"></div>
+      <div class="wsi-tw-001-carriage-dot"></div>
+    </div>
+  </div>
+  <!-- Corner stamps -->
+  <div class="wsi-tw-001-stamp wsi-tw-001-stamp-bl" id="wsi-tw-001-stamp-bl">
+    page 01 / profile
+  </div>
+  <div class="wsi-tw-001-stamp wsi-tw-001-stamp-br" id="wsi-tw-001-stamp-br">
+    drafted with care
+  </div>
+  <!-- Cursor glow -->
+  <div class="wsi-tw-001-glow" id="wsi-tw-001-glow"></div>
+  <!-- Main layout -->
+  <div class="wsi-tw-001-layout">
+<!-- Section tag -->
+<p class="wsi-tw-001-tag" id="wsi-tw-001-tag">// who she is</p>
+
+<!-- Name reveal -->
+<div class="wsi-tw-001-name-wrap">
+  <span class="wsi-tw-001-name" id="wsi-tw-001-name">--RECIPIENT_NAME--</span>
+  <span class="wsi-tw-001-cursor" id="wsi-tw-001-name-cursor"></span>
+</div>
+
+<!-- Ribbon underline -->
+<div class="wsi-tw-001-ribbon" id="wsi-tw-001-ribbon"></div>
+
+<!-- Personality typed out -->
+<div class="wsi-tw-001-personality-wrap" id="wsi-tw-001-personality-wrap">
+  <span id="wsi-tw-001-personality-text"></span><span class="wsi-tw-001-type-cursor" id="wsi-tw-001-type-cursor"></span>
+</div>
+
+<!-- Details -->
+<div class="wsi-tw-001-details">
+
+  <div class="wsi-tw-001-detail" id="wsi-tw-001-d1">
+    <span class="wsi-tw-001-detail-marker">[1]</span>
+    <span class="wsi-tw-001-detail-dashes">---</span>
+    <span class="wsi-tw-001-detail-text">--DETAIL_1--</span>
+  </div>
+
+  <div class="wsi-tw-001-detail" id="wsi-tw-001-d2">
+    <span class="wsi-tw-001-detail-marker">[2]</span>
+    <span class="wsi-tw-001-detail-dashes">---</span>
+    <span class="wsi-tw-001-detail-text">--DETAIL_2--</span>
+  </div>
+
+  <div class="wsi-tw-001-detail" id="wsi-tw-001-d3">
+    <span class="wsi-tw-001-detail-marker">[3]</span>
+    <span class="wsi-tw-001-detail-dashes">---</span>
+    <span class="wsi-tw-001-detail-text">--DETAIL_3--</span>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="wsi-tw-001-footer" id="wsi-tw-001-footer">
+  <span class="wsi-tw-001-footer-text">typed in full sincerity</span>
+  <div class="wsi-tw-001-footer-keys">
+    <span class="wsi-tw-001-footer-key">RET</span>
+    <span class="wsi-tw-001-footer-key">TAB</span>
+    <span class="wsi-tw-001-footer-key">ESC</span>
+  </div>
+</div></div>
+</div>
+<script>
+(function () {
+
+  /* ─── Cursor glow tracker ─── */
+  var glow = document.getElementById('wsi-tw-001-glow');
+  var glowOn = false;
+  document.addEventListener('mousemove', function (ev) {
+    glow.style.left = ev.clientX + 'px';
+    glow.style.top  = ev.clientY + 'px';
+    if (!glowOn) { glowOn = true; glow.style.opacity = '1'; }
+  });
+
+  /* ─── Key flash helper — simulates keystrike ─── */
+  var flash = document.getElementById('wsi-tw-001-flash');
+  function keyFlash() {
+    gsap.fromTo(flash,
+      { opacity: 0.06 },
+      { opacity: 0, duration: 0.12, ease: 'power2.out' }
+    );
+  }
+
+  /* ─── Typewriter typing engine ─── */
+  function typeText(targetEl, text, speedMs, onDone) {
+    var i = 0;
+    targetEl.textContent = '';
+    function tick() {
+      if (i >= text.length) {
+        if (onDone) onDone();
+        return;
+      }
+      targetEl.textContent += text[i];
+      /* occasional key flash — every ~4 chars */
+      if (i % 4 === 0) keyFlash();
+      i++;
+      /* variable speed — slightly random for realism */
+      var jitter = speedMs + (Math.random() - 0.5) * (speedMs * 0.6);
+      setTimeout(tick, Math.max(jitter, 18));
+    }
+    tick();
+  }
+
+  /* ─── Carriage dot idle pulse ─── */
+  function pulseCarriageDots() {
+    var dots = document.querySelectorAll('.wsi-tw-001-carriage-dot');
+    dots.forEach(function (d, i) {
+      gsap.to(d, {
+        opacity: 0.9,
+        duration: 0.4,
+        ease: 'power2.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: i * 0.22
+      });
+    });
+  }
+
+  /* ─── Main entrance ─── */
+  document.addEventListener('glitch:enter', function (ev) {
+    if (ev.detail.index !== 2) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1 — Paper top bar sweeps in */
+    tl.to('#wsi-tw-001-paper-top', {
+      scaleX: 1, duration: 0.5, ease: 'power2.inOut'
+    }, 0);
+
+    /* 2 — Margin rule draws down */
+    tl.to('#wsi-tw-001-margin', {
+      scaleY: 1, duration: 1.0, ease: 'power2.inOut'
+    }, 0.12);
+
+    /* 3 — Carriage indicator */
+    tl.to('#wsi-tw-001-carriage', { opacity: 1, duration: 0.4 }, 0.35);
+
+    /* 4 — Corner stamps fade */
+    tl.to(
+      ['#wsi-tw-001-stamp-bl', '#wsi-tw-001-stamp-br'],
+      { opacity: 1, duration: 0.45, stagger: 0.12 },
+      0.5
+    );
+
+    /* 5 — Section tag */
+    tl.to('#wsi-tw-001-tag', { opacity: 1, duration: 0.35 }, 0.55);
+
+    /* 6 — Name rises from clip */
+    tl.to('#wsi-tw-001-name', {
+      y: '0%', duration: 0.7, ease: 'power4.out'
+    }, 0.68);
+
+    /* 7 — Name cursor blinks in */
+    tl.to('#wsi-tw-001-name-cursor', { opacity: 1, duration: 0.01 }, 1.02);
+    tl.call(function () {
+      document.getElementById('wsi-tw-001-name-cursor').classList.add('wsi-tw-001-cursor-blink');
+    }, [], 1.02);
+
+    /* 8 — Ribbon expands */
+    tl.to('#wsi-tw-001-ribbon', {
+      width: '100%', duration: 0.5, ease: 'power2.inOut'
+    }, 1.05);
+
+    /* 9 — Personality text types out */
+    tl.call(function () {
+      var personalityFull = '--PERSONALITY--';
+      var typeCursor = document.getElementById('wsi-tw-001-type-cursor');
+      typeCursor.classList.add('wsi-tw-001-type-cursor-blink');
+      typeText(
+        document.getElementById('wsi-tw-001-personality-text'),
+        personalityFull,
+        52,
+        function () {
+          /* Done typing — hide blinking type cursor after pause */
+          setTimeout(function () {
+            gsap.to(typeCursor, { opacity: 0, duration: 0.3 });
+          }, 900);
+        }
+      );
+    }, [], 1.25);
+
+    /* 10 — Details stagger in after typing starts */
+    gsap.set(['#wsi-tw-001-d1','#wsi-tw-001-d2','#wsi-tw-001-d3'], { x: -16 });
+    tl.to(
+      ['#wsi-tw-001-d1','#wsi-tw-001-d2','#wsi-tw-001-d3'],
+      { opacity: 1, x: 0, duration: 0.42, stagger: 0.18 },
+      2.4
+    );
+
+    /* 11 — Footer */
+    tl.to('#wsi-tw-001-footer', { opacity: 1, duration: 0.4 }, 3.1);
+
+    /* ─── Idle: carriage dots pulse ─── */
+    tl.call(pulseCarriageDots, [], 1.4);
+
+    /* ─── Idle: margin rule subtle fade ─── */
+    tl.call(function () {
+      gsap.to('#wsi-tw-001-margin', {
+        opacity: 0.5,
+        duration: 3,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: random key flashes simulate background typing ─── */
+    tl.call(function () {
+      function randomFlash() {
+        keyFlash();
+        setTimeout(randomFlash, 1800 + Math.random() * 3200);
+      }
+      setTimeout(randomFlash, 1000);
+    }, [], 3.2);
+
+    /* ─── Idle: name cursor width micro-pulse ─── */
+    tl.call(function () {
+      gsap.to('#wsi-tw-001-name-cursor', {
+        scaleX: 1.4,
+        transformOrigin: 'left center',
+        duration: 0.42,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        repeatDelay: 0.42
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: footer keys subtle float ─── */
+    tl.call(function () {
+      var keys = document.querySelectorAll('.wsi-tw-001-footer-key');
+      keys.forEach(function (k, i) {
+        gsap.to(k, {
+          y: -2,
+          duration: 1.4 + i * 0.3,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.5
+        });
+      });
+    }, [], 3.2);
+
+  }); /* end glitch:enter */
+
+})();
+</script>

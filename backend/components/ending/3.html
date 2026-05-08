@@ -1,0 +1,825 @@
+<!-- Component: ending-playful-002
+     Type: ending
+     Aesthetic: Balloon Release / Playful
+     Obsession: Celebration / Joy / Whimsy
+     Tone: joyful, warm, lighthearted
+     Occasion: both
+     Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME--
+-->
+<style>
+  /* =====================================================
+     ENDING-PLAYFUL-002 | Balloon Release Aesthetic
+     Full-screen playful ending with floating balloons,
+     confetti burst, and warm celebratory energy
+     ===================================================== */
+
+  /* Scoped root variables */
+  .ep002-root {
+    --ep002-heading: var(--font-heading);
+    --ep002-body: var(--font-body);
+    --ep002-string-color: color-mix(in srgb, var(--text) 35%, transparent);
+  }
+
+  /* Full screen container */
+  .ep002-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  /* ── Sky gradient wash ── */
+  .ep002-sky {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(
+      ellipse at 50% 90%,
+      color-mix(in srgb, var(--primary) 22%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 45%,
+      transparent 75%
+    );
+    pointer-events: none;
+  }
+
+  /* ── Soft bokeh circles (background depth) ── */
+  .ep002-bokeh {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(clamp(18px, 3vw, 40px));
+    opacity: 0;
+  }
+
+  /* ── Balloon base styles ── */
+  .ep002-balloon {
+    position: absolute;
+    bottom: -220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+  }
+
+  /* Balloon oval body */
+  .ep002-balloon-body {
+    border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+    position: relative;
+    box-shadow: inset -6px -8px 16px rgba(0,0,0,0.18),
+                inset 4px 5px 12px rgba(255,255,255,0.22);
+    transition: transform 0.3s ease;
+  }
+
+  /* Balloon highlight shine */
+  .ep002-balloon-body::before {
+    content: '';
+    position: absolute;
+    top: 18%;
+    left: 20%;
+    width: 28%;
+    height: 22%;
+    background: rgba(255,255,255,0.35);
+    border-radius: 50%;
+    transform: rotate(-25deg);
+    pointer-events: none;
+  }
+
+  /* Balloon knot nub */
+  .ep002-balloon-body::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    translate: -50% 0;
+    width: 8px;
+    height: 10px;
+    background: inherit;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+    filter: brightness(0.75);
+  }
+
+  /* Balloon string */
+  .ep002-balloon-string {
+    width: 1.5px;
+    height: clamp(50px, 10vh, 100px);
+    background: var(--ep002-string-color);
+    transform-origin: top center;
+    animation: ep002-stringWiggle 3s ease-in-out infinite;
+  }
+
+  @keyframes ep002-stringWiggle {
+    0%, 100% { transform: rotate(-3deg) scaleY(1); }
+    33%       { transform: rotate(4deg)  scaleY(1.02); }
+    66%       { transform: rotate(-2deg) scaleY(0.98); }
+  }
+
+  /* ── Confetti pieces ── */
+  .ep002-confetti {
+    position: absolute;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+    border-radius: 2px;
+  }
+
+  /* ── Floating stars / sparkles ── */
+  .ep002-star {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    font-size: clamp(10px, 1.5vw, 20px);
+    animation: ep002-starTwinkle 2s ease-in-out infinite;
+    user-select: none;
+  }
+
+  @keyframes ep002-starTwinkle {
+    0%, 100% { opacity: 0.8; transform: scale(1)    rotate(0deg); }
+    50%       { opacity: 0.3; transform: scale(0.7)  rotate(15deg); }
+  }
+
+  /* ── Main content card ── */
+  .ep002-card {
+    position: relative;
+    z-index: 7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(28px, 5vw, 72px) clamp(24px, 6vw, 80px);
+    gap: clamp(12px, 2.5vh, 28px);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    border-radius: clamp(16px, 3vw, 28px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    max-width: clamp(300px, 82vw, 720px);
+    width: 100%;
+    opacity: 0;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent),
+      0 24px 64px rgba(0,0,0,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  /* ── Wobbly emoji row ── */
+  .ep002-emoji-row {
+    display: flex;
+    gap: clamp(8px, 2vw, 20px);
+    font-size: clamp(20px, 3.5vw, 42px);
+    opacity: 0;
+    user-select: none;
+  }
+
+  .ep002-emoji-item {
+    display: inline-block;
+    animation: ep002-emojiFloat 2.5s ease-in-out infinite;
+    cursor: default;
+  }
+
+  /* staggered float delays per child */
+  .ep002-emoji-item:nth-child(1) { animation-delay: 0.0s; }
+  .ep002-emoji-item:nth-child(2) { animation-delay: 0.35s; }
+  .ep002-emoji-item:nth-child(3) { animation-delay: 0.7s; }
+  .ep002-emoji-item:nth-child(4) { animation-delay: 1.05s; }
+  .ep002-emoji-item:nth-child(5) { animation-delay: 1.4s; }
+
+  @keyframes ep002-emojiFloat {
+    0%, 100% { transform: translateY(0px) rotate(-4deg); }
+    50%       { transform: translateY(-10px) rotate(4deg); }
+  }
+
+  /* Emoji bounce on hover */
+  .ep002-emoji-item:hover {
+    animation: none;
+    transform: scale(1.4) rotate(12deg);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ── Playful header tag ── */
+  .ep002-tag {
+    font-family: var(--ep002-body);
+    font-size: clamp(9px, 1vw, 12px);
+    letter-spacing: clamp(3px, 0.6vw, 8px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 100px;
+    padding: clamp(3px, 0.5vh, 6px) clamp(10px, 2vw, 20px);
+  }
+
+  /* ── Recipient name ── */
+  .ep002-name {
+    font-family: var(--ep002-heading);
+    font-size: clamp(13px, 1.8vw, 20px);
+    letter-spacing: clamp(5px, 1vw, 14px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0;
+  }
+
+  /* ── Wavy divider ── */
+  .ep002-wavy {
+    width: clamp(120px, 35vw, 340px);
+    height: clamp(10px, 2vh, 18px);
+    opacity: 0;
+  }
+
+  .ep002-wavy path {
+    stroke: var(--accent);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 6 4;
+    opacity: 0.55;
+  }
+
+  /* ── Ending line ── */
+  .ep002-ending-line {
+    font-family: var(--ep002-heading);
+    font-size: clamp(20px, 4vw, 54px);
+    line-height: 1.2;
+    color: var(--text);
+    font-weight: 400;
+    opacity: 0;
+    max-width: 100%;
+  }
+
+  /* ── Song row ── */
+  .ep002-song-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 16px);
+    opacity: 0;
+    margin-top: clamp(2px, 0.5vh, 8px);
+  }
+
+  .ep002-song-icon {
+    font-size: clamp(16px, 2.2vw, 26px);
+    animation: ep002-noteBounce 1.6s ease-in-out infinite;
+  }
+
+  @keyframes ep002-noteBounce {
+    0%, 100% { transform: translateY(0) rotate(-8deg); }
+    50%       { transform: translateY(-6px) rotate(8deg); }
+  }
+
+  .ep002-song-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .ep002-song-label {
+    font-family: var(--ep002-body);
+    font-size: clamp(7px, 0.8vw, 10px);
+    letter-spacing: clamp(2px, 0.4vw, 6px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .ep002-song-name {
+    font-family: var(--ep002-heading);
+    font-size: clamp(11px, 1.4vw, 17px);
+    font-style: italic;
+    color: var(--text);
+    opacity: 0.9;
+  }
+
+  /* ── Pop ripple effect on click ── */
+  .ep002-ripple {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 20;
+    border: 2px solid var(--accent);
+    transform: scale(0);
+    opacity: 0.8;
+  }
+
+  /* ── Custom cursor ── */
+  .ep002-cursor {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: clamp(18px, 2.2vw, 28px);
+    height: clamp(18px, 2.2vw, 28px);
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    translate: -50% -50%;
+    mix-blend-mode: screen;
+  }
+
+  .ep002-cursor-dot {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    translate: -50% -50%;
+  }
+
+  /* ── Ground line ── */
+  .ep002-ground {
+    position: absolute;
+    bottom: clamp(14px, 3vh, 36px);
+    left: 50%;
+    translate: -50% 0;
+    width: clamp(100px, 30vw, 280px);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--accent) 40%, transparent),
+      transparent
+    );
+    z-index: 3;
+    opacity: 0;
+  }
+</style>
+<div class="ep002-root" id="ep002-root">
+  <!-- Sky gradient wash -->
+  <div class="ep002-sky"></div>
+  <!-- Bokeh depth blobs (JS populated) -->
+  <div id="ep002-bokehWrap"></div>
+  <!-- Balloons (JS populated) -->
+  <div id="ep002-balloonWrap"></div>
+  <!-- Stars / sparkles (JS populated) -->
+  <div id="ep002-starWrap"></div>
+  <!-- Confetti (JS populated) -->
+  <div id="ep002-confettiWrap"></div>
+  <!-- Main message card -->
+  <div class="ep002-card" id="ep002-card">
+<!-- Floating emoji row -->
+<div class="ep002-emoji-row" id="ep002-emojiRow">
+  <span class="ep002-emoji-item">🎈</span>
+  <span class="ep002-emoji-item">✨</span>
+  <span class="ep002-emoji-item">🎉</span>
+  <span class="ep002-emoji-item">✨</span>
+  <span class="ep002-emoji-item">🎈</span>
+</div>
+
+<!-- Section tag -->
+<div class="ep002-tag" id="ep002-tag">A Note for You</div>
+
+<!-- Recipient name -->
+<div class="ep002-name" id="ep002-name">--RECIPIENT_NAME--</div>
+
+<!-- Wavy SVG divider -->
+<svg class="ep002-wavy" id="ep002-wavy" viewBox="0 0 340 18" preserveAspectRatio="none">
+  <path d="M0 9 Q17 2 34 9 Q51 16 68 9 Q85 2 102 9 Q119 16 136 9 Q153 2 170 9 Q187 16 204 9 Q221 2 238 9 Q255 16 272 9 Q289 2 306 9 Q323 16 340 9"/>
+</svg>
+
+<!-- Main ending message -->
+<div class="ep002-ending-line" id="ep002-endingLine">--ENDING_LINE--</div>
+
+<!-- Song attribution row -->
+<div class="ep002-song-row" id="ep002-songRow">
+  <span class="ep002-song-icon">🎵</span>
+  <div class="ep002-song-text">
+    <span class="ep002-song-label">Soundtrack</span>
+    <span class="ep002-song-name">--SONG_NAME--</span>
+  </div>
+</div></div>
+  <!-- Ground / floor line -->
+  <div class="ep002-ground" id="ep002-ground"></div>
+  <!-- Custom cursor -->
+  <div class="ep002-cursor"    id="ep002-cursor"></div>
+  <div class="ep002-cursor-dot" id="ep002-cursorDot"></div>
+</div>
+<script>
+(function () {
+  /* =====================================================
+     ENDING-PLAYFUL-002 | Balloon Release
+     Gates on glitch:enter index === 7
+     ===================================================== */
+
+  /* ── Section index ── */
+  var SECTION_INDEX = 7;
+
+  /* ── DOM refs ── */
+  var root          = document.getElementById('ep002-root');
+  var bokehWrap     = document.getElementById('ep002-bokehWrap');
+  var balloonWrap   = document.getElementById('ep002-balloonWrap');
+  var starWrap      = document.getElementById('ep002-starWrap');
+  var confettiWrap  = document.getElementById('ep002-confettiWrap');
+  var card          = document.getElementById('ep002-card');
+  var emojiRow      = document.getElementById('ep002-emojiRow');
+  var tag           = document.getElementById('ep002-tag');
+  var nameEl        = document.getElementById('ep002-name');
+  var wavy          = document.getElementById('ep002-wavy');
+  var endingLine    = document.getElementById('ep002-endingLine');
+  var songRow       = document.getElementById('ep002-songRow');
+  var ground        = document.getElementById('ep002-ground');
+  var cursorEl      = document.getElementById('ep002-cursor');
+  var cursorDot     = document.getElementById('ep002-cursorDot');
+
+  /* ── Palette for balloon variety ── */
+  var balloonColors = [
+    'color-mix(in srgb, var(--primary) 90%, white)',
+    'color-mix(in srgb, var(--accent)  90%, white)',
+    'color-mix(in srgb, var(--primary) 60%, var(--accent))',
+    'color-mix(in srgb, var(--accent)  55%, var(--bg))',
+    'color-mix(in srgb, var(--text)    25%, var(--accent))'
+  ];
+
+  /* ── Confetti palette ── */
+  var confettiColors = [
+    'var(--primary)', 'var(--accent)',
+    'color-mix(in srgb, var(--primary) 70%, white)',
+    'color-mix(in srgb, var(--accent) 70%, white)',
+    'var(--text)'
+  ];
+
+  /* ── Util: random range ── */
+  function rnd (min, max) { return min + Math.random() * (max - min); }
+
+  /* ── Build bokeh blobs ── */
+  function buildBokeh () {
+    for (var i = 0; i < 8; i++) {
+      var b = document.createElement('div');
+      b.className = 'ep002-bokeh';
+      var sz = rnd(80, 220);
+      b.style.cssText = [
+        'width:' + sz + 'px',
+        'height:' + sz + 'px',
+        'left:' + rnd(5, 90) + '%',
+        'top:' + rnd(5, 85) + '%',
+        'background:' + (i % 2 === 0
+          ? 'color-mix(in srgb, var(--primary) 30%, transparent)'
+          : 'color-mix(in srgb, var(--accent) 22%, transparent)')
+      ].join(';');
+      bokehWrap.appendChild(b);
+    }
+  }
+  buildBokeh();
+
+  /* ── Build balloons ── */
+  var BALLOON_COUNT = 11;
+  var balloons = [];
+
+  function buildBalloons () {
+    for (var i = 0; i < BALLOON_COUNT; i++) {
+      /* Outer wrapper */
+      var wrap = document.createElement('div');
+      wrap.className = 'ep002-balloon';
+
+      /* Random horizontal spread */
+      var xPct = rnd(4, 92);
+      var wPx  = Math.round(rnd(42, 78));
+      var hPx  = Math.round(wPx * 1.22);
+      var color = balloonColors[i % balloonColors.length];
+
+      wrap.style.left = xPct + '%';
+
+      /* Body */
+      var body = document.createElement('div');
+      body.className = 'ep002-balloon-body';
+      body.style.cssText = [
+        'width:' + wPx + 'px',
+        'height:' + hPx + 'px',
+        'background:' + color
+      ].join(';');
+
+      /* String */
+      var str = document.createElement('div');
+      str.className = 'ep002-balloon-string';
+      str.style.animationDelay = rnd(0, 1.5) + 's';
+
+      wrap.appendChild(body);
+      wrap.appendChild(str);
+      balloonWrap.appendChild(wrap);
+      balloons.push({ el: wrap, x: xPct, w: wPx });
+    }
+  }
+  buildBalloons();
+
+  /* ── Build static sparkle stars ── */
+  var STAR_SYMBOLS = ['✦', '✧', '⋆', '✩', '⭐'];
+  function buildStars () {
+    for (var i = 0; i < 18; i++) {
+      var s = document.createElement('div');
+      s.className = 'ep002-star';
+      s.textContent = STAR_SYMBOLS[i % STAR_SYMBOLS.length];
+      s.style.left = rnd(2, 96) + '%';
+      s.style.top  = rnd(2, 88) + '%';
+      s.style.animationDelay    = rnd(0, 3) + 's';
+      s.style.animationDuration = rnd(1.5, 3.5) + 's';
+      starWrap.appendChild(s);
+    }
+  }
+  buildStars();
+
+  /* ── Build confetti pieces ── */
+  var CONFETTI_COUNT = 55;
+  var confettiPieces = [];
+  function buildConfetti () {
+    for (var i = 0; i < CONFETTI_COUNT; i++) {
+      var c = document.createElement('div');
+      c.className = 'ep002-confetti';
+      var w = rnd(5, 11);
+      var h = rnd(6, 14);
+      c.style.cssText = [
+        'width:' + w + 'px',
+        'height:' + h + 'px',
+        'left:' + rnd(0, 100) + '%',
+        'top:' + rnd(-20, 10) + '%',
+        'background:' + confettiColors[Math.floor(rnd(0, confettiColors.length))],
+        'transform:rotate(' + rnd(0, 360) + 'deg)',
+        'border-radius:' + (Math.random() > 0.4 ? '50%' : '2px')
+      ].join(';');
+      confettiWrap.appendChild(c);
+      confettiPieces.push(c);
+    }
+  }
+  buildConfetti();
+
+  /* ── Custom cursor tracking ── */
+  document.addEventListener('mousemove', function (e) {
+    gsap.to(cursorEl,  { x: e.clientX, y: e.clientY, duration: 0.22, ease: 'power2.out' });
+    gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0.07, ease: 'none' });
+  });
+
+  /* ── Click ripple burst ── */
+  document.addEventListener('click', function (e) {
+    var r = document.createElement('div');
+    r.className = 'ep002-ripple';
+    r.style.cssText = [
+      'width:6px', 'height:6px',
+      'left:' + (e.clientX - 3) + 'px',
+      'top:'  + (e.clientY - 3) + 'px'
+    ].join(';');
+    root.appendChild(r);
+    gsap.to(r, {
+      scale: 16, opacity: 0, duration: 0.7,
+      ease: 'power2.out',
+      onComplete: function () { r.parentNode && r.parentNode.removeChild(r); }
+    });
+
+    /* Pop a nearby balloon on click */
+    popNearestBalloon(e.clientX, e.clientY);
+  });
+
+  /* ── Pop balloon nearest to click ── */
+  function popNearestBalloon (cx, cy) {
+    var visibleBalloons = Array.from(balloonWrap.querySelectorAll('.ep002-balloon'))
+      .filter(function (b) { return parseFloat(b.style.opacity || 0) > 0.3; });
+    if (!visibleBalloons.length) return;
+
+    /* Find closest by horizontal distance */
+    var closest = visibleBalloons.reduce(function (prev, cur) {
+      var pr = prev.getBoundingClientRect();
+      var cr = cur.getBoundingClientRect();
+      var pd = Math.abs((pr.left + pr.width / 2) - cx);
+      var cd = Math.abs((cr.left + cr.width / 2) - cx);
+      return cd < pd ? cur : prev;
+    });
+
+    /* Pop animation */
+    gsap.timeline()
+      .to(closest, { scale: 1.35, duration: 0.1, ease: 'power2.out' })
+      .to(closest, { scale: 0, opacity: 0, duration: 0.2, ease: 'power3.in',
+        onComplete: function () { closest.style.display = 'none'; }
+      });
+
+    /* Mini confetti burst at click point */
+    for (var i = 0; i < 8; i++) {
+      var p = document.createElement('div');
+      p.style.cssText = [
+        'position:fixed',
+        'z-index:15',
+        'pointer-events:none',
+        'width:' + rnd(4,9) + 'px',
+        'height:' + rnd(4,9) + 'px',
+        'left:' + cx + 'px',
+        'top:' + cy + 'px',
+        'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
+        'background:' + confettiColors[Math.floor(rnd(0, confettiColors.length))]
+      ].join(';');
+      root.appendChild(p);
+      gsap.fromTo(p,
+        { opacity: 1, x: 0, y: 0, scale: 1 },
+        {
+          opacity: 0,
+          x: rnd(-50, 50),
+          y: rnd(-70, 20),
+          scale: 0,
+          duration: rnd(0.5, 1),
+          ease: 'power2.out',
+          onComplete: function () { p.parentNode && p.parentNode.removeChild(p); }
+        }
+      );
+    }
+  }
+
+  /* ── Mouse parallax on card ── */
+  document.addEventListener('mousemove', function (e) {
+    var cx = window.innerWidth  / 2;
+    var cy = window.innerHeight / 2;
+    var dx = (e.clientX - cx) / cx;
+    var dy = (e.clientY - cy) / cy;
+    gsap.to(card, {
+      rotateX: -dy * 4,
+      rotateY:  dx * 4,
+      duration: 1.2,
+      ease: 'power2.out',
+      transformPerspective: 900
+    });
+  });
+
+  /* ── Main glitch:enter handler ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1. Bokeh blobs fade in softly */
+    tl.to(bokehWrap.querySelectorAll('.ep002-bokeh'), {
+      opacity: 1, duration: 1.4,
+      stagger: 0.12, ease: 'power2.inOut'
+    });
+
+    /* 2. Ground line appears */
+    tl.to(ground, { opacity: 1, duration: 0.6 }, '-=0.8');
+
+    /* 3. Balloons launch up from below — staggered */
+    var balloonEls = balloonWrap.querySelectorAll('.ep002-balloon');
+    tl.fromTo(balloonEls,
+      { y: 0, opacity: 0 },
+      {
+        y: function (i) { return -(window.innerHeight * rnd(0.55, 1.1)); },
+        opacity: 1,
+        duration: function () { return rnd(2.0, 3.5); },
+        stagger: { each: 0.18, from: 'random' },
+        ease: 'power1.out'
+      },
+      '-=0.4'
+    );
+
+    /* 4. Stars twinkle in */
+    tl.to(starWrap.querySelectorAll('.ep002-star'), {
+      opacity: 1, duration: 0.5,
+      stagger: 0.06, ease: 'power2.inOut'
+    }, '-=2.8');
+
+    /* 5. Confetti rain */
+    tl.fromTo(confettiPieces,
+      { y: -40, opacity: 0 },
+      {
+        y: function () { return rnd(window.innerHeight * 0.5, window.innerHeight * 1.1); },
+        opacity: function () { return rnd(0.55, 1); },
+        rotation: function () { return rnd(-360, 360); },
+        duration: function () { return rnd(2.2, 4.5); },
+        stagger: { each: 0.04, from: 'random' },
+        ease: 'none'
+      },
+      '-=2.5'
+    );
+
+    /* 6. Card pops in with spring */
+    tl.fromTo(card,
+      { opacity: 0, scale: 0.82, y: 30 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: 'back.out(1.7)' },
+      '-=2.0'
+    );
+
+    /* 7. Emoji row bounces in per item */
+    tl.fromTo(emojiRow,
+      { opacity: 0, y: -18 },
+      { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(2)' },
+      '-=0.5'
+    );
+
+    /* 8. Tag pill pops */
+    tl.fromTo(tag,
+      { opacity: 0, scale: 0.6 },
+      { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2.2)' },
+      '-=0.3'
+    );
+
+    /* 9. Recipient name slides up */
+    tl.fromTo(nameEl,
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.6 },
+      '-=0.25'
+    );
+
+    /* 10. Wavy line draws in */
+    tl.fromTo(wavy,
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.7, ease: 'power2.inOut' },
+      '-=0.35'
+    );
+
+    /* 11. Ending line — word by word bounce */
+    var words = endingLine.textContent.trim().split(/\s+/);
+    endingLine.innerHTML = words.map(function (w) {
+      return '<span style="display:inline-block;opacity:0;margin-right:0.22em;">' + w + '</span>';
+    }).join('');
+
+    tl.set(endingLine, { opacity: 1 }, '-=0.1');
+    tl.fromTo(
+      endingLine.querySelectorAll('span'),
+      { opacity: 0, y: 24, scale: 0.8 },
+      {
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.55,
+        stagger: 0.08,
+        ease: 'back.out(2)'
+      },
+      '-=0.2'
+    );
+
+    /* 12. Song row slides in */
+    tl.fromTo(songRow,
+      { opacity: 0, x: -20 },
+      { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' },
+      '-=0.2'
+    );
+
+    /* ── IDLE: continuous balloon drift with sway ── */
+    tl.add(function () {
+      balloonEls.forEach(function (b, i) {
+        /* Horizontal sway */
+        gsap.to(b, {
+          x: rnd(-22, 22),
+          duration: rnd(2.5, 4.5),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: rnd(0, 2)
+        });
+        /* Slow upward drift (infinite float off top) */
+        gsap.to(b, {
+          y: '-=' + (window.innerHeight * 0.12),
+          duration: rnd(6, 12),
+          repeat: -1,
+          ease: 'none',
+          delay: rnd(0, 4)
+        });
+      });
+
+      /* Bokeh slow pulse */
+      bokehWrap.querySelectorAll('.ep002-bokeh').forEach(function (bk, i) {
+        gsap.to(bk, {
+          opacity: rnd(0.3, 0.85),
+          scale:   rnd(0.88, 1.15),
+          duration: rnd(3, 6),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: rnd(0, 2)
+        });
+      });
+
+      /* Card gentle bob */
+      gsap.to(card, {
+        y: -7, duration: 3,
+        yoyo: true, repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+      /* Confetti perpetual re-rain */
+      function reRainConfetti () {
+        confettiPieces.forEach(function (c) {
+          if (parseFloat(gsap.getProperty(c, 'y')) > window.innerHeight) {
+            gsap.set(c, {
+              y: rnd(-60, -10),
+              x: rnd(-30, 30),
+              opacity: rnd(0.5, 1),
+              rotation: rnd(0, 360)
+            });
+            gsap.to(c, {
+              y: '+=' + rnd(window.innerHeight * 0.9, window.innerHeight * 1.2),
+              opacity: 0,
+              rotation: '+=' + rnd(-180, 180),
+              duration: rnd(3, 6),
+              ease: 'none'
+            });
+          }
+        });
+        gsap.delayedCall(0.4, reRainConfetti);
+      }
+      reRainConfetti();
+    });
+
+  }); /* end glitch:enter */
+
+})();
+</script>

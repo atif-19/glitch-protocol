@@ -1,0 +1,307 @@
+<!--
+  Component: cm_soft_002
+  Type: core_message
+  Aesthetic: Soft romantic
+  Obsession: Floating words
+  Tone: tender, poetic, intimate
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --MESSAGE_MAIN-- --MESSAGE_LINE_2-- --MESSAGE_LINE_3--
+-->
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #0d0d14;
+    --accent: #c9a7eb;
+    --bg: #08080f;
+    --text: #f0eaf8;
+    --font-heading: 'Georgia', serif;
+    --font-body: 'Helvetica Neue', sans-serif;
+  }
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+  }
+  .cm-soft-002-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .cm-soft-002-bg-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .cm-soft-002-glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0;
+  }
+  .cm-soft-002-glow-orb-1 {
+    width: clamp(300px, 50vw, 600px);
+    height: clamp(300px, 50vw, 600px);
+    background: radial-gradient(circle, rgba(180,130,230,0.18) 0%, transparent 70%);
+    top: -10%; left: -10%;
+  }
+  .cm-soft-002-glow-orb-2 {
+    width: clamp(200px, 40vw, 500px);
+    height: clamp(200px, 40vw, 500px);
+    background: radial-gradient(circle, rgba(220,160,255,0.12) 0%, transparent 70%);
+    bottom: -5%; right: -5%;
+  }
+  .cm-soft-002-glow-orb-3 {
+    width: clamp(150px, 25vw, 350px);
+    height: clamp(150px, 25vw, 350px);
+    background: radial-gradient(circle, rgba(255,200,240,0.10) 0%, transparent 70%);
+    top: 40%; left: 60%;
+  }
+  .cm-soft-002-words-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cm-soft-002-float-word {
+    position: absolute;
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+    will-change: transform, opacity;
+  }
+  .cm-soft-002-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    max-width: min(680px, 90vw);
+  }
+  .cm-soft-002-name-label {
+    font-family: var(--font-body);
+    font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: clamp(1rem, 2.5vh, 2rem);
+  }
+  .cm-soft-002-divider {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin-bottom: clamp(1.2rem, 3vh, 2.5rem);
+    opacity: 0.6;
+  }
+  .cm-soft-002-message-main {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 4.5vw, 3.2rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.35;
+    color: var(--text);
+    opacity: 0;
+    margin-bottom: clamp(1.2rem, 3vh, 2rem);
+    letter-spacing: -0.01em;
+  }
+  .cm-soft-002-message-main em {
+    color: var(--accent);
+    font-style: normal;
+  }
+  .cm-soft-002-line-2 {
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    font-weight: 300;
+    color: rgba(240,234,248,0.65);
+    opacity: 0;
+    margin-bottom: clamp(0.6rem, 1.5vh, 1.2rem);
+    letter-spacing: 0.03em;
+    line-height: 1.7;
+  }
+  .cm-soft-002-line-3 {
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    font-weight: 300;
+    color: rgba(240,234,248,0.65);
+    opacity: 0;
+    letter-spacing: 0.03em;
+    line-height: 1.7;
+  }
+  .cm-soft-002-signature {
+    margin-top: clamp(2rem, 5vh, 4rem);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+  }
+  .cm-soft-002-sig-line {
+    width: clamp(28px, 5vw, 50px);
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+  .cm-soft-002-sig-text {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: clamp(0.75rem, 1.4vw, 0.92rem);
+    color: var(--accent);
+    opacity: 0.75;
+    letter-spacing: 0.05em;
+  }
+  .cm-soft-002-cursor-glow {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,167,235,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.4s ease;
+    opacity: 0;
+    z-index: 5;
+  }
+</style>
+</head>
+<body>
+<div class="cm-soft-002-root" id="cm-soft-002-root">
+
+  <div class="cm-soft-002-bg-glow">
+    <div class="cm-soft-002-glow-orb cm-soft-002-glow-orb-1" id="orb1"></div>
+    <div class="cm-soft-002-glow-orb cm-soft-002-glow-orb-2" id="orb2"></div>
+    <div class="cm-soft-002-glow-orb cm-soft-002-glow-orb-3" id="orb3"></div>
+  </div>
+
+  <div class="cm-soft-002-words-canvas" id="cm-soft-002-words-canvas"></div>
+  <div class="cm-soft-002-cursor-glow" id="cm-soft-002-cursor-glow"></div>
+
+  <div class="cm-soft-002-center">
+    <div class="cm-soft-002-name-label" id="cm-soft-002-name-label">for --RECIPIENT_NAME--</div>
+    <div class="cm-soft-002-divider" id="cm-soft-002-divider"></div>
+    <div class="cm-soft-002-message-main" id="cm-soft-002-message-main">--MESSAGE_MAIN--</div>
+    <div class="cm-soft-002-line-2" id="cm-soft-002-line-2">--MESSAGE_LINE_2--</div>
+    <div class="cm-soft-002-line-3" id="cm-soft-002-line-3">--MESSAGE_LINE_3--</div>
+    <div class="cm-soft-002-signature" id="cm-soft-002-signature">
+      <div class="cm-soft-002-sig-line"></div>
+      <div class="cm-soft-002-sig-text">written just for you</div>
+      <div class="cm-soft-002-sig-line"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const floatingWords = [
+    "always","yours","softly","remember","here","infinite",
+    "tender","close","real","whole","still","gentle",
+    "cherish","breathe","hold","light","warmth","forever",
+    "near","true","sweet","given","safe","found"
+  ];
+
+  const canvas = document.getElementById('cm-soft-002-words-canvas');
+  const cursorGlow = document.getElementById('cm-soft-002-cursor-glow');
+  const wordEls = [];
+
+  floatingWords.forEach((word) => {
+    const el = document.createElement('span');
+    el.className = 'cm-soft-002-float-word';
+    el.textContent = word;
+    const size = 0.55 + Math.random() * 0.65;
+    el.style.fontSize = `clamp(${(size * 0.7).toFixed(2)}rem, ${(size * 1.5).toFixed(1)}vw, ${(size * 1.2).toFixed(2)}rem)`;
+    el.style.left = (5 + Math.random() * 88) + '%';
+    el.style.top = (5 + Math.random() * 88) + '%';
+    canvas.appendChild(el);
+    wordEls.push(el);
+  });
+
+  function runEntranceAnimation() {
+    const gsap = window.gsap;
+    if (!gsap) return;
+
+    const tl = gsap.timeline();
+
+    gsap.set('#cm-soft-002-name-label', { y: 18 });
+    gsap.set('#cm-soft-002-message-main', { y: 28, opacity: 0 });
+    gsap.set('#cm-soft-002-line-2', { y: 16, opacity: 0 });
+    gsap.set('#cm-soft-002-line-3', { y: 16, opacity: 0 });
+    gsap.set('#cm-soft-002-signature', { opacity: 0, y: 12 });
+
+    tl.to(['#orb1','#orb2','#orb3'], { opacity: 1, duration: 2.5, stagger: 0.4, ease: 'power2.out' }, 0);
+    tl.to('#cm-soft-002-name-label', { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 0.3);
+    tl.to('#cm-soft-002-divider', { width: '100%', duration: 1.0, ease: 'power2.inOut' }, 0.9);
+    tl.to('#cm-soft-002-message-main', { opacity: 1, y: 0, duration: 1.3, ease: 'power3.out' }, 1.2);
+    tl.to('#cm-soft-002-line-2', { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 1.8);
+    tl.to('#cm-soft-002-line-3', { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 2.1);
+    tl.to('#cm-soft-002-signature', { opacity: 1, y: 0, duration: 1.0, ease: 'power2.out' }, 2.6);
+
+    wordEls.forEach((el, i) => {
+      const delay = 1.4 + i * 0.15 + Math.random() * 0.4;
+      const drift = -18 - Math.random() * 30;
+      gsap.set(el, { y: 20, opacity: 0 });
+      tl.to(el, { opacity: 0.06 + Math.random() * 0.12, y: 0, duration: 1.6 + Math.random() * 0.8, ease: 'power2.out' }, delay);
+      gsap.to(el, { y: drift, duration: 8 + Math.random() * 10, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: delay + 1.2, repeatDelay: Math.random() * 2 });
+      gsap.to(el, { x: (-10 + Math.random() * 20), duration: 9 + Math.random() * 8, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: delay + 0.5 });
+      gsap.to(el, { opacity: 0.04 + Math.random() * 0.14, duration: 4 + Math.random() * 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: delay + 2 });
+    });
+
+    gsap.to('#orb1', { x: 30, y: 20, duration: 9, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2.5 });
+    gsap.to('#orb2', { x: -25, y: -15, duration: 11, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3 });
+    gsap.to('#orb3', { x: 15, y: 25, duration: 13, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5 });
+  }
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail && e.detail.index !== 4) return;
+    runEntranceAnimation();
+  });
+
+  const root = document.getElementById('cm-soft-002-root');
+
+  root.addEventListener('mousemove', function(e) {
+    const gsap = window.gsap;
+    if (!gsap) return;
+    const rect = root.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    gsap.to(cursorGlow, { left: mx, top: my, opacity: 1, duration: 0.5, ease: 'power2.out' });
+    const cx = mx / rect.width - 0.5;
+    const cy = my / rect.height - 0.5;
+    gsap.to('#orb1', { x: cx * 40, y: cy * 30, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+    gsap.to('#orb2', { x: -cx * 30, y: -cy * 25, duration: 1.4, ease: 'power2.out', overwrite: 'auto' });
+    wordEls.forEach((el, i) => {
+      const factor = 0.5 + (i % 5) * 0.3;
+      const dir = i % 2 === 0 ? 1 : -1;
+      gsap.to(el, { x: cx * factor * dir * 12, duration: 1.8, ease: 'power1.out', overwrite: 'auto' });
+    });
+  });
+
+  root.addEventListener('mouseleave', function() {
+    const gsap = window.gsap;
+    if (gsap) gsap.to(cursorGlow, { opacity: 0, duration: 0.6 });
+  });
+
+  const mainMsg = document.getElementById('cm-soft-002-message-main');
+  mainMsg.addEventListener('mouseenter', function() {
+    const gsap = window.gsap;
+    if (gsap) gsap.to(mainMsg, { scale: 1.015, duration: 0.5, ease: 'power2.out' });
+  });
+  mainMsg.addEventListener('mouseleave', function() {
+    const gsap = window.gsap;
+    if (gsap) gsap.to(mainMsg, { scale: 1, duration: 0.5, ease: 'power2.out' });
+  });
+
+  setTimeout(runEntranceAnimation, 300);
+})();
+</script>

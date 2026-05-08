@@ -1,0 +1,583 @@
+<!--
+  Component: tm_birthday_003
+  Type: the_moment
+  Aesthetic: Wish Card — handwritten warmth, confetti particles, golden candlelight
+  Obsession: Birthday / Celebration
+  Tone: warm, intimate, joyful
+  Occasion: birthday
+  Variables: --RECIPIENT_NAME-- --MOMENT_COPY-- --MOMENT_CTA--
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Dancing+Script:wght@400;600;700&family=Jost:wght@200;300;400&display=swap');
+
+  :root {
+    --primary: #fdf6ee;
+    --accent: #e8a045;
+    --bg: #0f0a06;
+    --text: #c9b99a;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Dancing Script', cursive;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .tm-bd3-root {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  .tm-bd3-cursor {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background 0.3s;
+  }
+  .tm-bd3-cursor.expand {
+    width: 32px;
+    height: 32px;
+    background: rgba(232,160,69,0.12);
+  }
+
+  /* Warm deep background gradient */
+  .tm-bd3-bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 55% at 50% 60%, rgba(232,160,69,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(180,80,40,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 35% 35% at 80% 20%, rgba(232,160,69,0.05) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  /* Paper texture noise */
+  .tm-bd3-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    opacity: 0.22;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Vignette */
+  .tm-bd3-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 35%, rgba(0,0,0,0.88) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Confetti canvas */
+  .tm-bd3-confetti {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Floating orbs / bokeh */
+  .tm-bd3-bokeh {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .tm-bd3-bokeh-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    filter: blur(6px);
+    opacity: 0;
+  }
+
+  /* The card */
+  .tm-bd3-card {
+    position: relative;
+    z-index: 10;
+    width: min(560px, 88vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Card inner */
+  .tm-bd3-card-inner {
+    width: 100%;
+    background: rgba(15, 10, 6, 0.6);
+    border: 1px solid rgba(232,160,69,0.18);
+    padding: clamp(28px, 5vh, 52px) clamp(24px, 5vw, 52px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(18px, 3vh, 28px);
+    position: relative;
+    backdrop-filter: blur(6px);
+  }
+
+  /* Corner ornaments */
+  .tm-bd3-card-inner::before,
+  .tm-bd3-card-inner::after {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-color: rgba(232,160,69,0.35);
+    border-style: solid;
+  }
+  .tm-bd3-card-inner::before {
+    top: 10px; left: 10px;
+    border-width: 1px 0 0 1px;
+  }
+  .tm-bd3-card-inner::after {
+    bottom: 10px; right: 10px;
+    border-width: 0 1px 1px 0;
+  }
+
+  /* Top candle icon */
+  .tm-bd3-candle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    opacity: 0;
+  }
+  .tm-bd3-flame {
+    width: 10px;
+    height: 16px;
+    background: radial-gradient(ellipse at 50% 80%, #fff5c0 0%, var(--accent) 45%, rgba(180,60,0,0.4) 100%);
+    border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+    box-shadow: 0 0 12px 4px rgba(232,160,69,0.6), 0 0 30px 8px rgba(232,160,69,0.2);
+    margin-bottom: 2px;
+  }
+  .tm-bd3-wick {
+    width: 1.5px;
+    height: 8px;
+    background: rgba(80,50,20,0.8);
+  }
+  .tm-bd3-candle-body {
+    width: 12px;
+    height: 28px;
+    background: linear-gradient(180deg, #fdf6ee 0%, #e8d5b8 100%);
+    border-radius: 2px 2px 1px 1px;
+    box-shadow: inset -2px 0 4px rgba(0,0,0,0.15);
+  }
+
+  /* Eyebrow */
+  .tm-bd3-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+  }
+  .tm-bd3-eyebrow-line {
+    width: clamp(24px, 5vw, 50px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(232,160,69,0.4));
+  }
+  .tm-bd3-eyebrow-line.r {
+    background: linear-gradient(90deg, rgba(232,160,69,0.4), transparent);
+  }
+  .tm-bd3-eyebrow-text {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.35em;
+    color: rgba(232,160,69,0.6);
+    text-transform: uppercase;
+  }
+
+  /* Recipient name */
+  .tm-bd3-name {
+    font-family: var(--font-body);
+    font-size: clamp(36px, 7vw, 72px);
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+    opacity: 0;
+    text-align: center;
+    text-shadow: 0 0 40px rgba(232,160,69,0.3);
+  }
+
+  /* Happy birthday line */
+  .tm-bd3-hb {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.2vw, 12px);
+    letter-spacing: 0.5em;
+    color: var(--accent);
+    text-transform: uppercase;
+    opacity: 0;
+  }
+
+  /* Divider */
+  .tm-bd3-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    opacity: 0;
+  }
+  .tm-bd3-divider-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(232,160,69,0.12);
+  }
+  .tm-bd3-divider-star {
+    font-size: 10px;
+    color: rgba(232,160,69,0.4);
+    line-height: 1;
+  }
+
+  /* Message */
+  .tm-bd3-message {
+    font-family: var(--font-body);
+    font-size: clamp(18px, 2.8vw, 28px);
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text);
+    text-align: center;
+    opacity: 0;
+  }
+  .tm-bd3-message em {
+    font-style: normal;
+    color: var(--primary);
+  }
+
+  /* CTA area */
+  .tm-bd3-cta-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    margin-top: clamp(4px, 1vh, 8px);
+  }
+  .tm-bd3-cta-text {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.3em;
+    color: rgba(201,185,154,0.45);
+    text-transform: uppercase;
+  }
+  .tm-bd3-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: clamp(11px, 1.4vh, 16px) clamp(22px, 3vw, 36px);
+    border: 1px solid rgba(232,160,69,0.3);
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: none;
+    overflow: hidden;
+    transition: color 0.35s;
+  }
+  .tm-bd3-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateY(101%);
+    transition: transform 0.45s cubic-bezier(0.77,0,0.175,1);
+  }
+  .tm-bd3-btn:hover::before { transform: translateY(0); }
+  .tm-bd3-btn:hover { color: var(--bg); }
+  .tm-bd3-btn span { position: relative; z-index: 1; }
+
+  /* Bottom ribbon */
+  .tm-bd3-ribbon {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(232,160,69,0.15) 20%,
+      rgba(232,160,69,0.5) 50%,
+      rgba(232,160,69,0.15) 80%,
+      transparent 100%);
+    opacity: 0;
+    box-shadow: 0 0 12px rgba(232,160,69,0.25);
+  }
+</style>
+<div class="tm-bd3-root" id="tm-bd3-root">
+  <div class="tm-bd3-cursor" id="tm-bd3-cursor"></div>
+  <div class="tm-bd3-bg-glow"></div>
+  <div class="tm-bd3-noise"></div>
+  <div class="tm-bd3-vignette"></div>
+  <canvas class="tm-bd3-confetti" id="tm-bd3-confetti"></canvas>
+  <div class="tm-bd3-bokeh" id="tm-bd3-bokeh"></div>
+  <div class="tm-bd3-card">
+    <div class="tm-bd3-ribbon" id="tm-bd3-ribbon-top"></div>
+<div class="tm-bd3-card-inner">
+
+  <div class="tm-bd3-candle" id="tm-bd3-candle">
+    <div class="tm-bd3-flame" id="tm-bd3-flame"></div>
+    <div class="tm-bd3-wick"></div>
+    <div class="tm-bd3-candle-body"></div>
+  </div>
+
+  <div class="tm-bd3-eyebrow" id="tm-bd3-eyebrow">
+    <div class="tm-bd3-eyebrow-line"></div>
+    <span class="tm-bd3-eyebrow-text">this one's for you</span>
+    <div class="tm-bd3-eyebrow-line r"></div>
+  </div>
+
+  <div class="tm-bd3-name" id="tm-bd3-name">--RECIPIENT_NAME--</div>
+
+  <div class="tm-bd3-hb" id="tm-bd3-hb">happy birthday</div>
+
+  <div class="tm-bd3-divider" id="tm-bd3-divider">
+    <div class="tm-bd3-divider-line"></div>
+    <span class="tm-bd3-divider-star">✦</span>
+    <div class="tm-bd3-divider-line"></div>
+  </div>
+
+  <p class="tm-bd3-message" id="tm-bd3-message">--MOMENT_COPY--</p>
+
+  <div class="tm-bd3-cta-area" id="tm-bd3-cta">
+    <span class="tm-bd3-cta-text">--MOMENT_CTA--</span>
+    <button class="tm-bd3-btn" id="tm-bd3-btn">
+      <span>open your gift</span>
+    </button>
+  </div>
+
+</div>
+
+<div class="tm-bd3-ribbon" id="tm-bd3-ribbon-bot"></div></div>
+</div>
+<script>
+(function () {
+
+  // Cursor
+  const cursor = document.getElementById('tm-bd3-cursor');
+  document.addEventListener('mousemove', function (e) {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('#tm-bd3-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+  });
+
+  // Bokeh dots
+  (function spawnBokeh() {
+    const container = document.getElementById('tm-bd3-bokeh');
+    for (let i = 0; i < 22; i++) {
+      const d = document.createElement('div');
+      d.className = 'tm-bd3-bokeh-dot';
+      const size = Math.random() * 6 + 3;
+      d.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random() * 100}%;
+        top:${Math.random() * 100}%;
+        filter: blur(${Math.random() * 4 + 2}px);
+      `;
+      container.appendChild(d);
+    }
+  })();
+
+  // Confetti system
+  const canvas = document.getElementById('tm-bd3-confetti');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let confettiActive = false;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const confettiColors = [
+    '#e8a045', '#f5c878', '#fdf6ee',
+    '#c97d30', '#f0e0b8', '#e86a45'
+  ];
+
+  function spawnConfetti(count) {
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -10 - Math.random() * 60,
+        w: Math.random() * 7 + 3,
+        h: Math.random() * 4 + 2,
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2 + 1.5,
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.15,
+        opacity: Math.random() * 0.7 + 0.3,
+        life: 1
+      });
+    }
+  }
+
+  function drawConfetti() {
+    if (!confettiActive) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      ctx.save();
+      ctx.globalAlpha = p.opacity * p.life;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      p.vy += 0.03;
+      if (p.y > canvas.height + 20) p.life -= 0.05;
+    });
+    particles = particles.filter(p => p.life > 0);
+    requestAnimationFrame(drawConfetti);
+  }
+
+  // Parallax on bg glow
+  document.addEventListener('mousemove', function (e) {
+    const mx = (e.clientX / window.innerWidth - 0.5);
+    const my = (e.clientY / window.innerHeight - 0.5);
+    const glow = document.querySelector('.tm-bd3-bg-glow');
+    if (glow) glow.style.transform = `translate(${mx * 20}px, ${my * 14}px)`;
+  });
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 5) return;
+
+    const tl = gsap.timeline();
+
+    // Ribbons
+    tl.to(['#tm-bd3-ribbon-top', '#tm-bd3-ribbon-bot'], {
+      opacity: 1, duration: 0.6, ease: 'power2.out'
+    }, 0);
+
+    // Candle rises in
+    tl.to('#tm-bd3-candle', {
+      opacity: 1, duration: 0.5, ease: 'power2.out'
+    }, 0.3)
+    .from('#tm-bd3-candle', { y: 12, duration: 0.5 }, 0.3);
+
+    // Flame flicker ambient
+    tl.call(() => {
+      gsap.to('#tm-bd3-flame', {
+        scaleX: 0.85, scaleY: 1.12,
+        duration: 0.18,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+        transformOrigin: '50% 100%'
+      });
+      gsap.to('#tm-bd3-flame', {
+        x: 1.5,
+        duration: 0.32,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true
+      });
+    }, [], 0.5);
+
+    // Eyebrow
+    tl.to('#tm-bd3-eyebrow', {
+      opacity: 1, duration: 0.5, ease: 'power2.out'
+    }, 0.7)
+    .from('#tm-bd3-eyebrow', { y: 8, duration: 0.5 }, 0.7);
+
+    // Name writes in
+    tl.to('#tm-bd3-name', {
+      opacity: 1, duration: 0.7, ease: 'power3.out'
+    }, 1.0)
+    .from('#tm-bd3-name', { y: 16, duration: 0.7, ease: 'power3.out' }, 1.0);
+
+    // HB line
+    tl.to('#tm-bd3-hb', {
+      opacity: 1, duration: 0.5, ease: 'power2.out'
+    }, 1.5)
+    .from('#tm-bd3-hb', { letterSpacing: '0.8em', duration: 0.8, ease: 'power2.out' }, 1.5);
+
+    // Divider
+    tl.to('#tm-bd3-divider', {
+      opacity: 1, duration: 0.4
+    }, 1.9);
+
+    // Message
+    tl.to('#tm-bd3-message', {
+      opacity: 1, duration: 0.8, ease: 'power2.out'
+    }, 2.2)
+    .from('#tm-bd3-message', { y: 12, duration: 0.8 }, 2.2);
+
+    // CTA
+    tl.to('#tm-bd3-cta', {
+      opacity: 1, duration: 0.6, ease: 'power2.out'
+    }, 3.0)
+    .from('#tm-bd3-cta', { y: 10, duration: 0.6 }, 3.0);
+
+    // Confetti burst
+    tl.call(() => {
+      confettiActive = true;
+      spawnConfetti(90);
+      drawConfetti();
+      setTimeout(() => spawnConfetti(60), 600);
+      setTimeout(() => spawnConfetti(40), 1400);
+    }, [], 1.1);
+
+    // Bokeh ambient float
+    tl.call(() => {
+      gsap.utils.toArray('.tm-bd3-bokeh-dot').forEach((d, i) => {
+        gsap.to(d, {
+          opacity: Math.random() * 0.35 + 0.05,
+          y: -(Math.random() * 60 + 20),
+          duration: Math.random() * 5 + 4,
+          delay: Math.random() * 3,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true
+        });
+      });
+    }, [], 0.5);
+
+    // Card gentle breathe
+    tl.call(() => {
+      gsap.to('.tm-bd3-card-inner', {
+        boxShadow: '0 0 60px rgba(232,160,69,0.1)',
+        duration: 2.5,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true
+      });
+    }, [], 2.0);
+
+    // Name gentle glow pulse
+    tl.call(() => {
+      gsap.to('#tm-bd3-name', {
+        textShadow: '0 0 60px rgba(232,160,69,0.5)',
+        duration: 2,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true
+      });
+    }, [], 1.5);
+
+  });
+
+})();
+</script>

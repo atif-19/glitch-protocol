@@ -1,0 +1,588 @@
+<!-- Component: ending-dreamy-004
+ Type: ending
+ Aesthetic: Dreamy
+ Tone: soft, wistful, romantic
+ Occasion: both
+ Obsession: snowfall, winter stillness, frosted glass, gentle drift
+ Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME-- -->
+<style>
+  .ed004-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  .ed004-sky {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(180,210,255,0.07) 0%, transparent 65%),
+                radial-gradient(ellipse at 80% 100%, rgba(var(--primary-rgb, 120,80,200), 0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .ed004-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .ed004-fog {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45%;
+    background: linear-gradient(0deg, var(--bg) 0%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ed004-fog-mid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ed004-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0.82) 100%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .ed004-glow-orb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(300px, 60vw, 700px);
+    height: clamp(300px, 60vw, 700px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,220,255,0.06) 0%, transparent 70%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .ed004-frost-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 1px solid rgba(200,225,255,0.12);
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .ed004-frost-ring-a {
+    width: clamp(240px, 48vw, 520px);
+    height: clamp(240px, 48vw, 520px);
+    box-shadow: 0 0 30px rgba(180,210,255,0.08), inset 0 0 30px rgba(180,210,255,0.05);
+  }
+
+  .ed004-frost-ring-b {
+    width: clamp(160px, 32vw, 360px);
+    height: clamp(160px, 32vw, 360px);
+    border-color: rgba(var(--accent-rgb, 200,150,255), 0.1);
+    box-shadow: 0 0 20px rgba(180,160,255,0.06);
+  }
+
+  .ed004-frost-ring-c {
+    width: clamp(380px, 72vw, 760px);
+    height: clamp(380px, 72vw, 760px);
+    border-color: rgba(180,210,255,0.05);
+  }
+
+  .ed004-content {
+    position: relative;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(10px, 2.4vh, 22px);
+    padding: clamp(20px, 5vw, 60px);
+    max-width: min(92vw, 700px);
+  }
+
+  .ed004-flake-icon {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    opacity: 0;
+    transform: translateY(10px) rotate(-15deg);
+    filter: drop-shadow(0 0 12px rgba(180,210,255,0.6));
+    display: inline-block;
+  }
+
+  .ed004-eyebrow {
+    font-family: var(--font-heading);
+    font-size: clamp(0.52rem, 1.1vw, 0.68rem);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .ed004-name-wrap {
+    position: relative;
+    opacity: 0;
+    transform: translateY(28px) scale(0.95);
+  }
+
+  .ed004-name {
+    font-family: var(--font-heading);
+    font-size: clamp(3.4rem, 11vw, 8.5rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    position: relative;
+    display: inline-block;
+  }
+
+  .ed004-name-inner {
+    display: inline-block;
+    background: linear-gradient(160deg,
+      #e8f4ff 0%,
+      #c4dcff 25%,
+      var(--accent) 55%,
+      var(--primary) 80%,
+      #d4e8ff 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 55px var(--accent));
+  }
+
+  .ed004-name-frost {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(220,235,255,0.12) 0%, transparent 60%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    pointer-events: none;
+  }
+
+  .ed004-divider {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 18px);
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0.15);
+  }
+
+  .ed004-div-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(180,210,255,0.35));
+  }
+
+  .ed004-div-line:last-child {
+    background: linear-gradient(90deg, rgba(180,210,255,0.35), transparent);
+  }
+
+  .ed004-div-center {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .ed004-div-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(180,210,255,0.5);
+  }
+
+  .ed004-div-star {
+    color: var(--accent);
+    font-size: 0.65rem;
+    opacity: 0.7;
+  }
+
+  .ed004-ending-line {
+    font-size: clamp(0.9rem, 2.1vw, 1.25rem);
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(16px);
+    line-height: 1.85;
+    max-width: 500px;
+    font-style: italic;
+    letter-spacing: 0.015em;
+  }
+
+  .ed004-glass-card {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2.5vw, 20px);
+    opacity: 0;
+    transform: translateY(14px);
+    margin-top: clamp(2px, 1vh, 10px);
+    padding: clamp(10px, 2vw, 16px) clamp(16px, 3vw, 28px);
+    border-radius: 999px;
+    background: rgba(180,210,255,0.04);
+    border: 1px solid rgba(180,210,255,0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+    cursor: default;
+    user-select: none;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .ed004-glass-card:hover {
+    border-color: rgba(180,210,255,0.22);
+    box-shadow: 0 8px 48px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .ed004-snow-orb {
+    position: relative;
+    width: clamp(40px, 6.5vw, 56px);
+    height: clamp(40px, 6.5vw, 56px);
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: radial-gradient(circle at 32% 28%, rgba(220,235,255,0.9), var(--accent) 55%, var(--primary));
+    box-shadow: 0 0 22px rgba(180,210,255,0.4), 0 0 50px var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+  }
+
+  .ed004-snow-orb::before {
+    content: '';
+    position: absolute;
+    top: 12%;
+    left: 18%;
+    width: 38%;
+    height: 28%;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.28);
+    filter: blur(2px);
+  }
+
+  .ed004-snow-orb-note {
+    font-size: clamp(0.85rem, 1.7vw, 1.15rem);
+    z-index: 1;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
+  }
+
+  .ed004-snow-orb:hover {
+    transform: scale(1.14) rotate(8deg);
+    box-shadow: 0 0 40px rgba(180,210,255,0.6), 0 0 80px var(--accent);
+  }
+
+  .ed004-song-info { text-align: left; }
+
+  .ed004-song-label {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(0.5rem, 0.95vw, 0.63rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(180,210,255,0.6);
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .ed004-song-name {
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    color: var(--text);
+    font-style: italic;
+    opacity: 0.8;
+    letter-spacing: 0.01em;
+  }
+
+  .ed004-bottom {
+    position: absolute;
+    bottom: clamp(16px, 3.5vh, 34px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 7;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+
+  .ed004-fin {
+    font-family: var(--font-heading);
+    font-size: clamp(0.52rem, 1vw, 0.68rem);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.22;
+  }
+
+  .ed004-bottom-dots {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .ed004-bdot {
+    border-radius: 50%;
+    background: rgba(180,210,255,0.3);
+  }
+
+  .ed004-bdot-sm { width: 3px; height: 3px; }
+  .ed004-bdot-md { width: 5px; height: 5px; opacity: 0.7; box-shadow: 0 0 6px rgba(180,210,255,0.5); background: rgba(180,210,255,0.6); }
+</style>
+<div class="ed004-wrap" id="ed004-wrap">
+  <div class="ed004-sky"></div>
+  <canvas class="ed004-canvas" id="ed004-canvas"></canvas>
+  <div class="ed004-fog-mid"></div>
+  <div class="ed004-fog"></div>
+  <div class="ed004-vignette"></div>
+  <div class="ed004-glow-orb" id="ed004-glow-orb"></div>
+  <div class="ed004-frost-ring ed004-frost-ring-c" id="ed004-ring-c"></div>
+  <div class="ed004-frost-ring ed004-frost-ring-a" id="ed004-ring-a"></div>
+  <div class="ed004-frost-ring ed004-frost-ring-b" id="ed004-ring-b"></div>
+  <div class="ed004-content">
+    <div class="ed004-flake-icon" id="ed004-flake">❄</div>
+    <div class="ed004-eyebrow" id="ed004-eyebrow">✦ &nbsp; drifting softly to you &nbsp; ✦</div>
+<div class="ed004-name-wrap" id="ed004-name-wrap">
+  <div class="ed004-name">
+    <span class="ed004-name-inner">--RECIPIENT_NAME--</span>
+  </div>
+</div>
+
+<div class="ed004-divider" id="ed004-divider">
+  <div class="ed004-div-line"></div>
+  <div class="ed004-div-center">
+    <div class="ed004-div-dot"></div>
+    <div class="ed004-div-star">❄</div>
+    <div class="ed004-div-dot"></div>
+  </div>
+  <div class="ed004-div-line"></div>
+</div>
+
+<div class="ed004-ending-line" id="ed004-ending-line">--ENDING_LINE--</div>
+
+<div class="ed004-glass-card" id="ed004-glass-card">
+  <div class="ed004-snow-orb" id="ed004-snow-orb">
+    <span class="ed004-snow-orb-note">♪</span>
+  </div>
+  <div class="ed004-song-info">
+    <span class="ed004-song-label">your song</span>
+    <span class="ed004-song-name">--SONG_NAME--</span>
+  </div>
+</div></div>
+  <div class="ed004-bottom" id="ed004-bottom">
+    <div class="ed004-fin">the end &nbsp;·&nbsp; with love</div>
+    <div class="ed004-bottom-dots">
+      <div class="ed004-bdot ed004-bdot-sm"></div>
+      <div class="ed004-bdot ed004-bdot-md"></div>
+      <div class="ed004-bdot ed004-bdot-sm"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  let initialized = false;
+
+  /* ── Snow canvas ── */
+  function initSnow() {
+    const canvas = document.getElementById('ed004-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    const flakes = [];
+    const FLAKE_CHARS = ['❄', '❅', '❆', '·', '•', '∗'];
+
+    function resize() {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COUNT = Math.min(120, Math.floor(window.innerWidth * 0.1));
+    for (let i = 0; i < COUNT; i++) {
+      flakes.push(makeFlake(true));
+    }
+
+    function makeFlake(random) {
+      const size = Math.random() * 14 + 4;
+      return {
+        x: Math.random() * (W || window.innerWidth),
+        y: random ? Math.random() * (H || window.innerHeight) : -(size * 2),
+        size,
+        char: FLAKE_CHARS[Math.floor(Math.random() * FLAKE_CHARS.length)],
+        opacity: Math.random() * 0.45 + 0.08,
+        speed: Math.random() * 0.6 + 0.2,
+        drift: Math.random() * 0.5 - 0.25,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: Math.random() * 0.012 + 0.004,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.008,
+        blur: Math.random() > 0.65 ? Math.random() * 1.5 : 0
+      };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      flakes.forEach(f => {
+        f.wobble += f.wobbleSpeed;
+        f.rotation += f.rotSpeed;
+        f.x += Math.sin(f.wobble) * f.drift + (Math.sin(f.wobble * 0.3) * 0.18);
+        f.y += f.speed;
+
+        if (f.y > H + 20) {
+          Object.assign(f, makeFlake(false));
+        }
+
+        ctx.save();
+        ctx.globalAlpha = f.opacity;
+        ctx.translate(f.x, f.y);
+        ctx.rotate(f.rotation);
+        if (f.blur > 0) ctx.filter = `blur(${f.blur}px)`;
+        ctx.fillStyle = '#d4eaff';
+        ctx.font = `${f.size}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(f.char, 0, 0);
+        ctx.restore();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  /* ── Rings ── */
+  function animateRings() {
+    gsap.to('#ed004-ring-a', {
+      opacity: 1, scale: 1, duration: 2, ease: 'power2.out', delay: 0.6
+    });
+    gsap.to('#ed004-ring-b', {
+      opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out', delay: 0.9
+    });
+    gsap.to('#ed004-ring-c', {
+      opacity: 1, scale: 1, duration: 2.5, ease: 'power2.out', delay: 0.4
+    });
+
+    gsap.to('#ed004-ring-a', {
+      scale: 1.04, opacity: 0.7, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3
+    });
+    gsap.to('#ed004-ring-b', {
+      scale: 0.95, opacity: 0.5, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3.5
+    });
+    gsap.to('#ed004-ring-c', {
+      scale: 1.025, opacity: 0.4, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3.2
+    });
+
+    gsap.to('#ed004-ring-a', {
+      rotation: 360, duration: 35, repeat: -1, ease: 'none', transformOrigin: 'center center'
+    });
+    gsap.to('#ed004-ring-b', {
+      rotation: -360, duration: 22, repeat: -1, ease: 'none', transformOrigin: 'center center'
+    });
+    gsap.to('#ed004-ring-c', {
+      rotation: 360, duration: 50, repeat: -1, ease: 'none', transformOrigin: 'center center'
+    });
+  }
+
+  /* ── Ambient ── */
+  function ambientLoop() {
+    gsap.to('#ed004-glow-orb', {
+      opacity: 0.85, scale: 1.08, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+    gsap.to('#ed004-name-wrap', {
+      y: -9, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1
+    });
+    gsap.to('#ed004-name-wrap', {
+      filter: 'drop-shadow(0 0 70px var(--accent))',
+      duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5
+    });
+    gsap.to('#ed004-flake', {
+      rotation: 360, duration: 18, repeat: -1, ease: 'none', transformOrigin: 'center center'
+    });
+    gsap.to('#ed004-flake', {
+      y: -5, duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+    gsap.to('#ed004-snow-orb', {
+      boxShadow: '0 0 45px rgba(180,210,255,0.7), 0 0 90px var(--accent)',
+      duration: 2.6, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+  }
+
+  /* ── Cursor ── */
+  function cursorReact() {
+    const wrap = document.getElementById('ed004-wrap');
+    if (!wrap) return;
+    wrap.addEventListener('mousemove', (e) => {
+      const cx = e.clientX / window.innerWidth - 0.5;
+      const cy = e.clientY / window.innerHeight - 0.5;
+      gsap.to('#ed004-name-wrap', {
+        x: cx * 16, y: cy * 11,
+        duration: 1.8, ease: 'power2.out', overwrite: 'auto'
+      });
+      gsap.to('#ed004-ring-a', {
+        x: cx * 28, y: cy * 20,
+        duration: 2.2, ease: 'power2.out'
+      });
+      gsap.to('#ed004-ring-b', {
+        x: cx * -20, y: cy * -15,
+        duration: 2.6, ease: 'power2.out'
+      });
+      gsap.to('#ed004-glow-orb', {
+        x: cx * 35, y: cy * 25,
+        duration: 2, ease: 'power2.out'
+      });
+    });
+  }
+
+  /* ── Main entrance ── */
+  function enter() {
+    if (initialized) return;
+    initialized = true;
+
+    initSnow();
+    animateRings();
+
+    gsap.to('#ed004-glow-orb', { opacity: 0.6, duration: 2.5, ease: 'power2.out' });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#ed004-flake',      { opacity: 1, y: 0, rotation: 0, duration: 0.8 }, 0.3)
+      .to('#ed004-eyebrow',    { opacity: 1, y: 0, duration: 0.75 }, 0.65)
+      .to('#ed004-name-wrap',  { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'back.out(1.6)' }, 0.95)
+      .to('#ed004-divider',    { opacity: 1, scaleX: 1, duration: 0.75, ease: 'power2.inOut' }, 1.5)
+      .to('#ed004-ending-line',{ opacity: 1, y: 0, duration: 0.9 }, 1.82)
+      .to('#ed004-glass-card', { opacity: 1, y: 0, duration: 0.8 }, 2.2)
+      .to('#ed004-bottom',     { opacity: 1, duration: 0.65 }, 2.6);
+
+    tl.call(() => {
+      ambientLoop();
+      cursorReact();
+    }, null, 2.8);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 7) return;
+    enter();
+  });
+})();
+</script>

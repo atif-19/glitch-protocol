@@ -1,0 +1,838 @@
+<!--
+  Component: hero_space_001
+  Type: hero
+  Aesthetic: Cosmic dark
+  Obsession: Astronomy
+  Tone: vast, intimate, wonder
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  #hero-space-001 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: pointer;
+  }
+
+  #hero-space-001 .hs1-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  #hero-space-001 .hs1-nebula {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #hero-space-001 .hs1-nebula-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(clamp(50px, 10vw, 140px));
+    pointer-events: none;
+  }
+
+  #hero-space-001 .hs1-nebula-blob.a {
+    width: clamp(280px, 55vw, 780px);
+    height: clamp(200px, 38vw, 520px);
+    background: var(--primary);
+    opacity: 0.07;
+    top: -5%;
+    left: -10%;
+  }
+
+  #hero-space-001 .hs1-nebula-blob.b {
+    width: clamp(220px, 44vw, 620px);
+    height: clamp(180px, 36vw, 500px);
+    background: var(--accent);
+    opacity: 0.06;
+    bottom: -8%;
+    right: -8%;
+  }
+
+  #hero-space-001 .hs1-nebula-blob.c {
+    width: clamp(160px, 30vw, 400px);
+    height: clamp(160px, 30vw, 400px);
+    background: var(--primary);
+    opacity: 0.05;
+    top: 30%;
+    right: 8%;
+  }
+
+  #hero-space-001 .hs1-nebula-blob.d {
+    width: clamp(120px, 22vw, 300px);
+    height: clamp(120px, 22vw, 300px);
+    background: var(--accent);
+    opacity: 0.08;
+    top: 15%;
+    left: 55%;
+  }
+
+  #hero-space-001 .hs1-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 28%, var(--bg) 82%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  #hero-space-001 .hs1-vignette-deep {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 50%, var(--bg) 100%);
+    opacity: 0.6;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  #hero-space-001 .hs1-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: clamp(40px, 7vw, 90px) clamp(40px, 7vw, 90px);
+    z-index: 2;
+    pointer-events: none;
+    transform-origin: center;
+    opacity: 0;
+  }
+
+  #hero-space-001 .hs1-horizon {
+    position: absolute;
+    bottom: clamp(60px, 12vh, 130px);
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--primary) 25%,
+      var(--accent) 50%,
+      var(--primary) 75%,
+      transparent 100%);
+    opacity: 0;
+    z-index: 6;
+    pointer-events: none;
+  }
+
+  #hero-space-001 .hs1-orbit-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 1px solid var(--primary);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 4;
+    transform: translate(-50%, -50%) rotateX(72deg);
+  }
+
+  #hero-space-001 .hs1-orbit-ring.r1 {
+    width: clamp(180px, 32vw, 440px);
+    height: clamp(180px, 32vw, 440px);
+    opacity: 0;
+    border-color: var(--primary);
+  }
+
+  #hero-space-001 .hs1-orbit-ring.r2 {
+    width: clamp(280px, 50vw, 680px);
+    height: clamp(280px, 50vw, 680px);
+    opacity: 0;
+    border-color: var(--accent);
+    border-style: dashed;
+  }
+
+  #hero-space-001 .hs1-orbit-dot {
+    position: absolute;
+    width: clamp(4px, 0.6vw, 8px);
+    height: clamp(4px, 0.6vw, 8px);
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 clamp(6px, 1.2vw, 16px) var(--accent),
+                0 0 clamp(12px, 2.4vw, 32px) var(--accent);
+    top: 50%;
+    left: 50%;
+    margin-top: calc(clamp(-90px, -16vw, -220px) - clamp(4px, 0.6vw, 8px) / 2);
+    margin-left: calc(-clamp(4px, 0.6vw, 8px) / 2);
+    opacity: 0;
+    z-index: 5;
+  }
+
+  #hero-space-001 .hs1-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: clamp(16px, 4vw, 56px);
+    max-width: clamp(300px, 80vw, 920px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #hero-space-001 .hs1-coords {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 18px);
+    margin-bottom: clamp(16px, 3.5vh, 34px);
+    opacity: 0;
+  }
+
+  #hero-space-001 .hs1-coords-rule {
+    flex: 1;
+    max-width: clamp(24px, 5vw, 70px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+    opacity: 0.5;
+  }
+
+  #hero-space-001 .hs1-coords-rule.right {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  #hero-space-001 .hs1-coords-text {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.8vw, 10px);
+    letter-spacing: clamp(4px, 1vw, 12px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  #hero-space-001 .hs1-name-stage {
+    position: relative;
+    margin-bottom: clamp(10px, 2.2vh, 22px);
+  }
+
+  #hero-space-001 .hs1-name-halo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 115%;
+    height: 150%;
+    background: radial-gradient(ellipse at center, var(--primary) 0%, transparent 68%);
+    opacity: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(clamp(16px, 3.5vw, 45px));
+    z-index: -1;
+  }
+
+  #hero-space-001 .hs1-name {
+    font-family: var(--font-heading);
+    font-size: clamp(52px, 11vw, 162px);
+    font-weight: 900;
+    line-height: 0.87;
+    color: var(--text);
+    display: block;
+    position: relative;
+    letter-spacing: -0.025em;
+    opacity: 0;
+  }
+
+  #hero-space-001 .hs1-name-outline {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: clamp(52px, 11vw, 162px);
+    font-weight: 900;
+    line-height: 0.87;
+    letter-spacing: -0.025em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    filter: blur(2px);
+  }
+
+  #hero-space-001 .hs1-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 2vw, 24px);
+    margin-bottom: clamp(12px, 2.5vh, 26px);
+    opacity: 0;
+  }
+
+  #hero-space-001 .hs1-title-line {
+    flex: 1;
+    max-width: clamp(22px, 5vw, 68px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary));
+    opacity: 0.4;
+  }
+
+  #hero-space-001 .hs1-title-line.right {
+    background: linear-gradient(90deg, var(--primary), transparent);
+  }
+
+  #hero-space-001 .hs1-title {
+    font-family: var(--font-heading);
+    font-size: clamp(11px, 1.5vw, 20px);
+    color: var(--primary);
+    letter-spacing: clamp(3px, 0.7vw, 9px);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  #hero-space-001 .hs1-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(12px, 1.4vw, 18px);
+    color: var(--text);
+    opacity: 0;
+    line-height: 1.75;
+    max-width: clamp(250px, 50vw, 560px);
+    margin-bottom: clamp(22px, 5vh, 48px);
+  }
+
+  #hero-space-001 .hs1-accent-capsule {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(10px, 1.8vw, 20px);
+    border: 1px solid var(--accent);
+    padding: clamp(8px, 1.3vh, 15px) clamp(20px, 3.2vw, 40px);
+    border-radius: 100px;
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero-space-001 .hs1-accent-capsule::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%);
+    opacity: 0.07;
+  }
+
+  #hero-space-001 .hs1-capsule-star {
+    color: var(--accent);
+    font-size: clamp(8px, 1vw, 13px);
+    line-height: 1;
+  }
+
+  #hero-space-001 .hs1-capsule-text {
+    font-family: var(--font-heading);
+    font-size: clamp(10px, 1.2vw, 16px);
+    color: var(--accent);
+    letter-spacing: clamp(3px, 0.6vw, 8px);
+    text-transform: uppercase;
+  }
+
+  #hero-space-001 .hs1-telemetry {
+    position: absolute;
+    z-index: 12;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  #hero-space-001 .hs1-telemetry.tl {
+    top: clamp(18px, 3.5vw, 42px);
+    left: clamp(18px, 3.5vw, 42px);
+    text-align: left;
+  }
+
+  #hero-space-001 .hs1-telemetry.br {
+    bottom: clamp(18px, 3.5vw, 42px);
+    right: clamp(18px, 3.5vw, 42px);
+    text-align: right;
+  }
+
+  #hero-space-001 .hs1-tele-line {
+    display: block;
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.75vw, 9px);
+    letter-spacing: clamp(2px, 0.4vw, 5px);
+    text-transform: uppercase;
+    color: var(--primary);
+    opacity: 0.35;
+    line-height: 1.8;
+  }
+
+  #hero-space-001 .hs1-tele-line.bright {
+    color: var(--accent);
+    opacity: 0.55;
+  }
+
+  #hero-space-001 .hs1-crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    width: clamp(40px, 6vw, 80px);
+    height: clamp(40px, 6vw, 80px);
+  }
+
+  #hero-space-001 .hs1-crosshair::before,
+  #hero-space-001 .hs1-crosshair::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+
+  #hero-space-001 .hs1-crosshair::before {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+
+  #hero-space-001 .hs1-crosshair::after {
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+
+  #hero-space-001 .hs1-star-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--text);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  #hero-space-001 .hs1-cta {
+    position: absolute;
+    bottom: clamp(22px, 5vh, 46px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(5px, 1vh, 10px);
+    opacity: 0;
+  }
+
+  #hero-space-001 .hs1-cta-label {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.8vw, 10px);
+    letter-spacing: clamp(4px, 0.9vw, 11px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.3;
+  }
+
+  #hero-space-001 .hs1-cta-pip {
+    width: clamp(4px, 0.5vw, 7px);
+    height: clamp(4px, 0.5vw, 7px);
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 clamp(6px, 1vw, 12px) var(--accent);
+    opacity: 0.6;
+  }
+
+  #hero-space-001 .hs1-shooting-star {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transform-origin: left center;
+  }
+
+  #hero-space-001 .hs1-scan-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--primary) 30%,
+      var(--accent) 50%,
+      var(--primary) 70%,
+      transparent 100%);
+    opacity: 0;
+    z-index: 6;
+    pointer-events: none;
+    top: 0;
+  }
+</style>
+<section id="hero-space-001">
+  <canvas class="hs1-canvas" id="hs1-canvas"></canvas>
+  <div class="hs1-nebula">
+    <div class="hs1-nebula-blob a"></div>
+    <div class="hs1-nebula-blob b"></div>
+    <div class="hs1-nebula-blob c"></div>
+    <div class="hs1-nebula-blob d"></div>
+  </div>
+  <div class="hs1-grid" id="hs1-grid"></div>
+  <div class="hs1-vignette"></div>
+  <div class="hs1-vignette-deep"></div>
+  <div class="hs1-orbit-ring r1" id="hs1-ring1">
+    <div class="hs1-orbit-dot" id="hs1-orb-dot"></div>
+  </div>
+  <div class="hs1-orbit-ring r2" id="hs1-ring2"></div>
+  <div class="hs1-crosshair" id="hs1-crosshair"></div>
+  <div class="hs1-scan-line" id="hs1-scan"></div>
+  <div class="hs1-horizon" id="hs1-horizon"></div>
+  <div class="hs1-telemetry tl" id="hs1-tele-tl">
+    <span class="hs1-tele-line bright">--TITLE--</span>
+    <span class="hs1-tele-line">RA 05h 34m 32s</span>
+    <span class="hs1-tele-line">Dec +22° 00′ 52″</span>
+    <span class="hs1-tele-line">Dist 6523 ly</span>
+  </div>
+  <div class="hs1-telemetry br" id="hs1-tele-br">
+    <span class="hs1-tele-line bright">--ACCENT_WORD--</span>
+    <span class="hs1-tele-line">Mag +1.33</span>
+    <span class="hs1-tele-line">V 8.2 km/s</span>
+    <span class="hs1-tele-line">Signal lock</span>
+  </div>
+  <div class="hs1-content">
+    <div class="hs1-coords" id="hs1-coords">
+      <span class="hs1-coords-rule"></span>
+      <span class="hs1-coords-text">--TITLE--</span>
+      <span class="hs1-coords-rule right"></span>
+    </div><div class="hs1-name-stage">
+  <div class="hs1-name-halo" id="hs1-name-halo"></div>
+  <span class="hs1-name-outline" aria-hidden="true">--RECIPIENT_NAME--</span>
+  <span class="hs1-name" id="hs1-name">--RECIPIENT_NAME--</span>
+</div>
+
+<div class="hs1-title-row" id="hs1-title-row">
+  <span class="hs1-title-line"></span>
+  <span class="hs1-title">--SUBTITLE--</span>
+  <span class="hs1-title-line right"></span>
+</div>
+
+<p class="hs1-subtitle" id="hs1-subtitle">--SUBTITLE--</p>
+
+<div class="hs1-accent-capsule" id="hs1-capsule">
+  <span class="hs1-capsule-star">★</span>
+  <span class="hs1-capsule-text">--ACCENT_WORD--</span>
+  <span class="hs1-capsule-star">★</span>
+</div></div>
+  <div class="hs1-cta" id="hs1-cta">
+    <span class="hs1-cta-label">Explore</span>
+    <div class="hs1-cta-pip" id="hs1-cta-pip"></div>
+  </div>
+</section>
+<script>
+(function () {
+
+  // ── Star field canvas ───────────────────────────────────────────
+  const canvas = document.getElementById('hs1-canvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function makeStars() {
+    stars = [];
+    const count = Math.floor((W * H) / 3200);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.4 + 0.2,
+        o: Math.random() * 0.7 + 0.1,
+        flicker: Math.random() * Math.PI * 2,
+        speed: 0.004 + Math.random() * 0.012
+      });
+    }
+  }
+  makeStars();
+
+  let rafId;
+  function drawStars(timestamp) {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.flicker += s.speed;
+      const alpha = s.o * (0.55 + 0.45 * Math.sin(s.flicker));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fill();
+    });
+    rafId = requestAnimationFrame(drawStars);
+  }
+  rafId = requestAnimationFrame(drawStars);
+
+  // ── Shooting stars ──────────────────────────────────────────────
+  function spawnShootingStar() {
+    const s = document.createElement('div');
+    s.className = 'hs1-shooting-star';
+    const len = clamp(80, 40, 180) + Math.random() * 120;
+    s.style.width = len + 'px';
+    s.style.top = (Math.random() * 60) + '%';
+    s.style.left = (Math.random() * 50) + '%';
+    const angle = 15 + Math.random() * 20;
+    s.style.transform = `rotate(${angle}deg)`;
+    document.getElementById('hero-space-001').appendChild(s);
+
+    gsap.timeline({
+      onComplete: () => { s.remove(); scheduleShoot(); }
+    })
+      .to(s, { opacity: 0.85, duration: 0.06, ease: 'none' })
+      .to(s, { x: len * 2.5, opacity: 0, duration: 0.5, ease: 'power2.in' });
+  }
+
+  function scheduleShoot() {
+    gsap.delayedCall(3 + Math.random() * 6, spawnShootingStar);
+  }
+
+  // ── Main animation ──────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 1) return;
+
+    const section  = document.getElementById('hero-space-001');
+    const grid     = document.getElementById('hs1-grid');
+    const nameEl   = document.getElementById('hs1-name');
+    const nameHalo = document.getElementById('hs1-name-halo');
+    const outline  = section.querySelector('.hs1-name-outline');
+    const coords   = document.getElementById('hs1-coords');
+    const titleRow = document.getElementById('hs1-title-row');
+    const subtitle = document.getElementById('hs1-subtitle');
+    const capsule  = document.getElementById('hs1-capsule');
+    const ring1    = document.getElementById('hs1-ring1');
+    const ring2    = document.getElementById('hs1-ring2');
+    const orbDot   = document.getElementById('hs1-orb-dot');
+    const crosshair= document.getElementById('hs1-crosshair');
+    const scan     = document.getElementById('hs1-scan');
+    const horizon  = document.getElementById('hs1-horizon');
+    const teleTL   = document.getElementById('hs1-tele-tl');
+    const teleBR   = document.getElementById('hs1-tele-br');
+    const cta      = document.getElementById('hs1-cta');
+    const nebulae  = section.querySelectorAll('.hs1-nebula-blob');
+
+    const tl = gsap.timeline();
+
+    // 1. ENTRANCE ─────────────────────────────────────────────────
+
+    // Scan sweep top → bottom
+    tl.set(scan, { top: '0%', opacity: 0 })
+      .to(scan, { opacity: 0.6, duration: 0.08, ease: 'none' }, 0)
+      .to(scan, { top: '100%', duration: 0.9, ease: 'power1.inOut' }, 0.08)
+      .to(scan, { opacity: 0, duration: 0.15, ease: 'none' }, 0.88)
+
+    // Grid materialise
+      .fromTo(grid,
+        { opacity: 0, scale: 1.06 },
+        { opacity: 1, scale: 1, duration: 1.4, ease: 'power2.out' }, 0.05)
+
+    // Nebulae drift in
+      .fromTo(nebulae,
+        { scale: 0.85, opacity: 0 },
+        { scale: 1, opacity: (i) => [0.07,0.06,0.05,0.08][i],
+          duration: 2, ease: 'power2.out', stagger: 0.12 }, 0.1)
+
+    // Orbit rings appear
+      .fromTo(ring1,
+        { opacity: 0, scale: 0.6 },
+        { opacity: 0.12, scale: 1, duration: 1.0, ease: 'expo.out' }, 0.35)
+      .fromTo(ring2,
+        { opacity: 0, scale: 0.7 },
+        { opacity: 0.07, scale: 1, duration: 1.1, ease: 'expo.out' }, 0.5)
+      .to(orbDot, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 0.8)
+
+    // Crosshair flash
+      .to(crosshair, { opacity: 0.35, duration: 0.2, ease: 'power2.out' }, 0.65)
+      .to(crosshair, { opacity: 0.12, duration: 0.5, ease: 'power2.out' }, 0.85)
+
+    // Telemetry data
+      .to(teleTL, { opacity: 1, x: 0, duration: 0.55, ease: 'power3.out' }, 0.7)
+      .to(teleBR, { opacity: 1, x: 0, duration: 0.55, ease: 'power3.out' }, 0.82)
+
+    // Coords label
+      .fromTo(coords,
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.9)
+
+    // Name outline flash then fill
+      .fromTo(outline,
+        { opacity: 0.5 },
+        { opacity: 0, duration: 0.35, ease: 'power2.in' }, 1.0)
+      .fromTo(nameEl,
+        { opacity: 0, y: clamp(20, 8, 36), filter: 'blur(10px)' },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.0, ease: 'expo.out' }, 1.05)
+      .to(nameHalo, { opacity: 0.22, duration: 0.8, ease: 'power2.out' }, 1.15)
+
+    // Title row
+      .fromTo(titleRow,
+        { opacity: 0, scaleX: 0.88 },
+        { opacity: 1, scaleX: 1, duration: 0.55, ease: 'back.out(1.5)' }, 1.5)
+
+    // Subtitle
+      .fromTo(subtitle,
+        { opacity: 0, y: 10 },
+        { opacity: 0.5, y: 0, duration: 0.55, ease: 'power2.out' }, 1.65)
+
+    // Capsule
+      .fromTo(capsule,
+        { opacity: 0, scale: 0.88, y: 8 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'back.out(2)' }, 1.82)
+
+    // Horizon line
+      .fromTo(horizon,
+        { opacity: 0, scaleX: 0 },
+        { opacity: 0.35, scaleX: 1, duration: 0.7, ease: 'power3.out', transformOrigin: 'center' }, 1.9)
+
+    // CTA
+      .fromTo(cta,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 2.1);
+
+    // Start shooting stars after entrance
+    gsap.delayedCall(2.5, scheduleShoot);
+
+    // 2. AMBIENT LOOPS ────────────────────────────────────────────
+
+    // Nebula drift
+    nebulae.forEach((n, i) => {
+      const dur = 8 + i * 1.5;
+      gsap.to(n, {
+        x: () => (Math.random() - 0.5) * 40,
+        y: () => (Math.random() - 0.5) * 30,
+        scale: 0.95 + Math.random() * 0.1,
+        duration: dur, ease: 'sine.inOut', yoyo: true, repeat: -1,
+        delay: i * 0.8
+      });
+    });
+
+    // Orbit ring slow spin
+    gsap.to(ring1, { rotation: 360, duration: 28, ease: 'linear', repeat: -1, transformOrigin: '50% 50%' });
+    gsap.to(ring2, { rotation: -360, duration: 42, ease: 'linear', repeat: -1, transformOrigin: '50% 50%' });
+
+    // Orbit dot spin on its ring
+    gsap.to(orbDot, {
+      rotation: 360, duration: 14,
+      ease: 'linear', repeat: -1,
+      transformOrigin: `50% calc(50% + clamp(90px, 16vw, 220px))`
+    });
+
+    // Dot pulse
+    gsap.to(orbDot, {
+      scale: 1.8, opacity: 0.4,
+      duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.2
+    });
+
+    // Name halo breathe
+    gsap.to(nameHalo, {
+      opacity: 0.1, scale: 1.06,
+      duration: 3.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2.5
+    });
+
+    // Grid subtle zoom
+    gsap.to(grid, {
+      scale: 1.04, opacity: 0.7,
+      duration: 9, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2
+    });
+
+    // Horizon shimmer
+    gsap.to(horizon, {
+      opacity: 0.18, duration: 2.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 3
+    });
+
+    // Capsule glow pulse
+    gsap.to(capsule, {
+      boxShadow: '0 0 clamp(10px,2vw,24px) var(--accent)',
+      duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2.8
+    });
+
+    // CTA pip pulse
+    gsap.to(document.getElementById('hs1-cta-pip'), {
+      scale: 1.7, opacity: 0.25,
+      duration: 1.0, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2.5
+    });
+
+    // Telemetry flicker
+    function flickerTele() {
+      gsap.delayedCall(3 + Math.random() * 5, function () {
+        const lines = section.querySelectorAll('.hs1-tele-line');
+        const pick = lines[Math.floor(Math.random() * lines.length)];
+        gsap.timeline({ onComplete: flickerTele })
+          .to(pick, { opacity: 0.05, duration: 0.05 })
+          .to(pick, { opacity: pick.classList.contains('bright') ? 0.55 : 0.35, duration: 0.12 });
+      });
+    }
+    gsap.delayedCall(3.5, flickerTele);
+  });
+
+  // 3. INTERACTION REACTION ─────────────────────────────────────
+  document.getElementById('hero-space-001').addEventListener('click', function () {
+    const section  = document.getElementById('hero-space-001');
+    const nameEl   = document.getElementById('hs1-name');
+    const nameHalo = document.getElementById('hs1-name-halo');
+    const ring1    = document.getElementById('hs1-ring1');
+    const ring2    = document.getElementById('hs1-ring2');
+    const scan     = document.getElementById('hs1-scan');
+    const capsule  = document.getElementById('hs1-capsule');
+
+    // Ripple outward
+    gsap.timeline()
+      .to(scan, { top: '0%', opacity: 0.5, duration: 0 })
+      .to(scan, { top: '100%', opacity: 0, duration: 0.55, ease: 'power2.inOut' }, 0)
+      .to(nameHalo, { opacity: 0.6, scale: 1.18, duration: 0.12, ease: 'power2.out' }, 0)
+      .to(nameHalo, { opacity: 0.18, scale: 1, duration: 0.6, ease: 'power2.out' }, 0.12)
+      .to(nameEl, { scale: 1.03, duration: 0.09, ease: 'none' }, 0)
+      .to(nameEl, { scale: 1, duration: 0.45, ease: 'elastic.out(1, 0.38)' }, 0.09)
+      .to(ring1, { opacity: 0.35, scale: 1.06, duration: 0.12, ease: 'power2.out' }, 0)
+      .to(ring1, { opacity: 0.12, scale: 1, duration: 0.55, ease: 'power2.out' }, 0.12)
+      .to(ring2, { opacity: 0.22, scale: 1.04, duration: 0.15, ease: 'power2.out' }, 0.06)
+      .to(ring2, { opacity: 0.07, scale: 1, duration: 0.6, ease: 'power2.out' }, 0.21)
+      .to(capsule, { scale: 1.05, duration: 0.1, ease: 'none' }, 0)
+      .to(capsule, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.4)' }, 0.1);
+
+    // Spawn burst stars
+    for (let i = 0; i < 8; i++) {
+      const s = document.createElement('div');
+      s.className = 'hs1-star-particle';
+      const size = 1.5 + Math.random() * 3;
+      s.style.cssText = `width:${size}px;height:${size}px;top:50%;left:50%;position:absolute;z-index:11;border-radius:50%;pointer-events:none;`;
+      section.appendChild(s);
+      const angle = (i / 8) * Math.PI * 2;
+      const dist = clamp(80, 40, 160) + Math.random() * 80;
+      gsap.timeline({ onComplete: () => s.remove() })
+        .set(s, { opacity: 0.9, x: 0, y: 0 })
+        .to(s, {
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist,
+          opacity: 0,
+          duration: 0.6 + Math.random() * 0.3,
+          ease: 'power2.out'
+        });
+    }
+
+    if (window.glitchEvents && window.glitchEvents.advance) {
+      gsap.delayedCall(0.16, () => window.glitchEvents.advance());
+    }
+  });
+
+  function clamp(mid, min, max) {
+    return Math.max(min, Math.min(max, mid));
+  }
+
+})();
+</script>

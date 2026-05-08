@@ -1,0 +1,635 @@
+<!-- Component: loading_books_001 
+ Type: loading 
+ Aesthetic: Page Turning 
+ Obsession: Books Reading 
+ Tone: literary, nostalgic, intimate 
+ Occasion: both 
+ Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<style>
+  :root {
+    --primary: #c8a97e;
+    --accent: #e8d5b0;
+    --bg: #0e0b08;
+    --text: #f2ede6;
+    --font-heading: 'Playfair Display', 'Georgia', serif;
+    --font-body: 'EB Garamond', 'Garamond', Georgia, serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .lb001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* Paper texture overlay */
+  .lb001-paper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E");
+    background-size: 300px 300px;
+  }
+
+  /* Ink bleed lines — faint ruled paper effect */
+  .lb001-ruled {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent calc(clamp(28px, 4vh, 44px) - 1px),
+      rgba(200,169,126,0.04) calc(clamp(28px, 4vh, 44px) - 1px),
+      rgba(200,169,126,0.04) clamp(28px, 4vh, 44px)
+    );
+  }
+
+  /* Vignette */
+  .lb001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 35%, rgba(0,0,0,0.9) 100%);
+  }
+
+  /* Warm ambient glow */
+  .lb001-amber {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 55%, rgba(200,169,126,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 30% at 15% 85%, rgba(180,120,60,0.05) 0%, transparent 60%);
+    animation: lb001-amber-breathe 5s ease-in-out infinite alternate;
+  }
+  @keyframes lb001-amber-breathe {
+    from { opacity: 0.7; }
+    to   { opacity: 1; }
+  }
+
+  /* Floating dust motes */
+  .lb001-motes {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .lb001-mote {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(200,169,126,0.6);
+    animation: lb001-mote-drift ease-in-out infinite;
+  }
+  @keyframes lb001-mote-drift {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 0.6; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0.5); opacity: 0; }
+  }
+
+  /* ── Open Book ── */
+  .lb001-book-wrap {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(220px, 42vw, 520px);
+    height: clamp(140px, 26vw, 330px);
+    perspective: 900px;
+    opacity: 0;
+  }
+
+  .lb001-book {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+
+  /* Left page */
+  .lb001-page-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(105deg, #f5edd8 0%, #ede0c4 100%);
+    border-radius: clamp(2px,0.3vw,5px) 0 0 clamp(2px,0.3vw,5px);
+    box-shadow: -4px 4px 24px rgba(0,0,0,0.5), inset -2px 0 8px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* Right page */
+  .lb001-page-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(75deg, #ede0c4 0%, #f5edd8 100%);
+    border-radius: 0 clamp(2px,0.3vw,5px) clamp(2px,0.3vw,5px) 0;
+    box-shadow: 4px 4px 24px rgba(0,0,0,0.5), inset 2px 0 8px rgba(0,0,0,0.12);
+    overflow: hidden;
+  }
+
+  /* Spine shadow center */
+  .lb001-spine {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: clamp(6px, 1vw, 14px);
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,0,0,0.18), rgba(0,0,0,0.05), rgba(0,0,0,0.18));
+    z-index: 5;
+    border-radius: 1px;
+  }
+
+  /* Fake text lines on pages */
+  .lb001-lines {
+    position: absolute;
+    inset: clamp(10px,2vw,22px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5px,0.8vh,9px);
+  }
+  .lb001-line {
+    height: 1px;
+    background: rgba(80,50,20,0.18);
+    border-radius: 1px;
+  }
+  .lb001-line:nth-child(1)  { width: 90%; }
+  .lb001-line:nth-child(2)  { width: 82%; }
+  .lb001-line:nth-child(3)  { width: 88%; }
+  .lb001-line:nth-child(4)  { width: 75%; }
+  .lb001-line:nth-child(5)  { width: 85%; }
+  .lb001-line:nth-child(6)  { width: 70%; }
+  .lb001-line:nth-child(7)  { width: 90%; }
+  .lb001-line:nth-child(8)  { width: 60%; }
+  .lb001-line:nth-child(9)  { width: 80%; }
+  .lb001-line:nth-child(10) { width: 45%; }
+
+  /* Page number */
+  .lb001-pagenum {
+    position: absolute;
+    bottom: clamp(6px,1vh,12px);
+    font-family: var(--font-body);
+    font-size: clamp(7px,0.8vw,11px);
+    color: rgba(80,50,20,0.4);
+    letter-spacing: 0.1em;
+  }
+  .lb001-pagenum.left  { left: 50%; transform: translateX(-50%); }
+  .lb001-pagenum.right { right: 50%; transform: translateX(50%); left: auto; }
+
+  /* Turning page (animated) */
+  .lb001-turning {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    z-index: 6;
+  }
+  .lb001-turn-front {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(75deg, #ede0c4 0%, #f5edd8 100%);
+    border-radius: 0 clamp(2px,0.3vw,5px) clamp(2px,0.3vw,5px) 0;
+    backface-visibility: hidden;
+    overflow: hidden;
+  }
+  .lb001-turn-back {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, #f5edd8 0%, #ede0c4 100%);
+    border-radius: 0 clamp(2px,0.3vw,5px) clamp(2px,0.3vw,5px) 0;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+    overflow: hidden;
+  }
+  /* curl shadow on turning page */
+  .lb001-turn-front::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06));
+    pointer-events: none;
+  }
+
+  /* Bookmark ribbon */
+  .lb001-bookmark {
+    position: absolute;
+    top: 0;
+    right: clamp(18px, 3vw, 40px);
+    width: clamp(10px, 1.5vw, 18px);
+    height: clamp(36px, 7vh, 60px);
+    background: linear-gradient(180deg, #8b3a3a, #6b2a2a);
+    z-index: 8;
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
+    opacity: 0;
+  }
+
+  /* ── Center text content ── */
+  .lb001-content {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: clamp(10px, 2vh, 22px);
+    padding: clamp(16px, 4vw, 48px);
+    margin-top: clamp(160px, 32vw, 380px);
+  }
+
+  .lb001-chapter {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1vw, 12px);
+    letter-spacing: 0.45em;
+    color: var(--primary);
+    text-transform: uppercase;
+    opacity: 0;
+    font-style: italic;
+  }
+
+  .lb001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 6vw, 82px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    position: relative;
+  }
+  .lb001-title-under {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    transition: none;
+  }
+
+  .lb001-epigraph {
+    font-family: var(--font-body);
+    font-size: clamp(11px, 1.4vw, 17px);
+    color: var(--accent);
+    font-style: italic;
+    opacity: 0;
+    max-width: clamp(200px, 42vw, 480px);
+    line-height: 1.9;
+    letter-spacing: 0.03em;
+  }
+
+  .lb001-loading-line {
+    font-family: var(--font-body);
+    font-size: clamp(10px, 1.1vw, 14px);
+    color: var(--text);
+    opacity: 0;
+    letter-spacing: 0.15em;
+    max-width: clamp(220px, 48vw, 520px);
+    line-height: 1.8;
+  }
+
+  /* Progress — styled as chapter dots */
+  .lb001-dots {
+    display: flex;
+    gap: clamp(6px, 1vw, 12px);
+    align-items: center;
+    opacity: 0;
+  }
+  .lb001-dot {
+    width: clamp(4px, 0.5vw, 7px);
+    height: clamp(4px, 0.5vw, 7px);
+    border-radius: 50%;
+    background: rgba(200,169,126,0.25);
+    transition: background 0.4s ease;
+  }
+  .lb001-dot.active {
+    background: var(--primary);
+    box-shadow: 0 0 6px rgba(200,169,126,0.5);
+  }
+
+  /* Ornamental divider */
+  .lb001-ornament {
+    font-family: var(--font-heading);
+    font-size: clamp(14px, 2vw, 22px);
+    color: var(--primary);
+    opacity: 0;
+    letter-spacing: 0.5em;
+    user-select: none;
+  }
+
+  /* Corner page curls */
+  .lb001-curl-tl,
+  .lb001-curl-br {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.06;
+  }
+  .lb001-curl-tl {
+    top: clamp(12px,2vh,28px);
+    left: clamp(12px,2vw,28px);
+    width: clamp(40px,6vw,80px);
+    height: clamp(40px,6vw,80px);
+    border-top: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+  }
+  .lb001-curl-br {
+    bottom: clamp(12px,2vh,28px);
+    right: clamp(12px,2vw,28px);
+    width: clamp(40px,6vw,80px);
+    height: clamp(40px,6vw,80px);
+    border-bottom: 1px solid var(--primary);
+    border-right: 1px solid var(--primary);
+  }
+
+  /* Flash */
+  .lb001-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    background: #1a1208;
+    opacity: 1;
+    pointer-events: none;
+  }
+</style>
+<div class="lb001-root" id="lb001-root">
+  <div class="lb001-flash" id="lb001-flash"></div>
+  <div class="lb001-paper"></div>
+  <div class="lb001-ruled"></div>
+  <div class="lb001-vignette"></div>
+  <div class="lb001-amber"></div>
+  <div class="lb001-motes" id="lb001-motes"></div>
+  <div class="lb001-curl-tl"></div>
+  <div class="lb001-curl-br"></div>
+  <!-- Open book -->
+  <div class="lb001-book-wrap" id="lb001-book-wrap">
+    <div class="lb001-book">
+<!-- Left page -->
+  <div class="lb001-page-left">
+    <div class="lb001-lines">
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+    </div>
+    <div class="lb001-pagenum left">i</div>
+  </div>
+
+  <!-- Right page (static) -->
+  <div class="lb001-page-right">
+    <div class="lb001-lines">
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+      <div class="lb001-line"></div><div class="lb001-line"></div>
+    </div>
+    <div class="lb001-pagenum right">ii</div>
+  </div>
+
+  <!-- Turning page -->
+  <div class="lb001-turning" id="lb001-turning">
+    <div class="lb001-turn-front">
+      <div class="lb001-lines">
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+      </div>
+    </div>
+    <div class="lb001-turn-back">
+      <div class="lb001-lines">
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+        <div class="lb001-line"></div><div class="lb001-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spine -->
+  <div class="lb001-spine"></div>
+
+  <!-- Bookmark -->
+  <div class="lb001-bookmark" id="lb001-bookmark"></div>
+
+</div></div>
+  <!-- Text content below book -->
+  <div class="lb001-content">
+    <div class="lb001-chapter" id="lb001-chapter">Chapter One · A Story for You</div>
+    <div class="lb001-title" id="lb001-title">
+      --RECIPIENT_NAME--
+      <div class="lb001-title-under" id="lb001-title-under"></div>
+    </div>
+    <div class="lb001-ornament" id="lb001-ornament">✦ · ✦ · ✦</div>
+    <div class="lb001-epigraph" id="lb001-epigraph">"Every great story begins with someone worth writing about."</div>
+    <div class="lb001-loading-line" id="lb001-loadline">--LOADING_LINE--</div>
+    <div class="lb001-dots" id="lb001-dots">
+      <div class="lb001-dot active" id="lb001-d1"></div>
+      <div class="lb001-dot" id="lb001-d2"></div>
+      <div class="lb001-dot" id="lb001-d3"></div>
+      <div class="lb001-dot" id="lb001-d4"></div>
+      <div class="lb001-dot" id="lb001-d5"></div>
+      <div class="lb001-dot" id="lb001-d6"></div>
+      <div class="lb001-dot" id="lb001-d7"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+
+  /* ── Dust motes ── */
+  const motesEl = document.getElementById('lb001-motes');
+  for (let i = 0; i < 18; i++) {
+    const m = document.createElement('div');
+    m.className = 'lb001-mote';
+    const sz = 1 + Math.random() * 2.5;
+    const dx = (Math.random() - 0.5) * 80;
+    const dy = -(20 + Math.random() * 60);
+    m.style.cssText = `
+      width:${sz}px; height:${sz}px;
+      left:${10 + Math.random()*80}vw;
+      top:${20 + Math.random()*60}vh;
+      --dx:${dx}px; --dy:${dy}px;
+      animation-duration:${5 + Math.random()*8}s;
+      animation-delay:${Math.random()*8}s;
+    `;
+    motesEl.appendChild(m);
+  }
+
+  /* ── Progress dots cycling ── */
+  const dots = [
+    document.getElementById('lb001-d1'),
+    document.getElementById('lb001-d2'),
+    document.getElementById('lb001-d3'),
+    document.getElementById('lb001-d4'),
+    document.getElementById('lb001-d5'),
+    document.getElementById('lb001-d6'),
+    document.getElementById('lb001-d7'),
+  ];
+  let dotIdx = 0;
+  function cycleDots() {
+    dots.forEach(d => d.classList.remove('active'));
+    dotIdx = (dotIdx + 1) % dots.length;
+    dots[dotIdx].classList.add('active');
+  }
+
+  /* ── Page turn loop ── */
+  function pageTurnLoop() {
+    const turning = document.getElementById('lb001-turning');
+    gsap.timeline({ repeat: -1, repeatDelay: 1.2 })
+      .to(turning, {
+        rotateY: -180,
+        duration: 1.4,
+        ease: 'power2.inOut',
+        onUpdate: function() { cycleDots(); }
+      })
+      .set(turning, { rotateY: 0 });
+  }
+
+  /* ── Main entrance ── */
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 0) return;
+    runEntrance();
+  });
+
+  let didRun = false;
+  function runEntrance() {
+    if (didRun) return;
+    didRun = true;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* Fade out dark overlay */
+    tl.to('#lb001-flash', { opacity: 0, duration: 1, ease: 'power2.inOut' }, 0);
+
+    /* Book rises in */
+    tl.fromTo('#lb001-book-wrap',
+      { opacity: 0, y: 30, rotateX: 15 },
+      { opacity: 1, y: 0, rotateX: 0, duration: 1.2, ease: 'power3.out' }, 0.4);
+
+    /* Bookmark drops */
+    tl.fromTo('#lb001-bookmark',
+      { opacity: 0, y: -20 },
+      { opacity: 1, y: 0, duration: 0.6, ease: 'bounce.out' }, 1.0);
+
+    /* Chapter label */
+    tl.to('#lb001-chapter',
+      { opacity: 1, duration: 0.6 }, 1.2);
+
+    /* Title */
+    tl.fromTo('#lb001-title',
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, duration: 0.8 }, 1.4);
+
+    /* Underline grows */
+    tl.to('#lb001-title-under',
+      { width: '100%', duration: 0.9, ease: 'power2.inOut' }, 2.0);
+
+    /* Ornament */
+    tl.to('#lb001-ornament',
+      { opacity: 1, duration: 0.5 }, 2.1);
+
+    /* Epigraph */
+    tl.to('#lb001-epigraph',
+      { opacity: 0.75, duration: 0.8, ease: 'power2.out' }, 2.3);
+
+    /* Loading line */
+    tl.to('#lb001-loadline',
+      { opacity: 0.65, duration: 0.6 }, 2.6);
+
+    /* Dots */
+    tl.to('#lb001-dots',
+      { opacity: 1, duration: 0.4 }, 2.8);
+
+    /* Corner curls gently appear */
+    tl.to(['.lb001-curl-tl', '.lb001-curl-br'],
+      { opacity: 0.12, duration: 1, stagger: 0.2 }, 1.6);
+
+    /* Start page turn loop after book is visible */
+    tl.call(() => { pageTurnLoop(); }, [], 1.8);
+
+    /* ── Ambient idles ── */
+    tl.call(() => {
+
+      /* Book gentle float */
+      gsap.to('#lb001-book-wrap', {
+        y: -7, duration: 3.8, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Title slow glow pulse via opacity */
+      gsap.to('#lb001-title', {
+        textShadow: '0 0 40px rgba(200,169,126,0.35)',
+        duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Epigraph breathe */
+      gsap.to('#lb001-epigraph', {
+        opacity: 0.55, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Ornament slow pulse */
+      gsap.to('#lb001-ornament', {
+        opacity: 0.5, duration: 2, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Ambient light breathe */
+      gsap.to('.lb001-amber', {
+        opacity: 0.6, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+    }, [], 2.0);
+  }
+
+  setTimeout(function() { if (!didRun) runEntrance(); }, 300);
+
+  /* ── Cursor parallax ── */
+  document.addEventListener('mousemove', function(ev) {
+    const cx = (ev.clientX / window.innerWidth  - 0.5) * 2;
+    const cy = (ev.clientY / window.innerHeight - 0.5) * 2;
+    gsap.to('#lb001-book-wrap', {
+      rotateY: cx * 6, rotateX: -cy * 4,
+      duration: 1.4, ease: 'power2.out', overwrite: 'auto'
+    });
+    gsap.to('#lb001-title', {
+      x: cx * 6, y: cy * 4,
+      duration: 1.2, ease: 'power2.out', overwrite: 'auto'
+    });
+    gsap.to('.lb001-amber', {
+      x: cx * 18, y: cy * 12,
+      duration: 2, ease: 'power2.out'
+    });
+  });
+
+})();
+</script>

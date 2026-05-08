@@ -1,0 +1,510 @@
+<!--
+  Component: hero_kdrama_001
+  Type: hero
+  Aesthetic: Soft romantic
+  Obsession: K-Drama
+  Tone: dreamy, tender, cinematic
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  .hkd001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hkd001-bg-wash {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 100% 70% at 60% 30%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 65%),
+      radial-gradient(ellipse 70% 90% at 15% 75%, color-mix(in srgb, var(--primary) 9%, transparent), transparent 65%),
+      radial-gradient(ellipse 50% 50% at 85% 80%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%);
+    z-index: 0;
+  }
+
+  .hkd001-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23g)' opacity='0.045'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Soft vignette */
+  .hkd001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, color-mix(in srgb, var(--bg) 55%, transparent) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Falling petals */
+  .hkd001-petal-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hkd001-petal {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Soft light streaks */
+  .hkd001-streak {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  /* Corner lace ornaments */
+  .hkd001-corner {
+    position: absolute;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hkd001-corner.tl { top: clamp(1rem, 2.5vw, 2.5rem); left: clamp(1rem, 2.5vw, 2.5rem); }
+  .hkd001-corner.tr { top: clamp(1rem, 2.5vw, 2.5rem); right: clamp(1rem, 2.5vw, 2.5rem); transform: scaleX(-1); }
+  .hkd001-corner.bl { bottom: clamp(1rem, 2.5vw, 2.5rem); left: clamp(1rem, 2.5vw, 2.5rem); transform: scaleY(-1); }
+  .hkd001-corner.br { bottom: clamp(1rem, 2.5vw, 2.5rem); right: clamp(1rem, 2.5vw, 2.5rem); transform: scale(-1,-1); }
+
+  /* Thin border frame */
+  .hkd001-frame {
+    position: absolute;
+    inset: clamp(1.2rem, 2.8vw, 3rem);
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Central content */
+  .hkd001-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: clamp(2rem, 5vw, 5rem);
+    max-width: min(760px, 90vw);
+  }
+
+  /* Korean character flourish above title */
+  .hkd001-hangul {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    letter-spacing: 0.6em;
+    color: color-mix(in srgb, var(--accent) 70%, transparent);
+    margin-bottom: clamp(0.6rem, 1.5vh, 1.2rem);
+    opacity: 0;
+  }
+
+  /* Heart icon */
+  .hkd001-heart-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: clamp(1rem, 2.5vh, 2rem);
+    opacity: 0;
+  }
+
+  .hkd001-eyebrow {
+    font-family: var(--font-body);
+    font-size: clamp(0.6rem, 1.1vw, 0.8rem);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: clamp(0.8rem, 2vh, 1.6rem);
+  }
+
+  .hkd001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.8rem, 7.2vw, 7.5rem);
+    line-height: 0.93;
+    color: var(--text);
+    margin: 0;
+    opacity: 0;
+  }
+
+  .hkd001-accent-word {
+    display: block;
+    color: var(--accent);
+    position: relative;
+  }
+
+  /* Wavy underline drawn via GSAP width */
+  .hkd001-accent-line {
+    display: block;
+    margin: 0 auto;
+    height: 2px;
+    width: 0%;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+
+  /* Petal divider */
+  .hkd001-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    margin: clamp(1.2rem, 3.5vh, 2.8rem) 0;
+    opacity: 0;
+  }
+  .hkd001-divider-line {
+    height: 1px;
+    width: clamp(35px, 7vw, 80px);
+    background: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .hkd001-divider-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .hkd001-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.8vw, 1.3rem);
+    font-style: italic;
+    color: color-mix(in srgb, var(--text) 58%, transparent);
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .hkd001-recipient {
+    font-family: var(--font-body);
+    font-size: clamp(0.6rem, 1.1vw, 0.8rem);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 36%, transparent);
+    margin-top: clamp(1.5rem, 4vh, 3rem);
+    opacity: 0;
+  }
+
+  /* Cursor soft glow */
+  .hkd001-cursor {
+    position: fixed;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%);
+    pointer-events: none;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Floating glow orbs */
+  .hkd001-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    filter: blur(0px);
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+<div class="hkd001-cursor" id="hkd001-cursor"></div>
+<div class="hkd001-root" id="hkd001-root">
+  <div class="hkd001-bg-wash"></div>
+  <div class="hkd001-grain"></div>
+  <div class="hkd001-vignette"></div>
+  <!-- Floating glow orbs -->
+  <div class="hkd001-orb" id="hkd001-orb1" style="width:clamp(180px,28vw,360px);height:clamp(180px,28vw,360px);top:10%;left:-8%"></div>
+  <div class="hkd001-orb" id="hkd001-orb2" style="width:clamp(140px,22vw,280px);height:clamp(140px,22vw,280px);bottom:8%;right:-5%"></div>
+  <div class="hkd001-orb" id="hkd001-orb3" style="width:clamp(80px,12vw,160px);height:clamp(80px,12vw,160px);top:55%;left:80%"></div>
+  <!-- Petal layer (petals injected by JS) -->
+  <div class="hkd001-petal-layer" id="hkd001-petal-layer"></div>
+  <!-- Light streaks (injected by JS) -->
+  <!-- Thin border frame -->
+  <div class="hkd001-frame" id="hkd001-frame"></div>
+  <!-- Lace corner ornaments -->
+  <svg class="hkd001-corner tl" id="hkd001-ctl" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 54 L2 2 L54 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.4"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)" opacity="0.8"/>
+    <circle cx="14" cy="2" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="2" cy="14" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <path d="M8 8 Q14 2 20 8 Q14 14 8 8Z" fill="color-mix(in srgb,var(--accent) 20%,transparent)" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.5"/>
+  </svg>
+  <svg class="hkd001-corner tr" id="hkd001-ctr" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 54 L2 2 L54 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.4"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)" opacity="0.8"/>
+    <circle cx="14" cy="2" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="2" cy="14" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <path d="M8 8 Q14 2 20 8 Q14 14 8 8Z" fill="color-mix(in srgb,var(--accent) 20%,transparent)" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.5"/>
+  </svg>
+  <svg class="hkd001-corner bl" id="hkd001-cbl" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 54 L2 2 L54 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.4"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)" opacity="0.8"/>
+    <circle cx="14" cy="2" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="2" cy="14" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <path d="M8 8 Q14 2 20 8 Q14 14 8 8Z" fill="color-mix(in srgb,var(--accent) 20%,transparent)" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.5"/>
+  </svg>
+  <svg class="hkd001-corner br" id="hkd001-cbr" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 54 L2 2 L54 2" stroke="var(--accent)" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M2 20 L2 2 L20 2" stroke="var(--accent)" stroke-width="1.4"/>
+    <circle cx="2" cy="2" r="2.5" fill="var(--accent)" opacity="0.8"/>
+    <circle cx="14" cy="2" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <circle cx="2" cy="14" r="1.2" fill="var(--accent)" opacity="0.4"/>
+    <path d="M8 8 Q14 2 20 8 Q14 14 8 8Z" fill="color-mix(in srgb,var(--accent) 20%,transparent)" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.5"/>
+  </svg>
+  <!-- Main content -->
+  <div class="hkd001-content" id="hkd001-content">
+<span class="hkd001-hangul" id="hkd001-hangul">당신을 위한 이야기</span>
+
+<!-- Heart SVG -->
+<div class="hkd001-heart-wrap" id="hkd001-heart-wrap">
+  <svg id="hkd001-heart" width="clamp(36px,6vw,56px)" height="clamp(32px,5.3vw,50px)" viewBox="0 0 56 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M28 46 C28 46 4 30 4 16 C4 8.268 10.268 2 18 2 C22.418 2 26.418 4.09 28 7.236 C29.582 4.09 33.582 2 38 2 C45.732 2 52 8.268 52 16 C52 30 28 46 28 46Z" stroke="var(--accent)" stroke-width="1.5" fill="color-mix(in srgb,var(--accent) 12%,transparent)"/>
+    <path d="M28 38 C28 38 10 26 10 16.5 C10 12 13.5 8.5 18 8.5 C21 8.5 23.8 10.1 25.4 12.5" stroke="var(--accent)" stroke-width="0.8" stroke-opacity="0.4" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<p class="hkd001-eyebrow" id="hkd001-eyebrow">a story written only for</p>
+
+<h1 class="hkd001-title" id="hkd001-title">
+  <span class="hkd001-accent-word" id="hkd001-accent">--ACCENT_WORD--</span>
+  --TITLE--
+</h1>
+<span class="hkd001-accent-line" id="hkd001-accent-line"></span>
+
+<div class="hkd001-divider" id="hkd001-divider">
+  <div class="hkd001-divider-line"></div>
+  <div class="hkd001-divider-dot"></div>
+  <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 11 C7 11 1 7 1 4 C1 2.343 2.343 1 4 1 C5.105 1 6.076 1.552 6.612 2.397 C7.148 1.552 8.119 1 9.224 1 C10.881 1 12.224 2.343 12.224 4 C12.224 7 7 11 7 11Z" stroke="var(--accent)" stroke-width="1" fill="color-mix(in srgb,var(--accent) 20%,transparent)"/>
+  </svg>
+  <div class="hkd001-divider-dot"></div>
+  <div class="hkd001-divider-line"></div>
+</div>
+
+<p class="hkd001-subtitle" id="hkd001-subtitle">--SUBTITLE--</p>
+
+<p class="hkd001-recipient" id="hkd001-recipient">for &nbsp;—&nbsp; --RECIPIENT_NAME--</p></div>
+</div>
+<script>
+(function() {
+
+  // --- Cursor glow ---
+  var cur = document.getElementById('hkd001-cursor');
+  document.addEventListener('mousemove', function(e) {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top = e.clientY + 'px';
+  });
+
+  // --- Build cherry blossom petals ---
+  var petalLayer = document.getElementById('hkd001-petal-layer');
+  var petalCount = 22;
+  var petalEls = [];
+
+  function makePetalPath(size, variety) {
+    var s = size;
+    if (variety === 0) return '<ellipse cx="' + s + '" cy="' + (s*0.5) + '" rx="' + s + '" ry="' + (s*0.5) + '" fill="color-mix(in srgb,var(--accent) 18%,transparent)" stroke="var(--accent)" stroke-width="0.6" stroke-opacity="0.4"/>';
+    if (variety === 1) return '<path d="M' + s + ' 0 Q' + (s*2) + ' ' + s + ' ' + s + ' ' + (s*2) + ' Q0 ' + s + ' ' + s + ' 0Z" fill="color-mix(in srgb,var(--accent) 15%,transparent)" stroke="var(--accent)" stroke-width="0.5" stroke-opacity="0.35"/>';
+    return '<path d="M' + s + ' 0 C' + (s*1.8) + ' 0 ' + (s*2) + ' ' + s + ' ' + s + ' ' + (s*1.5) + ' C' + s*0.2 + ' ' + s + ' 0 0 ' + s + ' 0Z" fill="color-mix(in srgb,var(--accent) 14%,transparent)" stroke="var(--accent)" stroke-width="0.5" stroke-opacity="0.3"/>';
+  }
+
+  for (var i = 0; i < petalCount; i++) {
+    var div = document.createElement('div');
+    div.className = 'hkd001-petal';
+    var sz = Math.random() * 8 + 5;
+    var variety = Math.floor(Math.random() * 3);
+    div.style.cssText = 'left:' + (Math.random() * 110 - 5) + '%;top:-' + (Math.random() * 10 + 2) + '%;opacity:0';
+    div.innerHTML = '<svg width="' + (sz*2.2) + '" height="' + (sz*2.2) + '" viewBox="0 0 ' + (sz*2.2) + ' ' + (sz*2.2) + '" fill="none" xmlns="http://www.w3.org/2000/svg">' + makePetalPath(sz, variety) + '</svg>';
+    petalLayer.appendChild(div);
+    petalEls.push(div);
+  }
+
+  // --------------------------------------------------
+  // GSAP — section index 1 (hero)
+  // --------------------------------------------------
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 1) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // 1. Frame fades in with soft expand
+    tl.fromTo('#hkd001-frame', {
+      opacity: 0, scale: 0.92
+    }, {
+      opacity: 1, scale: 1, duration: 1.4, ease: 'expo.out'
+    }, 0);
+
+    // 2. Corner ornaments bloom
+    tl.to(['#hkd001-ctl','#hkd001-ctr','#hkd001-cbl','#hkd001-cbr'], {
+      opacity: 1, duration: 0.9, stagger: 0.1
+    }, 0.15);
+
+    // 3. Glow orbs surface
+    tl.to('#hkd001-orb1', { opacity: 1, duration: 2, ease: 'power1.out' }, 0.1);
+    tl.to('#hkd001-orb2', { opacity: 0.85, duration: 2, ease: 'power1.out' }, 0.25);
+    tl.to('#hkd001-orb3', { opacity: 0.6, duration: 1.8, ease: 'power1.out' }, 0.35);
+
+    // 4. Hangul text fades
+    tl.fromTo('#hkd001-hangul', {
+      opacity: 0, y: -10, letterSpacing: '1em'
+    }, {
+      opacity: 1, y: 0, letterSpacing: '0.6em', duration: 1.2
+    }, 0.45);
+
+    // 5. Heart scales in with bounce
+    tl.fromTo('#hkd001-heart-wrap', {
+      opacity: 0, scale: 0.4
+    }, {
+      opacity: 1, scale: 1, duration: 1, ease: 'back.out(2.2)'
+    }, 0.6);
+
+    // 6. Eyebrow unfurls
+    tl.fromTo('#hkd001-eyebrow', {
+      opacity: 0, letterSpacing: '0.7em'
+    }, {
+      opacity: 1, letterSpacing: '0.38em', duration: 1.2
+    }, 0.8);
+
+    // 7. Title rises
+    tl.fromTo('#hkd001-title', {
+      opacity: 0, y: 44, skewY: 1.5
+    }, {
+      opacity: 1, y: 0, skewY: 0, duration: 1.1, ease: 'expo.out'
+    }, 0.95);
+
+    // 8. Accent line draws
+    tl.fromTo('#hkd001-accent-line', {
+      width: '0%', opacity: 0
+    }, {
+      width: '50%', opacity: 0.6, duration: 1, ease: 'power2.inOut'
+    }, 1.2);
+
+    // 9. Divider spreads
+    tl.fromTo('#hkd001-divider', {
+      opacity: 0, scaleX: 0.3
+    }, {
+      opacity: 1, scaleX: 1, duration: 0.9, ease: 'expo.out'
+    }, 1.3);
+
+    // 10. Subtitle
+    tl.fromTo('#hkd001-subtitle', {
+      opacity: 0, y: 16
+    }, {
+      opacity: 1, y: 0, duration: 1.1
+    }, 1.45);
+
+    // 11. Recipient
+    tl.fromTo('#hkd001-recipient', {
+      opacity: 0
+    }, {
+      opacity: 1, duration: 1.1
+    }, 1.7);
+
+    // 12. Petals begin falling — staggered
+    petalEls.forEach(function(p, i) {
+      var startTop = -(Math.random() * 20 + 5);
+      var endTop = 105 + Math.random() * 10;
+      var dur = 7 + Math.random() * 6;
+      var delay = i * 0.25 + Math.random() * 1.5;
+      var swayX = (Math.random() - 0.5) * 14;
+      gsap.set(p, { top: startTop + '%', x: 0, rotation: Math.random() * 360 });
+      gsap.to(p, {
+        top: endTop + '%',
+        x: swayX + 'vw',
+        rotation: '+=' + (Math.random() * 360 + 180),
+        opacity: Math.random() * 0.45 + 0.2,
+        duration: dur,
+        delay: delay,
+        ease: 'none',
+        repeat: -1,
+        repeatDelay: Math.random() * 3,
+        onRepeat: function() {
+          gsap.set(p, { top: startTop + '%', left: (Math.random() * 110 - 5) + '%', x: 0 });
+        }
+      });
+    });
+
+    // --------------------------------
+    // AMBIENT / IDLE ANIMATIONS
+    // --------------------------------
+
+    // Heart soft pulse
+    gsap.to('#hkd001-heart', {
+      scale: 1.1, duration: 1.8, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5,
+      transformOrigin: '50% 50%'
+    });
+
+    // Title float
+    gsap.to('#hkd001-title', {
+      y: -5, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2
+    });
+
+    // Accent line opacity breathe
+    gsap.to('#hkd001-accent-line', {
+      opacity: 0.25, duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2.2
+    });
+
+    // Orb pulse
+    gsap.to('#hkd001-orb1', {
+      scale: 1.15, opacity: 0.75, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+    gsap.to('#hkd001-orb2', {
+      scale: 1.2, opacity: 0.65, duration: 3.8, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1
+    });
+    gsap.to('#hkd001-orb3', {
+      scale: 1.3, opacity: 0.45, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.6
+    });
+
+    // Hangul gentle float
+    gsap.to('#hkd001-hangul', {
+      y: -4, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.8
+    });
+
+    // Divider mini-heart pulse
+    gsap.to('.hkd001-divider svg', {
+      scale: 1.3, opacity: 0.5, duration: 1.6, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.2,
+      transformOrigin: '50% 50%'
+    });
+
+    // Bg wash breathe
+    gsap.to('.hkd001-bg-wash', {
+      opacity: 0.65, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+
+  });
+
+  // --- Mouse parallax ---
+  document.getElementById('hkd001-root').addEventListener('mousemove', function(e) {
+    var rx = e.clientX / window.innerWidth - 0.5;
+    var ry = e.clientY / window.innerHeight - 0.5;
+    gsap.to('#hkd001-content', { x: rx * 14, y: ry * 9, duration: 1.3, ease: 'power1.out' });
+    gsap.to('#hkd001-petal-layer', { x: rx * -20, y: ry * -12, duration: 1.8, ease: 'power1.out' });
+    gsap.to('.hkd001-bg-wash', { x: rx * 35, y: ry * 20, duration: 2, ease: 'power1.out' });
+    gsap.to(['#hkd001-orb1','#hkd001-orb2','#hkd001-orb3'], { x: rx * -22, y: ry * -14, duration: 1.6, ease: 'power1.out' });
+  });
+
+  // --- Heart hover ---
+  document.getElementById('hkd001-heart-wrap').addEventListener('mouseenter', function() {
+    gsap.to('#hkd001-heart', { scale: 1.25, duration: 0.4, ease: 'back.out(2)', transformOrigin: '50% 50%' });
+  });
+  document.getElementById('hkd001-heart-wrap').addEventListener('mouseleave', function() {
+    gsap.to('#hkd001-heart', { scale: 1, duration: 0.5, ease: 'power2.out', transformOrigin: '50% 50%' });
+  });
+
+})();
+</script>

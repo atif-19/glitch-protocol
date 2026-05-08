@@ -1,0 +1,764 @@
+<!-- Component: ending-minimal-005
+     Type: ending
+     Aesthetic: Minimal / Breathing Circle
+     Obsession: Mindfulness / Stillness / Presence
+     Tone: calm, intimate, poetic
+     Occasion: both
+     Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME--
+-->
+<style>
+  /* =====================================================
+     ENDING-MINIMAL-005 | Breathing Circle
+     Full-screen minimal ending — one pulsing circle,
+     sparse typography, meditative rhythm
+     ===================================================== */
+
+  /* Scoped root variables */
+  .em005-root {
+    --em005-heading: var(--font-heading);
+    --em005-body: var(--font-body);
+    --em005-glow: color-mix(in srgb, var(--accent) 40%, transparent);
+    --em005-ring: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  /* Full screen container */
+  .em005-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  /* ── Deep radial background vignette ── */
+  .em005-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      color-mix(in srgb, var(--primary) 14%, transparent) 0%,
+      color-mix(in srgb, var(--accent)   5%, transparent) 40%,
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+
+  /* ── Grain texture overlay ── */
+  .em005-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+    animation: em005-grainDrift 0.18s steps(1) infinite;
+  }
+
+  @keyframes em005-grainDrift {
+    0%   { background-position: 0 0; }
+    25%  { background-position: -20px 12px; }
+    50%  { background-position: 14px -18px; }
+    75%  { background-position: -10px 22px; }
+    100% { background-position: 18px -8px; }
+  }
+
+  /* ══════════════════════════════════════
+     BREATHING CIRCLE SYSTEM
+     Three concentric rings — innermost
+     is the core, outer rings expand/fade
+     ══════════════════════════════════════ */
+
+  /* ── Circle stage — center anchor ── */
+  .em005-circle-stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0;
+    height: 0;
+  }
+
+  /* ── Shared ring style ── */
+  .em005-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--em005-ring);
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  /* Ring 1 — outermost halo */
+  .em005-ring-1 {
+    width:  clamp(320px, 60vmin, 680px);
+    height: clamp(320px, 60vmin, 680px);
+    border-color: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  /* Ring 2 — mid halo */
+  .em005-ring-2 {
+    width:  clamp(240px, 46vmin, 520px);
+    height: clamp(240px, 46vmin, 520px);
+    border-color: color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+
+  /* Ring 3 — inner halo */
+  .em005-ring-3 {
+    width:  clamp(170px, 33vmin, 370px);
+    height: clamp(170px, 33vmin, 370px);
+    border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+
+  /* Core filled circle */
+  .em005-core {
+    position: absolute;
+    border-radius: 50%;
+    width:  clamp(90px, 17vmin, 190px);
+    height: clamp(90px, 17vmin, 190px);
+    background: radial-gradient(
+      circle at 38% 38%,
+      color-mix(in srgb, var(--primary) 50%, var(--accent)) 0%,
+      color-mix(in srgb, var(--accent) 60%, var(--bg)) 55%,
+      color-mix(in srgb, var(--bg) 80%, var(--accent)) 100%
+    );
+    box-shadow:
+      0 0 clamp(18px, 3vw, 40px)  clamp(4px,  0.8vw, 12px) var(--em005-glow),
+      0 0 clamp(40px, 8vw, 100px) clamp(10px, 2vw,   28px) color-mix(in srgb, var(--accent) 12%, transparent),
+      inset 0 0 clamp(14px, 2vw, 28px) rgba(255,255,255,0.06);
+    opacity: 0;
+    transform: scale(0);
+    z-index: 3;
+  }
+
+  /* Breathing animation — expand and contract */
+  @keyframes em005-breatheExpand {
+    0%,100% { transform: scale(1);    box-shadow:
+      0 0 clamp(18px,3vw,40px)  clamp(4px,0.8vw,12px)  var(--em005-glow),
+      0 0 clamp(40px,8vw,100px) clamp(10px,2vw,28px)   color-mix(in srgb,var(--accent) 12%,transparent),
+      inset 0 0 clamp(14px,2vw,28px) rgba(255,255,255,0.06); }
+    50%      { transform: scale(1.18); box-shadow:
+      0 0 clamp(28px,5vw,60px)  clamp(8px,1.5vw,20px)  var(--em005-glow),
+      0 0 clamp(60px,12vw,150px) clamp(16px,3vw,44px)  color-mix(in srgb,var(--accent) 20%,transparent),
+      inset 0 0 clamp(18px,3vw,36px) rgba(255,255,255,0.1); }
+  }
+
+  /* Ring pulse — outermost */
+  @keyframes em005-ringPulse1 {
+    0%,100% { transform: scale(1);    opacity: 0.4; }
+    50%      { transform: scale(1.06); opacity: 0.15; }
+  }
+
+  /* Ring pulse — mid */
+  @keyframes em005-ringPulse2 {
+    0%,100% { transform: scale(1);    opacity: 0.55; }
+    50%      { transform: scale(1.09); opacity: 0.22; }
+  }
+
+  /* Ring pulse — inner */
+  @keyframes em005-ringPulse3 {
+    0%,100% { transform: scale(1);    opacity: 0.7; }
+    50%      { transform: scale(1.12); opacity: 0.35; }
+  }
+
+  /* ── Breath label (inhale / exhale) ── */
+  .em005-breath-label {
+    position: absolute;
+    z-index: 8;
+    font-family: var(--em005-body);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: clamp(4px, 0.8vw, 10px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    top: calc(50% + clamp(52px, 10vmin, 108px));
+    left: 50%;
+    translate: -50% 0;
+  }
+
+  /* ══════════════════════════════════════
+     TYPOGRAPHY LAYOUT
+     Name above circle, message below
+     ══════════════════════════════════════ */
+
+  /* ── Recipient name — above circle ── */
+  .em005-name {
+    position: absolute;
+    top: calc(50% - clamp(160px, 30vmin, 340px));
+    left: 50%;
+    translate: -50% 0;
+    z-index: 6;
+    font-family: var(--em005-heading);
+    font-size: clamp(11px, 1.5vw, 17px);
+    letter-spacing: clamp(6px, 1.3vw, 18px);
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  /* ── Thin rule between name and circle ── */
+  .em005-top-rule {
+    position: absolute;
+    top: calc(50% - clamp(132px, 25vmin, 294px));
+    left: 50%;
+    translate: -50% 0;
+    z-index: 6;
+    width: clamp(30px, 6vw, 72px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+  }
+
+  /* ── Ending line — below circle ── */
+  .em005-ending-wrap {
+    position: absolute;
+    bottom: calc(50% - clamp(220px, 42vmin, 460px));
+    left: 50%;
+    translate: -50% 0;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 2vh, 22px);
+    width: clamp(260px, 72vw, 700px);
+    text-align: center;
+  }
+
+  .em005-ending-line {
+    font-family: var(--em005-heading);
+    font-size: clamp(18px, 3.5vw, 48px);
+    line-height: 1.25;
+    color: var(--text);
+    font-weight: 400;
+    opacity: 0;
+    max-width: 100%;
+  }
+
+  /* ── Bottom rule ── */
+  .em005-bottom-rule {
+    width: clamp(30px, 6vw, 72px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+  }
+
+  /* ── Song row ── */
+  .em005-song-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.4vw, 16px);
+    opacity: 0;
+  }
+
+  .em005-song-dot {
+    width: clamp(4px, 0.6vw, 7px);
+    height: clamp(4px, 0.6vw, 7px);
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    animation: em005-dotPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes em005-dotPulse {
+    0%,100% { opacity: 1;   transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.6); }
+  }
+
+  .em005-song-label {
+    font-family: var(--em005-body);
+    font-size: clamp(8px, 0.8vw, 10px);
+    letter-spacing: clamp(3px, 0.5vw, 7px);
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.65;
+  }
+
+  .em005-song-name {
+    font-family: var(--em005-heading);
+    font-size: clamp(11px, 1.3vw, 16px);
+    font-style: italic;
+    color: var(--text);
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+  }
+
+  /* ══════════════════════════════════════
+     CURSOR & INTERACTION
+     ══════════════════════════════════════ */
+
+  /* Custom cursor */
+  .em005-cursor {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: clamp(14px, 1.8vw, 22px);
+    height: clamp(14px, 1.8vw, 22px);
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    translate: -50% -50%;
+    mix-blend-mode: screen;
+    opacity: 0.8;
+  }
+
+  .em005-cursor-dot {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    top: 0; left: 0;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--accent);
+    translate: -50% -50%;
+  }
+
+  /* ── Floating dust particles ── */
+  .em005-dust {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  /* ── Corner marks — minimal frame ── */
+  .em005-corner {
+    position: absolute;
+    z-index: 5;
+    width: clamp(14px, 2.5vw, 28px);
+    height: clamp(14px, 2.5vw, 28px);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .em005-corner::before,
+  .em005-corner::after {
+    content: '';
+    position: absolute;
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  /* Horizontal arm */
+  .em005-corner::before {
+    width: 100%;
+    height: 1px;
+  }
+
+  /* Vertical arm */
+  .em005-corner::after {
+    width: 1px;
+    height: 100%;
+  }
+
+  .em005-corner-tl { top:    clamp(16px,3vh,36px); left:  clamp(16px,3vw,36px); }
+  .em005-corner-tr { top:    clamp(16px,3vh,36px); right: clamp(16px,3vw,36px); transform: scaleX(-1); }
+  .em005-corner-bl { bottom: clamp(16px,3vh,36px); left:  clamp(16px,3vw,36px); transform: scaleY(-1); }
+  .em005-corner-br { bottom: clamp(16px,3vh,36px); right: clamp(16px,3vw,36px); transform: scale(-1,-1); }
+
+  .em005-corner-tl::before { top: 0; left: 0; }
+  .em005-corner-tl::after  { top: 0; left: 0; }
+  .em005-corner-tr::before { top: 0; left: 0; }
+  .em005-corner-tr::after  { top: 0; left: 0; }
+  .em005-corner-bl::before { top: 0; left: 0; }
+  .em005-corner-bl::after  { top: 0; left: 0; }
+  .em005-corner-br::before { top: 0; left: 0; }
+  .em005-corner-br::after  { top: 0; left: 0; }
+</style>
+<div class="em005-root" id="em005-root">
+  <!-- Deep radial background -->
+  <div class="em005-bg" id="em005-bg"></div>
+  <!-- Film grain -->
+  <div class="em005-grain"></div>
+  <!-- Corner frame marks -->
+  <div class="em005-corner em005-corner-tl" id="em005-ctl"></div>
+  <div class="em005-corner em005-corner-tr" id="em005-ctr"></div>
+  <div class="em005-corner em005-corner-bl" id="em005-cbl"></div>
+  <div class="em005-corner em005-corner-br" id="em005-cbr"></div>
+  <!-- Recipient name — above -->
+  <div class="em005-name" id="em005-name">--RECIPIENT_NAME--</div>
+  <!-- Thin rule under name -->
+  <div class="em005-top-rule" id="em005-topRule"></div>
+  <!-- Breathing circle stage -->
+  <div class="em005-circle-stage" id="em005-circleStage">
+<!-- Concentric rings -->
+<div class="em005-ring em005-ring-1" id="em005-ring1"></div>
+<div class="em005-ring em005-ring-2" id="em005-ring2"></div>
+<div class="em005-ring em005-ring-3" id="em005-ring3"></div>
+
+<!-- Core glow circle -->
+<div class="em005-core" id="em005-core"></div></div>
+  <!-- Breath phase label -->
+  <div class="em005-breath-label" id="em005-breathLabel">breathe</div>
+  <!-- Ending content — below circle -->
+  <div class="em005-ending-wrap" id="em005-endingWrap">
+<!-- Bottom rule -->
+<div class="em005-bottom-rule" id="em005-bottomRule"></div>
+
+<!-- Main ending message -->
+<div class="em005-ending-line" id="em005-endingLine">--ENDING_LINE--</div>
+
+<!-- Song attribution -->
+<div class="em005-song-row" id="em005-songRow">
+  <div class="em005-song-dot"></div>
+  <span class="em005-song-label">Listening to</span>
+  <span class="em005-song-name">--SONG_NAME--</span>
+  <div class="em005-song-dot" style="animation-delay:1.5s;"></div>
+</div></div>
+  <!-- Dust particles container -->
+  <div id="em005-dustWrap"></div>
+  <!-- Custom cursor -->
+  <div class="em005-cursor"    id="em005-cursor"></div>
+  <div class="em005-cursor-dot" id="em005-cursorDot"></div>
+</div>
+<script>
+(function () {
+  /* =====================================================
+     ENDING-MINIMAL-005 | Breathing Circle
+     Gates on glitch:enter index === 7
+     ===================================================== */
+
+  /* ── Section index ── */
+  var SECTION_INDEX = 7;
+
+  /* ── DOM refs ── */
+  var root          = document.getElementById('em005-root');
+  var circleStage   = document.getElementById('em005-circleStage');
+  var core          = document.getElementById('em005-core');
+  var ring1         = document.getElementById('em005-ring1');
+  var ring2         = document.getElementById('em005-ring2');
+  var ring3         = document.getElementById('em005-ring3');
+  var breathLabel   = document.getElementById('em005-breathLabel');
+  var nameEl        = document.getElementById('em005-name');
+  var topRule       = document.getElementById('em005-topRule');
+  var endingLine    = document.getElementById('em005-endingLine');
+  var bottomRule    = document.getElementById('em005-bottomRule');
+  var songRow       = document.getElementById('em005-songRow');
+  var dustWrap      = document.getElementById('em005-dustWrap');
+  var cursorEl      = document.getElementById('em005-cursor');
+  var cursorDot     = document.getElementById('em005-cursorDot');
+  var corners       = [
+    document.getElementById('em005-ctl'),
+    document.getElementById('em005-ctr'),
+    document.getElementById('em005-cbl'),
+    document.getElementById('em005-cbr')
+  ];
+
+  /* ── Utility: random range ── */
+  function rnd (min, max) { return min + Math.random() * (max - min); }
+
+  /* ── Build ambient dust particles ── */
+  var DUST_COUNT = 28;
+  var dustPieces = [];
+
+  function buildDust () {
+    for (var i = 0; i < DUST_COUNT; i++) {
+      var d = document.createElement('div');
+      d.className = 'em005-dust';
+      var sz = rnd(1.5, 4);
+      d.style.cssText = [
+        'width:'  + sz + 'px',
+        'height:' + sz + 'px',
+        'left:'   + rnd(5, 92) + '%',
+        'top:'    + rnd(5, 88) + '%'
+      ].join(';');
+      dustWrap.appendChild(d);
+      dustPieces.push(d);
+    }
+  }
+  buildDust();
+
+  /* ── Custom cursor tracking ── */
+  document.addEventListener('mousemove', function (e) {
+    gsap.to(cursorEl,  { x: e.clientX, y: e.clientY, duration: 0.3,  ease: 'power2.out' });
+    gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0.08, ease: 'none' });
+
+    /* Gentle orb follow */
+    var cx = window.innerWidth  / 2;
+    var cy = window.innerHeight / 2;
+    var dx = (e.clientX - cx) / cx;
+    var dy = (e.clientY - cy) / cy;
+
+    gsap.to(circleStage, {
+      x: dx * 14,
+      y: dy * 10,
+      duration: 2.2,
+      ease: 'power1.out'
+    });
+
+    /* Cursor scale near circle */
+    var rect = core.getBoundingClientRect();
+    var dist = Math.hypot(
+      e.clientX - (rect.left + rect.width  / 2),
+      e.clientY - (rect.top  + rect.height / 2)
+    );
+    var proximity = Math.max(0, 1 - dist / 160);
+    gsap.to(cursorEl, {
+      scale: 1 + proximity * 1.8,
+      opacity: 0.4 + proximity * 0.5,
+      duration: 0.3
+    });
+  });
+
+  /* ── Breath cycle state machine ── */
+  /* Cycles: inhale 4s → hold 2s → exhale 5s → rest 1s → repeat */
+  var BREATH_PHASES = [
+    { label: 'inhale',  dur: 4,  scaleTo: 1.18, labelOpacity: 0.7 },
+    { label: 'hold',    dur: 2,  scaleTo: 1.18, labelOpacity: 0.4 },
+    { label: 'exhale',  dur: 5,  scaleTo: 1.0,  labelOpacity: 0.7 },
+    { label: 'rest',    dur: 1,  scaleTo: 1.0,  labelOpacity: 0.2 }
+  ];
+
+  function runBreathCycle () {
+    var idx = 0;
+
+    function nextPhase () {
+      var phase = BREATH_PHASES[idx % BREATH_PHASES.length];
+      idx++;
+
+      /* Update breath label text */
+      gsap.to(breathLabel, {
+        opacity: 0,
+        duration: 0.3,
+        onComplete: function () {
+          breathLabel.textContent = phase.label;
+          gsap.to(breathLabel, { opacity: phase.labelOpacity, duration: 0.3 });
+        }
+      });
+
+      /* Animate core scale */
+      gsap.to(core, {
+        scale: phase.scaleTo,
+        duration: phase.dur,
+        ease: phase.label === 'inhale'  ? 'power1.inOut' :
+              phase.label === 'exhale'  ? 'power1.inOut' :
+              'none',
+        onComplete: nextPhase
+      });
+
+      /* Ring ripple responses */
+      gsap.to(ring3, {
+        scale: phase.scaleTo * 1.04,
+        duration: phase.dur * 1.05,
+        ease: 'sine.inOut'
+      });
+      gsap.to(ring2, {
+        scale: phase.scaleTo * 1.03,
+        duration: phase.dur * 1.12,
+        ease: 'sine.inOut'
+      });
+      gsap.to(ring1, {
+        scale: phase.scaleTo * 1.02,
+        duration: phase.dur * 1.18,
+        ease: 'sine.inOut'
+      });
+    }
+
+    nextPhase();
+  }
+
+  /* ── Glitch:enter handler ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1. Corner marks draw in */
+    tl.to(corners, {
+      opacity: 1,
+      duration: 0.7,
+      stagger: 0.12,
+      ease: 'power2.inOut'
+    });
+
+    /* 2. Background radial brightens */
+    tl.fromTo('#em005-bg',
+      { opacity: 0 },
+      { opacity: 1, duration: 1.4, ease: 'power2.inOut' },
+      '-=0.4'
+    );
+
+    /* 3. Recipient name fades up */
+    tl.fromTo(nameEl,
+      { opacity: 0, y: -16, letterSpacing: '0.25em' },
+      { opacity: 1, y: 0,   letterSpacing: '',
+        duration: 1.0, ease: 'power2.out' },
+      '-=0.8'
+    );
+
+    /* 4. Top rule expands */
+    tl.fromTo(topRule,
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.7, ease: 'power2.inOut' },
+      '-=0.4'
+    );
+
+    /* 5. Outer ring materialises first */
+    tl.fromTo(ring1,
+      { opacity: 0, scale: 1.3 },
+      { opacity: 0.4, scale: 1, duration: 1.4, ease: 'power2.out' },
+      '-=0.3'
+    );
+
+    /* 6. Mid ring */
+    tl.fromTo(ring2,
+      { opacity: 0, scale: 1.2 },
+      { opacity: 0.55, scale: 1, duration: 1.2, ease: 'power2.out' },
+      '-=1.1'
+    );
+
+    /* 7. Inner ring */
+    tl.fromTo(ring3,
+      { opacity: 0, scale: 1.1 },
+      { opacity: 0.7, scale: 1, duration: 1.0, ease: 'power2.out' },
+      '-=0.9'
+    );
+
+    /* 8. Core circle blooms from zero */
+    tl.fromTo(core,
+      { opacity: 0, scale: 0, rotation: -20 },
+      { opacity: 1, scale: 1, rotation: 0,
+        duration: 1.1, ease: 'back.out(1.4)' },
+      '-=0.7'
+    );
+
+    /* 9. Breath label fades in */
+    tl.fromTo(breathLabel,
+      { opacity: 0, y: 8 },
+      { opacity: 0.6, y: 0, duration: 0.8 },
+      '-=0.3'
+    );
+
+    /* 10. Bottom rule */
+    tl.fromTo(bottomRule,
+      { opacity: 0, scaleX: 0 },
+      { opacity: 1, scaleX: 1, duration: 0.7, ease: 'power2.inOut' },
+      '-=0.2'
+    );
+
+    /* 11. Ending line — character by character reveal */
+    var rawText   = endingLine.textContent.trim();
+    var charSpans = rawText.split('').map(function (ch) {
+      var s = document.createElement('span');
+      s.style.cssText = 'display:inline-block;opacity:0;' +
+        (ch === ' ' ? 'width:0.28em;' : '');
+      s.textContent = ch === ' ' ? '\u00A0' : ch;
+      return s;
+    });
+
+    endingLine.innerHTML = '';
+    charSpans.forEach(function (s) { endingLine.appendChild(s); });
+    tl.set(endingLine, { opacity: 1 }, '-=0.1');
+
+    tl.fromTo(charSpans,
+      { opacity: 0, y: 12 },
+      {
+        opacity: 1, y: 0,
+        duration: 0.45,
+        stagger: 0.028,
+        ease: 'power2.out'
+      },
+      '-=0.15'
+    );
+
+    /* 12. Song row fades in */
+    tl.fromTo(songRow,
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.8 },
+      '-=0.3'
+    );
+
+    /* 13. Dust particles drift in */
+    tl.to(dustPieces, {
+      opacity: function () { return rnd(0.15, 0.55); },
+      duration: 1.8,
+      stagger: { each: 0.06, from: 'random' },
+      ease: 'power1.inOut'
+    }, '-=0.6');
+
+    /* ── IDLE animations start after entrance ── */
+    tl.add(function () {
+
+      /* Start breathing cycle */
+      runBreathCycle();
+
+      /* Dust float upward endlessly */
+      dustPieces.forEach(function (d) {
+        gsap.to(d, {
+          y: '-=' + rnd(30, 90),
+          x: rnd(-18, 18),
+          opacity: 0,
+          duration: rnd(4, 9),
+          delay: rnd(0, 3),
+          ease: 'power1.inOut',
+          repeat: -1,
+          repeatRefresh: true,
+          onRepeat: function () {
+            gsap.set(d, {
+              y: 0,
+              x: 0,
+              top: rnd(50, 90) + '%',
+              left: rnd(5, 92) + '%',
+              opacity: rnd(0.15, 0.5)
+            });
+          }
+        });
+      });
+
+      /* Ending line gentle float */
+      gsap.to('#em005-endingWrap', {
+        y: -6,
+        duration: 4.5,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+      /* Name subtle drift */
+      gsap.to(nameEl, {
+        y: -5,
+        duration: 5,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: 0.8
+      });
+
+      /* Corner marks pulse opacity */
+      gsap.to(corners, {
+        opacity: 0.35,
+        duration: 3,
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.4,
+        ease: 'sine.inOut'
+      });
+
+      /* Background radial hue drift via brightness */
+      gsap.to('#em005-bg', {
+        filter: 'brightness(1.2)',
+        duration: 5,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut'
+      });
+
+    }); /* end add idle */
+
+  }); /* end glitch:enter */
+
+})();
+</script>

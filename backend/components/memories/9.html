@@ -1,0 +1,704 @@
+<!-- Component: mem_darkacademia_002 
+ Type: memories 
+ Aesthetic: dark academia / candlelight / aged parchment 
+ Obsession: Old letters 
+ Tone: literary, aching, timeless 
+ Occasion: both 
+ Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- -->
+<style>
+  .mda002-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Parchment texture overlay */
+  .mda002-texture {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.038;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    background-size: 240px 240px;
+    mix-blend-mode: overlay;
+  }
+
+  /* Candlelight warm vignette */
+  .mda002-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 108%, rgba(180,120,40,0.13) 0%, transparent 55%),
+      radial-gradient(ellipse at center, transparent 28%, rgba(0,0,0,0.82) 100%);
+  }
+
+  /* Floating dust motes */
+  .mda002-dust {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .mda002-mote {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(220,185,120,0.55);
+    opacity: 0;
+  }
+
+  /* Main desk surface */
+  .mda002-desk {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36%;
+    background: linear-gradient(to top, rgba(28,18,8,0.95) 0%, rgba(18,11,4,0.6) 70%, transparent 100%);
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  /* Stage — the spread of letters */
+  .mda002-stage {
+    position: relative;
+    z-index: 5;
+    width: min(92vw, 980px);
+    height: min(72vh, 580px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Individual letter/envelope */
+  .mda002-letter {
+    position: absolute;
+    background: linear-gradient(145deg, #f5edda 0%, #e8d9b8 40%, #dcc99a 100%);
+    border-radius: 1px;
+    box-shadow:
+      0 4px 24px rgba(0,0,0,0.55),
+      0 1px 0 rgba(255,255,255,0.15) inset,
+      0 -1px 0 rgba(0,0,0,0.2) inset;
+    cursor: default;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease;
+  }
+
+  .mda002-letter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Aged edge toning */
+  .mda002-letter::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(100,65,20,0.18) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Letter 1 — bottom left, tilted */
+  .mda002-l1 {
+    width: clamp(200px, 28vw, 340px);
+    height: clamp(260px, 38vh, 440px);
+    left: clamp(-10px, 3vw, 40px);
+    top: 50%;
+    transform: translateY(-52%) rotate(-8deg);
+  }
+
+  /* Letter 2 — center, upright, most prominent */
+  .mda002-l2 {
+    width: clamp(220px, 32vw, 380px);
+    height: clamp(290px, 44vh, 500px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(1.5deg);
+    box-shadow:
+      0 8px 48px rgba(0,0,0,0.65),
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      0 -1px 0 rgba(0,0,0,0.22) inset;
+    z-index: 2;
+  }
+
+  /* Letter 3 — right, tilted other way */
+  .mda002-l3 {
+    width: clamp(190px, 26vw, 320px);
+    height: clamp(250px, 36vh, 420px);
+    right: clamp(-10px, 3vw, 40px);
+    top: 50%;
+    transform: translateY(-48%) rotate(7deg);
+  }
+
+  .mda002-letter:hover {
+    z-index: 10;
+    box-shadow: 0 16px 64px rgba(0,0,0,0.75), 0 0 40px rgba(180,130,50,0.2);
+  }
+  .mda002-l1:hover { transform: translateY(-56%) rotate(-5deg) scale(1.04); }
+  .mda002-l2:hover { transform: translate(-50%, -54%) rotate(0deg) scale(1.04); }
+  .mda002-l3:hover { transform: translateY(-52%) rotate(4deg) scale(1.04); }
+
+  /* Letter inner content */
+  .mda002-letter-inner {
+    position: relative;
+    z-index: 2;
+    padding: clamp(16px, 2.5vh, 28px) clamp(14px, 2vw, 24px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.5vh, 16px);
+  }
+
+  /* Wax seal header */
+  .mda002-seal-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mda002-seal {
+    width: clamp(22px, 3vw, 34px);
+    height: clamp(22px, 3vw, 34px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #c0392b, #7b1818);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1.5px rgba(255,255,255,0.08);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mda002-seal svg {
+    width: 55%;
+    height: 55%;
+    opacity: 0.7;
+  }
+
+  .mda002-seal-label {
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.85vw, 10px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(80,55,20,0.6);
+  }
+
+  /* Ruled lines simulation */
+  .mda002-ruled {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mda002-rule-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(100,70,20,0.15);
+    margin-bottom: clamp(14px, 2.2vh, 22px);
+  }
+
+  /* Handwritten memory text */
+  .mda002-handwriting {
+    position: absolute;
+    top: clamp(6px, 1.2vh, 12px);
+    left: 0;
+    right: 0;
+    padding: 0 clamp(4px, 0.8vw, 10px);
+    font-family: var(--font-heading);
+    font-size: clamp(11px, 1.3vw, 16px);
+    line-height: clamp(15px, 2.2vh, 23px);
+    color: rgba(40,22,6,0.78);
+    font-style: italic;
+    letter-spacing: 0.01em;
+  }
+
+  /* Decorative ink flourish */
+  .mda002-flourish {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    opacity: 0.3;
+    flex-shrink: 0;
+  }
+
+  .mda002-flourish svg {
+    width: clamp(60px, 8vw, 100px);
+    height: clamp(14px, 2vh, 22px);
+  }
+
+  /* Photo or placeholder inside center letter */
+  .mda002-photo-area {
+    width: 100%;
+    height: clamp(80px, 13vh, 150px);
+    overflow: hidden;
+    border-radius: 1px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .mda002-photo-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.55) contrast(1.05) brightness(0.85);
+  }
+
+  .mda002-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(100,70,20,0.1), rgba(60,38,10,0.18));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed rgba(100,65,20,0.22);
+  }
+
+  .mda002-photo-placeholder svg {
+    width: 70%;
+    height: 70%;
+    opacity: 0.35;
+  }
+
+  /* Bottom caption row */
+  .mda002-date-line {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: 0.2em;
+    color: rgba(60,38,10,0.45);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* Postmark stamp */
+  .mda002-stamp {
+    position: absolute;
+    top: clamp(10px, 1.8vh, 20px);
+    right: clamp(10px, 1.8vw, 20px);
+    width: clamp(40px, 5.5vw, 70px);
+    height: clamp(40px, 5.5vw, 70px);
+    border: 2px solid rgba(100,65,20,0.28);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    opacity: 0.55;
+  }
+
+  .mda002-stamp-inner {
+    font-family: var(--font-heading);
+    font-size: clamp(5px, 0.65vw, 8px);
+    letter-spacing: 0.08em;
+    text-align: center;
+    color: rgba(80,45,10,0.7);
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* Candle glow bottom center */
+  .mda002-candle-glow {
+    position: absolute;
+    bottom: clamp(30px, 5vh, 60px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 80px;
+    background: radial-gradient(ellipse at 50% 100%, rgba(200,140,40,0.2) 0%, transparent 70%);
+    z-index: 4;
+    pointer-events: none;
+    filter: blur(12px);
+  }
+
+  /* Section label */
+  .mda002-label {
+    position: absolute;
+    top: clamp(24px, 4.5vh, 52px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .mda002-label-text {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(200,170,110,0.35);
+    opacity: 0;
+  }
+
+  /* Caption strip */
+  .mda002-captions {
+    position: absolute;
+    bottom: clamp(16px, 3vh, 34px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    display: flex;
+    gap: clamp(20px, 5vw, 70px);
+    white-space: nowrap;
+  }
+
+  .mda002-cap {
+    font-size: clamp(8px, 0.82vw, 10px);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(200,170,110,0.25);
+    font-family: var(--font-heading);
+    opacity: 0;
+  }
+
+  /* Ink drip decorative lines */
+  .mda002-inkline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,160,80,0.12), transparent);
+    z-index: 4;
+    pointer-events: none;
+  }
+  .mda002-inkline-1 { top: clamp(70px, 12vh, 110px); }
+  .mda002-inkline-2 { bottom: clamp(70px, 12vh, 110px); }
+</style>
+<div class="mda002-root" id="mda002">
+  <div class="mda002-texture"></div>
+  <div class="mda002-vignette"></div>
+  <div class="mda002-desk"></div>
+  <div class="mda002-candle-glow" id="mda002-cglow"></div>
+  <div class="mda002-inkline mda002-inkline-1"></div>
+  <div class="mda002-inkline mda002-inkline-2"></div>
+  <div class="mda002-dust" id="mda002-dust"></div>
+  <!-- Label -->
+  <div class="mda002-label">
+    <div class="mda002-label-text" id="mda002-label">letters never sent</div>
+  </div>
+  <!-- The spread of letters -->
+  <div class="mda002-stage" id="mda002-stage">
+<!-- Letter 1 -->
+<div class="mda002-letter mda002-l1" id="mda002-l1">
+  <div class="mda002-letter-inner">
+    <div class="mda002-seal-row">
+      <div class="mda002-seal">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 3 L11.8 8H17L12.6 11.2L14.4 16.2L10 13L5.6 16.2L7.4 11.2L3 8H8.2Z" fill="rgba(255,255,255,0.6)"/>
+        </svg>
+      </div>
+      <div class="mda002-seal-label">Vol. I</div>
+    </div>
+
+    <div class="mda002-flourish">
+      <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 10 Q25 2 50 10 Q75 18 95 10" stroke="rgba(80,50,15,0.6)" stroke-width="0.8" fill="none"/>
+        <circle cx="50" cy="10" r="2" fill="rgba(80,50,15,0.4)"/>
+        <circle cx="5" cy="10" r="1.5" fill="rgba(80,50,15,0.3)"/>
+        <circle cx="95" cy="10" r="1.5" fill="rgba(80,50,15,0.3)"/>
+      </svg>
+    </div>
+
+    <div class="mda002-ruled">
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-handwriting" id="mda002-hw1">"--MEMORY_1--"</div>
+    </div>
+
+    <div class="mda002-stamp">
+      <div class="mda002-stamp-inner">memory<br/>I</div>
+    </div>
+
+    <div class="mda002-date-line">— recalled</div>
+  </div>
+</div>
+
+<!-- Letter 2 — center focal -->
+<div class="mda002-letter mda002-l2" id="mda002-l2">
+  <div class="mda002-letter-inner">
+    <div class="mda002-seal-row">
+      <div class="mda002-seal">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="5" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+          <circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.5)"/>
+        </svg>
+      </div>
+      <div class="mda002-seal-label">Vol. II — the one that mattered</div>
+    </div>
+
+    <!-- Photo or placeholder -->
+    <div class="mda002-photo-area" id="mda002-photoarea">
+      <div class="mda002-photo-placeholder" id="mda002-placeholder">
+        <svg viewBox="0 0 120 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="104" height="54" rx="2" stroke="rgba(80,50,15,0.5)" stroke-width="0.8"/>
+          <line x1="8" y1="8" x2="112" y2="62" stroke="rgba(80,50,15,0.25)" stroke-width="0.6"/>
+          <line x1="112" y1="8" x2="8" y2="62" stroke="rgba(80,50,15,0.25)" stroke-width="0.6"/>
+          <circle cx="60" cy="35" r="10" stroke="rgba(80,50,15,0.4)" stroke-width="0.8"/>
+          <circle cx="60" cy="35" r="4" fill="rgba(80,50,15,0.2)"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="mda002-flourish">
+      <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 10 C30 2, 70 2, 90 10" stroke="rgba(80,50,15,0.5)" stroke-width="0.8" fill="none"/>
+        <path d="M10 10 C30 18, 70 18, 90 10" stroke="rgba(80,50,15,0.3)" stroke-width="0.5" fill="none"/>
+      </svg>
+    </div>
+
+    <div class="mda002-ruled">
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-handwriting" id="mda002-hw2">"--MEMORY_2--"</div>
+    </div>
+
+    <div class="mda002-stamp">
+      <div class="mda002-stamp-inner">memory<br/>II</div>
+    </div>
+
+    <div class="mda002-date-line">— treasured</div>
+  </div>
+</div>
+
+<!-- Letter 3 -->
+<div class="mda002-letter mda002-l3" id="mda002-l3">
+  <div class="mda002-letter-inner">
+    <div class="mda002-seal-row">
+      <div class="mda002-seal">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 10 Q10 4 16 10 Q10 16 4 10Z" stroke="rgba(255,255,255,0.65)" stroke-width="1" fill="none"/>
+          <circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.4)"/>
+        </svg>
+      </div>
+      <div class="mda002-seal-label">Vol. III</div>
+    </div>
+
+    <div class="mda002-flourish">
+      <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 15 Q20 5 50 10 Q80 15 95 5" stroke="rgba(80,50,15,0.55)" stroke-width="0.8" fill="none"/>
+        <circle cx="50" cy="10" r="1.5" fill="rgba(80,50,15,0.35)"/>
+      </svg>
+    </div>
+
+    <div class="mda002-ruled">
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-rule-line"></div>
+      <div class="mda002-handwriting" id="mda002-hw3">"--MEMORY_3--"</div>
+    </div>
+
+    <div class="mda002-stamp">
+      <div class="mda002-stamp-inner">memory<br/>III</div>
+    </div>
+
+    <div class="mda002-date-line">— kept</div>
+  </div>
+</div></div>
+  <!-- Captions -->
+  <div class="mda002-captions">
+    <div class="mda002-cap" id="mda002-cap1">--MEMORY_CAPTION_1--</div>
+    <div class="mda002-cap" id="mda002-cap2">--MEMORY_CAPTION_2--</div>
+  </div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 3;
+
+  // Build dust motes
+  function buildDust() {
+    const dust = document.getElementById('mda002-dust');
+    if (!dust) return;
+    for (let i = 0; i < 28; i++) {
+      const m = document.createElement('div');
+      m.className = 'mda002-mote';
+      const sz = Math.random() * 3 + 1;
+      m.style.cssText = `
+        width:${sz}px; height:${sz}px;
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+      `;
+      dust.appendChild(m);
+    }
+  }
+  buildDust();
+
+  // Cursor parallax on stage
+  const root = document.getElementById('mda002');
+  const stage = document.getElementById('mda002-stage');
+  if (root && stage) {
+    root.addEventListener('mousemove', function(e) {
+      const rect = root.getBoundingClientRect();
+      const cx = (e.clientX - rect.left) / rect.width - 0.5;
+      const cy = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to('#mda002-l1', { x: cx * -14, y: cy * -8, duration: 1.4, ease: 'power2.out' });
+      gsap.to('#mda002-l2', { x: cx * -8,  y: cy * -5, duration: 1.6, ease: 'power2.out' });
+      gsap.to('#mda002-l3', { x: cx * -18, y: cy * -10, duration: 1.2, ease: 'power2.out' });
+      gsap.to('#mda002-cglow', { x: cx * 20, duration: 1.8, ease: 'power2.out' });
+    });
+  }
+
+  // Letter hover tilt
+  ['mda002-l1','mda002-l2','mda002-l3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('mousemove', function(e) {
+      const r = el.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      gsap.to(el, {
+        rotateY: nx * 8,
+        rotateX: -ny * 6,
+        transformPerspective: 900,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    });
+    el.addEventListener('mouseleave', function() {
+      gsap.to(el, { rotateY: 0, rotateX: 0, duration: 0.8, ease: 'elastic.out(1,0.5)' });
+    });
+  });
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    const tl = gsap.timeline();
+
+    // 1. Label reveal
+    tl.fromTo('#mda002-label',
+      { opacity: 0, letterSpacing: '0.7em' },
+      { opacity: 1, letterSpacing: '0.4em', duration: 1.4, ease: 'power3.out' },
+      0.2
+    );
+
+    // 2. Ink lines draw
+    tl.fromTo('.mda002-inkline',
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 1.2, ease: 'power3.out', stagger: 0.2, transformOrigin: 'left' },
+      0.3
+    );
+
+    // 3. Letter 1 — slides in from left, rotated
+    tl.fromTo('#mda002-l1',
+      { opacity: 0, x: -80, rotation: -18 },
+      { opacity: 1, x: 0, rotation: -8, duration: 1.3, ease: 'expo.out' },
+      0.5
+    );
+
+    // 4. Letter 3 — slides from right
+    tl.fromTo('#mda002-l3',
+      { opacity: 0, x: 80, rotation: 18 },
+      { opacity: 1, x: 0, rotation: 7, duration: 1.3, ease: 'expo.out' },
+      0.6
+    );
+
+    // 5. Letter 2 — rises from below, center
+    tl.fromTo('#mda002-l2',
+      { opacity: 0, y: 60, scale: 0.9 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.5, ease: 'expo.out' },
+      0.75
+    );
+
+    // 6. Handwriting texts fade in — staggered, as if being written
+    tl.fromTo(['#mda002-hw1','#mda002-hw2','#mda002-hw3'],
+      { opacity: 0, y: 6 },
+      { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.25 },
+      1.1
+    );
+
+    // 7. Candle glow pulses in
+    tl.fromTo('#mda002-cglow',
+      { opacity: 0, scaleX: 0.4 },
+      { opacity: 1, scaleX: 1, duration: 1.4, ease: 'expo.out' },
+      0.8
+    );
+
+    // 8. Captions
+    tl.fromTo(['#mda002-cap1','#mda002-cap2'],
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', stagger: 0.18 },
+      1.5
+    );
+
+    // 9. Dust motes ambient float
+    document.querySelectorAll('.mda002-mote').forEach((m, i) => {
+      gsap.to(m, {
+        opacity: Math.random() * 0.5 + 0.1,
+        y: -(Math.random() * 140 + 40),
+        x: (Math.random() - 0.5) * 60,
+        duration: Math.random() * 6 + 5,
+        delay: Math.random() * 3 + 1.2,
+        ease: 'power1.inOut',
+        repeat: -1,
+        repeatDelay: Math.random() * 4 + 2,
+        yoyo: false,
+        onRepeat: function() {
+          gsap.set(m, {
+            y: 0,
+            opacity: 0,
+            left: (Math.random() * 100) + '%'
+          });
+        }
+      });
+    });
+
+    // 10. Candle glow ambient flicker
+    gsap.to('#mda002-cglow', {
+      opacity: 0.6,
+      scaleX: 1.15,
+      scaleY: 1.2,
+      duration: 1.8,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 1.5
+    });
+
+    // 11. Center letter subtle levitate
+    gsap.to('#mda002-l2', {
+      y: -6,
+      duration: 3.2,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 2.0
+    });
+
+    // 12. Seals glow pulse
+    gsap.to('.mda002-seal', {
+      boxShadow: '0 2px 12px rgba(180,30,30,0.6), 0 0 24px rgba(180,30,30,0.3)',
+      duration: 2.5,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      stagger: 0.8,
+      delay: 1.8
+    });
+  });
+
+})();
+</script>

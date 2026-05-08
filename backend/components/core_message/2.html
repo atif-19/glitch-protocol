@@ -1,0 +1,383 @@
+<!--
+  Component: cm_dramatic_001
+  Type: core_message
+  Aesthetic: Dramatic cinematic
+  Obsession: Bold statement
+  Tone: intense, cinematic, commanding
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --MESSAGE_MAIN-- --MESSAGE_LINE_2-- --MESSAGE_LINE_3--
+-->
+
+<style>
+  .cm-dramatic-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .cm-dramatic-001-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    pointer-events: none;
+    opacity: 0.45;
+    z-index: 1;
+  }
+
+  .cm-dramatic-001-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .cm-dramatic-001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .cm-dramatic-001-lines-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    overflow: hidden;
+  }
+
+  .cm-dramatic-001-h-line {
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  .cm-dramatic-001-h-line-top {
+    top: clamp(60px, 12vh, 130px);
+  }
+
+  .cm-dramatic-001-h-line-bottom {
+    bottom: clamp(60px, 12vh, 130px);
+  }
+
+  .cm-dramatic-001-v-line {
+    position: absolute;
+    top: 0;
+    height: 0;
+    width: 1px;
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  .cm-dramatic-001-v-line-left {
+    left: clamp(30px, 5vw, 80px);
+  }
+
+  .cm-dramatic-001-v-line-right {
+    right: clamp(30px, 5vw, 80px);
+  }
+
+  .cm-dramatic-001-corner {
+    position: absolute;
+    width: clamp(18px, 3vw, 30px);
+    height: clamp(18px, 3vw, 30px);
+    opacity: 0;
+    z-index: 5;
+  }
+
+  .cm-dramatic-001-corner::before,
+  .cm-dramatic-001-corner::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+  }
+
+  .cm-dramatic-001-corner-tl { top: clamp(28px, 5vh, 60px); left: clamp(28px, 5vw, 60px); }
+  .cm-dramatic-001-corner-tl::before { top: 0; left: 0; width: 100%; height: 1.5px; }
+  .cm-dramatic-001-corner-tl::after  { top: 0; left: 0; width: 1.5px; height: 100%; }
+
+  .cm-dramatic-001-corner-tr { top: clamp(28px, 5vh, 60px); right: clamp(28px, 5vw, 60px); }
+  .cm-dramatic-001-corner-tr::before { top: 0; right: 0; width: 100%; height: 1.5px; }
+  .cm-dramatic-001-corner-tr::after  { top: 0; right: 0; width: 1.5px; height: 100%; }
+
+  .cm-dramatic-001-corner-bl { bottom: clamp(28px, 5vh, 60px); left: clamp(28px, 5vw, 60px); }
+  .cm-dramatic-001-corner-bl::before { bottom: 0; left: 0; width: 100%; height: 1.5px; }
+  .cm-dramatic-001-corner-bl::after  { bottom: 0; left: 0; width: 1.5px; height: 100%; }
+
+  .cm-dramatic-001-corner-br { bottom: clamp(28px, 5vh, 60px); right: clamp(28px, 5vw, 60px); }
+  .cm-dramatic-001-corner-br::before { bottom: 0; right: 0; width: 100%; height: 1.5px; }
+  .cm-dramatic-001-corner-br::after  { bottom: 0; right: 0; width: 1.5px; height: 100%; }
+
+  .cm-dramatic-001-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: min(860px, 88vw);
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+
+  .cm-dramatic-001-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 18px);
+    margin-bottom: clamp(1.4rem, 4vh, 3rem);
+    opacity: 0;
+  }
+
+  .cm-dramatic-001-eyebrow-line {
+    height: 1px;
+    width: clamp(30px, 6vw, 70px);
+    background: var(--accent);
+  }
+
+  .cm-dramatic-001-eyebrow-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.6rem, 1vw, 0.72rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .cm-dramatic-001-message-main {
+    font-family: var(--font-heading);
+    font-size: clamp(2.4rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    text-transform: uppercase;
+    opacity: 0;
+    margin-bottom: clamp(1.8rem, 5vh, 3.5rem);
+    position: relative;
+  }
+
+  .cm-dramatic-001-message-main .cm-dramatic-001-accent-word {
+    color: var(--accent);
+    display: block;
+  }
+
+  .cm-dramatic-001-slash {
+    display: inline-block;
+    color: var(--accent);
+    opacity: 0.5;
+    margin: 0 0.1em;
+    font-weight: 300;
+  }
+
+  .cm-dramatic-001-body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 1.5vh, 1rem);
+    opacity: 0;
+  }
+
+  .cm-dramatic-001-line-2,
+  .cm-dramatic-001-line-3 {
+    font-family: var(--font-body);
+    font-size: clamp(0.8rem, 1.6vw, 1.05rem);
+    font-weight: 300;
+    color: rgba(240,234,248,0.6);
+    letter-spacing: 0.06em;
+    line-height: 1.75;
+  }
+
+  .cm-dramatic-001-recipient {
+    margin-top: clamp(2rem, 6vh, 4.5rem);
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 20px);
+    opacity: 0;
+  }
+
+  .cm-dramatic-001-recipient-dash {
+    width: clamp(20px, 4vw, 45px);
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
+  .cm-dramatic-001-recipient-name {
+    font-family: var(--font-body);
+    font-size: clamp(0.62rem, 1.1vw, 0.78rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.85;
+  }
+
+  .cm-dramatic-001-glitch-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    opacity: 0;
+    mix-blend-mode: screen;
+  }
+
+  .cm-dramatic-001-glitch-bar {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0.15;
+  }
+
+  .cm-dramatic-001-cursor-line {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+  }
+</style>
+
+<div class="cm-dramatic-001-root" id="cm-dramatic-001-root">
+
+  <div class="cm-dramatic-001-noise"></div>
+  <div class="cm-dramatic-001-scanlines"></div>
+  <div class="cm-dramatic-001-vignette"></div>
+
+  <div class="cm-dramatic-001-lines-container">
+    <div class="cm-dramatic-001-h-line cm-dramatic-001-h-line-top" id="cm-d1-hl-top"></div>
+    <div class="cm-dramatic-001-h-line cm-dramatic-001-h-line-bottom" id="cm-d1-hl-bottom"></div>
+    <div class="cm-dramatic-001-v-line cm-dramatic-001-v-line-left" id="cm-d1-vl-left"></div>
+    <div class="cm-dramatic-001-v-line cm-dramatic-001-v-line-right" id="cm-d1-vl-right"></div>
+  </div>
+
+  <div class="cm-dramatic-001-corner cm-dramatic-001-corner-tl" id="cm-d1-c-tl"></div>
+  <div class="cm-dramatic-001-corner cm-dramatic-001-corner-tr" id="cm-d1-c-tr"></div>
+  <div class="cm-dramatic-001-corner cm-dramatic-001-corner-bl" id="cm-d1-c-bl"></div>
+  <div class="cm-dramatic-001-corner cm-dramatic-001-corner-br" id="cm-d1-c-br"></div>
+
+  <div class="cm-dramatic-001-glitch-overlay" id="cm-d1-glitch">
+    <div class="cm-dramatic-001-glitch-bar" style="top: 23%;"></div>
+    <div class="cm-dramatic-001-glitch-bar" style="top: 61%; height: 1px;"></div>
+    <div class="cm-dramatic-001-glitch-bar" style="top: 78%; height: 5px;"></div>
+  </div>
+
+  <div class="cm-dramatic-001-cursor-line" id="cm-d1-cursor-line"></div>
+
+  <div class="cm-dramatic-001-center">
+    <div class="cm-dramatic-001-eyebrow" id="cm-d1-eyebrow">
+      <div class="cm-dramatic-001-eyebrow-line"></div>
+      <div class="cm-dramatic-001-eyebrow-text">for &nbsp;—RECIPIENT_NAME—</div>
+      <div class="cm-dramatic-001-eyebrow-line"></div>
+    </div>
+
+    <div class="cm-dramatic-001-message-main" id="cm-d1-main">--MESSAGE_MAIN--</div>
+
+    <div class="cm-dramatic-001-body" id="cm-d1-body">
+      <div class="cm-dramatic-001-line-2">--MESSAGE_LINE_2--</div>
+      <div class="cm-dramatic-001-line-3">--MESSAGE_LINE_3--</div>
+    </div>
+
+    <div class="cm-dramatic-001-recipient" id="cm-d1-recipient">
+      <div class="cm-dramatic-001-recipient-dash"></div>
+      <div class="cm-dramatic-001-recipient-name">--RECIPIENT_NAME--</div>
+      <div class="cm-dramatic-001-recipient-dash"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  function runEntrance() {
+    var tl = gsap.timeline();
+
+    gsap.set('#cm-d1-eyebrow', { opacity: 0, y: -16 });
+    gsap.set('#cm-d1-main', { opacity: 0, y: 40, skewY: 3 });
+    gsap.set('#cm-d1-body', { opacity: 0, y: 20 });
+    gsap.set('#cm-d1-recipient', { opacity: 0 });
+    gsap.set(['#cm-d1-c-tl','#cm-d1-c-tr','#cm-d1-c-bl','#cm-d1-c-br'], { opacity: 0 });
+
+    tl.to('#cm-d1-hl-top', { width: '100%', opacity: 0.18, duration: 0.9, ease: 'power3.inOut' }, 0);
+    tl.to('#cm-d1-hl-bottom', { width: '100%', opacity: 0.18, duration: 0.9, ease: 'power3.inOut' }, 0.1);
+    tl.to('#cm-d1-vl-left', { height: '100%', opacity: 0.1, duration: 0.8, ease: 'power3.inOut' }, 0.35);
+    tl.to('#cm-d1-vl-right', { height: '100%', opacity: 0.1, duration: 0.8, ease: 'power3.inOut' }, 0.45);
+    tl.to(['#cm-d1-c-tl','#cm-d1-c-tr','#cm-d1-c-bl','#cm-d1-c-br'], { opacity: 1, duration: 0.4, stagger: 0.08 }, 0.7);
+
+    tl.to('#cm-d1-eyebrow', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0.9);
+
+    tl.to('#cm-d1-glitch', { opacity: 1, duration: 0.05, ease: 'none' }, 1.3);
+    tl.to('#cm-d1-glitch', { opacity: 0, duration: 0.05, ease: 'none' }, 1.38);
+    tl.to('#cm-d1-glitch', { opacity: 1, duration: 0.04, ease: 'none' }, 1.42);
+    tl.to('#cm-d1-glitch', { opacity: 0, duration: 0.06, ease: 'none' }, 1.46);
+
+    tl.to('#cm-d1-main', { opacity: 1, y: 0, skewY: 0, duration: 1.1, ease: 'expo.out' }, 1.35);
+
+    tl.to('#cm-d1-body', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, 1.95);
+    tl.to('#cm-d1-recipient', { opacity: 1, duration: 0.7, ease: 'power2.out' }, 2.45);
+
+    gsap.to('#cm-d1-hl-top', { opacity: 0.08, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3 });
+    gsap.to('#cm-d1-hl-bottom', { opacity: 0.08, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3.5 });
+
+    function triggerGlitch() {
+      var glitchTl = gsap.timeline({ onComplete: function() {
+        setTimeout(triggerGlitch, 4000 + Math.random() * 8000);
+      }});
+      glitchTl.to('#cm-d1-glitch', { opacity: 1, duration: 0.04 })
+              .to('#cm-d1-main', { x: 4, duration: 0.04 }, '<')
+              .to('#cm-d1-glitch', { opacity: 0, duration: 0.04 })
+              .to('#cm-d1-main', { x: -3, duration: 0.04 })
+              .to('#cm-d1-glitch', { opacity: 1, duration: 0.03 })
+              .to('#cm-d1-main', { x: 0, duration: 0.06 })
+              .to('#cm-d1-glitch', { opacity: 0, duration: 0.04 });
+    }
+    setTimeout(triggerGlitch, 4500);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail && e.detail.index !== 4) return;
+    runEntrance();
+  });
+
+  var root = document.getElementById('cm-dramatic-001-root');
+  var cursorLine = document.getElementById('cm-d1-cursor-line');
+
+  root.addEventListener('mousemove', function (e) {
+    var rect = root.getBoundingClientRect();
+    var mx = e.clientX - rect.left;
+    gsap.to(cursorLine, { left: mx, opacity: 0.06, duration: 0.3, ease: 'power2.out' });
+    var cx = (mx / rect.width - 0.5) * 2;
+    gsap.to('#cm-d1-main', { rotateY: cx * 2.5, transformPerspective: 900, duration: 0.8, ease: 'power2.out' });
+    gsap.to('#cm-d1-body', { x: cx * 6, duration: 0.8, ease: 'power2.out' });
+  });
+
+  root.addEventListener('mouseleave', function () {
+    gsap.to(cursorLine, { opacity: 0, duration: 0.5 });
+    gsap.to('#cm-d1-main', { rotateY: 0, duration: 0.8, ease: 'power2.out' });
+    gsap.to('#cm-d1-body', { x: 0, duration: 0.8, ease: 'power2.out' });
+  });
+
+  root.addEventListener('mouseenter', function () {
+    gsap.to(['#cm-d1-c-tl','#cm-d1-c-tr','#cm-d1-c-bl','#cm-d1-c-br'], { opacity: 1, duration: 0.3 });
+  });
+
+  setTimeout(runEntrance, 300);
+})();
+</script>

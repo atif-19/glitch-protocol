@@ -1,0 +1,545 @@
+<!--
+  Component: tm_apology_002
+  Type: the_moment
+  Aesthetic: System Error Log — terminal corruption, redacted files, glitching output
+  Obsession: Apology / Digital Confession
+  Tone: cold, fractured, intimate
+  Occasion: apology
+  Variables: --RECIPIENT_NAME-- --MOMENT_COPY-- --MOMENT_CTA--
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap');
+
+  :root {
+    --primary: #e2e8e4;
+    --accent: #ff3b3b;
+    --bg: #060809;
+    --text: #8a9a8e;
+    --font-heading: 'Syne', sans-serif;
+    --font-body: 'Share Tech Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .tm-ap2-root {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    font-family: var(--font-body);
+  }
+
+  .tm-ap2-cursor {
+    position: fixed;
+    width: 2px;
+    height: 18px;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    animation: tm-ap2-blink 1s step-end infinite;
+  }
+  @keyframes tm-ap2-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* Scanlines */
+  .tm-ap2-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 4px
+    );
+    pointer-events: none;
+    z-index: 5;
+    animation: tm-ap2-scan-drift 8s linear infinite;
+  }
+  @keyframes tm-ap2-scan-drift {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+
+  /* CRT flicker */
+  .tm-ap2-crt {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    animation: tm-ap2-crt-flicker 0.15s infinite;
+  }
+  @keyframes tm-ap2-crt-flicker {
+    0%,100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.88; }
+    94% { opacity: 1; }
+    97% { opacity: 0.94; }
+  }
+
+  /* Vignette */
+  .tm-ap2-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 40%, rgba(0,0,0,0.92) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* Grid background */
+  .tm-ap2-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,59,59,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,59,59,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+  }
+
+  /* Main terminal panel */
+  .tm-ap2-panel {
+    position: relative;
+    z-index: 10;
+    width: min(720px, 92vw);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Terminal header bar */
+  .tm-ap2-header {
+    background: rgba(255,59,59,0.08);
+    border: 1px solid rgba(255,59,59,0.2);
+    border-bottom: none;
+    padding: clamp(8px, 1.2vh, 12px) clamp(14px, 2vw, 20px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+  }
+  .tm-ap2-header-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .tm-ap2-header-dot:nth-child(1) { background: #ff5f57; }
+  .tm-ap2-header-dot:nth-child(2) { background: #febc2e; }
+  .tm-ap2-header-dot:nth-child(3) { background: #28c840; }
+  .tm-ap2-header-title {
+    margin-left: 6px;
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1.1vw, 11px);
+    color: rgba(255,59,59,0.5);
+    letter-spacing: 0.15em;
+    flex: 1;
+    text-align: center;
+  }
+  .tm-ap2-header-status {
+    font-size: clamp(8px, 1vw, 10px);
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    animation: tm-ap2-blink 1.4s step-end infinite;
+  }
+
+  /* Terminal body */
+  .tm-ap2-body {
+    background: rgba(6,8,9,0.97);
+    border: 1px solid rgba(255,59,59,0.2);
+    border-top: 1px solid rgba(255,59,59,0.08);
+    padding: clamp(20px, 3vw, 36px) clamp(16px, 2.5vw, 32px);
+    min-height: clamp(300px, 55vh, 480px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 1.2vh, 10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Glitch stripe */
+  .tm-ap2-glitch-stripe {
+    position: absolute;
+    left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  /* Log lines */
+  .tm-ap2-log {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(8px, 1.5vw, 16px);
+    opacity: 0;
+    font-size: clamp(10px, 1.3vw, 13px);
+    line-height: 1.6;
+  }
+  .tm-ap2-log-time {
+    color: rgba(138,154,142,0.4);
+    font-size: clamp(8px, 1vw, 10px);
+    white-space: nowrap;
+    min-width: clamp(70px, 10vw, 100px);
+  }
+  .tm-ap2-log-level {
+    font-size: clamp(8px, 1vw, 10px);
+    letter-spacing: 0.12em;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+  .tm-ap2-log-level.info  { color: #4e9ef5; border: 1px solid rgba(78,158,245,0.3); }
+  .tm-ap2-log-level.warn  { color: #f5a623; border: 1px solid rgba(245,166,35,0.3); }
+  .tm-ap2-log-level.error { color: var(--accent); border: 1px solid rgba(255,59,59,0.4); }
+  .tm-ap2-log-level.fatal { color: var(--accent); background: rgba(255,59,59,0.12); border: 1px solid rgba(255,59,59,0.5); }
+  .tm-ap2-log-msg {
+    color: var(--text);
+    flex: 1;
+  }
+  .tm-ap2-log-msg.highlight { color: var(--primary); }
+  .tm-ap2-log-msg.error-msg { color: var(--accent); }
+  .tm-ap2-log-msg.redacted {
+    color: transparent;
+    background: rgba(138,154,142,0.25);
+    user-select: none;
+    border-radius: 2px;
+    position: relative;
+    cursor: none;
+  }
+
+  /* Separator */
+  .tm-ap2-sep {
+    height: 1px;
+    background: rgba(255,59,59,0.1);
+    opacity: 0;
+    margin: clamp(4px, 0.8vh, 8px) 0;
+  }
+
+  /* The confession block */
+  .tm-ap2-confession {
+    margin-top: clamp(8px, 1.5vh, 14px);
+    padding: clamp(14px, 2vh, 20px) clamp(14px, 2vw, 20px);
+    border-left: 2px solid var(--accent);
+    background: rgba(255,59,59,0.03);
+    opacity: 0;
+    position: relative;
+  }
+  .tm-ap2-confession-label {
+    font-size: clamp(8px, 1vw, 10px);
+    letter-spacing: 0.25em;
+    color: rgba(255,59,59,0.5);
+    text-transform: uppercase;
+    margin-bottom: clamp(8px, 1.2vh, 12px);
+  }
+  .tm-ap2-confession-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 300;
+    font-size: clamp(16px, 2.6vw, 28px);
+    line-height: 1.5;
+    color: var(--primary);
+    letter-spacing: -0.01em;
+  }
+  .tm-ap2-confession-text .glitch-word {
+    color: var(--accent);
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Name tag */
+  .tm-ap2-name-tag {
+    font-size: clamp(9px, 1.1vw, 11px);
+    color: rgba(255,59,59,0.6);
+    letter-spacing: 0.2em;
+    margin-bottom: clamp(10px, 1.8vh, 16px);
+    opacity: 0;
+  }
+  .tm-ap2-name-tag span { color: var(--accent); }
+
+  /* Footer bar */
+  .tm-ap2-footer {
+    background: rgba(255,59,59,0.05);
+    border: 1px solid rgba(255,59,59,0.15);
+    border-top: none;
+    padding: clamp(10px, 1.5vh, 14px) clamp(14px, 2vw, 20px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    opacity: 0;
+  }
+  .tm-ap2-footer-left {
+    font-size: clamp(8px, 1vw, 10px);
+    color: rgba(138,154,142,0.4);
+    letter-spacing: 0.12em;
+  }
+  .tm-ap2-cta-line {
+    font-size: clamp(9px, 1.1vw, 11px);
+    color: rgba(138,154,142,0.5);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .tm-ap2-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: clamp(8px, 1.2vh, 12px) clamp(18px, 2.5vw, 28px);
+    border: 1px solid rgba(255,59,59,0.4);
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: none;
+    overflow: hidden;
+    transition: color 0.3s;
+  }
+  .tm-ap2-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-101%);
+    transition: transform 0.4s cubic-bezier(0.77,0,0.175,1);
+  }
+  .tm-ap2-btn:hover::before { transform: translateX(0); }
+  .tm-ap2-btn:hover { color: var(--bg); }
+  .tm-ap2-btn span { position: relative; z-index: 1; }
+
+  /* Progress bar */
+  .tm-ap2-progress-wrap {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,59,59,0.08);
+    z-index: 15;
+  }
+  .tm-ap2-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+</style>
+<div class="tm-ap2-root" id="tm-ap2-root">
+  <div class="tm-ap2-cursor" id="tm-ap2-cursor"></div>
+  <div class="tm-ap2-grid"></div>
+  <div class="tm-ap2-scanlines"></div>
+  <div class="tm-ap2-crt"></div>
+  <div class="tm-ap2-vignette"></div>
+  <div class="tm-ap2-panel">
+<!-- Header -->
+<div class="tm-ap2-header" id="tm-ap2-header">
+  <div class="tm-ap2-header-dot"></div>
+  <div class="tm-ap2-header-dot"></div>
+  <div class="tm-ap2-header-dot"></div>
+  <span class="tm-ap2-header-title">SYSTEM / ERROR_LOG / session_2024-██-██.dump</span>
+  <span class="tm-ap2-header-status">● LIVE</span>
+</div>
+
+<!-- Body -->
+<div class="tm-ap2-body" id="tm-ap2-body">
+  <div class="tm-ap2-glitch-stripe" id="tm-ap2-gs"></div>
+
+  <div class="tm-ap2-name-tag" id="tm-ap2-nametag">
+    TARGET_ID: <span>--RECIPIENT_NAME--</span> &nbsp;|&nbsp; PRIORITY: CRITICAL
+  </div>
+
+  <div class="tm-ap2-log" id="tm-ap2-l1">
+    <span class="tm-ap2-log-time">00:00:01.204</span>
+    <span class="tm-ap2-log-level info">INFO</span>
+    <span class="tm-ap2-log-msg">Session initialized. Loading emotional state cache…</span>
+  </div>
+  <div class="tm-ap2-log" id="tm-ap2-l2">
+    <span class="tm-ap2-log-time">00:00:03.881</span>
+    <span class="tm-ap2-log-level warn">WARN</span>
+    <span class="tm-ap2-log-msg">Integrity check failed — memory corruption detected in sector 0x4F2A</span>
+  </div>
+  <div class="tm-ap2-log" id="tm-ap2-l3">
+    <span class="tm-ap2-log-time">00:00:07.119</span>
+    <span class="tm-ap2-log-level error">ERROR</span>
+    <span class="tm-ap2-log-msg error-msg">Unhandled exception: could not suppress( <span class="tm-ap2-log-msg redacted">████████████████████</span> )</span>
+  </div>
+  <div class="tm-ap2-log" id="tm-ap2-l4">
+    <span class="tm-ap2-log-time">00:00:09.003</span>
+    <span class="tm-ap2-log-level error">ERROR</span>
+    <span class="tm-ap2-log-msg">Promise rejected — returned value: null. Expected: <span class="tm-ap2-log-msg highlight">something better</span></span>
+  </div>
+  <div class="tm-ap2-log" id="tm-ap2-l5">
+    <span class="tm-ap2-log-time">00:00:14.772</span>
+    <span class="tm-ap2-log-level warn">WARN</span>
+    <span class="tm-ap2-log-msg">Ego protection module overriding output — force-disabling now</span>
+  </div>
+
+  <div class="tm-ap2-sep" id="tm-ap2-sep1"></div>
+
+  <div class="tm-ap2-log" id="tm-ap2-l6">
+    <span class="tm-ap2-log-time">00:00:21.440</span>
+    <span class="tm-ap2-log-level fatal">FATAL</span>
+    <span class="tm-ap2-log-msg error-msg">Core process: [ I_should_have_known_better ] exited with code 1</span>
+  </div>
+  <div class="tm-ap2-log" id="tm-ap2-l7">
+    <span class="tm-ap2-log-time">00:00:22.001</span>
+    <span class="tm-ap2-log-level info">INFO</span>
+    <span class="tm-ap2-log-msg">Dumping raw state to --RECIPIENT_NAME--… no filters applied</span>
+  </div>
+
+  <div class="tm-ap2-sep" id="tm-ap2-sep2"></div>
+
+  <div class="tm-ap2-confession" id="tm-ap2-confession">
+    <div class="tm-ap2-confession-label">// raw_output — unfiltered confession dump</div>
+    <div class="tm-ap2-confession-text" id="tm-ap2-confession-text">
+      --MOMENT_COPY--
+    </div>
+  </div>
+
+  <div class="tm-ap2-progress-wrap">
+    <div class="tm-ap2-progress-bar" id="tm-ap2-progress"></div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="tm-ap2-footer" id="tm-ap2-footer">
+  <span class="tm-ap2-footer-left">exit code: 0 &nbsp;|&nbsp; resolution: pending</span>
+  <span class="tm-ap2-cta-line">--MOMENT_CTA--</span>
+  <button class="tm-ap2-btn" id="tm-ap2-btn">
+    <span>acknowledge</span>
+  </button>
+</div></div>
+</div>
+<script>
+(function() {
+
+  const cursor = document.getElementById('tm-ap2-cursor');
+
+  document.addEventListener('mousemove', function(e) {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+
+  // Glitch stripe random firing
+  function fireGlitch() {
+    const gs = document.getElementById('tm-ap2-gs');
+    if (!gs) return;
+    gs.style.top = (Math.random() * 90 + 5) + '%';
+    gsap.fromTo(gs,
+      { opacity: 0.7, scaleX: 1 },
+      { opacity: 0, duration: 0.12, ease: 'steps(3)' }
+    );
+    setTimeout(fireGlitch, Math.random() * 3000 + 800);
+  }
+
+  // Glitch word effect on confession text
+  function glitchWord(el) {
+    const chars = '▓▒░█▀▄╬╪═╫#@%&';
+    const orig = el.textContent;
+    let count = 0;
+    const iv = setInterval(() => {
+      el.textContent = orig.split('').map((c, i) =>
+        i < count ? orig[i] : (Math.random() > 0.6 ? chars[Math.floor(Math.random()*chars.length)] : c)
+      ).join('');
+      count += 2;
+      if (count >= orig.length) { el.textContent = orig; clearInterval(iv); }
+    }, 40);
+  }
+
+  // Mouse parallax on grid
+  document.addEventListener('mousemove', function(e) {
+    const mx = (e.clientX / window.innerWidth - 0.5);
+    const my = (e.clientY / window.innerHeight - 0.5);
+    const grid = document.querySelector('.tm-ap2-grid');
+    if (grid) grid.style.transform = `translate(${mx * 10}px, ${my * 10}px)`;
+  });
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 5) return;
+
+    const tl = gsap.timeline();
+
+    // Header slides in
+    tl.to('#tm-ap2-header', {
+      opacity: 1, y: 0, duration: 0.5, ease: 'power2.out'
+    }, 0)
+    .from('#tm-ap2-header', { y: -16, duration: 0.5, ease: 'power2.out' }, 0);
+
+    // Body border draws in
+    tl.from('#tm-ap2-body', {
+      opacity: 0, duration: 0.3
+    }, 0.3);
+
+    // Name tag
+    tl.to('#tm-ap2-nametag', {
+      opacity: 1, duration: 0.4, ease: 'power2.out'
+    }, 0.5)
+    .from('#tm-ap2-nametag', { x: -10, duration: 0.4 }, 0.5);
+
+    // Log lines stagger in like typewriter
+    const logs = ['#tm-ap2-l1','#tm-ap2-l2','#tm-ap2-l3','#tm-ap2-l4','#tm-ap2-l5'];
+    logs.forEach((id, i) => {
+      tl.to(id, { opacity: 1, duration: 0.25, ease: 'none' }, 0.8 + i * 0.28)
+        .from(id, { x: -8, duration: 0.25 }, 0.8 + i * 0.28);
+    });
+
+    tl.to('#tm-ap2-sep1', { opacity: 1, duration: 0.3 }, 2.1);
+
+    tl.to('#tm-ap2-l6', { opacity: 1, duration: 0.2, ease: 'none' }, 2.3)
+      .from('#tm-ap2-l6', { x: -8, duration: 0.2 }, 2.3);
+    tl.to('#tm-ap2-l7', { opacity: 1, duration: 0.2, ease: 'none' }, 2.55)
+      .from('#tm-ap2-l7', { x: -8, duration: 0.2 }, 2.55);
+
+    tl.to('#tm-ap2-sep2', { opacity: 1, duration: 0.3 }, 2.8);
+
+    // Confession block
+    tl.to('#tm-ap2-confession', {
+      opacity: 1, duration: 0.6, ease: 'power2.out'
+    }, 3.1)
+    .from('#tm-ap2-confession', { y: 10, duration: 0.6 }, 3.1);
+
+    // Glitch the confession text on appear
+    tl.call(() => {
+      const el = document.getElementById('tm-ap2-confession-text');
+      if (el) glitchWord(el);
+    }, [], 3.2);
+
+    // Progress bar fills
+    tl.to('#tm-ap2-progress', {
+      width: '100%', duration: 2.8, ease: 'power1.inOut'
+    }, 3.1);
+
+    // Footer
+    tl.to('#tm-ap2-footer', {
+      opacity: 1, duration: 0.5, ease: 'power2.out'
+    }, 4.0)
+    .from('#tm-ap2-footer', { y: 12, duration: 0.5 }, 4.0);
+
+    // Start glitch stripe loop
+    tl.call(() => fireGlitch(), [], 1.0);
+
+    // Ambient: random log line flickers
+    tl.call(() => {
+      const allLogs = document.querySelectorAll('.tm-ap2-log');
+      function randomFlicker() {
+        const target = allLogs[Math.floor(Math.random() * allLogs.length)];
+        gsap.to(target, { opacity: 0.3, duration: 0.08, yoyo: true, repeat: 3, ease: 'none',
+          onComplete: () => gsap.set(target, { opacity: 1 })
+        });
+        setTimeout(randomFlicker, Math.random() * 4000 + 1500);
+      }
+      randomFlicker();
+    }, [], 4.5);
+
+    // Ambient: progress bar re-pulses
+    tl.call(() => {
+      gsap.to('#tm-ap2-progress', {
+        opacity: 0.4, duration: 1.5, ease: 'sine.inOut', repeat: -1, yoyo: true
+      });
+    }, [], 6.0);
+  });
+
+})();
+</script>

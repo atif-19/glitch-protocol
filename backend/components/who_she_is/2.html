@@ -1,0 +1,453 @@
+<!--
+  Component: wsi_dramatic_001
+  Type: who_she_is
+  Aesthetic: Dramatic
+  Obsession: Bold Statements / High Contrast / Typographic Power
+  Tone: fierce, reverent, cinematic
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --PERSONALITY-- --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<style>
+  /* wsi-dramatic-001 — root container */
+  .wsi-d-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* Diagonal slash — raw energy */
+  .wsi-d-001-slash {
+    position: absolute;
+    top: -10%;
+    left: -5%;
+    width: 55%;
+    height: 130%;
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    transform: skewX(-14deg) scaleX(0);
+    transform-origin: left center;
+    pointer-events: none;
+  }
+
+  /* Bold accent stripe — top left */
+  .wsi-d-001-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: clamp(5px, 0.7vw, 9px);
+    height: 100%;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  /* Bottom horizontal bar */
+  .wsi-d-001-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: clamp(3px, 0.4vh, 5px);
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0.35;
+  }
+
+  /* Grid crosshair marks */
+  .wsi-d-001-crosshair {
+    position: absolute;
+    width: clamp(16px, 2.2vw, 28px);
+    height: clamp(16px, 2.2vw, 28px);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .wsi-d-001-crosshair::before,
+  .wsi-d-001-crosshair::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .wsi-d-001-crosshair::before {
+    top: 50%; left: 0;
+    width: 100%; height: 1px;
+    transform: translateY(-50%);
+  }
+  .wsi-d-001-crosshair::after {
+    left: 50%; top: 0;
+    height: 100%; width: 1px;
+    transform: translateX(-50%);
+  }
+  .wsi-d-001-ch-tr { top: clamp(18px, 3vh, 40px); right: clamp(18px, 3vw, 40px); }
+  .wsi-d-001-ch-bl { bottom: clamp(18px, 3vh, 40px); left: clamp(18px, 3vw, 40px); }
+  .wsi-d-001-ch-br { bottom: clamp(18px, 3vh, 40px); right: clamp(18px, 3vw, 40px); }
+
+  /* Floating statement words — ambient bg text */
+  .wsi-d-001-bg-word {
+    position: absolute;
+    font-family: var(--font-heading);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--accent) 5%, transparent);
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+    font-size: clamp(40px, 9vw, 120px);
+    opacity: 0;
+  }
+
+  /* Main layout */
+  .wsi-d-001-layout {
+    position: relative;
+    z-index: 10;
+    width: clamp(300px, 86vw, 860px);
+    padding: 0 clamp(20px, 4vw, 56px);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Section index */
+  .wsi-d-001-index {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1.1vw, 12px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 clamp(10px, 1.8vh, 22px);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.5vw, 20px);
+  }
+  .wsi-d-001-index-line {
+    width: clamp(24px, 4vw, 52px);
+    height: 1.5px;
+    background: var(--accent);
+  }
+
+  /* Giant name — the bold statement */
+  .wsi-d-001-name {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: clamp(42px, 10.5vw, 128px);
+    line-height: 0.92;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  /* Name inner span — for clip reveal */
+  .wsi-d-001-name-inner {
+    display: block;
+    transform: translateY(110%);
+  }
+
+  /* Accent underline block */
+  .wsi-d-001-name-bar {
+    display: block;
+    height: clamp(4px, 0.6vh, 8px);
+    background: var(--accent);
+    width: 0%;
+    margin-top: clamp(6px, 1vh, 14px);
+  }
+
+  /* Divider row */
+  .wsi-d-001-divider {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2vw, 24px);
+    margin: clamp(14px, 2.5vh, 32px) 0;
+    opacity: 0;
+  }
+  .wsi-d-001-divider-rule {
+    flex: 1;
+    height: 1px;
+    background: color-mix(in srgb, var(--text) 18%, transparent);
+  }
+  .wsi-d-001-divider-dot {
+    width: clamp(5px, 0.7vw, 8px);
+    height: clamp(5px, 0.7vw, 8px);
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* Personality — italic pull quote */
+  .wsi-d-001-personality {
+    font-family: var(--font-heading);
+    font-size: clamp(15px, 2.6vw, 30px);
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--text) 70%, transparent);
+    margin: 0 0 clamp(18px, 3.2vh, 44px);
+    opacity: 0;
+    border-left: clamp(3px, 0.4vw, 5px) solid var(--accent);
+    padding-left: clamp(14px, 2vw, 26px);
+  }
+
+  /* Detail rows */
+  .wsi-d-001-details {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.4vh, 18px);
+  }
+
+  .wsi-d-001-detail {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2vw, 24px);
+    opacity: 0;
+    cursor: default;
+  }
+
+  /* Number tag */
+  .wsi-d-001-detail-num {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 5vw, 58px);
+    font-weight: 900;
+    line-height: 1;
+    color: color-mix(in srgb, var(--accent) 20%, transparent);
+    min-width: clamp(32px, 5.5vw, 68px);
+    text-align: right;
+    transition: color 0.25s ease;
+    user-select: none;
+  }
+
+  .wsi-d-001-detail-divider {
+    width: 1.5px;
+    height: clamp(28px, 4vh, 48px);
+    background: color-mix(in srgb, var(--text) 18%, transparent);
+    flex-shrink: 0;
+    transition: background 0.25s ease;
+  }
+
+  .wsi-d-001-detail-copy {
+    font-family: var(--font-body);
+    font-size: clamp(12px, 1.65vw, 17px);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--text) 72%, transparent);
+    transition: color 0.25s ease;
+  }
+
+  /* Hover — each row lights up */
+  .wsi-d-001-detail:hover .wsi-d-001-detail-num {
+    color: var(--accent);
+  }
+  .wsi-d-001-detail:hover .wsi-d-001-detail-divider {
+    background: var(--accent);
+  }
+  .wsi-d-001-detail:hover .wsi-d-001-detail-copy {
+    color: var(--text);
+  }
+
+  /* Cursor reactive highlight — trailing glow dot */
+  .wsi-d-001-cursor-glow {
+    position: fixed;
+    width: clamp(180px, 22vw, 280px);
+    height: clamp(180px, 22vw, 280px);
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 9%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+</style>
+<div class="wsi-d-001-root" id="wsi-d-001-root">
+  <!-- Slash background panel -->
+  <div class="wsi-d-001-slash" id="wsi-d-001-slash"></div>
+  <!-- Left vertical accent stripe -->
+  <div class="wsi-d-001-stripe" id="wsi-d-001-stripe"></div>
+  <!-- Bottom bar -->
+  <div class="wsi-d-001-bottom-bar" id="wsi-d-001-bottom-bar"></div>
+  <!-- Crosshair marks -->
+  <div class="wsi-d-001-crosshair wsi-d-001-ch-tr" id="wsi-d-001-ch-tr"></div>
+  <div class="wsi-d-001-crosshair wsi-d-001-ch-bl" id="wsi-d-001-ch-bl"></div>
+  <div class="wsi-d-001-crosshair wsi-d-001-ch-br" id="wsi-d-001-ch-br"></div>
+  <!-- Ambient background words -->
+  <div class="wsi-d-001-bg-word" id="wsi-d-001-bgw-1"
+    style="top: 6%; right: -4%; transform: rotate(-4deg);">remarkable</div>
+  <div class="wsi-d-001-bg-word" id="wsi-d-001-bgw-2"
+    style="bottom: 4%; left: -3%; transform: rotate(3deg);">undeniable</div>
+  <!-- Cursor glow orb -->
+  <div class="wsi-d-001-cursor-glow" id="wsi-d-001-cursor-glow"></div>
+  <!-- Main layout -->
+  <div class="wsi-d-001-layout">
+<!-- Index label -->
+<p class="wsi-d-001-index" id="wsi-d-001-index">
+  <span class="wsi-d-001-index-line"></span>
+  who she is
+  <span class="wsi-d-001-index-line"></span>
+</p>
+
+<!-- Giant name -->
+<h2 class="wsi-d-001-name" id="wsi-d-001-name">
+  <span class="wsi-d-001-name-inner" id="wsi-d-001-name-inner">--RECIPIENT_NAME--</span>
+</h2>
+<span class="wsi-d-001-name-bar" id="wsi-d-001-name-bar"></span>
+
+<!-- Divider -->
+<div class="wsi-d-001-divider" id="wsi-d-001-divider">
+  <div class="wsi-d-001-divider-rule"></div>
+  <div class="wsi-d-001-divider-dot"></div>
+  <div class="wsi-d-001-divider-rule"></div>
+</div>
+
+<!-- Personality -->
+<p class="wsi-d-001-personality" id="wsi-d-001-personality">"--PERSONALITY--"</p>
+
+<!-- Three details -->
+<div class="wsi-d-001-details">
+
+  <div class="wsi-d-001-detail" id="wsi-d-001-d1">
+    <span class="wsi-d-001-detail-num">01</span>
+    <div class="wsi-d-001-detail-divider"></div>
+    <span class="wsi-d-001-detail-copy">--DETAIL_1--</span>
+  </div>
+
+  <div class="wsi-d-001-detail" id="wsi-d-001-d2">
+    <span class="wsi-d-001-detail-num">02</span>
+    <div class="wsi-d-001-detail-divider"></div>
+    <span class="wsi-d-001-detail-copy">--DETAIL_2--</span>
+  </div>
+
+  <div class="wsi-d-001-detail" id="wsi-d-001-d3">
+    <span class="wsi-d-001-detail-num">03</span>
+    <div class="wsi-d-001-detail-divider"></div>
+    <span class="wsi-d-001-detail-copy">--DETAIL_3--</span>
+  </div>
+
+</div>
+</div>
+</div>
+<script>
+(function() {
+
+  /* ─── Cursor glow tracker ─── */
+  var glow = document.getElementById('wsi-d-001-cursor-glow');
+  var glowVisible = false;
+  document.addEventListener('mousemove', function(e) {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+    if (!glowVisible) {
+      glowVisible = true;
+      glow.style.opacity = '1';
+    }
+  });
+  document.addEventListener('mouseleave', function() {
+    glowVisible = false;
+    glow.style.opacity = '0';
+  });
+
+  /* ─── Entrance animation ─── */
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 2) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1 — Left stripe slams down */
+    tl.to('#wsi-d-001-stripe', {
+      scaleY: 1, duration: 0.5, ease: 'power4.inOut'
+    }, 0);
+
+    /* 2 — Slash panel sweeps in */
+    tl.to('#wsi-d-001-slash', {
+      scaleX: 1, duration: 0.75, ease: 'power3.inOut'
+    }, 0.12);
+
+    /* 3 — Bottom bar draws right */
+    tl.to('#wsi-d-001-bottom-bar', {
+      scaleX: 1, duration: 0.65, ease: 'power2.inOut'
+    }, 0.2);
+
+    /* 4 — Crosshairs snap in */
+    tl.to(
+      ['#wsi-d-001-ch-tr', '#wsi-d-001-ch-bl', '#wsi-d-001-ch-br'],
+      { opacity: 1, scale: 1, duration: 0.3, stagger: 0.1, ease: 'back.out(2)' },
+      0.4
+    );
+    gsap.set(['#wsi-d-001-ch-tr', '#wsi-d-001-ch-bl', '#wsi-d-001-ch-br'], { scale: 0 });
+
+    /* 5 — Index label fades in */
+    tl.to('#wsi-d-001-index', { opacity: 1, duration: 0.45 }, 0.45);
+
+    /* 6 — Giant name rises from clip */
+    tl.to('#wsi-d-001-name', { opacity: 1, duration: 0 }, 0.55);
+    tl.to('#wsi-d-001-name-inner', {
+      y: '0%', duration: 0.7, ease: 'power4.out'
+    }, 0.58);
+
+    /* 7 — Accent bar under name expands */
+    tl.to('#wsi-d-001-name-bar', {
+      width: '100%', duration: 0.55, ease: 'power2.inOut'
+    }, 0.95);
+
+    /* 8 — Divider */
+    tl.to('#wsi-d-001-divider', { opacity: 1, duration: 0.4 }, 1.1);
+
+    /* 9 — Personality block slides in from left */
+    gsap.set('#wsi-d-001-personality', { x: -30 });
+    tl.to('#wsi-d-001-personality', {
+      opacity: 1, x: 0, duration: 0.6
+    }, 1.22);
+
+    /* 10 — Detail rows stagger with number count-up feel */
+    gsap.set(['#wsi-d-001-d1', '#wsi-d-001-d2', '#wsi-d-001-d3'], { x: -22 });
+    tl.to(
+      ['#wsi-d-001-d1', '#wsi-d-001-d2', '#wsi-d-001-d3'],
+      { opacity: 1, x: 0, duration: 0.45, stagger: 0.14 },
+      1.5
+    );
+
+    /* 11 — Ambient bg words float in slowly */
+    tl.to('#wsi-d-001-bgw-1', { opacity: 1, duration: 1.4, ease: 'power1.out' }, 1.0);
+    tl.to('#wsi-d-001-bgw-2', { opacity: 1, duration: 1.4, ease: 'power1.out' }, 1.3);
+
+    /* ─── Idle: bg words breathe ─── */
+    tl.call(function() {
+      gsap.to('#wsi-d-001-bgw-1', {
+        y: -18, duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+      gsap.to('#wsi-d-001-bgw-2', {
+        y: 14, duration: 7, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: stripe pulses opacity ─── */
+    tl.call(function() {
+      gsap.to('#wsi-d-001-stripe', {
+        opacity: 0.55, duration: 1.8, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+    }, [], 1.8);
+
+    /* ─── Idle: name bar width micro-pulse ─── */
+    tl.call(function() {
+      gsap.to('#wsi-d-001-name-bar', {
+        scaleX: 0.97, transformOrigin: 'left center',
+        duration: 2.5, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+    }, [], 2.2);
+
+    /* ─── Idle: crosshair slow rotate ─── */
+    tl.call(function() {
+      gsap.to('#wsi-d-001-ch-br', {
+        rotation: 45, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+    }, [], 2.0);
+
+  }); /* end glitch:enter */
+
+})();
+</script>

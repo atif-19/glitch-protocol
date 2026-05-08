@@ -1,0 +1,505 @@
+<!--
+  Component: tm_apology_001
+  Type: the_moment
+  Aesthetic: Dark Confession — cracked glass, ink bleed, candlelight
+  Obsession: Apology / Vulnerability
+  Tone: raw, aching, cinematic
+  Occasion: apology
+  Variables: --RECIPIENT_NAME-- --MOMENT_COPY-- --MOMENT_CTA--
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel+Decorative:wght@400&family=Raleway:wght@200;300&display=swap');
+
+  :root {
+    --primary: #e8ddd0;
+    --accent: #c9a96e;
+    --bg: #080808;
+    --text: #d4cdc6;
+    --font-heading: 'Cinzel Decorative', serif;
+    --font-body: 'Cormorant Garamond', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .tm-apology-001-root {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  .tm-apology-001-cursor {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+  }
+  .tm-apology-001-cursor.expand {
+    width: 40px;
+    height: 40px;
+    opacity: 0.4;
+  }
+
+  .tm-apology-001-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .tm-apology-001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 30%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .tm-apology-001-cracks {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .tm-apology-001-cracks svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .tm-apology-001-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .tm-apology-001-orb-1 {
+    width: clamp(200px, 35vw, 500px);
+    height: clamp(200px, 35vw, 500px);
+    background: radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 70%);
+    top: -10%;
+    left: -10%;
+  }
+  .tm-apology-001-orb-2 {
+    width: clamp(150px, 25vw, 400px);
+    height: clamp(150px, 25vw, 400px);
+    background: radial-gradient(circle, rgba(139,90,90,0.1) 0%, transparent 70%);
+    bottom: -5%;
+    right: -5%;
+  }
+
+  .tm-apology-001-inkdrop {
+    position: absolute;
+    width: clamp(300px, 50vw, 700px);
+    height: clamp(300px, 50vw, 700px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(20,10,5,0.9) 0%, transparent 70%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .tm-apology-001-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: clamp(20px, 5vw, 60px);
+    max-width: min(680px, 90vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(20px, 3vh, 36px);
+  }
+
+  .tm-apology-001-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+  }
+  .tm-apology-001-eyebrow-line {
+    width: clamp(30px, 6vw, 70px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+  }
+  .tm-apology-001-eyebrow-line.right {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .tm-apology-001-eyebrow-text {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 200;
+    font-size: clamp(9px, 1.2vw, 12px);
+    letter-spacing: 0.35em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .tm-apology-001-name {
+    font-family: var(--font-heading);
+    font-size: clamp(13px, 2vw, 18px);
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    opacity: 0;
+    text-transform: uppercase;
+  }
+
+  .tm-apology-001-copy {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(22px, 3.8vw, 48px);
+    line-height: 1.45;
+    color: var(--primary);
+    opacity: 0;
+    position: relative;
+  }
+
+  .tm-apology-001-copy em {
+    font-style: normal;
+    color: var(--accent);
+    position: relative;
+  }
+  .tm-apology-001-copy em::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s ease;
+  }
+  .tm-apology-001-copy.revealed em::after {
+    transform: scaleX(1);
+  }
+
+  .tm-apology-001-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  .tm-apology-001-divider-line {
+    flex: 1;
+    max-width: 80px;
+    height: 1px;
+    background: rgba(201,169,110,0.25);
+  }
+  .tm-apology-001-divider-diamond {
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    opacity: 0.7;
+  }
+
+  .tm-apology-001-cta-wrap {
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .tm-apology-001-cta {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: clamp(10px, 1.3vw, 13px);
+    letter-spacing: 0.3em;
+    color: var(--text);
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .tm-apology-001-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: clamp(12px, 1.5vh, 18px) clamp(24px, 3vw, 40px);
+    border: 1px solid rgba(201,169,110,0.35);
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 200;
+    font-size: clamp(10px, 1.2vw, 13px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: none;
+    overflow: hidden;
+    transition: border-color 0.4s, color 0.4s;
+  }
+  .tm-apology-001-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-101%);
+    transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .tm-apology-001-btn:hover::before { transform: translateX(0); }
+  .tm-apology-001-btn:hover { color: var(--bg); border-color: var(--accent); }
+  .tm-apology-001-btn span { position: relative; z-index: 1; }
+  .tm-apology-001-btn-arrow {
+    position: relative;
+    z-index: 1;
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s;
+  }
+  .tm-apology-001-btn-arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    transform: rotate(45deg);
+  }
+  .tm-apology-001-btn:hover .tm-apology-001-btn-arrow { width: 26px; }
+
+  .tm-apology-001-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+  .tm-apology-001-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  .tm-apology-001-pulse {
+    position: absolute;
+    bottom: clamp(20px, 4vh, 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    opacity: 0;
+  }
+  .tm-apology-001-pulse svg {
+    width: clamp(120px, 20vw, 200px);
+    height: 30px;
+    overflow: visible;
+  }
+  .tm-apology-001-pulse-path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1;
+    opacity: 0.45;
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+  }
+</style>
+<div class="tm-apology-001-root" id="tm-apology-001-root">
+  <div class="tm-apology-001-cursor" id="tm-apology-001-cursor"></div>
+  <div class="tm-apology-001-noise"></div>
+  <div class="tm-apology-001-vignette"></div>
+  <div class="tm-apology-001-orb tm-apology-001-orb-1"></div>
+  <div class="tm-apology-001-orb tm-apology-001-orb-2"></div>
+  <div class="tm-apology-001-inkdrop" id="tm-apology-001-inkdrop"></div>
+  <div class="tm-apology-001-cracks" id="tm-apology-001-cracks">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow-crack">
+          <feGaussianBlur stdDeviation="1.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g filter="url(#glow-crack)" opacity="0.5">
+        <line x1="720" y1="450" x2="610" y2="200" stroke="#c9a96e" stroke-width="0.8" stroke-dasharray="500" stroke-dashoffset="500" class="crack-line"/>
+        <line x1="720" y1="450" x2="520" y2="600" stroke="#c9a96e" stroke-width="0.6" stroke-dasharray="400" stroke-dashoffset="400" class="crack-line"/>
+        <line x1="720" y1="450" x2="900" y2="300" stroke="#c9a96e" stroke-width="0.7" stroke-dasharray="350" stroke-dashoffset="350" class="crack-line"/>
+        <line x1="720" y1="450" x2="1000" y2="650" stroke="#c9a96e" stroke-width="0.5" stroke-dasharray="450" stroke-dashoffset="450" class="crack-line"/>
+        <line x1="610" y1="200" x2="480" y2="80" stroke="#c9a96e" stroke-width="0.4" stroke-dasharray="300" stroke-dashoffset="300" class="crack-line"/>
+        <line x1="900" y1="300" x2="1100" y2="180" stroke="#c9a96e" stroke-width="0.4" stroke-dasharray="280" stroke-dashoffset="280" class="crack-line"/>
+        <line x1="520" y1="600" x2="300" y2="780" stroke="#c9a96e" stroke-width="0.4" stroke-dasharray="350" stroke-dashoffset="350" class="crack-line"/>
+        <circle cx="720" cy="450" r="4" fill="#c9a96e" opacity="0.8"/>
+        <circle cx="720" cy="450" r="12" fill="none" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
+      </g>
+    </svg>
+  </div>
+  <div class="tm-apology-001-particles" id="tm-apology-001-particles"></div>
+  <div class="tm-apology-001-content">
+    <div class="tm-apology-001-eyebrow">
+      <div class="tm-apology-001-eyebrow-line"></div>
+      <span class="tm-apology-001-eyebrow-text">a confession</span>
+      <div class="tm-apology-001-eyebrow-line right"></div>
+    </div>
+<div class="tm-apology-001-name">--RECIPIENT_NAME--</div>
+
+<p class="tm-apology-001-copy" id="tm-apology-001-copy">
+  --MOMENT_COPY--
+</p>
+
+<div class="tm-apology-001-divider">
+  <div class="tm-apology-001-divider-line"></div>
+  <div class="tm-apology-001-divider-diamond"></div>
+  <div class="tm-apology-001-divider-line"></div>
+</div>
+
+<div class="tm-apology-001-cta-wrap">
+  <span class="tm-apology-001-cta">--MOMENT_CTA--</span>
+  <button class="tm-apology-001-btn" id="tm-apology-001-btn">
+    <span>I'm ready</span>
+    <div class="tm-apology-001-btn-arrow"></div>
+  </button>
+</div></div>
+  <div class="tm-apology-001-pulse" id="tm-apology-001-pulse">
+    <svg viewBox="0 0 200 30">
+      <path class="tm-apology-001-pulse-path" id="tm-apology-001-pulse-path"
+        d="M0,15 L30,15 L40,5 L50,25 L60,5 L70,25 L80,15 L110,15 L120,2 L130,28 L140,15 L200,15"/>
+    </svg>
+  </div>
+</div>
+<script>
+(function() {
+
+  const cursor = document.getElementById('tm-apology-001-cursor');
+  const root = document.getElementById('tm-apology-001-root');
+
+  document.addEventListener('mousemove', function(e) {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+
+  root.querySelectorAll('button, a').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+  });
+
+  function spawnParticles() {
+    const container = document.getElementById('tm-apology-001-particles');
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'tm-apology-001-particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      container.appendChild(p);
+    }
+  }
+  spawnParticles();
+
+  document.addEventListener('mousemove', function(e) {
+    const mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    const my = (e.clientY / window.innerHeight - 0.5) * 2;
+    const orb1 = document.querySelector('.tm-apology-001-orb-1');
+    const orb2 = document.querySelector('.tm-apology-001-orb-2');
+    if (orb1) orb1.style.transform = `translate(${mx * 18}px, ${my * 18}px)`;
+    if (orb2) orb2.style.transform = `translate(${-mx * 14}px, ${-my * 14}px)`;
+  });
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 5) return;
+
+    const tl = gsap.timeline();
+
+    tl.to('#tm-apology-001-inkdrop', {
+      scale: 3, opacity: 0.6, duration: 1.4, ease: 'power4.out'
+    }, 0)
+    .to('#tm-apology-001-inkdrop', {
+      opacity: 0, duration: 0.8, ease: 'power2.in'
+    }, 1.0);
+
+    tl.to('#tm-apology-001-cracks', {
+      opacity: 1, duration: 0.4
+    }, 0.6);
+
+    tl.to('.crack-line', {
+      strokeDashoffset: 0, duration: 1.2, stagger: 0.1, ease: 'power2.inOut'
+    }, 0.8);
+
+    tl.to('.tm-apology-001-eyebrow', {
+      opacity: 1, y: 0, duration: 0.8, ease: 'power3.out'
+    }, 1.4);
+
+    tl.from('.tm-apology-001-name', {
+      opacity: 0, y: 10, duration: 0.7, ease: 'power2.out'
+    }, 1.7)
+    .to('.tm-apology-001-name', { opacity: 1, duration: 0.1 }, 1.7);
+
+    tl.to('#tm-apology-001-copy', {
+      opacity: 1, duration: 0.1
+    }, 1.9)
+    .from('#tm-apology-001-copy', {
+      y: 22, duration: 1.1, ease: 'power3.out'
+    }, 1.9);
+
+    tl.call(() => {
+      document.getElementById('tm-apology-001-copy').classList.add('revealed');
+    }, [], 2.6);
+
+    tl.to('.tm-apology-001-divider', {
+      opacity: 1, duration: 0.6, ease: 'power2.out'
+    }, 2.6);
+
+    tl.to('.tm-apology-001-cta-wrap', {
+      opacity: 1, duration: 0.9, ease: 'power3.out'
+    }, 3.0)
+    .from('.tm-apology-001-cta-wrap', {
+      y: 14, duration: 0.9, ease: 'power3.out'
+    }, 3.0);
+
+    tl.to('#tm-apology-001-pulse', {
+      opacity: 1, duration: 0.5
+    }, 3.2)
+    .to('#tm-apology-001-pulse-path', {
+      strokeDashoffset: 0, duration: 1.8, ease: 'power2.inOut',
+      repeat: -1, repeatDelay: 2.5
+    }, 3.2);
+
+    gsap.utils.toArray('.tm-apology-001-particle').forEach((p) => {
+      gsap.to(p, {
+        opacity: Math.random() * 0.5 + 0.1,
+        y: -(Math.random() * 80 + 40),
+        x: (Math.random() - 0.5) * 30,
+        duration: Math.random() * 4 + 4,
+        delay: Math.random() * 3 + 2,
+        ease: 'power1.inOut',
+        repeat: -1,
+        yoyo: true
+      });
+    });
+
+    gsap.to('.tm-apology-001-orb-1', {
+      scale: 1.15, duration: 5, ease: 'sine.inOut', repeat: -1, yoyo: true
+    });
+    gsap.to('.tm-apology-001-orb-2', {
+      scale: 1.2, duration: 7, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 2
+    });
+
+    gsap.to('.crack-line', {
+      opacity: 0.25, duration: 3, ease: 'sine.inOut',
+      repeat: -1, yoyo: true, stagger: 0.4, delay: 2
+    });
+  });
+
+})();
+</script>

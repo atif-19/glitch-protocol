@@ -1,0 +1,706 @@
+<!-- Component: mem_editorial_001 
+ Type: memories 
+ Aesthetic: high fashion editorial / monochrome ink / bold typography 
+ Obsession: Magazine spread 
+ Occasion: both 
+ Tone: bold, curated, iconic 
+ Variables: --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- -->
+ <style>
+  .med001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: stretch;
+  }
+
+  /* Paper grain */
+  .med001-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.032;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    mix-blend-mode: overlay;
+  }
+
+  /* Vignette — very subtle on edges only */
+  .med001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%);
+  }
+
+  /* ── SPREAD LAYOUT ── two-page magazine */
+  .med001-spread {
+    position: relative;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Spine line between pages */
+  .med001-spine {
+    background: linear-gradient(to bottom, transparent 4%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, transparent 96%);
+    z-index: 6;
+    position: relative;
+  }
+
+  .med001-spine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -3px;
+    width: 3px;
+    background: linear-gradient(to bottom, transparent 4%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.3) 80%, transparent 96%);
+  }
+
+  /* ── LEFT PAGE ── */
+  .med001-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* Large issue number — behind everything */
+  .med001-issue-bg {
+    position: absolute;
+    bottom: clamp(-20px, -2vh, -10px);
+    left: clamp(-10px, -1vw, -5px);
+    font-family: var(--font-heading);
+    font-size: clamp(160px, 26vw, 320px);
+    font-weight: 900;
+    color: rgba(255,255,255,0.028);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.06em;
+    z-index: 0;
+  }
+
+  /* Left top bar */
+  .med001-left-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(16px, 2.8vh, 32px) clamp(20px, 3vw, 48px) 0;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  .med001-mag-title {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.85vw, 11px);
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.22);
+    opacity: 0;
+  }
+
+  .med001-page-num {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.8vw, 10px);
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.15);
+    opacity: 0;
+  }
+
+  /* Left top horizontal rule */
+  .med001-hrule {
+    height: 1px;
+    margin: clamp(10px, 1.8vh, 20px) clamp(20px, 3vw, 48px) 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent);
+    transform-origin: left;
+    opacity: 0;
+    flex-shrink: 0;
+  }
+
+  /* Photo block — main editorial image */
+  .med001-photo-block {
+    position: relative;
+    flex: 1;
+    margin: clamp(14px, 2.5vh, 28px) clamp(20px, 3vw, 48px);
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .med001-photo-block img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: contrast(1.08) brightness(0.88) saturate(0.72);
+    display: block;
+  }
+
+  /* Placeholder — when PHOTO_1 = NONE */
+  .med001-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .med001-photo-placeholder svg {
+    width: 55%;
+    height: 55%;
+    opacity: 0.18;
+  }
+
+  /* Photo overlay — caption bar */
+  .med001-photo-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: clamp(10px, 1.8vh, 20px) clamp(12px, 1.5vw, 20px);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+    z-index: 3;
+  }
+
+  .med001-photo-caption-text {
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.75vw, 9px);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    opacity: 0;
+  }
+
+  /* Left bottom — memory 1 text */
+  .med001-left-bottom {
+    padding: 0 clamp(20px, 3vw, 48px) clamp(18px, 3vh, 36px);
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  .med001-memory-label {
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.72vw, 9px);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: clamp(5px, 0.9vh, 10px);
+  }
+
+  .med001-memory-body {
+    font-family: var(--font-body);
+    font-size: clamp(10px, 1.05vw, 14px);
+    line-height: 1.72;
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+    opacity: 0;
+  }
+
+  /* ── RIGHT PAGE ── */
+  .med001-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* Right page large typographic headline */
+  .med001-headline-wrap {
+    position: relative;
+    z-index: 2;
+    padding: clamp(16px, 2.8vh, 32px) clamp(20px, 3vw, 48px) 0;
+    flex-shrink: 0;
+  }
+
+  .med001-right-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: clamp(10px, 1.8vh, 20px);
+  }
+
+  .med001-section-tag {
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.75vw, 9px);
+    letter-spacing: 0.48em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.22);
+    opacity: 0;
+  }
+
+  .med001-page-num-r {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.8vw, 10px);
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.15);
+    opacity: 0;
+  }
+
+  /* Horizontal rule right */
+  .med001-hrule-r {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12));
+    transform-origin: right;
+    opacity: 0;
+    margin-bottom: clamp(14px, 2.5vh, 28px);
+    flex-shrink: 0;
+  }
+
+  /* Big editorial headline */
+  .med001-big-headline {
+    font-family: var(--font-heading);
+    font-size: clamp(42px, 7.5vw, 110px);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: rgba(255,255,255,0.92);
+    text-transform: uppercase;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .med001-big-headline span {
+    display: block;
+  }
+
+  /* Accent word in headline */
+  .med001-headline-accent {
+    color: var(--accent);
+  }
+
+  /* Right middle — two-column memory grid */
+  .med001-memory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(12px, 2vh, 24px) clamp(16px, 2.5vw, 32px);
+    padding: clamp(14px, 2.5vh, 30px) clamp(20px, 3vw, 48px);
+    flex: 1;
+    position: relative;
+    z-index: 2;
+    align-content: center;
+  }
+
+  /* Memory card */
+  .med001-mem-card {
+    position: relative;
+    padding: clamp(12px, 1.8vh, 20px) 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    opacity: 0;
+    cursor: default;
+    transition: border-color 0.4s ease;
+  }
+
+  .med001-mem-card:hover {
+    border-color: var(--accent);
+  }
+
+  .med001-mem-card-num {
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.7vw, 9px);
+    letter-spacing: 0.38em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: clamp(6px, 1vh, 12px);
+    opacity: 0.7;
+  }
+
+  .med001-mem-card-text {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 0.95vw, 13px);
+    line-height: 1.68;
+    color: rgba(255,255,255,0.52);
+    font-style: italic;
+  }
+
+  /* Right bottom caption strip */
+  .med001-right-bottom {
+    padding: 0 clamp(20px, 3vw, 48px) clamp(18px, 3vh, 36px);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: clamp(12px, 2vw, 24px);
+    flex-shrink: 0;
+  }
+
+  .med001-caption-block {
+    opacity: 0;
+  }
+
+  .med001-caption-label {
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.72vw, 9px);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    margin-bottom: clamp(4px, 0.6vh, 8px);
+  }
+
+  .med001-caption-text {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 0.9vw, 12px);
+    color: rgba(255,255,255,0.38);
+    font-style: italic;
+    letter-spacing: 0.04em;
+  }
+
+  /* Oversize vertical text on right edge */
+  .med001-vert-text {
+    position: absolute;
+    right: clamp(6px, 1vw, 14px);
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 0.7vw, 9px);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.1);
+    white-space: nowrap;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Accent block on right — decorative colored rectangle */
+  .med001-accent-block {
+    position: absolute;
+    left: 0;
+    top: clamp(60px, 12vh, 120px);
+    width: clamp(3px, 0.4vw, 5px);
+    height: clamp(60px, 10vh, 100px);
+    background: var(--accent);
+    z-index: 3;
+    opacity: 0;
+    transform-origin: top;
+  }
+
+  /* Left page decorative cross mark */
+  .med001-crossmark {
+    position: absolute;
+    top: clamp(28px, 5vh, 55px);
+    right: clamp(20px, 3vw, 48px);
+    z-index: 3;
+    opacity: 0;
+  }
+
+  .med001-crossmark svg {
+    width: clamp(14px, 1.8vw, 22px);
+    height: clamp(14px, 1.8vw, 22px);
+  }
+
+  /* Hover scan line on photo */
+  .med001-photo-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    z-index: 4;
+    pointer-events: none;
+    top: 0;
+    opacity: 0;
+  }
+</style>
+<div class="med001-root" id="med001">
+  <div class="med001-grain"></div>
+  <div class="med001-vignette"></div>
+  <div class="med001-spread"><!-- ── LEFT PAGE ── -->
+<div class="med001-left" id="med001-left">
+  <div class="med001-issue-bg">01</div>
+
+  <!-- Crossmark -->
+  <div class="med001-crossmark" id="med001-cross">
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10" y1="0" x2="10" y2="20" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+      <line x1="0" y1="10" x2="20" y2="10" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+      <circle cx="10" cy="10" r="3" stroke="rgba(255,255,255,0.25)" stroke-width="0.8" fill="none"/>
+    </svg>
+  </div>
+
+  <div class="med001-left-top">
+    <div class="med001-mag-title" id="med001-magtitle">The Glitch Protocol — Memory Issue</div>
+    <div class="med001-page-num" id="med001-pgnum">82</div>
+  </div>
+
+  <div class="med001-hrule" id="med001-hrule-l"></div>
+
+  <!-- Main photo -->
+  <div class="med001-photo-block" id="med001-photoblock">
+    <div class="med001-photo-scanline" id="med001-scanline"></div>
+    <div class="med001-photo-placeholder" id="med001-placeholder">
+      <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="10" width="100" height="140" rx="1" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+        <line x1="10" y1="10" x2="110" y2="150" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+        <line x1="110" y1="10" x2="10" y2="150" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+        <rect x="38" y="58" width="44" height="44" rx="22" stroke="rgba(255,255,255,0.3)" stroke-width="0.8" fill="none"/>
+        <circle cx="60" cy="80" r="8" fill="rgba(255,255,255,0.08)"/>
+        <line x1="10" y1="130" x2="110" y2="130" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+        <rect x="20" y="136" width="30" height="4" rx="1" fill="rgba(255,255,255,0.1)"/>
+        <rect x="56" y="136" width="50" height="4" rx="1" fill="rgba(255,255,255,0.06)"/>
+      </svg>
+    </div>
+    <div class="med001-photo-caption">
+      <div class="med001-photo-caption-text" id="med001-photocap">--MEMORY_CAPTION_1--</div>
+    </div>
+  </div>
+
+  <div class="med001-left-bottom">
+    <div class="med001-memory-label" id="med001-memlabel-l">Scene one</div>
+    <div class="med001-memory-body" id="med001-membody-l">"--MEMORY_1--"</div>
+  </div>
+</div>
+
+<!-- ── SPINE ── -->
+<div class="med001-spine"></div>
+
+<!-- ── RIGHT PAGE ── -->
+<div class="med001-right" id="med001-right">
+
+  <div class="med001-accent-block" id="med001-accentblock"></div>
+  <div class="med001-vert-text" id="med001-verttext">The Glitch Protocol · Memories · Vol. 01</div>
+
+  <div class="med001-headline-wrap">
+    <div class="med001-right-top-row">
+      <div class="med001-section-tag" id="med001-sectag">Remembered · Kept · Carried</div>
+      <div class="med001-page-num-r" id="med001-pgnumr">83</div>
+    </div>
+    <div class="med001-hrule-r" id="med001-hrule-r"></div>
+    <div class="med001-big-headline" id="med001-headline">
+      <span>the ones</span>
+      <span class="med001-headline-accent">that</span>
+      <span>stayed.</span>
+    </div>
+  </div>
+
+  <!-- Two-column memory grid -->
+  <div class="med001-memory-grid">
+    <div class="med001-mem-card" id="med001-mc1">
+      <div class="med001-mem-card-num">Scene 02</div>
+      <div class="med001-mem-card-text">"--MEMORY_2--"</div>
+    </div>
+    <div class="med001-mem-card" id="med001-mc2">
+      <div class="med001-mem-card-num">Scene 03</div>
+      <div class="med001-mem-card-text">"--MEMORY_3--"</div>
+    </div>
+    <div class="med001-mem-card" id="med001-mc3" style="grid-column:1/-1">
+      <div class="med001-mem-card-num">Footnote</div>
+      <div class="med001-mem-card-text" style="max-width:42ch">Every frame of this felt like something worth keeping. Not because it was perfect — because it was real.</div>
+    </div>
+  </div>
+
+  <!-- Bottom caption strip -->
+  <div class="med001-right-bottom">
+    <div class="med001-caption-block" id="med001-capblock1">
+      <div class="med001-caption-label">caption</div>
+      <div class="med001-caption-text">--MEMORY_CAPTION_1--</div>
+    </div>
+    <div class="med001-caption-block" id="med001-capblock2">
+      <div class="med001-caption-label">caption</div>
+      <div class="med001-caption-text">--MEMORY_CAPTION_2--</div>
+    </div>
+  </div>
+
+</div></div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 3;
+
+  // Photo placeholder check
+  (function() {
+    const placeholder = document.getElementById('med001-placeholder');
+    const photoblock = document.getElementById('med001-photoblock');
+    if (!placeholder || !photoblock) return;
+    const img = photoblock.querySelector('img');
+    if (img && img.src && !img.src.includes('NONE') && img.src !== window.location.href) {
+      placeholder.style.display = 'none';
+    }
+  })();
+
+  // Cursor parallax — left vs right page move opposite directions
+  const root = document.getElementById('med001');
+  if (root) {
+    root.addEventListener('mousemove', function(e) {
+      const rect = root.getBoundingClientRect();
+      const cx = (e.clientX - rect.left) / rect.width - 0.5;
+      const cy = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to('#med001-photoblock', { x: cx * -8, y: cy * -5, duration: 1.6, ease: 'power2.out' });
+      gsap.to('#med001-headline',   { x: cx * 6,  y: cy * 4,  duration: 1.8, ease: 'power2.out' });
+      gsap.to('#med001-accentblock',{ y: cy * -12, duration: 1.4, ease: 'power2.out' });
+      gsap.to('.med001-issue-bg',   { x: cx * 14, y: cy * 8,  duration: 2.0, ease: 'power2.out' });
+    });
+  }
+
+  // Photo scanline ambient sweep
+  function startScanline() {
+    const sl = document.getElementById('med001-scanline');
+    if (!sl) return;
+    gsap.to(sl, {
+      top: '104%',
+      opacity: 0.6,
+      duration: 3.2,
+      ease: 'none',
+      repeat: -1,
+      delay: 2.8,
+      onRepeat: function() { gsap.set(sl, { top: '-2px', opacity: 0 }); }
+    });
+  }
+
+  // Memory card hover
+  ['med001-mc1','med001-mc2','med001-mc3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('mouseenter', () => {
+      gsap.to(el.querySelector('.med001-mem-card-num'), { color: 'var(--accent)', duration: 0.3 });
+      gsap.to(el.querySelector('.med001-mem-card-text'), { opacity: 0.85, duration: 0.3 });
+    });
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el.querySelector('.med001-mem-card-num'), { color: 'var(--accent)', duration: 0.3 });
+      gsap.to(el.querySelector('.med001-mem-card-text'), { opacity: 1, duration: 0.3 });
+    });
+  });
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    const tl = gsap.timeline();
+
+    // 1. Left page horizontal rule draws in
+    tl.fromTo('#med001-hrule-l',
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 1.1, ease: 'power3.out', transformOrigin: 'left' },
+      0.2
+    );
+
+    // 2. Right page rule
+    tl.fromTo('#med001-hrule-r',
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 1.1, ease: 'power3.out', transformOrigin: 'right' },
+      0.3
+    );
+
+    // 3. Mag metadata
+    tl.fromTo(['#med001-magtitle','#med001-pgnum','#med001-sectag','#med001-pgnumr'],
+      { opacity: 0, y: -5 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08 },
+      0.4
+    );
+
+    // 4. Crossmark
+    tl.fromTo('#med001-cross',
+      { opacity: 0, scale: 0, rotation: -45 },
+      { opacity: 1, scale: 1, rotation: 0, duration: 0.8, ease: 'back.out(1.8)', transformOrigin: 'center' },
+      0.5
+    );
+
+    // 5. Accent block slides down
+    tl.fromTo('#med001-accentblock',
+      { scaleY: 0, opacity: 0 },
+      { scaleY: 1, opacity: 1, duration: 0.9, ease: 'expo.out', transformOrigin: 'top' },
+      0.5
+    );
+
+    // 6. Vertical text
+    tl.fromTo('#med001-verttext',
+      { opacity: 0 },
+      { opacity: 1, duration: 1.0, ease: 'power3.out' },
+      0.7
+    );
+
+    // 7. Photo block reveals
+    tl.fromTo('#med001-photoblock',
+      { opacity: 0, clipPath: 'inset(100% 0% 0% 0%)' },
+      { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut' },
+      0.55
+    );
+
+    // 8. Photo caption
+    tl.fromTo('#med001-photocap',
+      { opacity: 0, y: 6 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+      1.2
+    );
+
+    // 9. Big headline — line by line
+    tl.fromTo('#med001-headline',
+      { opacity: 0, y: 40, skewY: 3 },
+      { opacity: 1, y: 0, skewY: 0, duration: 1.3, ease: 'expo.out' },
+      0.65
+    );
+
+    // 10. Left memory text
+    tl.fromTo(['#med001-memlabel-l','#med001-membody-l'],
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', stagger: 0.14 },
+      1.0
+    );
+
+    // 11. Memory cards stagger
+    tl.fromTo(['#med001-mc1','#med001-mc2','#med001-mc3'],
+      { opacity: 0, y: 20, borderTopColor: 'transparent' },
+      {
+        opacity: 1, y: 0,
+        borderTopColor: 'rgba(255,255,255,0.1)',
+        duration: 0.9, ease: 'expo.out', stagger: 0.14
+      },
+      1.1
+    );
+
+    // 12. Bottom captions
+    tl.fromTo(['#med001-capblock1','#med001-capblock2'],
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.14 },
+      1.4
+    );
+
+    // 13. Issue background number — slow drift
+    gsap.fromTo('.med001-issue-bg',
+      { opacity: 0 },
+      { opacity: 1, duration: 2.5, ease: 'power3.out', delay: 0.4 }
+    );
+
+    // 14. Ambient — accent block breathes
+    gsap.to('#med001-accentblock', {
+      scaleY: 1.18,
+      opacity: 0.7,
+      duration: 2.6,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 2.0,
+      transformOrigin: 'top'
+    });
+
+    // 15. Ambient — headline subtle float
+    gsap.to('#med001-headline', {
+      y: -5,
+      duration: 3.8,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 2.2
+    });
+
+    // 16. Scanline
+    startScanline();
+  });
+
+})();
+</script>

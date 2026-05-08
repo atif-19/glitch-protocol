@@ -1,0 +1,781 @@
+<!-- Component: ending-playful-003
+ Type: ending
+ Aesthetic: Playful
+ Tone: joyful, electric, euphoric
+ Occasion: both
+ Obsession: shooting stars, meteor shower, cosmic celebration, stardust trails
+ Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME-- -->
+<style>
+  .ep003-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  .ep003-bg-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .ep003-star-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .ep003-trail-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ep003-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 0%,
+      transparent 28%,
+      rgba(0,0,0,0.38) 62%,
+      rgba(0,0,0,0.78) 100%
+    );
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .ep003-ground-glow {
+    position: absolute;
+    bottom: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    height: 55%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center,
+      var(--accent) 0%,
+      var(--primary) 30%,
+      transparent 70%
+    );
+    opacity: 0;
+    filter: blur(60px);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ep003-top-glow {
+    position: absolute;
+    top: -15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 50%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center,
+      var(--primary) 0%,
+      var(--accent) 40%,
+      transparent 70%
+    );
+    opacity: 0;
+    filter: blur(70px);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ep003-center-burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: clamp(300px, 65vw, 750px);
+    height: clamp(300px, 65vw, 750px);
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(255,255,255,0.08) 0%,
+      var(--accent) 15%,
+      var(--primary) 35%,
+      transparent 65%
+    );
+    filter: blur(40px);
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ep003-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .ep003-ring-a {
+    width: clamp(280px, 55vw, 580px);
+    height: clamp(280px, 55vw, 580px);
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 28px var(--accent), inset 0 0 28px var(--accent),
+                0 0 60px var(--primary);
+  }
+
+  .ep003-ring-b {
+    width: clamp(200px, 40vw, 420px);
+    height: clamp(200px, 40vw, 420px);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 20px var(--primary), inset 0 0 20px var(--primary);
+  }
+
+  .ep003-ring-c {
+    width: clamp(420px, 78vw, 820px);
+    height: clamp(420px, 78vw, 820px);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .ep003-content {
+    position: relative;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(10px, 2.4vh, 22px);
+    padding: clamp(20px, 5vw, 60px);
+    max-width: min(92vw, 720px);
+    width: 100%;
+  }
+
+  .ep003-star-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(6px, 1.5vw, 12px);
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+  }
+
+  .ep003-badge-star {
+    font-size: clamp(0.9rem, 2vw, 1.3rem);
+    display: inline-block;
+    filter: drop-shadow(0 0 8px var(--accent));
+  }
+
+  .ep003-badge-text {
+    font-family: var(--font-heading);
+    font-size: clamp(0.52rem, 1.05vw, 0.68rem);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .ep003-name-wrap {
+    position: relative;
+    opacity: 0;
+    transform: translateY(36px) scale(0.88);
+  }
+
+  .ep003-name-shadow {
+    position: absolute;
+    inset: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(3.2rem, 11vw, 9rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(24px);
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .ep003-name {
+    font-family: var(--font-heading);
+    font-size: clamp(3.2rem, 11vw, 9rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(145deg,
+      #fff 0%,
+      var(--accent) 30%,
+      var(--primary) 60%,
+      #fff 80%,
+      var(--accent) 100%
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 50px var(--accent));
+  }
+
+  .ep003-divider {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 18px);
+    width: 100%;
+    max-width: min(75vw, 500px);
+    opacity: 0;
+    transform: scaleX(0.1);
+  }
+
+  .ep003-div-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+  }
+
+  .ep003-div-line:last-child {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .ep003-div-gems {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .ep003-gem {
+    font-size: clamp(0.55rem, 1.1vw, 0.75rem);
+    filter: drop-shadow(0 0 6px var(--accent));
+  }
+
+  .ep003-ending-line {
+    font-size: clamp(0.92rem, 2.2vw, 1.3rem);
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(16px);
+    line-height: 1.82;
+    max-width: 520px;
+    font-style: italic;
+    letter-spacing: 0.015em;
+  }
+
+  .ep003-song-pill {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2.5vw, 20px);
+    opacity: 0;
+    transform: translateY(14px) scale(0.95);
+    margin-top: clamp(4px, 1vh, 12px);
+    padding: clamp(10px, 2vh, 16px) clamp(18px, 3.5vw, 32px);
+    border-radius: 999px;
+    background: linear-gradient(135deg,
+      rgba(255,255,255,0.04) 0%,
+      rgba(255,255,255,0.02) 100%
+    );
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 30px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.07),
+                0 0 60px var(--accent),
+                0 0 100px var(--primary);
+    cursor: default;
+    user-select: none;
+    transition: box-shadow 0.4s ease, transform 0.3s ease;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .ep003-song-pill:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 50px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                0 0 90px var(--accent),
+                0 0 140px var(--primary);
+  }
+
+  .ep003-disc {
+    position: relative;
+    width: clamp(42px, 7vw, 60px);
+    height: clamp(42px, 7vw, 60px);
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: conic-gradient(
+      var(--accent) 0deg,
+      var(--primary) 90deg,
+      #fff 180deg,
+      var(--accent) 270deg,
+      var(--primary) 360deg
+    );
+    box-shadow: 0 0 30px var(--accent), 0 0 60px var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ep003-disc::after {
+    content: '';
+    width: 34%;
+    height: 34%;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.6);
+    z-index: 1;
+  }
+
+  .ep003-song-info { text-align: left; }
+
+  .ep003-song-label {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(0.48rem, 0.95vw, 0.62rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .ep003-song-name {
+    font-size: clamp(0.82rem, 1.65vw, 1.05rem);
+    color: var(--text);
+    font-style: italic;
+    opacity: 0.82;
+  }
+
+  .ep003-bottom {
+    position: absolute;
+    bottom: clamp(16px, 3.5vh, 34px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 7;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    white-space: nowrap;
+  }
+
+  .ep003-fin {
+    font-family: var(--font-heading);
+    font-size: clamp(0.5rem, 1vw, 0.65rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.22;
+  }
+
+  .ep003-star-row {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+  }
+
+  .ep003-star-dot {
+    font-size: clamp(0.5rem, 1vw, 0.7rem);
+    color: var(--accent);
+    opacity: 0.5;
+    filter: drop-shadow(0 0 5px var(--accent));
+    display: inline-block;
+  }
+
+  .ep003-star-dot.ep003-mid {
+    opacity: 1;
+    font-size: clamp(0.65rem, 1.3vw, 0.9rem);
+    filter: drop-shadow(0 0 10px var(--accent));
+  }
+</style>
+<div class="ep003-wrap" id="ep003-wrap">
+  <canvas class="ep003-bg-canvas"    id="ep003-bg-canvas"></canvas>
+  <canvas class="ep003-star-canvas"  id="ep003-star-canvas"></canvas>
+  <canvas class="ep003-trail-canvas" id="ep003-trail-canvas"></canvas>
+  <div class="ep003-top-glow"    id="ep003-top-glow"></div>
+  <div class="ep003-ground-glow" id="ep003-ground-glow"></div>
+  <div class="ep003-center-burst" id="ep003-center-burst"></div>
+  <div class="ep003-ring ep003-ring-c" id="ep003-ring-c"></div>
+  <div class="ep003-ring ep003-ring-a" id="ep003-ring-a"></div>
+  <div class="ep003-ring ep003-ring-b" id="ep003-ring-b"></div>
+  <div class="ep003-vignette"></div>
+  <div class="ep003-content">
+    <div class="ep003-star-badge" id="ep003-badge">
+      <span class="ep003-badge-star">★</span>
+      <span class="ep003-badge-text">made just for you</span>
+      <span class="ep003-badge-star">★</span>
+    </div>
+<div class="ep003-name-wrap" id="ep003-name-wrap">
+  <div class="ep003-name-shadow" aria-hidden="true">--RECIPIENT_NAME--</div>
+  <div class="ep003-name" id="ep003-name">--RECIPIENT_NAME--</div>
+</div>
+
+<div class="ep003-divider" id="ep003-divider">
+  <div class="ep003-div-line"></div>
+  <div class="ep003-div-gems">
+    <span class="ep003-gem">✦</span>
+    <span class="ep003-gem" style="font-size:clamp(0.7rem,1.4vw,0.95rem);filter:drop-shadow(0 0 10px var(--primary))">★</span>
+    <span class="ep003-gem">✦</span>
+  </div>
+  <div class="ep003-div-line"></div>
+</div>
+
+<div class="ep003-ending-line" id="ep003-ending-line">--ENDING_LINE--</div>
+
+<div class="ep003-song-pill" id="ep003-song-pill">
+  <div class="ep003-disc" id="ep003-disc"></div>
+  <div class="ep003-song-info">
+    <span class="ep003-song-label">your song</span>
+    <span class="ep003-song-name">--SONG_NAME--</span>
+  </div>
+</div></div>
+  <div class="ep003-bottom" id="ep003-bottom">
+    <div class="ep003-fin">the end &nbsp;·&nbsp; with love</div>
+    <div class="ep003-star-row">
+      <span class="ep003-star-dot">★</span>
+      <span class="ep003-star-dot ep003-mid">★</span>
+      <span class="ep003-star-dot">★</span>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  let initialized = false;
+
+  /* ══════════════════════════════════════
+     BG CANVAS — static starfield
+  ══════════════════════════════════════ */
+  function initStarfield() {
+    const canvas = document.getElementById('ep003-bg-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+      buildStars();
+    }
+
+    function buildStars() {
+      stars = [];
+      const count = Math.floor((W * H) / 3800);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.5 + 0.2,
+          base: Math.random() * 0.6 + 0.1,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.006 + Math.random() * 0.018,
+          color: Math.random() > 0.5 ? '#c4dcff' : '#e8d4ff'
+        });
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      t += 0.016;
+      stars.forEach(s => {
+        const alpha = s.base + Math.sin(t * s.speed + s.phase) * s.base * 0.6;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, alpha);
+        ctx.fillStyle = s.color;
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = s.r * 4;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  /* ══════════════════════════════════════
+     TRAIL CANVAS — shooting stars
+  ══════════════════════════════════════ */
+  function initShootingStars() {
+    const canvas = document.getElementById('ep003-trail-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLORS = ['var(--accent)', 'var(--primary)', '#fff', '#c4dcff', '#ffd6f0'];
+    const resolvedColors = ['#a78bfa', '#ec4899', '#ffffff', '#c4dcff', '#ffd6f0'];
+
+    const shots = [];
+
+    function spawn() {
+      const fromTop = Math.random() > 0.4;
+      const angle = (20 + Math.random() * 30) * Math.PI / 180;
+      const speed = 8 + Math.random() * 18;
+      const len   = 80 + Math.random() * 220;
+      const color = resolvedColors[Math.floor(Math.random() * resolvedColors.length)];
+      const size  = Math.random() * 2.4 + 0.6;
+
+      let x, y;
+      if (fromTop) {
+        x = Math.random() * W * 1.2 - W * 0.1;
+        y = -len;
+      } else {
+        x = -len;
+        y = Math.random() * H * 0.7;
+      }
+
+      shots.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, len, color, size, alpha: 1, life: 1 });
+    }
+
+    /* heavy burst at start */
+    for (let i = 0; i < 22; i++) {
+      setTimeout(spawn, i * 80);
+    }
+
+    /* continuous rain */
+    setInterval(() => {
+      const batch = Math.floor(Math.random() * 3) + 1;
+      for (let i = 0; i < batch; i++) spawn();
+    }, 180);
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = shots.length - 1; i >= 0; i--) {
+        const s = shots[i];
+        s.x += s.vx;
+        s.y += s.vy;
+        s.life -= 0.012;
+        s.alpha = Math.max(0, s.life);
+
+        if (s.alpha <= 0 || s.x > W + 200 || s.y > H + 200) {
+          shots.splice(i, 1);
+          continue;
+        }
+
+        const tail_x = s.x - Math.cos(Math.atan2(s.vy, s.vx)) * s.len;
+        const tail_y = s.y - Math.sin(Math.atan2(s.vy, s.vx)) * s.len;
+
+        const grad = ctx.createLinearGradient(tail_x, tail_y, s.x, s.y);
+        grad.addColorStop(0, 'transparent');
+        grad.addColorStop(0.6, s.color + '44');
+        grad.addColorStop(1, s.color);
+
+        ctx.save();
+        ctx.globalAlpha = s.alpha;
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = s.size;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tail_x, tail_y);
+        ctx.lineTo(s.x, s.y);
+        ctx.stroke();
+
+        /* head glow */
+        const hg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size * 5);
+        hg.addColorStop(0, s.color);
+        hg.addColorStop(1, 'transparent');
+        ctx.globalAlpha = s.alpha * 0.9;
+        ctx.fillStyle = hg;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size * 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        /* sparkle burst around head */
+        if (Math.random() > 0.7) {
+          for (let p = 0; p < 3; p++) {
+            const px = s.x + (Math.random() - 0.5) * 12;
+            const py = s.y + (Math.random() - 0.5) * 12;
+            ctx.globalAlpha = s.alpha * Math.random() * 0.8;
+            ctx.fillStyle = s.color;
+            ctx.beginPath();
+            ctx.arc(px, py, Math.random() * 1.5 + 0.3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        ctx.restore();
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  /* ══════════════════════════════════════
+     STAR CANVAS — floating particles
+  ══════════════════════════════════════ */
+  function initParticles() {
+    const canvas = document.getElementById('ep003-star-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, pts = [];
+
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLS = ['#a78bfa', '#ec4899', '#ffffff', '#7dd3fc', '#fbbf24'];
+    for (let i = 0; i < 55; i++) {
+      pts.push({
+        x: Math.random() * (W || window.innerWidth),
+        y: Math.random() * (H || window.innerHeight),
+        r: Math.random() * 2.2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: -(Math.random() * 0.5 + 0.1),
+        alpha: 0,
+        maxA: Math.random() * 0.55 + 0.15,
+        phase: Math.random() * Math.PI * 2,
+        col: COLS[Math.floor(Math.random() * COLS.length)]
+      });
+    }
+
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      t += 0.02;
+      pts.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+        if (p.x < -10) p.x = W + 10;
+        if (p.x > W + 10) p.x = -10;
+        p.alpha = p.maxA * (0.5 + 0.5 * Math.sin(t * 1.5 + p.phase));
+
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.col;
+        ctx.shadowColor = p.col;
+        ctx.shadowBlur = p.r * 6;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  /* ══════════════════════════════════════
+     RINGS
+  ══════════════════════════════════════ */
+  function animateRings() {
+    gsap.to('#ep003-ring-a', { opacity: 0.55, scale: 1, duration: 1.8, ease: 'back.out(1.4)', delay: 0.5 });
+    gsap.to('#ep003-ring-b', { opacity: 0.38, scale: 1, duration: 2,   ease: 'back.out(1.4)', delay: 0.75 });
+    gsap.to('#ep003-ring-c', { opacity: 0.18, scale: 1, duration: 2.2, ease: 'back.out(1.2)', delay: 0.3 });
+
+    gsap.to('#ep003-ring-a', { rotation:  360, duration: 22, repeat: -1, ease: 'none', transformOrigin: 'center center' });
+    gsap.to('#ep003-ring-b', { rotation: -360, duration: 16, repeat: -1, ease: 'none', transformOrigin: 'center center' });
+    gsap.to('#ep003-ring-c', { rotation:  360, duration: 34, repeat: -1, ease: 'none', transformOrigin: 'center center' });
+
+    gsap.to('#ep003-ring-a', { opacity: 0.75, scale: 1.04, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3 });
+    gsap.to('#ep003-ring-b', { opacity: 0.2,  scale: 0.95, duration: 3,   repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 4 });
+  }
+
+  /* ══════════════════════════════════════
+     AMBIENT
+  ══════════════════════════════════════ */
+  function ambientLoop() {
+    gsap.to('#ep003-ground-glow', { opacity: 0.18, scale: 1.08, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#ep003-top-glow',    { opacity: 0.14, scale: 1.05, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1 });
+    gsap.to('#ep003-center-burst',{ opacity: 0.35, scale: 1.12, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5 });
+
+    gsap.to('#ep003-name', {
+      backgroundPosition: '200% 200%',
+      duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+    gsap.to('#ep003-name-wrap', {
+      y: -10, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1
+    });
+    gsap.to('#ep003-name-wrap', {
+      filter: 'drop-shadow(0 0 80px var(--accent))',
+      duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2
+    });
+    gsap.to('#ep003-disc', {
+      rotation: 360, duration: 6, repeat: -1, ease: 'none', transformOrigin: 'center center'
+    });
+    gsap.to('#ep003-disc', {
+      boxShadow: '0 0 50px var(--accent), 0 0 100px var(--primary)',
+      duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2
+    });
+
+    /* star row sparkle */
+    gsap.to('.ep003-star-dot', {
+      opacity: 1, scale: 1.3,
+      duration: 0.6, repeat: -1, yoyo: true, ease: 'sine.inOut',
+      stagger: { each: 0.25, repeat: -1 }
+    });
+  }
+
+  /* ══════════════════════════════════════
+     CURSOR REACT
+  ══════════════════════════════════════ */
+  function cursorReact() {
+    const wrap = document.getElementById('ep003-wrap');
+    if (!wrap) return;
+    wrap.addEventListener('mousemove', e => {
+      const cx = e.clientX / window.innerWidth  - 0.5;
+      const cy = e.clientY / window.innerHeight - 0.5;
+      gsap.to('#ep003-name-wrap', { x: cx * 18, y: cy * 12, duration: 1.8, ease: 'power2.out', overwrite: 'auto' });
+      gsap.to('#ep003-ring-a',    { x: cx * 30, y: cy * 22, duration: 2.2, ease: 'power2.out' });
+      gsap.to('#ep003-ring-b',    { x: cx * -22, y: cy * -16, duration: 2.6, ease: 'power2.out' });
+      gsap.to('#ep003-center-burst', { x: cx * 25, y: cy * 18, duration: 2, ease: 'power2.out' });
+      gsap.to('#ep003-ground-glow',  { x: cx * 40, duration: 2.5, ease: 'power2.out' });
+    });
+  }
+
+  /* ══════════════════════════════════════
+     MAIN ENTRANCE
+  ══════════════════════════════════════ */
+  function enter() {
+    if (initialized) return;
+    initialized = true;
+
+    initStarfield();
+    initShootingStars();
+    initParticles();
+    animateRings();
+
+    gsap.to('#ep003-center-burst', { opacity: 0.5, scale: 1, duration: 2, ease: 'power2.out' });
+    gsap.to('#ep003-ground-glow',  { opacity: 0.16, duration: 2.5, ease: 'power2.out' });
+    gsap.to('#ep003-top-glow',     { opacity: 0.12, duration: 2.8, ease: 'power2.out', delay: 0.3 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#ep003-badge',       { opacity: 1, y: 0, scale: 1, duration: 0.8 }, 0.4)
+      .to('#ep003-name-wrap',   { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: 'back.out(1.8)' }, 0.75)
+      .to('#ep003-divider',     { opacity: 1, scaleX: 1, duration: 0.75, ease: 'power2.inOut' }, 1.4)
+      .to('#ep003-ending-line', { opacity: 1, y: 0, duration: 0.9 }, 1.72)
+      .to('#ep003-song-pill',   { opacity: 1, y: 0, scale: 1, duration: 0.85 }, 2.15)
+      .to('#ep003-bottom',      { opacity: 1, duration: 0.65 }, 2.55);
+
+    tl.call(() => {
+      ambientLoop();
+      cursorReact();
+    }, null, 2.8);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 7) return;
+    enter();
+  });
+})();
+</script>

@@ -1,0 +1,749 @@
+<!--
+  Component: reveal_petals_001
+  Type: reveal
+  Aesthetic: Cottagecore / pressed botanicals / watercolour dusk
+  Obsession: Falling petals
+  Tone: tender, whimsical, intimate
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --HIDDEN_MESSAGE-- --REVEAL_INSTRUCTION--
+-->
+<style>
+  .rp001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: default;
+  }
+
+  /* Soft watercolour sky wash */
+  .rp001-sky {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 55% at 50% 0%, rgba(255,210,190,0.13) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 100%, rgba(180,220,160,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 90%, rgba(220,170,200,0.07) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Linen texture overlay */
+  .rp001-linen {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)' opacity='0.055'/%3E%3C/svg%3E");
+    background-size: 300px 300px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* Pressed herb silhouettes - background botanical art */
+  .rp001-botanical {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .rp001-botanical svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .rp001-bot-tl {
+    top: -4%;
+    left: -3%;
+    width: clamp(120px, 22vw, 260px);
+    height: clamp(140px, 26vw, 300px);
+    transform: rotate(-15deg);
+  }
+
+  .rp001-bot-br {
+    bottom: -4%;
+    right: -3%;
+    width: clamp(100px, 18vw, 220px);
+    height: clamp(120px, 22vw, 260px);
+    transform: rotate(20deg) scaleX(-1);
+  }
+
+  .rp001-bot-tr {
+    top: 5%;
+    right: 2%;
+    width: clamp(70px, 12vw, 150px);
+    height: clamp(90px, 16vw, 190px);
+    transform: rotate(10deg);
+    opacity: 0;
+  }
+
+  .rp001-bot-bl {
+    bottom: 8%;
+    left: 1%;
+    width: clamp(60px, 10vw, 130px);
+    height: clamp(80px, 14vw, 170px);
+    transform: rotate(-8deg);
+    opacity: 0;
+  }
+
+  /* Centre card */
+  .rp001-card {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: clamp(260px, 55vw, 560px);
+    min-height: clamp(200px, 38vh, 400px);
+    padding: clamp(28px, 5vw, 60px) clamp(24px, 4.5vw, 54px);
+    text-align: center;
+    opacity: 0;
+  }
+
+  /* Decorative border — hand-drawn feel via SVG */
+  .rp001-card-border {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .rp001-instruction-wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 2vw, 20px);
+  }
+
+  .rp001-eyebrow {
+    font-family: var(--font-body);
+    font-size: clamp(8px, 1.2vw, 11px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.4;
+  }
+
+  .rp001-recipient {
+    font-family: var(--font-heading);
+    font-size: clamp(26px, 5.5vw, 58px);
+    line-height: 1.1;
+    color: var(--text);
+    opacity: 0.88;
+    letter-spacing: -0.01em;
+  }
+
+  .rp001-divider {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 16px);
+    width: 100%;
+    justify-content: center;
+  }
+
+  .rp001-divider-line {
+    flex: 1;
+    max-width: clamp(30px, 8vw, 80px);
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+
+  .rp001-divider-fleur {
+    font-size: clamp(12px, 2vw, 18px);
+    color: var(--accent);
+    opacity: 0.55;
+    line-height: 1;
+  }
+
+  .rp001-instruction-text {
+    font-family: var(--font-body);
+    font-size: clamp(10px, 1.5vw, 14px);
+    color: var(--text);
+    opacity: 0.5;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+
+  /* Petal counter badge */
+  .rp001-counter {
+    position: relative;
+    z-index: 2;
+    margin-top: clamp(12px, 2.5vw, 28px);
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 1vw, 10px);
+    opacity: 0.55;
+  }
+
+  .rp001-counter-pip {
+    width: clamp(5px, 0.9vw, 8px);
+    height: clamp(5px, 0.9vw, 8px);
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    background: transparent;
+    transition: background 0.4s ease;
+  }
+
+  .rp001-counter-pip.rp001-filled {
+    background: var(--accent);
+  }
+
+  /* Hidden message overlay */
+  .rp001-message-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .rp001-message-overlay.rp001-active {
+    pointer-events: auto;
+  }
+
+  .rp001-message-card {
+    position: relative;
+    width: clamp(280px, 58vw, 580px);
+    padding: clamp(32px, 6vw, 72px) clamp(28px, 5vw, 60px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(14px, 2.5vw, 26px);
+    transform: scale(0.88);
+    opacity: 0;
+  }
+
+  .rp001-message-card-bg {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--bg) 92%, var(--accent) 8%);
+    border-radius: 2px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 30px 80px rgba(0,0,0,0.35),
+      0 2px 20px rgba(0,0,0,0.2);
+  }
+
+  .rp001-message-petal-deco {
+    font-size: clamp(18px, 3.5vw, 36px);
+    opacity: 0.45;
+    line-height: 1;
+    z-index: 1;
+  }
+
+  .rp001-message-hidden {
+    font-family: var(--font-heading);
+    font-size: clamp(14px, 2.8vw, 28px);
+    line-height: 1.6;
+    color: var(--text);
+    opacity: 0.9;
+    font-style: italic;
+    z-index: 1;
+    letter-spacing: 0.01em;
+  }
+
+  .rp001-message-sig {
+    font-family: var(--font-body);
+    font-size: clamp(8px, 1.1vw, 11px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.6;
+    z-index: 1;
+  }
+
+  .rp001-message-border {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Falling petals canvas ── */
+  .rp001-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* Clickable petal elements (DOM petals for interaction) */
+  .rp001-petal {
+    position: absolute;
+    z-index: 11;
+    cursor: pointer;
+    transform-origin: center center;
+    pointer-events: auto;
+    transition: filter 0.2s ease;
+    will-change: transform, opacity;
+  }
+
+  .rp001-petal:hover svg path,
+  .rp001-petal:hover svg ellipse {
+    filter: brightness(1.3);
+  }
+
+  /* Shimmer mist at bottom */
+  .rp001-mist {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 22%;
+    background: linear-gradient(to top, color-mix(in srgb, var(--bg) 60%, transparent) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Sparkle burst on petal click */
+  .rp001-spark {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 25;
+    opacity: 0;
+  }
+</style>
+<div class="rp001-root" id="rp001-root">
+  <div class="rp001-sky"></div>
+  <div class="rp001-linen"></div>
+  <div class="rp001-mist"></div>
+  <!-- Botanical corners -->
+  <div class="rp001-botanical rp001-bot-tl" id="rp001-bot-tl">
+    <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30 220 C30 180 60 140 80 100 C100 60 90 20 90 20" stroke="rgba(140,170,100,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="60" cy="150" rx="28" ry="16" transform="rotate(-35 60 150)" fill="rgba(140,170,100,0.12)" stroke="rgba(140,170,100,0.25)" stroke-width="0.8"/>
+      <ellipse cx="85" cy="110" rx="22" ry="13" transform="rotate(20 85 110)" fill="rgba(160,190,120,0.10)" stroke="rgba(160,190,120,0.22)" stroke-width="0.8"/>
+      <ellipse cx="75" cy="70" rx="18" ry="10" transform="rotate(-10 75 70)" fill="rgba(140,170,100,0.09)" stroke="rgba(140,170,100,0.2)" stroke-width="0.8"/>
+      <path d="M50 170 C40 165 25 175 20 185" stroke="rgba(140,170,100,0.2)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+      <path d="M70 130 C55 120 45 125 38 130" stroke="rgba(140,170,100,0.2)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+      <circle cx="90" cy="22" r="5" fill="rgba(220,160,160,0.3)" stroke="rgba(220,160,160,0.4)" stroke-width="0.6"/>
+      <circle cx="88" cy="16" r="3" fill="rgba(220,180,180,0.25)" stroke="rgba(220,160,160,0.3)" stroke-width="0.6"/>
+    </svg>
+  </div>
+  <div class="rp001-botanical rp001-bot-br" id="rp001-bot-br">
+    <svg viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M150 200 C140 165 110 130 95 90 C80 50 95 15 95 15" stroke="rgba(160,190,120,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="120" cy="140" rx="25" ry="14" transform="rotate(30 120 140)" fill="rgba(140,170,100,0.10)" stroke="rgba(140,170,100,0.22)" stroke-width="0.8"/>
+      <ellipse cx="100" cy="100" rx="20" ry="11" transform="rotate(-20 100 100)" fill="rgba(160,190,120,0.08)" stroke="rgba(160,190,120,0.2)" stroke-width="0.8"/>
+      <ellipse cx="105" cy="62" rx="16" ry="9" transform="rotate(15 105 62)" fill="rgba(140,170,100,0.08)" stroke="rgba(140,170,100,0.18)" stroke-width="0.8"/>
+      <circle cx="96" cy="17" r="6" fill="rgba(240,180,150,0.28)" stroke="rgba(240,180,150,0.38)" stroke-width="0.6"/>
+      <circle cx="94" cy="10" r="3.5" fill="rgba(240,190,160,0.22)" stroke="rgba(240,180,150,0.28)" stroke-width="0.6"/>
+    </svg>
+  </div>
+  <div class="rp001-botanical rp001-bot-tr" id="rp001-bot-tr">
+    <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M90 150 C80 120 65 90 70 55 C75 25 90 10 90 10" stroke="rgba(180,200,140,0.28)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="75" cy="100" rx="18" ry="10" transform="rotate(-25 75 100)" fill="rgba(180,200,140,0.09)" stroke="rgba(180,200,140,0.2)" stroke-width="0.7"/>
+      <ellipse cx="80" cy="65" rx="14" ry="8" transform="rotate(18 80 65)" fill="rgba(180,200,140,0.08)" stroke="rgba(180,200,140,0.17)" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <div class="rp001-botanical rp001-bot-bl" id="rp001-bot-bl">
+    <svg viewBox="0 0 110 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M25 140 C30 115 48 88 42 55 C36 25 20 8 20 8" stroke="rgba(140,170,100,0.25)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="38" cy="95" rx="16" ry="9" transform="rotate(22 38 95)" fill="rgba(140,170,100,0.08)" stroke="rgba(140,170,100,0.18)" stroke-width="0.7"/>
+      <ellipse cx="33" cy="62" rx="13" ry="7" transform="rotate(-15 33 62)" fill="rgba(140,170,100,0.07)" stroke="rgba(140,170,100,0.16)" stroke-width="0.7"/>
+    </svg>
+  </div>
+  <!-- Centre card with instruction -->
+  <div class="rp001-card" id="rp001-card">
+    <svg class="rp001-card-border" viewBox="0 0 560 400" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- hand-drawn style corner flourishes -->
+      <path d="M18 18 Q18 8 28 8 L60 8" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M18 18 L18 50" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M542 18 Q542 8 532 8 L500 8" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M542 18 L542 50" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M18 382 Q18 392 28 392 L60 392" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M18 382 L18 350" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M542 382 Q542 392 532 392 L500 392" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M542 382 L542 350" stroke="rgba(200,170,130,0.22)" stroke-width="1" stroke-linecap="round"/>
+      <!-- small floral dots at corners -->
+      <circle cx="18" cy="18" r="2.5" fill="rgba(200,170,130,0.25)"/>
+      <circle cx="542" cy="18" r="2.5" fill="rgba(200,170,130,0.25)"/>
+      <circle cx="18" cy="382" r="2.5" fill="rgba(200,170,130,0.25)"/>
+      <circle cx="542" cy="382" r="2.5" fill="rgba(200,170,130,0.25)"/>
+    </svg><div class="rp001-instruction-wrap" style="position:relative;z-index:2;">
+  <div class="rp001-eyebrow">A letter is waiting</div>
+  <div class="rp001-recipient">--RECIPIENT_NAME--</div>
+  <div class="rp001-divider">
+    <div class="rp001-divider-line"></div>
+    <div class="rp001-divider-fleur">✾</div>
+    <div class="rp001-divider-line"></div>
+  </div>
+  <div class="rp001-instruction-text">--REVEAL_INSTRUCTION--</div>
+</div>
+
+<!-- Petal catch counter -->
+<div class="rp001-counter" id="rp001-counter">
+  <div class="rp001-counter-pip" id="rp001-pip-0"></div>
+  <div class="rp001-counter-pip" id="rp001-pip-1"></div>
+  <div class="rp001-counter-pip" id="rp001-pip-2"></div>
+  <div class="rp001-counter-pip" id="rp001-pip-3"></div>
+  <div class="rp001-counter-pip" id="rp001-pip-4"></div>
+</div></div>
+  <!-- Reveal message overlay -->
+  <div class="rp001-message-overlay" id="rp001-message-overlay">
+    <div class="rp001-message-card" id="rp001-message-card">
+      <div class="rp001-message-card-bg"></div>
+      <svg class="rp001-message-border" viewBox="0 0 580 420" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 22 Q22 10 34 10 L70 10" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M22 22 L22 58" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M558 22 Q558 10 546 10 L510 10" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M558 22 L558 58" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M22 398 Q22 410 34 410 L70 410" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M22 398 L22 362" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M558 398 Q558 410 546 410 L510 410" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M558 398 L558 362" stroke="rgba(200,170,130,0.28)" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="22" cy="22" r="3" fill="rgba(200,170,130,0.3)"/>
+        <circle cx="558" cy="22" r="3" fill="rgba(200,170,130,0.3)"/>
+        <circle cx="22" cy="398" r="3" fill="rgba(200,170,130,0.3)"/>
+        <circle cx="558" cy="398" r="3" fill="rgba(200,170,130,0.3)"/>
+      </svg>
+      <div class="rp001-message-petal-deco">✿ ❀ ✿</div>
+      <div class="rp001-message-hidden" id="rp001-hidden-msg">--HIDDEN_MESSAGE--</div>
+      <div class="rp001-divider" style="opacity:0.4;">
+        <div class="rp001-divider-line"></div>
+        <div class="rp001-divider-fleur">❧</div>
+        <div class="rp001-divider-line"></div>
+      </div>
+      <div class="rp001-message-sig">— for --RECIPIENT_NAME-- —</div>
+    </div>
+  </div>
+  <!-- Spark elements -->
+  <div class="rp001-spark" id="rp001-sp0"></div>
+  <div class="rp001-spark" id="rp001-sp1"></div>
+  <div class="rp001-spark" id="rp001-sp2"></div>
+  <div class="rp001-spark" id="rp001-sp3"></div>
+  <div class="rp001-spark" id="rp001-sp4"></div>
+  <div class="rp001-spark" id="rp001-sp5"></div>
+  <div class="rp001-spark" id="rp001-sp6"></div>
+  <div class="rp001-spark" id="rp001-sp7"></div>
+</div>
+<script>
+(function () {
+  const SECTION_INDEX = 6;
+  const PETALS_NEEDED = 5;
+
+  let petalsCaught = 0;
+  let revealed = false;
+  let petalPool = [];
+  let activePetals = [];
+  let ambientInterval = null;
+  let entered = false;
+
+  // ── Petal SVG shapes (5 variants) ──
+  function petalSVG(variant, hue) {
+    const fills = {
+      blush:  ['rgba(240,190,185,0.72)', 'rgba(230,160,155,0.55)'],
+      rose:   ['rgba(220,140,140,0.68)', 'rgba(200,110,110,0.50)'],
+      cream:  ['rgba(245,225,200,0.65)', 'rgba(230,205,175,0.48)'],
+      lilac:  ['rgba(200,180,220,0.65)', 'rgba(175,150,200,0.48)'],
+      peach:  ['rgba(250,200,165,0.68)', 'rgba(235,175,140,0.50)'],
+    };
+    const c = fills[hue] || fills.blush;
+
+    const shapes = [
+      // Oval petal
+      `<svg viewBox="0 0 32 48" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="16" cy="24" rx="12" ry="22" fill="${c[0]}" stroke="${c[1]}" stroke-width="0.5"/>
+        <line x1="16" y1="4" x2="16" y2="44" stroke="${c[1]}" stroke-width="0.4" opacity="0.5"/>
+        <line x1="16" y1="16" x2="8" y2="28" stroke="${c[1]}" stroke-width="0.3" opacity="0.35"/>
+        <line x1="16" y1="16" x2="24" y2="28" stroke="${c[1]}" stroke-width="0.3" opacity="0.35"/>
+      </svg>`,
+      // Wide petal
+      `<svg viewBox="0 0 44 32" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="22" cy="16" rx="20" ry="13" fill="${c[0]}" stroke="${c[1]}" stroke-width="0.5"/>
+        <line x1="4" y1="16" x2="40" y2="16" stroke="${c[1]}" stroke-width="0.4" opacity="0.45"/>
+        <line x1="22" y1="4" x2="10" y2="26" stroke="${c[1]}" stroke-width="0.3" opacity="0.3"/>
+        <line x1="22" y1="4" x2="34" y2="26" stroke="${c[1]}" stroke-width="0.3" opacity="0.3"/>
+      </svg>`,
+      // Pointed petal
+      `<svg viewBox="0 0 28 52" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 2 C26 14 26 38 14 50 C2 38 2 14 14 2Z" fill="${c[0]}" stroke="${c[1]}" stroke-width="0.5"/>
+        <line x1="14" y1="4" x2="14" y2="48" stroke="${c[1]}" stroke-width="0.4" opacity="0.5"/>
+      </svg>`,
+      // Cupped petal
+      `<svg viewBox="0 0 36 40" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 2 C32 8 36 28 18 38 C0 28 4 8 18 2Z" fill="${c[0]}" stroke="${c[1]}" stroke-width="0.5"/>
+        <line x1="18" y1="4" x2="18" y2="36" stroke="${c[1]}" stroke-width="0.4" opacity="0.45"/>
+        <line x1="18" y1="14" x2="8" y2="28" stroke="${c[1]}" stroke-width="0.3" opacity="0.3"/>
+        <line x1="18" y1="14" x2="28" y2="28" stroke="${c[1]}" stroke-width="0.3" opacity="0.3"/>
+      </svg>`,
+      // Round petal
+      `<svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 2 C34 4 36 34 19 36 C2 34 4 4 19 2Z" fill="${c[0]}" stroke="${c[1]}" stroke-width="0.5"/>
+        <line x1="19" y1="4" x2="19" y2="34" stroke="${c[1]}" stroke-width="0.4" opacity="0.45"/>
+        <line x1="6" y1="16" x2="32" y2="24" stroke="${c[1]}" stroke-width="0.3" opacity="0.28"/>
+      </svg>`,
+    ];
+    return shapes[variant % shapes.length];
+  }
+
+  const hues = ['blush','rose','cream','lilac','peach'];
+  const root = document.getElementById('rp001-root');
+
+  function spawnPetal() {
+    const el = document.createElement('div');
+    el.className = 'rp001-petal';
+    const variant = Math.floor(Math.random() * 5);
+    const hue = hues[Math.floor(Math.random() * hues.length)];
+    const size = Math.round(18 + Math.random() * 28);
+    el.innerHTML = petalSVG(variant, hue);
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+
+    const startX = Math.random() * (window.innerWidth + 80) - 40;
+    el.style.left = startX + 'px';
+    el.style.top = '-60px';
+    root.appendChild(el);
+    activePetals.push(el);
+
+    const driftX   = (Math.random() - 0.5) * 200;
+    const rotation = (Math.random() - 0.5) * 540;
+    const duration = 5 + Math.random() * 6;
+    const delay    = Math.random() * 1.5;
+    const swayAmp  = 30 + Math.random() * 40;
+
+    // Main fall
+    gsap.to(el, {
+      y: window.innerHeight + 100,
+      x: driftX,
+      rotation: rotation,
+      duration: duration,
+      delay: delay,
+      ease: 'none',
+      onComplete: () => {
+        el.remove();
+        const idx = activePetals.indexOf(el);
+        if (idx !== -1) activePetals.splice(idx, 1);
+      }
+    });
+
+    // Sway
+    gsap.to(el, {
+      x: '+=' + swayAmp,
+      duration: 1.8 + Math.random(),
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: delay
+    });
+
+    // Click handler
+    el.addEventListener('click', () => onPetalClick(el));
+    el.addEventListener('touchend', (e) => { e.preventDefault(); onPetalClick(el); });
+  }
+
+  function onPetalClick(el) {
+    if (revealed) return;
+    if (!el.parentNode) return;
+
+    petalsCaught++;
+    updatePips();
+
+    // Spark burst at petal position
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    burstSparks(cx, cy);
+
+    // Petal dissolve
+    gsap.killTweensOf(el);
+    gsap.to(el, {
+      scale: 1.8,
+      opacity: 0,
+      duration: 0.45,
+      ease: 'expo.out',
+      onComplete: () => {
+        el.remove();
+        const idx = activePetals.indexOf(el);
+        if (idx !== -1) activePetals.splice(idx, 1);
+      }
+    });
+
+    if (petalsCaught >= PETALS_NEEDED && !revealed) {
+      setTimeout(doReveal, 300);
+    }
+  }
+
+  function updatePips() {
+    for (let i = 0; i < PETALS_NEEDED; i++) {
+      const pip = document.getElementById('rp001-pip-' + i);
+      if (!pip) continue;
+      if (i < petalsCaught) {
+        pip.classList.add('rp001-filled');
+        gsap.fromTo(pip, { scale: 1.6 }, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.5)' });
+      }
+    }
+  }
+
+  function burstSparks(cx, cy) {
+    for (let i = 0; i < 8; i++) {
+      const sp = document.getElementById('rp001-sp' + i);
+      if (!sp) continue;
+      const angle = (i / 8) * Math.PI * 2;
+      const dist  = 30 + Math.random() * 50;
+      gsap.set(sp, { x: cx, y: cy, opacity: 0.85, scale: 0.8 + Math.random(), position:'fixed' });
+      gsap.to(sp, {
+        x: cx + Math.cos(angle) * dist,
+        y: cy + Math.sin(angle) * dist,
+        opacity: 0,
+        duration: 0.55,
+        ease: 'expo.out',
+        delay: i * 0.02
+      });
+    }
+  }
+
+  function doReveal() {
+    if (revealed) return;
+    revealed = true;
+
+    // Stop spawning
+    if (ambientInterval) { clearInterval(ambientInterval); ambientInterval = null; }
+
+    // Dismiss remaining petals gently
+    activePetals.forEach(p => {
+      gsap.killTweensOf(p);
+      gsap.to(p, { opacity: 0, scale: 0.5, duration: 0.6, ease: 'expo.out',
+        onComplete: () => p.remove()
+      });
+    });
+    activePetals = [];
+
+    // Fade out card
+    gsap.to('#rp001-card', { opacity: 0, scale: 0.94, duration: 0.5, ease: 'expo.out' });
+
+    // Fade in overlay
+    const overlay = document.getElementById('rp001-message-overlay');
+    const msgCard = document.getElementById('rp001-message-card');
+    overlay.classList.add('rp001-active');
+    gsap.to(overlay, { opacity: 1, duration: 0.5, ease: 'expo.out', delay: 0.3 });
+    gsap.to(msgCard, {
+      opacity: 1, scale: 1, duration: 0.9, ease: 'expo.out', delay: 0.35
+    });
+
+    // Stagger message children
+    const children = msgCard.children;
+    Array.from(children).forEach((child, i) => {
+      if (child.tagName !== 'SVG') {
+        gsap.fromTo(child,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out', delay: 0.55 + i * 0.13 }
+        );
+      }
+    });
+
+    // Ambient petal shower after reveal
+    setTimeout(() => {
+      ambientInterval = setInterval(spawnPetal, 700);
+    }, 1000);
+  }
+
+  function entrance() {
+    if (entered) return;
+    entered = true;
+
+    // Botanicals drift in
+    const bots = ['rp001-bot-tl','rp001-bot-br','rp001-bot-tr','rp001-bot-bl'];
+    bots.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      gsap.fromTo(el,
+        { opacity: 0, scale: 0.88 },
+        { opacity: 1, scale: 1, duration: 1.4, ease: 'expo.out', delay: 0.1 + i * 0.12 }
+      );
+      // Idle gentle sway
+      gsap.to(el, {
+        rotate: '+=' + ((i % 2 === 0) ? 2.5 : -2.5),
+        duration: 4 + i * 0.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: i * 0.3
+      });
+    });
+
+    // Card entrance
+    gsap.fromTo('#rp001-card',
+      { opacity: 0, y: 30, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'expo.out', delay: 0.4 }
+    );
+
+    // Counter entrance
+    gsap.fromTo('#rp001-counter',
+      { opacity: 0, y: 10 },
+      { opacity: 0.55, y: 0, duration: 0.8, ease: 'expo.out', delay: 1 }
+    );
+
+    // Counter idle pulse
+    gsap.to('#rp001-counter', {
+      opacity: 0.7,
+      duration: 2,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 1.5
+    });
+
+    // Begin petal rain
+    // Initial burst
+    setTimeout(() => {
+      for (let i = 0; i < 6; i++) {
+        setTimeout(spawnPetal, i * 180);
+      }
+    }, 600);
+
+    // Ongoing ambient
+    ambientInterval = setInterval(() => {
+      if (!revealed) spawnPetal();
+    }, 900);
+
+    // Cursor glow tracking on card
+    const card = document.getElementById('rp001-card');
+    root.addEventListener('mousemove', (e) => {
+      if (revealed) return;
+      const rx = e.clientX / window.innerWidth;
+      const ry = e.clientY / window.innerHeight;
+      gsap.to(card, {
+        rotateX: (ry - 0.5) * -6,
+        rotateY: (rx - 0.5) * 8,
+        duration: 0.9,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    });
+
+    root.addEventListener('mouseleave', () => {
+      if (revealed) return;
+      gsap.to(card, {
+        rotateX: 0, rotateY: 0,
+        duration: 1.2, ease: 'elastic.out(1, 0.5)',
+        overwrite: 'auto'
+      });
+    });
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+    entrance();
+  });
+})();
+</script>

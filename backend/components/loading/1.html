@@ -1,0 +1,559 @@
+<!--
+  Component: loading_taylorswift_001
+  Type: loading
+  Aesthetic: Dreamy Eras
+  Obsession: Taylor Swift
+  Tone: dreamy, nostalgic, cinematic
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<style>
+  .loading-ts001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  .loading-ts001-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .loading-ts001-eras-strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    display: flex;
+    opacity: 0;
+  }
+
+  .loading-ts001-era-shard {
+    flex: 1;
+    height: 100%;
+  }
+
+  .loading-ts001-era-shard:nth-child(1)  { background: #7b2d8b; }
+  .loading-ts001-era-shard:nth-child(2)  { background: #c0392b; }
+  .loading-ts001-era-shard:nth-child(3)  { background: #e8c96a; }
+  .loading-ts001-era-shard:nth-child(4)  { background: #1a1a2e; }
+  .loading-ts001-era-shard:nth-child(5)  { background: #e8a0bf; }
+  .loading-ts001-era-shard:nth-child(6)  { background: #2e4057; }
+  .loading-ts001-era-shard:nth-child(7)  { background: #f4d03f; }
+  .loading-ts001-era-shard:nth-child(8)  { background: #8e44ad; }
+  .loading-ts001-era-shard:nth-child(9)  { background: #2c3e50; }
+  .loading-ts001-era-shard:nth-child(10) { background: #e74c3c; }
+
+  .loading-ts001-bottom-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    display: flex;
+    opacity: 0;
+  }
+
+  .loading-ts001-glitter-field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .loading-ts001-star {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .loading-ts001-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loading-ts001-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(16px, 3vh, 32px);
+    text-align: center;
+    padding: 0 clamp(20px, 6vw, 80px);
+  }
+
+  .loading-ts001-quill {
+    width: clamp(36px, 5vw, 64px);
+    height: clamp(36px, 5vw, 64px);
+    opacity: 0;
+    position: relative;
+  }
+
+  .loading-ts001-quill svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .loading-ts001-title-wrap {
+    overflow: hidden;
+  }
+
+  .loading-ts001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 5vw, 4rem);
+    color: var(--text);
+    letter-spacing: 0.08em;
+    opacity: 0;
+    transform: translateY(30px);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .loading-ts001-title span {
+    color: var(--accent);
+  }
+
+  .loading-ts001-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.65rem, 1.4vw, 0.9rem);
+    color: var(--text);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0;
+    margin: 0;
+  }
+
+  .loading-ts001-loading-line {
+    font-family: var(--font-body);
+    font-size: clamp(0.75rem, 1.6vw, 1rem);
+    color: var(--primary);
+    font-style: italic;
+    opacity: 0;
+    letter-spacing: 0.05em;
+    max-width: 420px;
+    line-height: 1.5;
+  }
+
+  .loading-ts001-bar-wrap {
+    width: clamp(160px, 30vw, 320px);
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  .loading-ts001-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  .loading-ts001-lyric {
+    position: absolute;
+    font-family: var(--font-body);
+    font-size: clamp(0.55rem, 1.1vw, 0.75rem);
+    color: var(--text);
+    opacity: 0;
+    pointer-events: none;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    font-style: italic;
+  }
+
+  .loading-ts001-version-dot {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  .loading-ts001-cursor-trail {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    mix-blend-mode: screen;
+    transition: opacity 0.2s;
+  }
+
+  .loading-ts001-signature {
+    position: absolute;
+    bottom: clamp(16px, 3vh, 32px);
+    right: clamp(20px, 4vw, 48px);
+    font-family: var(--font-body);
+    font-size: clamp(0.55rem, 1vw, 0.7rem);
+    color: var(--text);
+    opacity: 0;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+</style>
+<div class="loading-ts001-root" id="loading-ts001-root">
+<canvas class="loading-ts001-canvas" id="loading-ts001-canvas"></canvas>
+  <div class="loading-ts001-eras-strip" id="loading-ts001-eras-top">
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+  </div>
+  <div class="loading-ts001-bottom-strip loading-ts001-eras-strip" id="loading-ts001-eras-bottom">
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+    <div class="loading-ts001-era-shard"></div>
+  </div>
+  <div class="loading-ts001-glitter-field" id="loading-ts001-glitter"></div>
+  <div class="loading-ts001-center" id="loading-ts001-center"><div class="loading-ts001-quill" id="loading-ts001-quill">
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M52 4 C52 4 12 20 10 54 C10 54 20 44 28 42 L36 60 C36 60 38 48 42 40 C50 36 62 20 52 4Z"
+          fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M28 42 L18 54" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+    <path d="M10 54 C15 46 22 43 28 42" stroke="var(--primary)" stroke-width="1" stroke-linecap="round" opacity="0.5" stroke-dasharray="2 3"/>
+    <circle cx="52" cy="8" r="2" fill="var(--accent)" opacity="0.8"/>
+  </svg>
+</div>
+
+<div class="loading-ts001-title-wrap">
+  <h1 class="loading-ts001-title" id="loading-ts001-title">
+    For <span>--RECIPIENT_NAME--</span>
+  </h1>
+</div>
+
+<p class="loading-ts001-subtitle" id="loading-ts001-subtitle">
+  A story told across all the eras
+</p>
+
+<p class="loading-ts001-loading-line" id="loading-ts001-loading-line">
+  --LOADING_LINE--
+</p>
+
+<div class="loading-ts001-bar-wrap" id="loading-ts001-bar-wrap">
+  <div class="loading-ts001-bar-fill" id="loading-ts001-bar-fill"></div>
+</div></div>
+  <div class="loading-ts001-signature" id="loading-ts001-sig">
+    The Glitch Protocol &nbsp;/&nbsp; Eras Edition
+  </div>
+  <div class="loading-ts001-cursor-trail" id="loading-ts001-cursor"></div>
+</div>
+<script>
+(function() {
+
+  const LYRICS = [
+    "long story short, i survived",
+    "this is me trying",
+    "i had the time of my life fighting dragons with you",
+    "you are the best thing that's ever been mine",
+    "i remember it all too well",
+    "enchanted to meet you",
+    "all you had to do was stay",
+    "she lost him but she found herself",
+    "long live all the mountains we moved",
+    "in your life you'll do things greater than dating the boy",
+  ];
+
+  const ERA_COLORS = [
+    '#7b2d8b','#c0392b','#e8c96a','#1a1a2e','#e8a0bf',
+    '#2e4057','#f4d03f','#8e44ad','#2c3e50','#e74c3c',
+  ];
+
+  // --- Canvas star field ---
+  const canvas  = document.getElementById('loading-ts001-canvas');
+  const ctx     = canvas.getContext('2d');
+  let W, H;
+  const STAR_COUNT = 120;
+  const stars = [];
+
+  function resizeCanvas() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function initStars() {
+    stars.length = 0;
+    for (let i = 0; i < STAR_COUNT; i++) {
+      stars.push({
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        r:     Math.random() * 1.4 + 0.3,
+        alpha: Math.random(),
+        speed: Math.random() * 0.004 + 0.001,
+        phase: Math.random() * Math.PI * 2,
+        color: ERA_COLORS[Math.floor(Math.random() * ERA_COLORS.length)],
+      });
+    }
+  }
+
+  let rafId;
+  function drawStars(t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      const a = 0.3 + 0.5 * Math.abs(Math.sin(s.phase + t * s.speed));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.globalAlpha = a;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    rafId = requestAnimationFrame(drawStars);
+  }
+
+  resizeCanvas();
+  initStars();
+  rafId = requestAnimationFrame(drawStars);
+  window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
+
+  // --- Floating lyric fragments ---
+  const glitter = document.getElementById('loading-ts001-glitter');
+
+  function spawnLyric() {
+    const el = document.createElement('div');
+    el.className = 'loading-ts001-lyric';
+    el.textContent = LYRICS[Math.floor(Math.random() * LYRICS.length)];
+    el.style.left  = Math.random() * 80 + 5 + '%';
+    el.style.top   = Math.random() * 70 + 10 + '%';
+    el.style.color = ERA_COLORS[Math.floor(Math.random() * ERA_COLORS.length)];
+    glitter.appendChild(el);
+
+    gsap.fromTo(el,
+      { opacity: 0, y: 10 },
+      {
+        opacity: 0.18,
+        y: -14,
+        duration: 3.5 + Math.random() * 2,
+        ease: 'power1.out',
+        onComplete: () => {
+          gsap.to(el, { opacity: 0, duration: 1.5, onComplete: () => el.remove() });
+        }
+      }
+    );
+  }
+
+  // --- Cursor trail ---
+  const cursorEl = document.getElementById('loading-ts001-cursor');
+  let trailActive = false;
+
+  document.addEventListener('mousemove', (e) => {
+    if (!trailActive) return;
+    gsap.to(cursorEl, {
+      x: e.clientX - 3,
+      y: e.clientY - 3,
+      duration: 0.15,
+      ease: 'power2.out',
+    });
+    gsap.fromTo(cursorEl, { opacity: 0.9 }, { opacity: 0, duration: 0.6 });
+
+    // spawn tiny star at cursor
+    const dot = document.createElement('div');
+    dot.style.cssText = `
+      position:fixed;width:3px;height:3px;border-radius:50%;
+      background:${ERA_COLORS[Math.floor(Math.random()*ERA_COLORS.length)]};
+      pointer-events:none;z-index:9998;mix-blend-mode:screen;
+      left:${e.clientX-1}px;top:${e.clientY-1}px;
+    `;
+    document.body.appendChild(dot);
+    gsap.fromTo(dot, { opacity: 1, scale: 1 }, {
+      opacity: 0, scale: 0, y: -12, duration: 0.8 + Math.random() * 0.4,
+      ease: 'power2.out', onComplete: () => dot.remove()
+    });
+  });
+
+  // --- Main entrance sequence ---
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== 0) return;
+
+    trailActive = true;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // Eras strips
+    tl.to(['#loading-ts001-eras-top', '#loading-ts001-eras-bottom'], {
+      opacity: 1, duration: 0.4,
+    }, 0);
+
+    tl.from('#loading-ts001-eras-top .loading-ts001-era-shard', {
+      scaleX: 0,
+      transformOrigin: 'left center',
+      duration: 1,
+      stagger: 0.06,
+      ease: 'expo.out',
+    }, 0);
+
+    tl.from('#loading-ts001-eras-bottom .loading-ts001-era-shard', {
+      scaleX: 0,
+      transformOrigin: 'right center',
+      duration: 1,
+      stagger: 0.06,
+      ease: 'expo.out',
+    }, 0.15);
+
+    // Quill
+    tl.to('#loading-ts001-quill', {
+      opacity: 1, duration: 0.6,
+    }, 0.4);
+
+    tl.from('#loading-ts001-quill', {
+      rotation: -30,
+      scale: 0.4,
+      transformOrigin: 'center center',
+      duration: 1.2,
+      ease: 'elastic.out(1, 0.5)',
+    }, 0.4);
+
+    // Title
+    tl.to('#loading-ts001-title', {
+      opacity: 1, y: 0, duration: 0.9,
+    }, 0.9);
+
+    // Subtitle
+    tl.to('#loading-ts001-subtitle', {
+      opacity: 0.45, duration: 0.7,
+    }, 1.3);
+
+    // Loading line
+    tl.to('#loading-ts001-loading-line', {
+      opacity: 0.72, duration: 0.8,
+    }, 1.6);
+
+    // Progress bar
+    tl.to('#loading-ts001-bar-wrap', {
+      opacity: 1, duration: 0.5,
+    }, 1.8);
+
+    tl.to('#loading-ts001-bar-fill', {
+      width: '100%',
+      duration: 3.2,
+      ease: 'power1.inOut',
+    }, 2.0);
+
+    // Signature
+    tl.to('#loading-ts001-sig', {
+      opacity: 0.3, duration: 0.6,
+    }, 2.2);
+
+    // Start lyric spawns after entrance
+    tl.call(() => {
+      spawnLyric();
+      setInterval(spawnLyric, 2200);
+    }, [], 1.4);
+
+    // --- Idle / ambient animations ---
+
+    // Quill breathe
+    tl.call(() => {
+      gsap.to('#loading-ts001-quill', {
+        y: -7,
+        rotation: 4,
+        duration: 2.8,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }, [], 1.8);
+
+    // Era strips shimmer
+    tl.call(() => {
+      gsap.to('#loading-ts001-eras-top', {
+        opacity: 0.6,
+        duration: 1.6,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+      });
+      gsap.to('#loading-ts001-eras-bottom', {
+        opacity: 0.6,
+        duration: 1.9,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: 0.7,
+      });
+    }, [], 2.0);
+
+    // Recipient name accent pulse
+    tl.call(() => {
+      const span = document.querySelector('#loading-ts001-title span');
+      if (!span) return;
+      gsap.to(span, {
+        textShadow: '0 0 24px var(--accent)',
+        duration: 1.4,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+      });
+    }, [], 2.5);
+
+    // Spawn orbital ring
+    tl.call(() => {
+      const root = document.getElementById('loading-ts001-root');
+      const cx   = root.offsetWidth  / 2;
+      const cy   = root.offsetHeight / 2;
+      [160, 240, 340].forEach((r, i) => {
+        const ring = document.createElement('div');
+        ring.className = 'loading-ts001-ring';
+        ring.style.cssText = `
+          width:${r*2}px;height:${r*2}px;
+          left:${cx-r}px;top:${cy-r}px;
+          border-color:${ERA_COLORS[i*3]};
+        `;
+        root.appendChild(ring);
+        gsap.to(ring, {
+          opacity: 0.07 + i * 0.02,
+          rotation: 360,
+          transformOrigin: 'center center',
+          duration: 18 + i * 6,
+          repeat: -1,
+          ease: 'none',
+          delay: i * 0.4,
+        });
+        gsap.to(ring, {
+          opacity: 0.12,
+          duration: 3,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: i * 0.8,
+        });
+      });
+    }, [], 1.0);
+
+  });
+
+})();
+</script>

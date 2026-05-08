@@ -1,0 +1,708 @@
+<!--
+  Component: reveal_book_001
+  Type: reveal
+  Aesthetic: Dark literary / candlelit parchment
+  Obsession: Books
+  Tone: intimate, cinematic, reverent
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --HIDDEN_MESSAGE-- --REVEAL_INSTRUCTION--
+-->
+<style>
+  .reveal-book-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  .reveal-book-001-dust {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 60%, rgba(180,130,60,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 60% at 20% 80%, rgba(180,130,60,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .reveal-book-001-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Floating dust motes */
+  .reveal-book-001-mote {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Book container */
+  .reveal-book-001-stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The closed book */
+  .reveal-book-001-book {
+    position: relative;
+    width: clamp(160px, 28vw, 320px);
+    height: clamp(220px, 38vw, 440px);
+    cursor: pointer;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    filter: drop-shadow(0 20px 60px rgba(0,0,0,0.7));
+    transition: filter 0.4s ease;
+    flex-shrink: 0;
+  }
+
+  .reveal-book-001-book:hover {
+    filter: drop-shadow(0 24px 80px rgba(0,0,0,0.8)) drop-shadow(0 0 30px rgba(180,130,60,0.18));
+  }
+
+  /* Book spine */
+  .reveal-book-001-spine {
+    position: absolute;
+    left: 0;
+    top: 4%;
+    width: 14%;
+    height: 92%;
+    background: linear-gradient(90deg, #1a1208 0%, #2e1f0a 40%, #1a1208 100%);
+    border-radius: 3px 0 0 3px;
+    z-index: 3;
+    box-shadow: inset -3px 0 8px rgba(0,0,0,0.5), inset 2px 0 4px rgba(255,200,80,0.07);
+  }
+
+  .reveal-book-001-spine-line {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: rgba(180,130,60,0.25);
+  }
+
+  .reveal-book-001-spine-line-1 { top: 10%; height: 2px; width: 60%; background: rgba(180,130,60,0.3); border-radius: 1px; }
+  .reveal-book-001-spine-line-2 { bottom: 10%; height: 2px; width: 60%; background: rgba(180,130,60,0.3); border-radius: 1px; }
+  .reveal-book-001-spine-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+    white-space: nowrap;
+    font-family: var(--font-heading);
+    font-size: clamp(5px, 1vw, 9px);
+    letter-spacing: 0.25em;
+    color: rgba(180,130,60,0.5);
+    text-transform: uppercase;
+  }
+
+  /* Book cover (front) */
+  .reveal-book-001-cover {
+    position: absolute;
+    left: 12%;
+    top: 0;
+    width: 88%;
+    height: 100%;
+    background: linear-gradient(160deg, #1e140a 0%, #2a1c0e 40%, #1a1008 100%);
+    border-radius: 0 4px 4px 0;
+    z-index: 2;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 3px 0 20px rgba(0,0,0,0.6), inset -1px 0 0 rgba(255,200,80,0.06);
+    overflow: hidden;
+  }
+
+  .reveal-book-001-cover.reveal-book-001-open {
+    transform: rotateY(-155deg);
+  }
+
+  /* Cover decoration */
+  .reveal-book-001-cover-deco {
+    position: absolute;
+    inset: 8%;
+    border: 1px solid rgba(180,130,60,0.18);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .reveal-book-001-cover-deco::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(180,130,60,0.08);
+    border-radius: 1px;
+  }
+
+  .reveal-book-001-cover-symbol {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    width: clamp(36px, 7vw, 80px);
+    height: clamp(36px, 7vw, 80px);
+    opacity: 0.55;
+  }
+
+  .reveal-book-001-cover-name {
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 1.4vw, 13px);
+    letter-spacing: 0.3em;
+    color: rgba(180,130,60,0.55);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Bookmark */
+  .reveal-book-001-bookmark {
+    position: absolute;
+    top: -8px;
+    right: clamp(18px, 5vw, 48px);
+    width: clamp(16px, 3vw, 28px);
+    height: clamp(50px, 10vw, 100px);
+    background: linear-gradient(180deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 70%, #000) 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+    z-index: 5;
+    cursor: pointer;
+    transform-origin: top center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease, filter 0.2s ease;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+  }
+
+  .reveal-book-001-bookmark::after {
+    content: '❧';
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(7px, 1.5vw, 12px);
+    color: rgba(0,0,0,0.5);
+  }
+
+  .reveal-book-001-bookmark:hover {
+    transform: scaleX(1.08) translateY(-3px);
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6)) brightness(1.15);
+  }
+
+  /* Book pages (right side of open book) */
+  .reveal-book-001-pages {
+    position: absolute;
+    left: 12%;
+    top: 1.5%;
+    width: 88%;
+    height: 97%;
+    background: linear-gradient(100deg, #f5ecd7 0%, #ede0c3 50%, #e8d9b8 100%);
+    border-radius: 0 3px 3px 0;
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: inset -4px 0 12px rgba(0,0,0,0.12), inset 0 0 30px rgba(0,0,0,0.06);
+  }
+
+  /* Page lines decoration */
+  .reveal-book-001-page-lines {
+    position: absolute;
+    inset: 12% 8%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 1.2vw, 12px);
+    pointer-events: none;
+  }
+
+  .reveal-book-001-page-line {
+    height: 1px;
+    background: rgba(120,90,50,0.12);
+    border-radius: 1px;
+  }
+
+  /* Hidden message panel */
+  .reveal-book-001-message-panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(14px, 3vw, 32px) clamp(10px, 2.5vw, 24px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .reveal-book-001-message-panel.reveal-book-001-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .reveal-book-001-message-drop-cap {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 6vw, 64px);
+    color: var(--accent);
+    line-height: 1;
+    float: left;
+    margin-right: clamp(4px, 1vw, 10px);
+    margin-top: clamp(2px, 0.5vw, 6px);
+    opacity: 0;
+    text-shadow: 0 0 24px rgba(180,130,60,0.3);
+  }
+
+  .reveal-book-001-message-text {
+    font-family: var(--font-body);
+    font-size: clamp(8px, 1.5vw, 14px);
+    line-height: 1.9;
+    color: #3a2a14;
+    text-align: left;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+  }
+
+  .reveal-book-001-message-sig {
+    margin-top: clamp(8px, 1.5vw, 18px);
+    font-family: var(--font-heading);
+    font-size: clamp(7px, 1.2vw, 11px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(120,85,35,0.55);
+    align-self: flex-end;
+    opacity: 0;
+  }
+
+  /* Instruction row */
+  .reveal-book-001-instruction {
+    position: absolute;
+    bottom: clamp(24px, 5vh, 60px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(6px, 1.2vw, 12px);
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .reveal-book-001-instruction-text {
+    font-family: var(--font-body);
+    font-size: clamp(9px, 1.4vw, 13px);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.45;
+    white-space: nowrap;
+  }
+
+  .reveal-book-001-arrow {
+    width: clamp(16px, 3vw, 28px);
+    height: clamp(16px, 3vw, 28px);
+    border-right: 1px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
+    transform: rotate(45deg);
+    opacity: 0.45;
+  }
+
+  /* Candle glow overlay when revealed */
+  .reveal-book-001-glow {
+    position: absolute;
+    bottom: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 60%;
+    background: radial-gradient(ellipse at 50% 80%, rgba(200,140,40,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+  }
+
+  /* Particles */
+  .reveal-book-001-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 20;
+    opacity: 0;
+  }
+
+  /* Ambient shimmer on pages */
+  .reveal-book-001-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 20%, rgba(255,230,160,0.07) 50%, transparent 80%);
+    background-size: 200% 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+</style>
+<div class="reveal-book-001-root" id="reveal-book-001-root">
+  <div class="reveal-book-001-dust"></div>
+  <div class="reveal-book-001-grain"></div>
+  <div class="reveal-book-001-glow" id="reveal-book-001-glow"></div>
+  <!-- Dust motes -->
+  <div class="reveal-book-001-mote" id="rb1-mote-0" style="width:3px;height:3px;left:20%;top:30%;"></div>
+  <div class="reveal-book-001-mote" id="rb1-mote-1" style="width:2px;height:2px;left:70%;top:25%;"></div>
+  <div class="reveal-book-001-mote" id="rb1-mote-2" style="width:4px;height:4px;left:45%;top:15%;"></div>
+  <div class="reveal-book-001-mote" id="rb1-mote-3" style="width:2px;height:2px;left:80%;top:70%;"></div>
+  <div class="reveal-book-001-mote" id="rb1-mote-4" style="width:3px;height:3px;left:15%;top:65%;"></div>
+  <div class="reveal-book-001-mote" id="rb1-mote-5" style="width:2px;height:2px;left:60%;top:80%;"></div>
+  <div class="reveal-book-001-stage">
+    <!-- The Book -->
+    <div class="reveal-book-001-book" id="reveal-book-001-book">
+      <!-- Bookmark -->
+      <div class="reveal-book-001-bookmark" id="reveal-book-001-bookmark" title="--REVEAL_INSTRUCTION--"></div>
+<!-- Spine -->
+  <div class="reveal-book-001-spine">
+    <div class="reveal-book-001-spine-line-1"></div>
+    <div class="reveal-book-001-spine-line-2"></div>
+    <div class="reveal-book-001-spine-title">For --RECIPIENT_NAME--</div>
+  </div>
+
+  <!-- Pages (back, visible when open) -->
+  <div class="reveal-book-001-pages">
+    <div class="reveal-book-001-shimmer" id="reveal-book-001-shimmer"></div>
+    <div class="reveal-book-001-page-lines">
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+      <div class="reveal-book-001-page-line"></div>
+    </div>
+
+    <!-- Hidden message panel -->
+    <div class="reveal-book-001-message-panel" id="reveal-book-001-message-panel">
+      <div style="width:100%;overflow:hidden;">
+        <span class="reveal-book-001-message-drop-cap" id="rb1-drop-cap">❝</span>
+        <p class="reveal-book-001-message-text" id="rb1-message-text">--HIDDEN_MESSAGE--</p>
+      </div>
+      <div class="reveal-book-001-message-sig" id="rb1-message-sig">— Written for --RECIPIENT_NAME-- —</div>
+    </div>
+  </div>
+
+  <!-- Front Cover -->
+  <div class="reveal-book-001-cover" id="reveal-book-001-cover">
+    <div class="reveal-book-001-cover-deco"></div>
+
+    <!-- SVG symbol: open book -->
+    <svg class="reveal-book-001-cover-symbol" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 18 C40 18 20 14 8 20 L8 62 C20 56 40 60 40 60 C40 60 60 56 72 62 L72 20 C60 14 40 18 40 18Z" stroke="rgba(180,130,60,0.4)" stroke-width="1.2" fill="none"/>
+      <path d="M40 18 L40 60" stroke="rgba(180,130,60,0.3)" stroke-width="1"/>
+      <path d="M16 26 L36 26" stroke="rgba(180,130,60,0.2)" stroke-width="0.8"/>
+      <path d="M16 32 L36 32" stroke="rgba(180,130,60,0.2)" stroke-width="0.8"/>
+      <path d="M16 38 L36 38" stroke="rgba(180,130,60,0.2)" stroke-width="0.8"/>
+      <path d="M44 26 L64 26" stroke="rgba(180,130,60,0.2)" stroke-width="0.8"/>
+      <path d="M44 32 L64 32" stroke="rgba(180,130,60,0.2)" stroke-width="0.8"/>
+      <path d="M44 38 L64 38" stroke="rgba(180,130,60,0.2)" stroke-width="0.8"/>
+      <circle cx="40" cy="10" r="3" fill="none" stroke="rgba(180,130,60,0.35)" stroke-width="0.8"/>
+      <path d="M38 10 L40 7 L42 10" stroke="rgba(180,130,60,0.35)" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <div class="reveal-book-001-cover-name">--RECIPIENT_NAME--</div>
+  </div>
+</div>
+
+<!-- Instruction -->
+<div class="reveal-book-001-instruction" id="reveal-book-001-instruction">
+  <div class="reveal-book-001-instruction-text">--REVEAL_INSTRUCTION--</div>
+  <div class="reveal-book-001-arrow"></div>
+</div></div>
+  <!-- Burst particles -->
+  <div class="reveal-book-001-particle" id="rb1-p0"></div>
+  <div class="reveal-book-001-particle" id="rb1-p1"></div>
+  <div class="reveal-book-001-particle" id="rb1-p2"></div>
+  <div class="reveal-book-001-particle" id="rb1-p3"></div>
+  <div class="reveal-book-001-particle" id="rb1-p4"></div>
+  <div class="reveal-book-001-particle" id="rb1-p5"></div>
+  <div class="reveal-book-001-particle" id="rb1-p6"></div>
+  <div class="reveal-book-001-particle" id="rb1-p7"></div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 6;
+  let revealed = false;
+
+  function initReveal() {
+    const book = document.getElementById('reveal-book-001-book');
+    const cover = document.getElementById('reveal-book-001-cover');
+    const bookmark = document.getElementById('reveal-book-001-bookmark');
+    const panel = document.getElementById('reveal-book-001-message-panel');
+    const instruction = document.getElementById('reveal-book-001-instruction');
+    const glow = document.getElementById('reveal-book-001-glow');
+    const dropCap = document.getElementById('rb1-drop-cap');
+    const msgText = document.getElementById('rb1-message-text');
+    const msgSig = document.getElementById('rb1-message-sig');
+    const shimmer = document.getElementById('reveal-book-001-shimmer');
+
+    // Dust motes ambient
+    const motes = [0,1,2,3,4,5].map(i => document.getElementById('rb1-mote-' + i));
+
+    function animateMotes() {
+      motes.forEach((m, i) => {
+        if (!m) return;
+        const delay = i * 0.8;
+        const dur = 6 + i * 1.5;
+        gsap.set(m, { opacity: 0 });
+        gsap.to(m, {
+          opacity: 0.18 + Math.random() * 0.12,
+          y: -(40 + Math.random() * 60),
+          x: (Math.random() - 0.5) * 30,
+          duration: dur,
+          delay: delay,
+          ease: 'none',
+          repeat: -1,
+          yoyo: true,
+          repeatDelay: Math.random() * 2
+        });
+      });
+    }
+
+    // Book idle float
+    function animateBookFloat() {
+      gsap.to(book, {
+        y: -8,
+        duration: 3.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+      // Subtle rotation
+      gsap.to(book, {
+        rotateZ: 0.7,
+        duration: 5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: 1
+      });
+    }
+
+    // Bookmark pulse
+    function animateBookmarkPulse() {
+      gsap.to(bookmark, {
+        scaleY: 1.06,
+        duration: 1.4,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+      // Glow pulse on bookmark
+      gsap.to(bookmark, {
+        filter: 'drop-shadow(0 4px 18px rgba(180,130,60,0.45)) brightness(1.1)',
+        duration: 1.8,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: 0.4
+      });
+    }
+
+    // Shimmer sweep
+    function animateShimmer() {
+      gsap.to(shimmer, {
+        backgroundPositionX: '200%',
+        duration: 3,
+        ease: 'none',
+        repeat: -1,
+        delay: 1
+      });
+    }
+
+    // Entrance animation (glitch:enter event)
+    function entrance() {
+      // Book enters from below
+      gsap.fromTo(book,
+        { opacity: 0, y: 80, rotateX: 18 },
+        { opacity: 1, y: 0, rotateX: 0, duration: 1.2, ease: 'expo.out', delay: 0.2 }
+      );
+
+      // Instruction fades in
+      gsap.fromTo(instruction,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 1, ease: 'expo.out', delay: 1.1 }
+      );
+
+      // Start idle animations
+      setTimeout(() => {
+        animateMotes();
+        animateBookFloat();
+        animateBookmarkPulse();
+        animateShimmer();
+      }, 800);
+    }
+
+    // Reveal animation (on bookmark/book click)
+    function doReveal() {
+      if (revealed) return;
+      revealed = true;
+
+      // Stop float
+      gsap.killTweensOf(book, 'y,rotateZ');
+
+      // Instruction disappears
+      gsap.to(instruction, { opacity: 0, duration: 0.3, ease: 'expo.out' });
+
+      // Book settles
+      gsap.to(book, { y: 0, rotateZ: 0, duration: 0.4, ease: 'expo.out' });
+
+      // Cover opens
+      cover.classList.add('reveal-book-001-open');
+
+      // Burst particles
+      const cx = book.getBoundingClientRect().left + book.offsetWidth / 2;
+      const cy = book.getBoundingClientRect().top + book.offsetHeight * 0.3;
+
+      for (let i = 0; i < 8; i++) {
+        const p = document.getElementById('rb1-p' + i);
+        if (!p) continue;
+        const angle = (i / 8) * Math.PI * 2;
+        const dist = 60 + Math.random() * 80;
+        gsap.set(p, {
+          x: cx,
+          y: cy,
+          opacity: 0,
+          scale: 0.5 + Math.random() * 1.5,
+          position: 'fixed'
+        });
+        gsap.to(p, {
+          x: cx + Math.cos(angle) * dist,
+          y: cy + Math.sin(angle) * dist,
+          opacity: 0.7,
+          duration: 0.5,
+          ease: 'expo.out',
+          delay: 0.9
+        });
+        gsap.to(p, {
+          opacity: 0,
+          duration: 0.8,
+          ease: 'expo.out',
+          delay: 1.2 + i * 0.05
+        });
+      }
+
+      // Glow reveals
+      gsap.to(glow, {
+        opacity: 1,
+        duration: 1.2,
+        delay: 1.0,
+        ease: 'expo.out'
+      });
+
+      // Panel becomes visible
+      setTimeout(() => {
+        panel.classList.add('reveal-book-001-visible');
+
+        // Drop cap
+        gsap.fromTo(dropCap,
+          { opacity: 0, scale: 0.4, y: 10 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: 'back.out(1.8)', delay: 0.1 }
+        );
+
+        // Message text typewriter-feel via clip
+        gsap.fromTo(msgText,
+          { opacity: 0, y: 14, clipPath: 'inset(0 100% 0 0)' },
+          { opacity: 1, y: 0, clipPath: 'inset(0 0% 0 0)', duration: 1.4, ease: 'expo.out', delay: 0.4 }
+        );
+
+        // Sig
+        gsap.fromTo(msgSig,
+          { opacity: 0, x: 20 },
+          { opacity: 1, x: 0, duration: 0.8, ease: 'expo.out', delay: 1.2 }
+        );
+
+        // Idle glow pulse on pages
+        gsap.to(glow, {
+          opacity: 0.6,
+          duration: 2.5,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: 0.5
+        });
+      }, 950);
+    }
+
+    // Cursor parallax on book
+    document.getElementById('reveal-book-001-root').addEventListener('mousemove', function(e) {
+      if (revealed) return;
+      const rect = this.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) / rect.width - 0.5;
+      const my = (e.clientY - rect.top) / rect.height - 0.5;
+      gsap.to(book, {
+        rotateY: mx * 12,
+        rotateX: -my * 8,
+        duration: 0.8,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    });
+
+    document.getElementById('reveal-book-001-root').addEventListener('mouseleave', function() {
+      if (revealed) return;
+      gsap.to(book, {
+        rotateY: 0,
+        rotateX: 0,
+        duration: 1,
+        ease: 'elastic.out(1, 0.5)',
+        overwrite: 'auto'
+      });
+    });
+
+    // Click targets
+    bookmark.addEventListener('click', doReveal);
+    cover.addEventListener('click', doReveal);
+
+    // Touch
+    bookmark.addEventListener('touchend', function(e) { e.preventDefault(); doReveal(); });
+    cover.addEventListener('touchend', function(e) { e.preventDefault(); doReveal(); });
+
+    // Glitch enter event
+    document.addEventListener('glitch:enter', function(e) {
+      if (e.detail.index !== SECTION_INDEX) return;
+      entrance();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReveal);
+  } else {
+    initReveal();
+  }
+})();
+</script>

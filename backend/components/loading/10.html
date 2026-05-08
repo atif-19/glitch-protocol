@@ -1,0 +1,700 @@
+<!--
+  Component: loading_ocean_001
+  Type: loading
+  Aesthetic: Wave Tide Loader
+  Obsession: Ocean
+  Tone: fluid, vast, meditative
+  Occasion: both
+  Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<style>
+  :root {
+    --primary: #4db8c8;
+    --accent: #a8dde9;
+    --bg: #020d14;
+    --text: #e8f4f8;
+    --font-heading: 'Cormorant Garamond', 'Georgia', serif;
+    --font-body: 'Josefin Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .lo001-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* ── Deep water gradient background ── */
+  .lo001-bg-depth {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,80,120,0.55) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 30% 60%, rgba(0,50,90,0.30) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 50% at 70% 40%, rgba(0,30,60,0.20) 0%, transparent 60%),
+      linear-gradient(180deg, #020d14 0%, #041824 40%, #061e2e 70%, #082030 100%);
+    animation: lo001-depth-shift 10s ease-in-out infinite alternate;
+  }
+  @keyframes lo001-depth-shift {
+    from { opacity: 0.85; transform: scale(1); }
+    to   { opacity: 1;    transform: scale(1.02); }
+  }
+
+  /* ── Bioluminescence particles canvas ── */
+  .lo001-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ── Caustic light ripples ── */
+  .lo001-caustics {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image:
+      radial-gradient(ellipse 8% 12% at 20% 30%, rgba(77,184,200,1) 0%, transparent 100%),
+      radial-gradient(ellipse 6% 10% at 60% 20%, rgba(77,184,200,1) 0%, transparent 100%),
+      radial-gradient(ellipse 10% 8% at 80% 50%, rgba(77,184,200,1) 0%, transparent 100%),
+      radial-gradient(ellipse 7% 14% at 40% 70%, rgba(168,221,233,1) 0%, transparent 100%),
+      radial-gradient(ellipse 9% 7% at 15% 65%, rgba(77,184,200,1) 0%, transparent 100%);
+    animation: lo001-caustic-drift 7s ease-in-out infinite alternate;
+  }
+  @keyframes lo001-caustic-drift {
+    0%   { transform: scale(1)    translate(0,0)      rotate(0deg); opacity: 0.04; }
+    33%  { transform: scale(1.08) translate(1%,-1%)   rotate(0.5deg); opacity: 0.07; }
+    66%  { transform: scale(0.96) translate(-1%, 1%)  rotate(-0.3deg); opacity: 0.05; }
+    100% { transform: scale(1.04) translate(0.5%,0.5%) rotate(0.2deg); opacity: 0.06; }
+  }
+
+  /* ── Vignette ── */
+  .lo001-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: radial-gradient(ellipse 85% 85% at 50% 50%, transparent 25%, rgba(2,13,20,0.94) 100%);
+  }
+
+  /* ── SVG wave layers ── */
+  .lo001-waves {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* ── Foam line at wave crest ── */
+  .lo001-foam {
+    position: absolute;
+    z-index: 6;
+    left: 0;
+    width: 200%;
+    height: clamp(2px,0.3vh,4px);
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(168,221,233,0.5) 15%,
+      rgba(255,255,255,0.6) 30%,
+      rgba(168,221,233,0.4) 45%,
+      transparent 55%,
+      rgba(255,255,255,0.5) 70%,
+      rgba(168,221,233,0.4) 85%,
+      transparent 100%
+    );
+    border-radius: 50%;
+    filter: blur(1px);
+    pointer-events: none;
+    opacity: 0;
+    animation: lo001-foam-drift 8s linear infinite;
+  }
+  @keyframes lo001-foam-drift {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── HUD corner brackets ── */
+  .lo001-corner {
+    position: absolute;
+    width: clamp(22px,3vw,44px);
+    height: clamp(22px,3vw,44px);
+    z-index: 20;
+    opacity: 0;
+  }
+  .lo001-corner::before,
+  .lo001-corner::after {
+    content: '';
+    position: absolute;
+    background: var(--primary);
+    opacity: 0.45;
+  }
+  .lo001-corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+  .lo001-corner::after  { width: 1px; height: 100%; top: 0; left: 0; }
+  .lo001-corner.tl { top: clamp(14px,2.5vh,30px);    left: clamp(14px,2.5vw,30px); }
+  .lo001-corner.tr { top: clamp(14px,2.5vh,30px);    right: clamp(14px,2.5vw,30px); transform: scaleX(-1); }
+  .lo001-corner.bl { bottom: clamp(14px,2.5vh,30px); left: clamp(14px,2.5vw,30px); transform: scaleY(-1); }
+  .lo001-corner.br { bottom: clamp(14px,2.5vh,30px); right: clamp(14px,2.5vw,30px); transform: scale(-1,-1); }
+
+  /* ── Top status bar ── */
+  .lo001-topbar {
+    position: absolute;
+    top: clamp(14px,2.5vh,30px);
+    left: 0; right: 0;
+    padding: 0 clamp(54px,7.5vw,96px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    opacity: 0;
+  }
+  .lo001-bar-label {
+    font-size: clamp(7px,0.75vw,10px);
+    letter-spacing: 0.38em;
+    color: var(--primary);
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  /* ── Bottom bar ── */
+  .lo001-botbar {
+    position: absolute;
+    bottom: clamp(14px,2.5vh,30px);
+    left: 0; right: 0;
+    padding: 0 clamp(54px,7.5vw,96px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    opacity: 0;
+  }
+
+  /* ── Tide meter (vertical) ── */
+  .lo001-tide-meter {
+    position: absolute;
+    right: clamp(14px,2.5vw,30px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(4px,0.6vh,8px);
+    opacity: 0;
+  }
+  .lo001-tide-label {
+    font-size: clamp(7px,0.7vw,9px);
+    letter-spacing: 0.3em;
+    color: var(--primary);
+    opacity: 0.45;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+  }
+  .lo001-tide-track {
+    width: 2px;
+    height: clamp(60px,12vh,120px);
+    background: rgba(77,184,200,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .lo001-tide-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(0deg, var(--primary), var(--accent));
+    box-shadow: 0 0 6px rgba(77,184,200,0.5);
+    border-radius: 2px;
+  }
+
+  /* ── Center content ── */
+  .lo001-center {
+    position: relative;
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: clamp(10px,2vh,22px);
+    padding: clamp(16px,4vw,48px);
+    margin-bottom: clamp(60px,12vh,140px);
+  }
+
+  /* ── Depth coordinate ── */
+  .lo001-depth-tag {
+    font-size: clamp(8px,0.85vw,11px);
+    letter-spacing: 0.5em;
+    color: var(--primary);
+    opacity: 0;
+    text-transform: uppercase;
+  }
+
+  /* ── Main title ── */
+  .lo001-title {
+    font-family: var(--font-heading);
+    font-size: clamp(38px,8.5vw,120px);
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    position: relative;
+    text-shadow: 0 0 60px rgba(77,184,200,0.2);
+  }
+  .lo001-title-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg,
+      transparent 30%,
+      rgba(168,221,233,0.18) 50%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    animation: lo001-shimmer 3.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes lo001-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── Subtitle ── */
+  .lo001-subtitle {
+    font-size: clamp(9px,1vw,13px);
+    letter-spacing: 0.45em;
+    color: var(--accent);
+    opacity: 0;
+    text-transform: uppercase;
+  }
+
+  /* ── Sonar ring ── */
+  .lo001-sonar-wrap {
+    position: relative;
+    width: clamp(48px,7vw,90px);
+    height: clamp(48px,7vw,90px);
+    opacity: 0;
+  }
+  .lo001-sonar-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(77,184,200,0.5);
+    animation: lo001-sonar-pulse 2.4s ease-out infinite;
+  }
+  .lo001-sonar-ring:nth-child(2) { animation-delay: 0.8s; }
+  .lo001-sonar-ring:nth-child(3) { animation-delay: 1.6s; }
+  @keyframes lo001-sonar-pulse {
+    0%   { transform: scale(0.3); opacity: 0.8; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  .lo001-sonar-dot {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: clamp(5px,0.7vw,9px);
+    height: clamp(5px,0.7vw,9px);
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 12px 3px rgba(77,184,200,0.6);
+  }
+
+  /* ── Loading line ── */
+  .lo001-loadline {
+    font-size: clamp(10px,1.1vw,14px);
+    color: var(--text);
+    opacity: 0;
+    letter-spacing: 0.22em;
+    max-width: clamp(220px,48vw,520px);
+    line-height: 1.9;
+    font-style: italic;
+  }
+
+  /* ── Wave progress bar ── */
+  .lo001-prog-outer {
+    width: clamp(160px,32vw,380px);
+    height: clamp(28px,4vh,44px);
+    position: relative;
+    opacity: 0;
+    overflow: hidden;
+    border-radius: clamp(4px,0.6vw,8px);
+    border: 1px solid rgba(77,184,200,0.12);
+    background: rgba(2,13,20,0.6);
+  }
+  .lo001-prog-water {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(180deg,
+      rgba(77,184,200,0.4) 0%,
+      rgba(0,80,120,0.7) 100%
+    );
+    transition: none;
+    overflow: hidden;
+  }
+  /* mini wave on top of fill */
+  .lo001-prog-wave {
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 200%;
+    height: 12px;
+    background: radial-gradient(ellipse 10% 80% at 10% 50%, rgba(255,255,255,0.25) 0%, transparent 100%),
+                radial-gradient(ellipse 8% 60% at 35% 50%, rgba(255,255,255,0.18) 0%, transparent 100%),
+                radial-gradient(ellipse 12% 80% at 60% 50%, rgba(255,255,255,0.22) 0%, transparent 100%),
+                radial-gradient(ellipse 9% 70% at 85% 50%, rgba(255,255,255,0.16) 0%, transparent 100%);
+    animation: lo001-mini-wave 1.8s linear infinite;
+  }
+  @keyframes lo001-mini-wave {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .lo001-prog-pct {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(9px,0.9vw,12px);
+    letter-spacing: 0.3em;
+    color: var(--text);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    z-index: 2;
+  }
+
+  /* ── Flash overlay ── */
+  .lo001-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    background: #020d14;
+    opacity: 1;
+    pointer-events: none;
+  }
+</style>
+<div class="lo001-root" id="lo001-root">
+  <div class="lo001-flash" id="lo001-flash"></div>
+  <div class="lo001-bg-depth"></div>
+  <canvas class="lo001-canvas" id="lo001-canvas"></canvas>
+  <div class="lo001-caustics"></div>
+  <div class="lo001-vignette"></div>
+  <!-- SVG waves -->
+<svg class="lo001-waves" id="lo001-waves"
+ viewBox="0 0 1440 220" preserveAspectRatio="none"
+ xmlns="http://www.w3.org/2000/svg" style="height:clamp(100px,22vh,220px)">
+<!-- deep back wave -->
+<path id="lo001-wave3" fill="rgba(0,50,90,0.35)"
+   d="M0,140 C240,100 480,180 720,140 C960,100 1200,170 1440,130 L1440,220 L0,220 Z"/>
+<!-- mid wave -->
+<path id="lo001-wave2" fill="rgba(0,70,110,0.45)"
+   d="M0,160 C180,130 360,185 540,155 C720,125 900,175 1080,150 C1260,125 1350,165 1440,145 L1440,220 L0,220 Z"/>
+<!-- front wave -->
+<path id="lo001-wave1" fill="rgba(4,30,50,0.80)"
+   d="M0,175 C120,155 300,195 480,170 C660,145 840,190 1020,168 C1200,146 1320,182 1440,162 L1440,220 L0,220 Z"/>
+</svg>
+  <!-- Foam line -->
+  <div class="lo001-foam" id="lo001-foam" style="bottom: clamp(98px,21vh,218px);"></div>
+  <!-- Corners -->
+  <div class="lo001-corner tl" id="lo001-c-tl"></div>
+  <div class="lo001-corner tr" id="lo001-c-tr"></div>
+  <div class="lo001-corner bl" id="lo001-c-bl"></div>
+  <div class="lo001-corner br" id="lo001-c-br"></div>
+  <!-- Top bar -->
+  <div class="lo001-topbar" id="lo001-topbar">
+    <div class="lo001-bar-label">GLITCH PROTOCOL // OCEAN DEEP</div>
+    <div class="lo001-bar-label" id="lo001-clock">00:00:00</div>
+    <div class="lo001-bar-label">TIDE · INCOMING</div>
+  </div>
+  <!-- Bottom bar -->
+  <div class="lo001-botbar" id="lo001-botbar">
+    <div class="lo001-bar-label">DEPTH · 3,800M</div>
+    <div class="lo001-bar-label">PRESSURE · 380 ATM</div>
+    <div class="lo001-bar-label">SALINITY · 35.2‰</div>
+  </div>
+  <!-- Tide meter -->
+  <div class="lo001-tide-meter" id="lo001-tide-meter">
+    <div class="lo001-tide-label">TIDE</div>
+    <div class="lo001-tide-track">
+      <div class="lo001-tide-fill" id="lo001-tide-fill"></div>
+    </div>
+    <div class="lo001-tide-label">LEVEL</div>
+  </div>
+  <!-- Center -->
+  <div class="lo001-center">
+    <div class="lo001-depth-tag" id="lo001-depth-tag">SIGNAL DEPTH · --RECIPIENT_NAME--</div><div class="lo001-sonar-wrap" id="lo001-sonar">
+  <div class="lo001-sonar-ring"></div>
+  <div class="lo001-sonar-ring"></div>
+  <div class="lo001-sonar-ring"></div>
+  <div class="lo001-sonar-dot"></div>
+</div>
+
+<div class="lo001-title" id="lo001-title">
+  --RECIPIENT_NAME--
+  <div class="lo001-title-shimmer"></div>
+</div>
+
+<div class="lo001-subtitle" id="lo001-subtitle">TRANSMISSION RISING FROM THE DEEP</div>
+
+<div class="lo001-loadline" id="lo001-loadline">--LOADING_LINE--</div>
+
+<div class="lo001-prog-outer" id="lo001-prog-outer">
+  <div class="lo001-prog-water" id="lo001-prog-water">
+    <div class="lo001-prog-wave"></div>
+  </div>
+  <div class="lo001-prog-pct" id="lo001-prog-pct">0%</div>
+</div></div>
+</div>
+<script>
+(function () {
+
+  /* ── Bioluminescent particles ── */
+  const canvas = document.getElementById('lo001-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resizeCanvas() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.floor((W * H) / 6000);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        r:     0.6 + Math.random() * 1.8,
+        a:     Math.random(),
+        speed: 0.06 + Math.random() * 0.14,
+        drift: (Math.random() - 0.5) * 0.3,
+        phase: Math.random() * Math.PI * 2,
+        hue:   180 + Math.floor(Math.random() * 40)
+      });
+    }
+  }
+
+  function animateParticles(t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of particles) {
+      p.y    -= p.speed;
+      p.x    += p.drift;
+      p.phase += 0.012;
+      const a = p.a * (0.4 + 0.6 * Math.abs(Math.sin(p.phase)));
+      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 80%, 70%, ${a * 0.55})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(animateParticles);
+  }
+
+  resizeCanvas();
+  initParticles();
+  requestAnimationFrame(animateParticles);
+  window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+
+  /* ── Clock ── */
+  function tickClock() {
+    const el = document.getElementById('lo001-clock');
+    if (!el) return;
+    const n  = new Date();
+    el.textContent =
+      String(n.getHours()).padStart(2,'0') + ':' +
+      String(n.getMinutes()).padStart(2,'0') + ':' +
+      String(n.getSeconds()).padStart(2,'0');
+    setTimeout(tickClock, 1000);
+  }
+  tickClock();
+
+  /* ── Wave SVG animation ── */
+  let waveT = 0;
+  function animateWaves() {
+    waveT += 0.008;
+    const w1 = document.getElementById('lo001-wave1');
+    const w2 = document.getElementById('lo001-wave2');
+    const w3 = document.getElementById('lo001-wave3');
+    if (!w1) return;
+
+    const s  = Math.sin(waveT);
+    const s2 = Math.sin(waveT * 0.7 + 1);
+    const s3 = Math.sin(waveT * 0.5 + 2);
+
+    w1.setAttribute('d',
+      `M0,${175 + s * 8} C120,${155 + s2*10} 300,${195 + s*6} 480,${170 + s3*8} ` +
+      `C660,${145 + s*10} 840,${190 + s2*7} 1020,${168 + s3*9} ` +
+      `C1200,${146 + s*8} 1320,${182 + s2*6} 1440,${162 + s3*8} L1440,220 L0,220 Z`
+    );
+    w2.setAttribute('d',
+      `M0,${160 + s2*9} C180,${130 + s*11} 360,${185 + s3*7} 540,${155 + s*9} ` +
+      `C720,${125 + s2*10} 900,${175 + s*8} 1080,${150 + s3*9} ` +
+      `C1260,${125 + s*8} 1350,${165 + s2*7} 1440,${145 + s3*9} L1440,220 L0,220 Z`
+    );
+    w3.setAttribute('d',
+      `M0,${140 + s3*7} C240,${100 + s*9} 480,${180 + s2*8} 720,${140 + s3*9} ` +
+      `C960,${100 + s*8} 1200,${170 + s2*7} 1440,${130 + s3*8} L1440,220 L0,220 Z`
+    );
+
+    requestAnimationFrame(animateWaves);
+  }
+  animateWaves();
+
+  /* ── Progress fill ── */
+  function animateProgress(duration) {
+    const water = document.getElementById('lo001-prog-water');
+    const pct   = document.getElementById('lo001-prog-pct');
+    const tide  = document.getElementById('lo001-tide-fill');
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / (duration * 1000), 1);
+      const pctVal = Math.floor(p * 100);
+      water.style.width = pctVal + '%';
+      pct.textContent   = pctVal + '%';
+      tide.style.height = pctVal + '%';
+      if (p < 1) requestAnimationFrame(step);
+      else {
+        water.style.width = '100%';
+        pct.textContent   = '100%';
+        tide.style.height = '100%';
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ── Entrance ── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 0) return;
+    runEntrance();
+  });
+
+  let didRun = false;
+  function runEntrance() {
+    if (didRun) return;
+    didRun = true;
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* Fade dark out */
+    tl.to('#lo001-flash', { opacity: 0, duration: 1.6, ease: 'power2.inOut' }, 0);
+
+    /* Corners */
+    tl.to(['#lo001-c-tl','#lo001-c-tr','#lo001-c-bl','#lo001-c-br'],
+      { opacity: 1, duration: 0.4, stagger: 0.08 }, 0.5);
+
+    /* Bars */
+    tl.fromTo('#lo001-topbar',
+      { opacity: 0, y: -8 },
+      { opacity: 1, y: 0, duration: 0.5 }, 0.6);
+    tl.fromTo('#lo001-botbar',
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: 0.5 }, 0.65);
+
+    /* Tide meter */
+    tl.to('#lo001-tide-meter', { opacity: 1, duration: 0.5 }, 0.8);
+
+    /* Waves rise */
+    tl.fromTo('#lo001-waves',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 1.4, ease: 'power2.out' }, 0.4);
+
+    /* Foam appears */
+    tl.to('#lo001-foam', { opacity: 0.7, duration: 0.8 }, 1.2);
+
+    /* Sonar ping */
+    tl.to('#lo001-sonar', { opacity: 1, duration: 0.5 }, 0.8);
+
+    /* Depth tag */
+    tl.to('#lo001-depth-tag', { opacity: 1, duration: 0.5 }, 1.0);
+
+    /* Title surface */
+    tl.fromTo('#lo001-title',
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out' }, 1.2);
+
+    /* Subtitle */
+    tl.to('#lo001-subtitle',
+      { opacity: 1, duration: 0.6 }, 1.8);
+
+    /* Loading line */
+    tl.to('#lo001-loadline',
+      { opacity: 0.7, duration: 0.6 }, 2.1);
+
+    /* Progress */
+    tl.to('#lo001-prog-outer',
+      { opacity: 1, duration: 0.4 }, 2.3);
+    tl.call(() => { animateProgress(3.2); }, [], 2.4);
+
+    /* ── Ambient idles ── */
+    tl.call(() => {
+
+      /* Title gentle float */
+      gsap.to('#lo001-title', {
+        y: -6, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Sonar slow drift */
+      gsap.to('#lo001-sonar', {
+        y: -4, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Corner opacity breathe */
+      gsap.to('.lo001-corner', {
+        opacity: 0.35, duration: 2.2, repeat: -1, yoyo: true,
+        ease: 'sine.inOut', stagger: 0.4
+      });
+
+      /* Title glow breathe */
+      gsap.to('#lo001-title', {
+        textShadow: '0 0 80px rgba(77,184,200,0.35)',
+        duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* Caustics slow intensity */
+      gsap.to('.lo001-caustics', {
+        opacity: 0.09, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+    }, [], 2.0);
+  }
+
+  setTimeout(function () { if (!didRun) runEntrance(); }, 300);
+
+  /* ── Cursor parallax ── */
+  document.addEventListener('mousemove', function (ev) {
+    const cx = (ev.clientX / window.innerWidth  - 0.5) * 2;
+    const cy = (ev.clientY / window.innerHeight - 0.5) * 2;
+
+    gsap.to('#lo001-title', {
+      x: cx * 8, duration: 1.4, ease: 'power2.out', overwrite: 'auto'
+    });
+    gsap.to('#lo001-waves', {
+      x: cx * 18, duration: 3, ease: 'power2.out'
+    });
+    gsap.to('.lo001-caustics', {
+      x: cx * 24, y: cy * 16, duration: 2.5, ease: 'power2.out'
+    });
+    gsap.to('.lo001-bg-depth', {
+      x: cx * 14, y: cy * 10, duration: 2.8, ease: 'power2.out'
+    });
+  });
+
+})();
+</script>

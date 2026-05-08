@@ -1,0 +1,561 @@
+<!--
+  Component: hero-taylorswift-003
+  Type: hero
+  Aesthetic: folklore forest
+  Obsession: Taylor Swift
+  Tone: ethereal, melancholic, intimate
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --TITLE-- --SUBTITLE-- --ACCENT_WORD--
+-->
+<style>
+  #hero-taylorswift-003 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+
+  #hero-taylorswift-003 .tsf-canvas-trees {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  #hero-taylorswift-003 .tsf-canvas-mist {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #hero-taylorswift-003 .tsf-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 50% 55%,
+        color-mix(in srgb, var(--primary) 18%, transparent), transparent 62%),
+      radial-gradient(ellipse 30% 35% at 10% 75%,
+        color-mix(in srgb, var(--primary) 10%, transparent), transparent 55%),
+      radial-gradient(ellipse 28% 32% at 90% 70%,
+        color-mix(in srgb, var(--primary) 9%, transparent), transparent 52%),
+      radial-gradient(ellipse 60% 22% at 50% 100%,
+        color-mix(in srgb, var(--primary) 22%, transparent), transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #hero-taylorswift-003 .tsf-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 88% 88% at 50% 50%,
+      transparent 18%,
+      color-mix(in srgb, var(--bg) 65%, transparent) 65%,
+      color-mix(in srgb, var(--bg) 97%, transparent) 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* fog band at bottom */
+  #hero-taylorswift-003 .tsf-fog {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 38%;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--bg) 55%, transparent) 55%,
+      color-mix(in srgb, var(--bg) 92%, transparent) 100%);
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+  }
+
+  /* top fog */
+  #hero-taylorswift-003 .tsf-fog-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 22%;
+    background: linear-gradient(0deg,
+      transparent 0%,
+      color-mix(in srgb, var(--bg) 72%, transparent) 100%);
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+  }
+
+  /* center content */
+  #hero-taylorswift-003 .tsf-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    max-width: min(800px, 92vw);
+    gap: clamp(0.55rem, 1.3vw, 1rem);
+  }
+
+  #hero-taylorswift-003 .tsf-eyebrow {
+    font-size: clamp(0.5rem, 0.95vw, 0.62rem);
+    letter-spacing: 0.44em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  #hero-taylorswift-003 .tsf-name {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 10.5vw, 8rem);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    position: relative;
+  }
+
+  /* woodgrain texture overlay on name via pseudo — pure CSS */
+  #hero-taylorswift-003 .tsf-name::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      92deg,
+      transparent 0px,
+      transparent 3px,
+      color-mix(in srgb, var(--bg) 6%, transparent) 3px,
+      color-mix(in srgb, var(--bg) 6%, transparent) 4px
+    );
+    pointer-events: none;
+    border-radius: 2px;
+  }
+
+  #hero-taylorswift-003 .tsf-vine-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 1.2vw, 0.9rem);
+    opacity: 0;
+    width: min(420px, 85vw);
+    justify-content: center;
+  }
+
+  #hero-taylorswift-003 .tsf-vine-line {
+    flex: 1;
+    height: 1px;
+    background: color-mix(in srgb, var(--primary) 28%, transparent);
+    position: relative;
+    overflow: visible;
+  }
+
+  #hero-taylorswift-003 .tsf-vine-leaf {
+    font-size: clamp(0.55rem, 1vw, 0.7rem);
+    color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  #hero-taylorswift-003 .tsf-title-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.22rem, 0.5vw, 0.4rem);
+    opacity: 0;
+  }
+
+  #hero-taylorswift-003 .tsf-title {
+    font-family: var(--font-heading);
+    font-size: clamp(0.88rem, 2.1vw, 1.4rem);
+    font-weight: 400;
+    color: color-mix(in srgb, var(--text) 68%, transparent);
+    letter-spacing: 0.08em;
+    font-style: italic;
+  }
+
+  #hero-taylorswift-003 .tsf-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.68rem, 1.35vw, 0.86rem);
+    color: color-mix(in srgb, var(--text) 42%, transparent);
+    letter-spacing: 0.07em;
+  }
+
+  #hero-taylorswift-003 .tsf-accent {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  /* cardigan stitch motif */
+  #hero-taylorswift-003 .tsf-stitch {
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 0.7vw, 7px);
+    opacity: 0;
+    margin-top: clamp(0.2rem, 0.5vw, 0.4rem);
+  }
+
+  #hero-taylorswift-003 .tsf-stitch-mark {
+    width: clamp(10px, 1.6vw, 16px);
+    height: 1px;
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+    position: relative;
+  }
+
+  #hero-taylorswift-003 .tsf-stitch-mark::before,
+  #hero-taylorswift-003 .tsf-stitch-mark::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #hero-taylorswift-003 .tsf-stitch-mark::before { left: -1px; }
+  #hero-taylorswift-003 .tsf-stitch-mark::after  { right: -1px; }
+
+  #hero-taylorswift-003 .tsf-stitch-text {
+    font-size: clamp(0.5rem, 0.88vw, 0.6rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 35%, transparent);
+    font-family: var(--font-body);
+  }
+
+  #hero-taylorswift-003 .tsf-cta {
+    font-size: clamp(0.52rem, 0.95vw, 0.62rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 25%, transparent);
+    opacity: 0;
+    margin-top: clamp(0.4rem, 1vw, 0.8rem);
+  }
+
+  /* firefly dots */
+  #hero-taylorswift-003 .tsf-firefly {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 6;
+    opacity: 0;
+  }
+</style>
+<section id="hero-taylorswift-003">
+  <div class="tsf-glow"></div>
+  <canvas class="tsf-canvas-mist"  id="tsf-canvas-mist"></canvas>
+  <canvas class="tsf-canvas-trees" id="tsf-canvas-trees"></canvas>
+  <div class="tsf-fog"     id="tsf-fog"></div>
+  <div class="tsf-fog-top" id="tsf-fog-top"></div>
+  <div class="tsf-vignette"></div>
+  <div class="tsf-center"><div class="tsf-eyebrow" id="tsf-eyebrow">In the trees, a story</div>
+
+<h1 class="tsf-name" id="tsf-name">--RECIPIENT_NAME--</h1>
+
+<div class="tsf-vine-row" id="tsf-vine-row">
+  <div class="tsf-vine-line"></div>
+  <span class="tsf-vine-leaf">❧</span>
+  <div class="tsf-vine-line"></div>
+</div>
+
+<div class="tsf-title-block" id="tsf-title-block">
+  <div class="tsf-title">--TITLE--</div>
+  <div class="tsf-subtitle">--SUBTITLE-- <span class="tsf-accent">--ACCENT_WORD--</span></div>
+</div>
+
+<div class="tsf-stitch" id="tsf-stitch">
+  <div class="tsf-stitch-mark"></div>
+  <div class="tsf-stitch-text">hand-stitched for you</div>
+  <div class="tsf-stitch-mark"></div>
+</div>
+
+<div class="tsf-cta" id="tsf-cta">Tap to step inside</div></div>
+</section>
+<script>
+(function () {
+  const INDEX = 1;
+
+  // ── Canvas setup ───────────────────────────────────────────────
+  const cMist  = document.getElementById('tsf-canvas-mist');
+  const mCtx   = cMist.getContext('2d');
+  const cTrees = document.getElementById('tsf-canvas-trees');
+  const tCtx   = cTrees.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = cMist.width  = cTrees.width  = window.innerWidth;
+    H = cMist.height = cTrees.height = window.innerHeight;
+    if (running) drawTrees();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // ── Tree silhouettes ───────────────────────────────────────────
+  function drawTrees() {
+    tCtx.clearRect(0, 0, W, H);
+
+    function tree(x, baseY, height, spread, layers, alpha) {
+      tCtx.save();
+      for (let l = 0; l < layers; l++) {
+        const ly    = baseY - (height * l / layers);
+        const lw    = spread * (1 - l / layers * 0.55);
+        const lh    = height * 0.38;
+        tCtx.beginPath();
+        tCtx.moveTo(x, ly - lh);
+        tCtx.lineTo(x - lw, ly);
+        tCtx.lineTo(x + lw, ly);
+        tCtx.closePath();
+        tCtx.fillStyle = 'rgba(30,22,48,' + (alpha * (0.6 + l * 0.12)).toFixed(3) + ')';
+        tCtx.fill();
+      }
+      // trunk
+      tCtx.fillStyle = 'rgba(20,14,34,' + (alpha * 0.8).toFixed(3) + ')';
+      tCtx.fillRect(x - spread * 0.06, baseY, spread * 0.12, H - baseY);
+      tCtx.restore();
+    }
+
+    const baseY = H * 0.92;
+
+    // back row — tall, faint
+    const backTrees = [
+      {x: 0.04, h: 0.62, s: 0.045, a: 0.28},
+      {x: 0.12, h: 0.70, s: 0.05,  a: 0.32},
+      {x: 0.21, h: 0.58, s: 0.042, a: 0.25},
+      {x: 0.30, h: 0.66, s: 0.048, a: 0.30},
+      {x: 0.42, h: 0.72, s: 0.052, a: 0.28},
+      {x: 0.55, h: 0.64, s: 0.046, a: 0.26},
+      {x: 0.67, h: 0.68, s: 0.050, a: 0.30},
+      {x: 0.78, h: 0.60, s: 0.044, a: 0.27},
+      {x: 0.88, h: 0.74, s: 0.054, a: 0.32},
+      {x: 0.96, h: 0.62, s: 0.046, a: 0.26}
+    ];
+
+    // front row — shorter, darker
+    const frontTrees = [
+      {x: 0.0,  h: 0.42, s: 0.058, a: 0.55},
+      {x: 0.08, h: 0.50, s: 0.065, a: 0.60},
+      {x: 0.17, h: 0.38, s: 0.052, a: 0.50},
+      {x: 0.26, h: 0.46, s: 0.060, a: 0.58},
+      {x: 0.38, h: 0.52, s: 0.068, a: 0.55},
+      {x: 0.50, h: 0.44, s: 0.056, a: 0.52},
+      {x: 0.62, h: 0.48, s: 0.062, a: 0.57},
+      {x: 0.72, h: 0.40, s: 0.054, a: 0.52},
+      {x: 0.82, h: 0.50, s: 0.066, a: 0.60},
+      {x: 0.92, h: 0.44, s: 0.058, a: 0.54},
+      {x: 1.0,  h: 0.38, s: 0.050, a: 0.50}
+    ];
+
+    backTrees.forEach(function (d) {
+      tree(d.x * W, baseY, d.h * H, d.s * W, 3, d.a);
+    });
+    frontTrees.forEach(function (d) {
+      tree(d.x * W, baseY + H * 0.04, d.h * H * 0.72, d.s * W, 4, d.a);
+    });
+  }
+
+  // ── Mist particles ─────────────────────────────────────────────
+  const MIST_COUNT = 55;
+  const mist = [];
+
+  function mkMist(boot) {
+    return {
+      x:  Math.random() * (W || 800),
+      y:  boot
+            ? H * 0.55 + Math.random() * H * 0.45
+            : H + Math.random() * 40,
+      r:  Math.random() * 3.5 + 1.2,
+      vx: (Math.random() - 0.5) * 0.09,
+      vy: -(Math.random() * 0.12 + 0.02),
+      op: Math.random() * 0.3 + 0.04,
+      ts: Math.random() * 0.010 + 0.003,
+      tp: Math.random() * Math.PI * 2
+    };
+  }
+
+  for (let i = 0; i < MIST_COUNT; i++) mist.push(mkMist(true));
+
+  // ── Fireflies ──────────────────────────────────────────────────
+  const FF_COUNT = 22;
+  const ffs = [];
+
+  function mkFF(boot) {
+    return {
+      x:  Math.random() * (W || 800),
+      y:  boot
+            ? H * 0.15 + Math.random() * H * 0.7
+            : H * 0.9 + Math.random() * 30,
+      r:  Math.random() * 1.1 + 0.4,
+      vx: (Math.random() - 0.5) * 0.22,
+      vy: -(Math.random() * 0.15 + 0.02),
+      op: 0,
+      maxOp: Math.random() * 0.7 + 0.2,
+      ts: Math.random() * 0.02 + 0.008,
+      tp: Math.random() * Math.PI * 2
+    };
+  }
+
+  for (let i = 0; i < FF_COUNT; i++) ffs.push(mkFF(true));
+
+  let running = false;
+
+  function drawMist(t) {
+    mCtx.clearRect(0, 0, W, H);
+    for (let i = 0; i < mist.length; i++) {
+      const p = mist[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -10) { mist[i] = mkMist(false); continue; }
+      const fl = 0.45 + 0.55 * Math.sin(t * p.ts * 60 + p.tp);
+      mCtx.beginPath();
+      mCtx.arc(p.x, p.y, p.r, 0, 6.2832);
+      mCtx.fillStyle = 'rgba(180,165,210,' + (p.op * fl).toFixed(3) + ')';
+      mCtx.fill();
+    }
+
+    // fireflies
+    for (let i = 0; i < ffs.length; i++) {
+      const f = ffs[i];
+      f.x += f.vx; f.y += f.vy;
+      if (f.y < -10) { ffs[i] = mkFF(false); continue; }
+      f.op = f.maxOp * (0.3 + 0.7 * Math.abs(Math.sin(t * f.ts * 60 + f.tp)));
+      mCtx.beginPath();
+      mCtx.arc(f.x, f.y, f.r, 0, 6.2832);
+      mCtx.fillStyle = 'rgba(200,240,160,' + f.op.toFixed(3) + ')';
+      mCtx.fill();
+    }
+  }
+
+  function loop() {
+    const t = performance.now() * 0.001;
+    drawMist(t);
+    if (running) requestAnimationFrame(loop);
+  }
+
+  // ── Entrance ───────────────────────────────────────────────────
+  function enterSection() {
+    running = true;
+    drawTrees();
+    loop();
+
+    gsap.set([
+      '#tsf-eyebrow','#tsf-name','#tsf-vine-row',
+      '#tsf-title-block','#tsf-stitch','#tsf-cta'
+    ], { opacity: 0, y: 16 });
+
+    gsap.set(['#tsf-fog','#tsf-fog-top'], { opacity: 0 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // fog rolls in
+    tl.to('#tsf-fog',     { opacity: 1, duration: 2.0, ease: 'power1.out' }, 0)
+      .to('#tsf-fog-top', { opacity: 1, duration: 1.6, ease: 'power1.out' }, 0.3)
+
+      // text
+      .to('#tsf-eyebrow',     { opacity: 1, y: 0, duration: 0.75 }, 0.55)
+      .to('#tsf-name',        { opacity: 1, y: 0, duration: 1.05, ease: 'power4.out' }, 0.85)
+      .to('#tsf-vine-row',    { opacity: 1, y: 0, duration: 0.7  }, 1.3)
+      .to('#tsf-title-block', { opacity: 1, y: 0, duration: 0.78 }, 1.52)
+      .to('#tsf-stitch',      { opacity: 1, y: 0, duration: 0.7  }, 1.78)
+      .to('#tsf-cta',         { opacity: 1, y: 0, duration: 0.68 }, 2.1);
+
+    // ── Ambient: name wood-grain shimmer ──────────────────────────
+    gsap.to('#tsf-name', {
+      opacity: 0.83,
+      duration: 4.2,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2.5
+    });
+
+    // ── Ambient: fog breathe ───────────────────────────────────────
+    gsap.to('#tsf-fog', {
+      opacity: 0.7,
+      duration: 5.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 2
+    });
+
+    // ── Ambient: vine row gentle sway ─────────────────────────────
+    gsap.to('#tsf-vine-row', {
+      y: -3,
+      duration: 3.8,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 1.8
+    });
+
+    // ── Ambient: stitch pulse ─────────────────────────────────────
+    gsap.to('#tsf-stitch', {
+      opacity: 0.4,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 3
+    });
+  }
+
+  // ── Interaction: tap name — firefly burst ─────────────────────
+  document.getElementById('tsf-name').addEventListener('click', function (e) {
+    e.stopPropagation();
+    gsap.to('#tsf-name', {
+      scale: 1.04,
+      duration: 0.25,
+      ease: 'power2.out',
+      yoyo: true,
+      repeat: 1,
+      onComplete: function () { gsap.set('#tsf-name', { scale: 1 }); }
+    });
+    for (let i = 0; i < 12; i++) {
+      const f = mkFF(false);
+      f.x     = W / 2 + (Math.random() - 0.5) * 150;
+      f.y     = H / 2 + (Math.random() - 0.5) * 60;
+      f.vy    = -(Math.random() * 1.8 + 0.7);
+      f.maxOp = 0.9;
+      ffs.push(f);
+      if (ffs.length > FF_COUNT + 20) ffs.shift();
+    }
+  });
+
+  // ── Hover: name lifts into mist ───────────────────────────────
+  document.getElementById('tsf-name').addEventListener('mouseenter', function () {
+    gsap.to('#tsf-name', { y: -5, duration: 0.45, ease: 'power2.out' });
+  });
+  document.getElementById('tsf-name').addEventListener('mouseleave', function () {
+    gsap.to('#tsf-name', { y: 0,  duration: 0.55, ease: 'power1.out' });
+  });
+
+  // ── Advance ────────────────────────────────────────────────────
+  document.getElementById('hero-taylorswift-003').addEventListener('click', function () {
+    gsap.to('#hero-taylorswift-003', {
+      opacity: 0,
+      duration: 0.9,
+      ease: 'power2.in',
+      onComplete: function () {
+        running = false;
+        if (window.glitchEvents) window.glitchEvents.advance();
+      }
+    });
+  });
+
+  // ── glitch:enter ──────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== INDEX) return;
+    enterSection();
+  });
+
+})();
+</script>

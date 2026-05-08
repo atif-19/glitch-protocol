@@ -1,0 +1,770 @@
+<!-- Component: ending-cinematic-004
+ Type: ending
+ Aesthetic: Cinematic
+ Tone: solemn, intimate, timeless
+ Occasion: both
+ Obsession: end credits, dark theater, film card, typographic weight
+ Variables: --RECIPIENT_NAME-- --ENDING_LINE-- --SONG_NAME-- -->
+<style>
+  .ecd004-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    cursor: default;
+  }
+
+  .ecd004-grain-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .ecd004-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 0%,
+      transparent 38%,
+      rgba(0,0,0,0.55) 68%,
+      rgba(0,0,0,0.96) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .ecd004-scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,0.008) 3px,
+      rgba(255,255,255,0.008) 4px
+    );
+    opacity: 0;
+  }
+
+  .ecd004-glow-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(280px, 60vw, 720px);
+    height: clamp(280px, 60vw, 720px);
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      var(--accent) 0%,
+      var(--primary) 25%,
+      transparent 65%
+    );
+    filter: blur(80px);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .ecd004-line-top {
+    position: absolute;
+    top: 0; left: 0;
+    width: 0%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    z-index: 5;
+    opacity: 0;
+  }
+
+  .ecd004-line-bot {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    z-index: 5;
+    opacity: 0;
+  }
+
+  .ecd004-line-left {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1px;
+    height: 0%;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent);
+    z-index: 5;
+    opacity: 0;
+  }
+
+  .ecd004-line-right {
+    position: absolute;
+    top: 0; right: 0;
+    width: 1px;
+    height: 0%;
+    background: linear-gradient(180deg, transparent, var(--primary), transparent);
+    z-index: 5;
+    opacity: 0;
+  }
+
+  .ecd004-corner {
+    position: absolute;
+    z-index: 6;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ecd004-corner svg {
+    display: block;
+  }
+
+  .ecd004-corner-tl { top: clamp(18px, 4vh, 40px); left: clamp(18px, 4vw, 42px); }
+  .ecd004-corner-tr { top: clamp(18px, 4vh, 40px); right: clamp(18px, 4vw, 42px); transform: scaleX(-1); }
+  .ecd004-corner-bl { bottom: clamp(18px, 4vh, 40px); left: clamp(18px, 4vw, 42px); transform: scaleY(-1); }
+  .ecd004-corner-br { bottom: clamp(18px, 4vh, 40px); right: clamp(18px, 4vw, 42px); transform: scale(-1,-1); }
+
+  .ecd004-meta-tl {
+    position: absolute;
+    top: clamp(18px, 4vh, 40px);
+    left: clamp(56px, 10vw, 100px);
+    z-index: 6;
+    opacity: 0;
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.4rem, 0.75vw, 0.52rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.14);
+    line-height: 1.8;
+  }
+
+  .ecd004-meta-br {
+    position: absolute;
+    bottom: clamp(18px, 4vh, 40px);
+    right: clamp(56px, 10vw, 100px);
+    z-index: 6;
+    opacity: 0;
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.4rem, 0.75vw, 0.52rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.1);
+    line-height: 1.8;
+  }
+
+  .ecd004-divider-h {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,0.04) 20%,
+      rgba(255,255,255,0.08) 50%,
+      rgba(255,255,255,0.04) 80%,
+      transparent 100%
+    );
+    z-index: 4;
+    opacity: 0;
+    transform: translateY(-1px);
+  }
+
+  .ecd004-content {
+    position: relative;
+    z-index: 7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: min(90vw, 780px);
+    padding: clamp(20px, 5vw, 60px);
+    gap: 0;
+  }
+
+  .ecd004-super {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.46rem, 0.88vw, 0.6rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    opacity: 0;
+    margin-bottom: clamp(20px, 4.5vh, 44px);
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 20px);
+  }
+
+  .ecd004-super-line {
+    height: 1px;
+    width: clamp(20px, 4vw, 40px);
+    background: rgba(255,255,255,0.12);
+  }
+
+  .ecd004-name-block {
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    margin-bottom: clamp(14px, 3vh, 30px);
+  }
+
+  .ecd004-name-label {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.42rem, 0.82vw, 0.56rem);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.16);
+    margin-bottom: clamp(6px, 1.2vh, 12px);
+  }
+
+  .ecd004-name {
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 11.5vw, 9.5rem);
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    position: relative;
+    display: inline-block;
+  }
+
+  .ecd004-name-inner {
+    display: inline-block;
+    background: linear-gradient(160deg,
+      rgba(255,255,255,0.98) 0%,
+      var(--accent) 40%,
+      var(--primary) 70%,
+      rgba(255,255,255,0.7) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 60px var(--accent));
+  }
+
+  .ecd004-name-blur {
+    position: absolute;
+    inset: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 11.5vw, 9.5rem);
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    background: linear-gradient(160deg, var(--accent), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(28px);
+    opacity: 0.35;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .ecd004-ornament {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 18px);
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0.08);
+    margin-bottom: clamp(14px, 3.5vh, 32px);
+    margin-top: clamp(4px, 1vh, 10px);
+  }
+
+  .ecd004-orn-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14));
+  }
+
+  .ecd004-orn-line:last-child {
+    background: linear-gradient(90deg, rgba(255,255,255,0.14), transparent);
+  }
+
+  .ecd004-orn-mid {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .ecd004-orn-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+  }
+
+  .ecd004-orn-diamond {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    box-shadow: 0 0 12px var(--accent), 0 0 28px var(--accent);
+    opacity: 0.8;
+  }
+
+  .ecd004-quote-wrap {
+    position: relative;
+    opacity: 0;
+    transform: translateY(18px);
+    margin-bottom: clamp(22px, 5vh, 46px);
+    padding: 0 clamp(10px, 3vw, 30px);
+  }
+
+  .ecd004-quote-open {
+    position: absolute;
+    top: clamp(-16px, -2.5vh, -28px);
+    left: clamp(0px, 1.5vw, 12px);
+    font-family: Georgia, serif;
+    font-size: clamp(2.4rem, 6vw, 5.5rem);
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .ecd004-quote-close {
+    position: absolute;
+    bottom: clamp(-30px, -4.5vh, -50px);
+    right: clamp(0px, 1.5vw, 12px);
+    font-family: Georgia, serif;
+    font-size: clamp(2.4rem, 6vw, 5.5rem);
+    line-height: 1;
+    color: var(--primary);
+    opacity: 0.1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .ecd004-ending-line {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1rem, 2.8vw, 1.9rem);
+    line-height: 1.78;
+    color: rgba(255,255,255,0.78);
+    font-style: italic;
+    letter-spacing: 0.025em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ecd004-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(6px);
+    margin-right: 0.26em;
+  }
+
+  .ecd004-song-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(8px, 1.8vh, 14px);
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .ecd004-song-rule {
+    width: clamp(40px, 8vw, 70px);
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .ecd004-song-inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 18px);
+    padding: clamp(8px, 1.8vh, 14px) clamp(14px, 3vw, 26px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.02);
+    cursor: default;
+    user-select: none;
+    transition: border-color 0.4s ease, background 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ecd004-song-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(255,255,255,0.015),
+      transparent
+    );
+    transform: translateX(-100%);
+    transition: transform 0s;
+  }
+
+  .ecd004-song-inner:hover::before {
+    transform: translateX(100%);
+    transition: transform 1.2s ease;
+  }
+
+  .ecd004-song-inner:hover {
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .ecd004-waveform {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: clamp(16px, 3vh, 24px);
+    flex-shrink: 0;
+  }
+
+  .ecd004-wbar {
+    width: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0.6;
+    transform-origin: bottom center;
+  }
+
+  .ecd004-song-copy { text-align: left; }
+
+  .ecd004-song-tag {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.42rem, 0.8vw, 0.55rem);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    margin-bottom: 4px;
+  }
+
+  .ecd004-song-name {
+    font-size: clamp(0.78rem, 1.55vw, 1rem);
+    color: rgba(255,255,255,0.6);
+    font-style: italic;
+    letter-spacing: 0.015em;
+  }
+
+  .ecd004-end-stamp {
+    position: absolute;
+    bottom: clamp(18px, 4vh, 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 7;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+  }
+
+  .ecd004-stamp-text {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.42rem, 0.82vw, 0.55rem);
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.12);
+  }
+
+  .ecd004-stamp-line {
+    width: clamp(50px, 10vw, 90px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+
+  .ecd004-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+<div class="ecd004-wrap" id="ecd004-wrap">
+  <div class="ecd004-flash" id="ecd004-flash"></div>
+<canvas class="ecd004-grain-canvas" id="ecd004-grain"></canvas>
+  <div class="ecd004-vignette"></div>
+  <div class="ecd004-scanlines" id="ecd004-scanlines"></div>
+  <div class="ecd004-glow-center" id="ecd004-glow"></div>
+  <div class="ecd004-line-top"   id="ecd004-lt"></div>
+  <div class="ecd004-line-bot"   id="ecd004-lb"></div>
+  <div class="ecd004-line-left"  id="ecd004-ll"></div>
+  <div class="ecd004-line-right" id="ecd004-lr"></div>
+  <div class="ecd004-divider-h"  id="ecd004-dh"></div>
+  <div class="ecd004-corner ecd004-corner-tl" id="ecd004-ctl">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M1 27 L1 1 L27 1" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <circle cx="1" cy="1" r="2" fill="var(--accent)" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="ecd004-corner ecd004-corner-tr" id="ecd004-ctr">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M1 27 L1 1 L27 1" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <circle cx="1" cy="1" r="2" fill="var(--primary)" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="ecd004-corner ecd004-corner-bl" id="ecd004-cbl">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M1 27 L1 1 L27 1" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <circle cx="1" cy="1" r="2" fill="var(--accent)" opacity="0.4"/>
+    </svg>
+  </div>
+  <div class="ecd004-corner ecd004-corner-br" id="ecd004-cbr">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M1 27 L1 1 L27 1" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <circle cx="1" cy="1" r="2" fill="var(--primary)" opacity="0.4"/>
+    </svg>
+  </div>
+  <div class="ecd004-meta-tl" id="ecd004-meta-tl">
+    THE GLITCH PROTOCOL<br>FINAL FRAME · END CARD
+  </div>
+  <div class="ecd004-meta-br" id="ecd004-meta-br">
+    MADE WITH LOVE<br>DO NOT REPRODUCE
+  </div>
+  <div class="ecd004-content">
+    <div class="ecd004-super" id="ecd004-super">
+      <div class="ecd004-super-line"></div>
+      dedicated to
+      <div class="ecd004-super-line"></div>
+    </div><div class="ecd004-name-block" id="ecd004-name-block">
+  <span class="ecd004-name-label">with everything</span>
+  <div class="ecd004-name">
+    <div class="ecd004-name-blur" aria-hidden="true">--RECIPIENT_NAME--</div>
+    <span class="ecd004-name-inner">--RECIPIENT_NAME--</span>
+  </div>
+</div>
+
+<div class="ecd004-ornament" id="ecd004-ornament">
+  <div class="ecd004-orn-line"></div>
+  <div class="ecd004-orn-mid">
+    <div class="ecd004-orn-dot"></div>
+    <div class="ecd004-orn-diamond"></div>
+    <div class="ecd004-orn-dot"></div>
+  </div>
+  <div class="ecd004-orn-line"></div>
+</div>
+
+<div class="ecd004-quote-wrap" id="ecd004-quote-wrap">
+  <div class="ecd004-quote-open">"</div>
+  <div class="ecd004-ending-line" id="ecd004-ending-line">--ENDING_LINE--</div>
+  <div class="ecd004-quote-close">"</div>
+</div>
+
+<div class="ecd004-song-block" id="ecd004-song-block">
+  <div class="ecd004-song-rule"></div>
+  <div class="ecd004-song-inner">
+    <div class="ecd004-waveform" id="ecd004-waveform">
+      <div class="ecd004-wbar" style="height:30%"></div>
+      <div class="ecd004-wbar" style="height:65%"></div>
+      <div class="ecd004-wbar" style="height:45%"></div>
+      <div class="ecd004-wbar" style="height:90%"></div>
+      <div class="ecd004-wbar" style="height:55%"></div>
+      <div class="ecd004-wbar" style="height:75%"></div>
+      <div class="ecd004-wbar" style="height:40%"></div>
+      <div class="ecd004-wbar" style="height:60%"></div>
+    </div>
+    <div class="ecd004-song-copy">
+      <span class="ecd004-song-tag">playing now</span>
+      <span class="ecd004-song-name">--SONG_NAME--</span>
+    </div>
+  </div>
+</div></div>
+  <div class="ecd004-end-stamp" id="ecd004-stamp">
+    <div class="ecd004-stamp-line"></div>
+    <div class="ecd004-stamp-text">fin &nbsp;·&nbsp; the end</div>
+    <div class="ecd004-stamp-line"></div>
+  </div>
+</div>
+<script>
+(function () {
+  let initialized = false;
+
+  /* ── Film grain ── */
+  function initGrain() {
+    const canvas = document.getElementById('ecd004-grain');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    function tick() {
+      const img = ctx.createImageData(W, H);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const v = Math.random() * 255;
+        d[i] = d[i+1] = d[i+2] = v;
+        d[i+3] = Math.random() * 14;
+      }
+      ctx.putImageData(img, 0, 0);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  }
+
+  /* ── Word split ── */
+  function splitWords() {
+    const el = document.getElementById('ecd004-ending-line');
+    if (!el) return;
+    const text = el.textContent.trim();
+    el.innerHTML = '';
+    text.split(' ').forEach(w => {
+      const s = document.createElement('span');
+      s.className = 'ecd004-word';
+      s.textContent = w;
+      el.appendChild(s);
+    });
+  }
+
+  /* ── Waveform ── */
+  function animateWave() {
+    const bars = document.querySelectorAll('.ecd004-wbar');
+    const heights = [30, 65, 45, 90, 55, 75, 40, 60];
+    bars.forEach((b, i) => {
+      gsap.to(b, {
+        height: (heights[i] * (0.2 + Math.random() * 0.8)) + '%',
+        duration: 0.25 + Math.random() * 0.4,
+        repeat: -1,
+        yoyo: true,
+        ease: 'power1.inOut',
+        delay: Math.random() * 0.5
+      });
+    });
+  }
+
+  /* ── Border lines draw-in ── */
+  function drawBorders() {
+    gsap.to(['#ecd004-lt', '#ecd004-lb'], { width: '100%', opacity: 1, duration: 1.8, ease: 'power2.inOut', delay: 0.2 });
+    gsap.to(['#ecd004-ll', '#ecd004-lr'], { height: '100%', opacity: 1, duration: 1.8, ease: 'power2.inOut', delay: 0.2 });
+    gsap.to('#ecd004-dh', { width: '100%', opacity: 1, duration: 1.4, ease: 'power2.inOut', delay: 1.2 });
+  }
+
+  /* ── Ambient ── */
+  function ambientLoop() {
+    gsap.to('#ecd004-glow', {
+      opacity: 0.22,
+      scale: 1.1,
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+
+    gsap.to('.ecd004-name-inner', {
+      filter: 'drop-shadow(0 0 70px var(--accent))',
+      duration: 3.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 1
+    });
+
+    gsap.to('#ecd004-name-block', {
+      y: -7,
+      duration: 4.2,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 1.5
+    });
+
+    gsap.to('.ecd004-orn-diamond', {
+      boxShadow: '0 0 22px var(--accent), 0 0 50px var(--accent)',
+      opacity: 1,
+      duration: 2.2,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+
+    gsap.to('#ecd004-scanlines', {
+      backgroundPositionY: '80px',
+      duration: 10,
+      repeat: -1,
+      ease: 'none'
+    });
+  }
+
+  /* ── Cursor react ── */
+  function cursorReact() {
+    const wrap = document.getElementById('ecd004-wrap');
+    if (!wrap) return;
+    wrap.addEventListener('mousemove', e => {
+      const cx = e.clientX / window.innerWidth  - 0.5;
+      const cy = e.clientY / window.innerHeight - 0.5;
+      gsap.to('#ecd004-name-block', {
+        x: cx * 14, y: cy * 9,
+        duration: 2, ease: 'power2.out', overwrite: 'auto'
+      });
+      gsap.to('#ecd004-quote-wrap', {
+        x: cx * -9, y: cy * -5,
+        duration: 2.4, ease: 'power2.out'
+      });
+      gsap.to('#ecd004-glow', {
+        x: cx * 50, y: cy * 36,
+        duration: 2.2, ease: 'power2.out'
+      });
+      gsap.to('#ecd004-scanlines', {
+        opacity: 0.02 + Math.abs(cx) * 0.05,
+        duration: 0.4
+      });
+    });
+  }
+
+  /* ── Main entrance ── */
+  function enter() {
+    if (initialized) return;
+    initialized = true;
+
+    splitWords();
+    initGrain();
+    drawBorders();
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#ecd004-flash',    { opacity: 0.06, duration: 0.1 }, 0)
+      .to('#ecd004-flash',    { opacity: 0, duration: 0.7 }, 0.1)
+
+      .to('#ecd004-grain',    { opacity: 1, duration: 1 }, 0.4)
+      .to('#ecd004-scanlines',{ opacity: 1, duration: 0.8 }, 0.5)
+      .to('#ecd004-glow',     { opacity: 0.14, duration: 2.2, ease: 'power2.out' }, 0.3)
+
+      .to(['#ecd004-ctl','#ecd004-ctr','#ecd004-cbl','#ecd004-cbr'],
+          { opacity: 1, duration: 0.5, stagger: 0.1 }, 0.8)
+      .to(['#ecd004-meta-tl','#ecd004-meta-br'],
+          { opacity: 1, duration: 0.6, stagger: 0.2 }, 1.1)
+
+      .to('#ecd004-super',      { opacity: 1, duration: 0.65 }, 1.4)
+      .to('#ecd004-name-block', { opacity: 1, y: 0, duration: 1.1, ease: 'back.out(1.5)' }, 1.75)
+      .to('#ecd004-ornament',   { opacity: 1, scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 2.3)
+
+      .to('#ecd004-quote-wrap', { opacity: 1, duration: 0.01 }, 2.7)
+      .to('.ecd004-word',       { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: 'power3.out' }, 2.75)
+
+      .to('#ecd004-song-block', { opacity: 1, y: 0, duration: 0.75 }, 4.0)
+      .to('#ecd004-stamp',      { opacity: 1, duration: 0.6 }, 4.4);
+
+    tl.call(() => {
+      animateWave();
+      ambientLoop();
+      cursorReact();
+    }, null, 4.6);
+  }
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 7) return;
+    enter();
+  });
+})();
+</script>

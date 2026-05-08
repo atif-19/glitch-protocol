@@ -1,0 +1,502 @@
+<!--
+  Component: loading-harrypotter-002
+  Type: loading
+  Aesthetic: dark academia
+  Obsession: Harry Potter
+  Tone: cinematic, mystical, reverent
+  Occasion: birthday, apology
+  Variables: --RECIPIENT_NAME-- --LOADING_LINE--
+-->
+<style>
+  #loading-harrypotter-002 {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: var(--font-body);
+    z-index: 9999;
+  }#loading-harrypotter-002 .lh2-canvas {
+position: absolute;
+inset: 0;
+z-index: 1;
+pointer-events: none;
+}#loading-harrypotter-002 .lh2-glow {
+position: absolute;
+inset: 0;
+background:
+radial-gradient(ellipse 55% 45% at 50% 52%,
+color-mix(in srgb, var(--primary) 18%, transparent), transparent 65%),
+radial-gradient(ellipse 25% 30% at 15% 78%,
+color-mix(in srgb, var(--accent) 8%, transparent), transparent 55%),
+radial-gradient(ellipse 20% 22% at 84% 20%,
+color-mix(in srgb, var(--primary) 7%, transparent), transparent 50%);
+pointer-events: none;
+z-index: 0;
+}#loading-harrypotter-002 .lh2-vignette {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse 100% 100% at 50% 50%,
+transparent 28%, color-mix(in srgb, var(--bg) 94%, transparent) 100%);
+pointer-events: none;
+z-index: 2;
+}/* ── Letter envelope ── */
+#loading-harrypotter-002 .lh2-envelope-wrap {
+position: relative;
+z-index: 10;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: clamp(1.2rem, 2.8vw, 2rem);
+}#loading-harrypotter-002 .lh2-envelope {
+position: relative;
+width: clamp(180px, 32vw, 300px);
+height: clamp(126px, 22.4vw, 210px);
+opacity: 0;
+cursor: default;
+}#loading-harrypotter-002 .lh2-env-body {
+position: absolute;
+inset: 0;
+border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+background: color-mix(in srgb, var(--primary) 8%, transparent);
+}#loading-harrypotter-002 .lh2-env-flap {
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 50%;
+overflow: hidden;
+transform-origin: top center;
+}#loading-harrypotter-002 .lh2-env-flap-inner {
+width: 100%;
+height: 200%;
+position: relative;
+}#loading-harrypotter-002 .lh2-env-flap svg {
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 100%;
+}#loading-harrypotter-002 .lh2-env-bottom svg {
+position: absolute;
+bottom: 0; left: 0;
+width: 100%; height: 50%;
+}#loading-harrypotter-002 .lh2-env-seal {
+position: absolute;
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+width: clamp(28px, 5vw, 42px);
+height: clamp(28px, 5vw, 42px);
+z-index: 4;
+}#loading-harrypotter-002 .lh2-env-seal svg {
+width: 100%; height: 100%;
+}/* letter that slides out */
+#loading-harrypotter-002 .lh2-letter {
+position: absolute;
+left: 8%;
+width: 84%;
+background: color-mix(in srgb, var(--text) 4%, transparent);
+border: 0.5px solid color-mix(in srgb, var(--accent) 22%, transparent);
+display: flex;
+flex-direction: column;
+gap: clamp(5px, 1vw, 8px);
+padding: clamp(8px, 1.5vw, 14px) clamp(10px, 2vw, 18px);
+bottom: 6%;
+z-index: 2;
+opacity: 0;
+}#loading-harrypotter-002 .lh2-letter-line {
+height: 1px;
+background: color-mix(in srgb, var(--accent) 18%, transparent);
+width: 100%;
+}#loading-harrypotter-002 .lh2-letter-line-short {
+width: 55%;
+background: color-mix(in srgb, var(--accent) 12%, transparent);
+}#loading-harrypotter-002 .lh2-letter-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: clamp(3px, 0.5vw, 5px);
+}#loading-harrypotter-002 .lh2-letter-crest {
+width: clamp(12px, 2vw, 18px);
+height: clamp(12px, 2vw, 18px);
+opacity: 0.5;
+}/* ── Text beneath ── */
+#loading-harrypotter-002 .lh2-school {
+font-size: clamp(0.52rem, 1vw, 0.65rem);
+letter-spacing: 0.42em;
+text-transform: uppercase;
+color: var(--accent);
+opacity: 0;
+text-align: center;
+}#loading-harrypotter-002 .lh2-recipient {
+font-family: var(--font-heading);
+font-size: clamp(1.5rem, 5vw, 3.4rem);
+font-weight: 400;
+color: var(--text);
+letter-spacing: 0.05em;
+opacity: 0;
+text-align: center;
+line-height: 1.1;
+}#loading-harrypotter-002 .lh2-loading-line {
+font-family: var(--font-body);
+font-style: italic;
+font-size: clamp(0.65rem, 1.4vw, 0.84rem);
+color: color-mix(in srgb, var(--text) 42%, transparent);
+letter-spacing: 0.05em;
+opacity: 0;
+text-align: center;
+max-width: min(420px, 85vw);
+}#loading-harrypotter-002 .lh2-progress-wrap {
+width: clamp(130px, 28vw, 240px);
+height: 1px;
+background: color-mix(in srgb, var(--primary) 16%, transparent);
+overflow: hidden;
+opacity: 0;
+position: relative;
+}#loading-harrypotter-002 .lh2-progress-fill {
+position: absolute;
+left: -100%;
+top: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg,
+transparent,
+color-mix(in srgb, var(--accent) 75%, transparent),
+color-mix(in srgb, var(--accent) 40%, transparent));
+}/* wax seal drip on load complete */
+#loading-harrypotter-002 .lh2-wax-ready {
+font-size: clamp(0.52rem, 0.9vw, 0.62rem);
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: color-mix(in srgb, var(--accent) 60%, transparent);
+opacity: 0;
+text-align: center;
+}/* floating runes */
+#loading-harrypotter-002 .lh2-rune {
+position: absolute;
+font-family: var(--font-heading);
+font-size: clamp(0.5rem, 1vw, 0.75rem);
+color: color-mix(in srgb, var(--accent) 18%, transparent);
+pointer-events: none;
+user-select: none;
+z-index: 3;
+opacity: 0;
+}
+</style><section id="loading-harrypotter-002">  <div class="lh2-glow"></div>
+  <div class="lh2-vignette"></div>
+  <canvas class="lh2-canvas" id="lh2-canvas"></canvas>  <div class="lh2-envelope-wrap" id="lh2-envelope-wrap"><div class="lh2-envelope" id="lh2-envelope">
+
+  <!-- letter behind flap -->
+  <div class="lh2-letter" id="lh2-letter">
+    <div class="lh2-letter-header">
+      <div class="lh2-letter-crest">
+        <svg viewBox="0 0 18 18" fill="none">
+          <path d="M9 2 L10.6 7H16L11.7 10L13.3 15L9 12L4.7 15L6.3 10L2 7H7.4Z"
+            fill="color-mix(in srgb, var(--accent) 40%, transparent)"/>
+        </svg>
+      </div>
+      <div class="lh2-letter-line lh2-letter-line-short" style="width:62%"></div>
+    </div>
+    <div class="lh2-letter-line"></div>
+    <div class="lh2-letter-line lh2-letter-line-short"></div>
+    <div class="lh2-letter-line"></div>
+    <div class="lh2-letter-line" style="width:70%"></div>
+    <div class="lh2-letter-line lh2-letter-line-short" style="width:40%"></div>
+  </div>
+
+  <!-- envelope body -->
+  <div class="lh2-env-body" id="lh2-env-body">
+
+    <!-- bottom triangle -->
+    <div class="lh2-env-bottom">
+      <svg viewBox="0 0 300 105" preserveAspectRatio="none">
+        <polygon points="0,0 300,0 150,105"
+          fill="color-mix(in srgb, var(--primary) 12%, transparent)"
+          stroke="color-mix(in srgb, var(--accent) 20%, transparent)"
+          stroke-width="0.6"/>
+      </svg>
+    </div>
+
+    <!-- left triangle -->
+    <svg style="position:absolute;top:0;left:0;width:50%;height:100%" viewBox="0 0 150 210" preserveAspectRatio="none">
+      <polygon points="0,0 0,210 150,105"
+        fill="color-mix(in srgb, var(--primary) 10%, transparent)"
+        stroke="color-mix(in srgb, var(--accent) 18%, transparent)"
+        stroke-width="0.5"/>
+    </svg>
+
+    <!-- right triangle -->
+    <svg style="position:absolute;top:0;right:0;width:50%;height:100%" viewBox="0 0 150 210" preserveAspectRatio="none">
+      <polygon points="150,0 150,210 0,105"
+        fill="color-mix(in srgb, var(--primary) 10%, transparent)"
+        stroke="color-mix(in srgb, var(--accent) 18%, transparent)"
+        stroke-width="0.5"/>
+    </svg>
+
+    <!-- wax seal -->
+    <div class="lh2-env-seal" id="lh2-env-seal">
+      <svg viewBox="0 0 42 42" fill="none">
+        <circle cx="21" cy="21" r="19"
+          fill="color-mix(in srgb, var(--accent) 22%, transparent)"
+          stroke="color-mix(in srgb, var(--accent) 50%, transparent)"
+          stroke-width="0.8"/>
+        <circle cx="21" cy="21" r="14"
+          fill="color-mix(in srgb, var(--accent) 14%, transparent)"
+          stroke="color-mix(in srgb, var(--accent) 35%, transparent)"
+          stroke-width="0.5"/>
+        <path d="M21 11 L22.8 17.2H29.2L24.2 21L26 27.2L21 23.5L16 27.2L17.8 21L12.8 17.2H19.2Z"
+          fill="color-mix(in srgb, var(--accent) 70%, transparent)"/>
+        <circle cx="21" cy="21" r="20"
+          stroke="color-mix(in srgb, var(--accent) 20%, transparent)"
+          stroke-width="0.4"
+          stroke-dasharray="2.5 3.5"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- flap (top triangle, rotates open) -->
+  <div class="lh2-env-flap" id="lh2-env-flap">
+    <div class="lh2-env-flap-inner">
+      <svg viewBox="0 0 300 210" preserveAspectRatio="none">
+        <polygon points="0,0 300,0 150,105"
+          fill="color-mix(in srgb, var(--primary) 14%, transparent)"
+          stroke="color-mix(in srgb, var(--accent) 28%, transparent)"
+          stroke-width="0.7"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<div class="lh2-school"       id="lh2-school">Hogwarts School of Witchcraft and Wizardry</div>
+<div class="lh2-recipient"    id="lh2-recipient">--RECIPIENT_NAME--</div>
+<div class="lh2-loading-line" id="lh2-loading-line">--LOADING_LINE--</div>
+<div class="lh2-progress-wrap" id="lh2-progress-wrap">
+  <div class="lh2-progress-fill" id="lh2-progress-fill"></div>
+</div>
+<div class="lh2-wax-ready" id="lh2-wax-ready">Your letter is sealed ✦</div></div>
+</section>
+<script>
+(function () {
+  const INDEX = 0;
+
+  // ── Dust particles ─────────────────────────────────────────────
+  const canvas = document.getElementById('lh2-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const TOTAL = 120;
+  const pool  = [];
+
+  function mkPt(boot) {
+    return {
+      x:  Math.random() * (W || 800),
+      y:  boot ? Math.random() * (H || 800) : (H || 800) + 8,
+      r:  Math.random() * 1.5 + 0.2,
+      vx: (Math.random() - 0.5) * 0.14,
+      vy: -(Math.random() * 0.2 + 0.04),
+      op: Math.random() * 0.48 + 0.08,
+      ts: Math.random() * 0.013 + 0.004,
+      tp: Math.random() * Math.PI * 2
+    };
+  }
+
+  for (let i = 0; i < TOTAL; i++) pool.push(mkPt(true));
+
+  let running = false;
+
+  function dustTick() {
+    ctx.clearRect(0, 0, W, H);
+    const t = performance.now() * 0.001;
+    for (let i = 0; i < pool.length; i++) {
+      const p = pool[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -8) { pool[i] = mkPt(false); continue; }
+      const fl = 0.4 + 0.6 * Math.sin(t * p.ts * 60 + p.tp);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fillStyle = 'rgba(178,140,255,' + (p.op * fl).toFixed(3) + ')';
+      ctx.fill();
+    }
+    if (running) requestAnimationFrame(dustTick);
+  }
+
+  // ── Floating runes ─────────────────────────────────────────────
+  const RUNES = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚾ','ᛁ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛟ'];
+  const section = document.getElementById('loading-harrypotter-002');
+
+  for (let i = 0; i < 14; i++) {
+    const r   = document.createElement('div');
+    r.className = 'lh2-rune';
+    r.textContent = RUNES[Math.floor(Math.random() * RUNES.length)];
+    r.style.left = (Math.random() * 88 + 4) + '%';
+    r.style.top  = (Math.random() * 84 + 4) + '%';
+    section.appendChild(r);
+    gsap.to(r, {
+      opacity: Math.random() * 0.5 + 0.08,
+      y: (Math.random() - 0.5) * 30,
+      duration: Math.random() * 3.5 + 2.5,
+      delay: Math.random() * 1.5,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true
+    });
+  }
+
+  // ── Envelope open + letter rise sequence ───────────────────────
+  function openEnvelope(onDone) {
+    const tl = gsap.timeline({ onComplete: onDone });
+
+    // flap rotates open (rotateX around top edge)
+    tl.to('#lh2-env-flap', {
+        rotationX: -180,
+        duration: 1.1,
+        ease: 'power2.inOut',
+        transformOrigin: 'top center',
+        transformPerspective: 600
+      }, 0)
+
+      // seal fades as flap opens
+      .to('#lh2-env-seal', { opacity: 0, duration: 0.4 }, 0.3)
+
+      // letter slides up out of envelope
+      .to('#lh2-letter', {
+          opacity: 1,
+          y: '-85%',
+          duration: 1.0,
+          ease: 'power2.out'
+        }, 0.7);
+  }
+
+  // ── Main entrance ──────────────────────────────────────────────
+  function enterSection() {
+    running = true;
+    dustTick();
+
+    gsap.set('#lh2-envelope',      { opacity: 0, y: 30, scale: 0.88 });
+    gsap.set('#lh2-letter',        { opacity: 0, y: 0 });
+    gsap.set(['#lh2-school','#lh2-recipient','#lh2-loading-line','#lh2-progress-wrap','#lh2-wax-ready'],
+             { opacity: 0, y: 12 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // envelope lands
+    tl.to('#lh2-envelope', { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'back.out(1.5)' }, 0.3)
+
+      // seal ambient pulse before open
+      .to('#lh2-env-seal', {
+          scale: 1.12,
+          duration: 0.9,
+          yoyo: true,
+          repeat: 1,
+          ease: 'sine.inOut'
+        }, 0.8)
+
+      // open envelope
+      .call(function () {
+        openEnvelope(function () {
+
+          // text cascade after letter reveals
+          const tl2 = gsap.timeline({ defaults: { ease: 'power2.out' } });
+          tl2.to('#lh2-school',        { opacity: 1, y: 0, duration: 0.7 }, 0)
+             .to('#lh2-recipient',     { opacity: 1, y: 0, duration: 0.85, ease: 'power4.out' }, 0.2)
+             .to('#lh2-loading-line',  { opacity: 1, y: 0, duration: 0.7 }, 0.5)
+             .to('#lh2-progress-wrap', { opacity: 1, y: 0, duration: 0.6 }, 0.7)
+             .call(startProgress, [], 0.75);
+        });
+      }, [], 1.8);
+
+    // ambient: envelope gentle float
+    gsap.to('#lh2-envelope', {
+      y: -8,
+      duration: 3.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 1.5
+    });
+  }
+
+  // ── Progress + completion ──────────────────────────────────────
+  function startProgress() {
+    gsap.to('#lh2-progress-fill', {
+      x: '100%',
+      duration: 2.6,
+      ease: 'power1.inOut',
+      onComplete: onLoadDone
+    });
+  }
+
+  function onLoadDone() {
+    gsap.to('#lh2-loading-line', {
+      opacity: 0,
+      duration: 0.3,
+      onComplete: function () {
+        gsap.set('#lh2-loading-line', { display: 'none' });
+      }
+    });
+
+    gsap.to('#lh2-wax-ready', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
+
+    // letter shimmers
+    gsap.to('#lh2-letter', {
+      opacity: 0.7,
+      duration: 0.25,
+      yoyo: true,
+      repeat: 2,
+      ease: 'power1.inOut'
+    });
+
+    setTimeout(function () {
+      gsap.to('#loading-harrypotter-002', {
+        opacity: 0,
+        duration: 1.2,
+        ease: 'power2.inOut',
+        onComplete: function () {
+          running = false;
+          document.dispatchEvent(new CustomEvent('glitch:sectionReady'));
+        }
+      });
+    }, 900);
+  }
+
+  // ── glitch:enter ──────────────────────────────────────────────
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== INDEX) return;
+    enterSection();
+  });
+
+  // ── Tap envelope to wiggle (interaction) ──────────────────────
+  document.getElementById('lh2-envelope').addEventListener('click', function (e) {
+    e.stopPropagation();
+    gsap.to('#lh2-envelope', {
+      rotation: 3,
+      duration: 0.12,
+      yoyo: true,
+      repeat: 3,
+      ease: 'power1.inOut',
+      onComplete: function () {
+        gsap.set('#lh2-envelope', { rotation: 0 });
+      }
+    });
+    for (let i = 0; i < 10; i++) {
+      const p = mkPt(false);
+      p.x  = W / 2 + (Math.random() - 0.5) * 80;
+      p.y  = H / 2 + (Math.random() - 0.5) * 40;
+      p.vy = -(Math.random() * 1.6 + 0.6);
+      pool.push(p);
+      if (pool.length > TOTAL + 30) pool.shift();
+    }
+  });
+
+})();
+</script>

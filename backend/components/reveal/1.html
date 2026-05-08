@@ -1,0 +1,493 @@
+<!--
+  Component: reveal_holdbutton_001
+  Type: reveal
+  Aesthetic: Cinematic Dark
+  Obsession: Hold / Tension / Release
+  Tone: tense, intimate, cinematic
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --HIDDEN_MESSAGE-- --REVEAL_INSTRUCTION--
+-->
+<style>
+  .rhb001-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    cursor: default;
+  }
+
+  .rhb001-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .rhb001-name {
+    position: absolute;
+    top: clamp(2rem, 5vh, 3.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: clamp(0.65rem, 1.8vw, 0.85rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.18);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .rhb001-instruction {
+    position: absolute;
+    top: clamp(2rem, 5vh, 3.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.6rem, 1.5vw, 0.72rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.22);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .rhb001-center {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(2rem, 5vh, 3rem);
+    opacity: 0;
+  }
+
+  .rhb001-btn-wrap {
+    position: relative;
+    width: clamp(110px, 18vw, 160px);
+    height: clamp(110px, 18vw, 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .rhb001-ring-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .rhb001-btn-inner {
+    width: clamp(68px, 11vw, 98px);
+    height: clamp(68px, 11vw, 98px);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .rhb001-btn-inner:active {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .rhb001-btn-icon {
+    width: clamp(18px, 3vw, 26px);
+    height: clamp(18px, 3vw, 26px);
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+  }
+
+  .rhb001-hold-label {
+    font-size: clamp(0.58rem, 1.4vw, 0.68rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .rhb001-message-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 30;
+    pointer-events: none;
+    opacity: 0;
+    padding: clamp(2rem, 6vw, 5rem);
+  }
+
+  .rhb001-message-text {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: clamp(1.5rem, 4.5vw, 2.8rem);
+    font-style: italic;
+    color: rgba(255,255,255,0.95);
+    text-align: center;
+    max-width: 72vw;
+    line-height: 1.55;
+    letter-spacing: 0.015em;
+  }
+
+  .rhb001-done-hint {
+    position: absolute;
+    bottom: clamp(3.5rem, 7vh, 5.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.58rem, 1.4vw, 0.68rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.16);
+    z-index: 40;
+    pointer-events: none;
+    opacity: 0;
+    white-space: nowrap;
+  }
+</style>
+<div class="rhb001-wrap" id="rhb001-wrap">
+  <canvas class="rhb001-canvas" id="rhb001-canvas"></canvas>
+  <div class="rhb001-name" id="rhb001-name">--RECIPIENT_NAME--</div>
+  <div class="rhb001-instruction" id="rhb001-instr">--REVEAL_INSTRUCTION--</div>
+  <div class="rhb001-center" id="rhb001-center">
+    <div class="rhb001-btn-wrap" id="rhb001-btn"
+         role="button" aria-label="Hold to reveal"><svg class="rhb001-ring-svg" viewBox="0 0 160 160" id="rhb001-ring-svg">
+    <!-- track -->
+    <circle cx="80" cy="80" r="72"
+      fill="none"
+      stroke="rgba(255,255,255,0.07)"
+      stroke-width="2"/>
+    <!-- progress arc -->
+    <circle cx="80" cy="80" r="72"
+      fill="none"
+      stroke="rgba(220,190,255,0.85)"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-dasharray="452.4"
+      stroke-dashoffset="452.4"
+      id="rhb001-arc"/>
+    <!-- shimmer arc -->
+    <circle cx="80" cy="80" r="72"
+      fill="none"
+      stroke="rgba(255,255,255,0.25)"
+      stroke-width="1"
+      stroke-linecap="round"
+      stroke-dasharray="30 422.4"
+      stroke-dashoffset="452.4"
+      id="rhb001-shimmer"/>
+  </svg>
+
+  <div class="rhb001-btn-inner" id="rhb001-inner">
+    <svg class="rhb001-btn-icon" id="rhb001-icon"
+         viewBox="0 0 24 24" fill="none"
+         stroke="rgba(255,255,255,0.9)" stroke-width="1.5"
+         stroke-linecap="round" stroke-linejoin="round">
+      <!-- hand hold icon -->
+      <path d="M9 11V6a2 2 0 0 1 4 0v5"/>
+      <path d="M13 11V8a2 2 0 0 1 4 0v3"/>
+      <path d="M17 11a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6v-1a2 2 0 0 1 4 0"/>
+      <path d="M9 11V6a2 2 0 0 0-4 0v5"/>
+    </svg>
+  </div>
+</div>
+
+<div class="rhb001-hold-label" id="rhb001-label">hold</div></div>
+  <div class="rhb001-message-overlay" id="rhb001-msg">
+    <div class="rhb001-message-text" id="rhb001-msg-text">--HIDDEN_MESSAGE--</div>
+  </div>
+  <div class="rhb001-done-hint" id="rhb001-done">tap anywhere to continue</div>
+</div>
+<script>
+(function () {
+  var SECTION_IDX = 6;
+  var started = false;
+
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== SECTION_IDX) return;
+    if (started) return;
+    started = true;
+    init();
+  });
+
+  function init() {
+    var canvas   = document.getElementById('rhb001-canvas');
+    var ctx      = canvas.getContext('2d');
+    var wrap     = document.getElementById('rhb001-wrap');
+    var nameEl   = document.getElementById('rhb001-name');
+    var instrEl  = document.getElementById('rhb001-instr');
+    var centerEl = document.getElementById('rhb001-center');
+    var btn      = document.getElementById('rhb001-btn');
+    var arc      = document.getElementById('rhb001-arc');
+    var shimmer  = document.getElementById('rhb001-shimmer');
+    var inner    = document.getElementById('rhb001-inner');
+    var icon     = document.getElementById('rhb001-icon');
+    var label    = document.getElementById('rhb001-label');
+    var msgEl    = document.getElementById('rhb001-msg');
+    var doneEl   = document.getElementById('rhb001-done');
+
+    var W, H;
+    var particles = [];
+    var bgStars   = [];
+    var t = 0;
+
+    var holding      = false;
+    var holdProgress = 0;   // 0 → 1
+    var HOLD_DURATION = 2000; // ms to fill
+    var holdStart    = null;
+    var revealDone   = false;
+    var msgShown     = false;
+    var CIRC         = 2 * Math.PI * 72; // 452.4
+
+    /* ── resize ── */
+    function resize() {
+      W = canvas.width  = wrap.offsetWidth  || window.innerWidth;
+      H = canvas.height = wrap.offsetHeight || window.innerHeight;
+      buildBgStars();
+    }
+
+    function buildBgStars() {
+      bgStars = [];
+      var n = Math.floor(W * H / 3000);
+      for (var i = 0; i < n; i++) {
+        bgStars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.0 + 0.2,
+          a: Math.random() * 0.5 + 0.08,
+          ts: Math.random() * 0.016 + 0.004,
+          to: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    /* ── particles burst on reveal ── */
+    function burst() {
+      var cx = W / 2, cy = H / 2;
+      var colors = ['220,190,255','255,220,160','160,210,255','255,180,220','200,255,210'];
+      for (var i = 0; i < 80; i++) {
+        var ang = Math.random() * Math.PI * 2;
+        var spd = Math.random() * 5 + 1.5;
+        particles.push({
+          x: cx, y: cy,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd,
+          r: Math.random() * 3 + 0.8,
+          life: 1,
+          decay: Math.random() * 0.012 + 0.008,
+          col: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+
+    /* ── ambient float particles ── */
+    var floaters = [];
+    function buildFloaters() {
+      floaters = [];
+      for (var i = 0; i < 22; i++) {
+        floaters.push({
+          x: Math.random() * (W || 800),
+          y: Math.random() * (H || 600),
+          r: Math.random() * 1.5 + 0.3,
+          a: Math.random() * 0.18 + 0.04,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.18,
+          pulse: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    /* ── draw ── */
+    function draw() {
+      requestAnimationFrame(draw);
+      t += 0.016;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // bg
+      var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H) * 0.78);
+      bg.addColorStop(0, 'rgba(16,10,36,1)');
+      bg.addColorStop(1, 'rgba(4,2,12,1)');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // hold progress — center vignette glow
+      if (holdProgress > 0) {
+        var gp = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.min(W,H) * 0.55 * holdProgress);
+        gp.addColorStop(0, 'rgba(160,100,255,' + (0.18 * holdProgress) + ')');
+        gp.addColorStop(1, 'rgba(160,100,255,0)');
+        ctx.fillStyle = gp;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      // bg stars
+      for (var i = 0; i < bgStars.length; i++) {
+        var s = bgStars[i];
+        var tw = Math.sin(t * s.ts * 60 + s.to) * 0.25 + 0.75;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,255,255,' + (s.a * tw) + ')';
+        ctx.fill();
+      }
+
+      // floaters
+      for (var f = 0; f < floaters.length; f++) {
+        var fl = floaters[f];
+        fl.x += fl.vx; fl.y += fl.vy;
+        if (fl.x < 0) fl.x = W; if (fl.x > W) fl.x = 0;
+        if (fl.y < 0) fl.y = H; if (fl.y > H) fl.y = 0;
+        var fp = Math.sin(t * 0.8 + fl.pulse) * 0.4 + 0.6;
+        ctx.beginPath();
+        ctx.arc(fl.x, fl.y, fl.r * fp, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(200,170,255,' + (fl.a * fp) + ')';
+        ctx.fill();
+      }
+
+      // burst particles
+      for (var p = particles.length - 1; p >= 0; p--) {
+        var pt = particles[p];
+        pt.x += pt.vx; pt.y += pt.vy;
+        pt.vy += 0.04;
+        pt.life -= pt.decay;
+        if (pt.life <= 0) { particles.splice(p, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.r * pt.life, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(' + pt.col + ',' + (pt.life * 0.8) + ')';
+        ctx.fill();
+      }
+
+      // update arc
+      if (!revealDone) {
+        if (holding && holdStart !== null) {
+          holdProgress = Math.min(1, (Date.now() - holdStart) / HOLD_DURATION);
+        } else {
+          holdProgress = Math.max(0, holdProgress - 0.04);
+        }
+        var offset = CIRC * (1 - holdProgress);
+        arc.setAttribute('stroke-dashoffset', offset);
+        shimmer.setAttribute('stroke-dashoffset', CIRC * (1 - holdProgress) - 15);
+
+        // icon opacity scales with progress
+        icon.style.opacity = 0.25 + holdProgress * 0.75;
+        inner.style.borderColor = 'rgba(220,190,255,' + (0.1 + holdProgress * 0.5) + ')';
+        inner.style.background = 'rgba(180,140,255,' + (holdProgress * 0.15) + ')';
+
+        if (holdProgress >= 1) {
+          onReveal();
+        }
+      }
+
+      // screen flash at reveal
+      if (revealDone && !msgShown) {
+        showMessage();
+      }
+    }
+
+    /* ── reveal ── */
+    function onReveal() {
+      if (revealDone) return;
+      revealDone = true;
+      burst();
+
+      // flash
+      gsap.fromTo(wrap,
+        { filter: 'brightness(3)' },
+        { filter: 'brightness(1)', duration: 0.9, ease: 'power3.out' }
+      );
+
+      // hide btn
+      gsap.to(centerEl, { opacity: 0, duration: 0.5, ease: 'power2.in' });
+      gsap.to(instrEl,  { opacity: 0, duration: 0.4 });
+      gsap.to(nameEl,   { opacity: 0, duration: 0.4 });
+    }
+
+    function showMessage() {
+      msgShown = true;
+      gsap.to(msgEl, {
+        opacity: 1, duration: 1.6, delay: 0.3, ease: 'power2.inOut',
+        onComplete: function () {
+          gsap.to(doneEl, { opacity: 1, duration: 1, delay: 0.5 });
+        }
+      });
+      gsap.fromTo('#rhb001-msg-text',
+        { y: 32, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.6, delay: 0.5, ease: 'power3.out' }
+      );
+    }
+
+    /* ── hold events ── */
+    function startHold(e) {
+      if (revealDone) return;
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (['button','a','input','select','textarea'].includes(tag)) return;
+      holding   = true;
+      holdStart = Date.now();
+      e.stopPropagation();
+    }
+
+    function endHold(e) {
+      if (revealDone) return;
+      holding   = false;
+      holdStart = null;
+      e.stopPropagation();
+    }
+
+    function onWrapClick(e) {
+      // only pass through to skeleton if reveal is fully done and message shown
+      if (revealDone && msgShown) return;
+      e.stopPropagation();
+    }
+
+    btn.addEventListener('mousedown',  startHold);
+    btn.addEventListener('touchstart', startHold, { passive: false });
+    window.addEventListener('mouseup',  endHold);
+    window.addEventListener('touchend', endHold);
+    wrap.addEventListener('click', onWrapClick);
+
+    /* ── entry ── */
+    function enter() {
+      gsap.to(nameEl,   { opacity: 1, duration: 1.5, delay: 0.5 });
+      gsap.fromTo(instrEl,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 1.2, delay: 0.8, ease: 'power2.out' });
+      gsap.fromTo(centerEl,
+        { opacity: 0, scale: 0.88 },
+        { opacity: 1, scale: 1, duration: 1.4, delay: 1.0, ease: 'power3.out' });
+
+      // idle pulse on ring
+      gsap.to(arc, {
+        attr: { 'stroke-opacity': 0.4 },
+        duration: 1.8,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+    }
+
+    /* ── boot ── */
+    resize();
+    buildFloaters();
+    window.addEventListener('resize', function () { resize(); buildFloaters(); });
+    draw();
+    enter();
+  }
+})();
+</script>

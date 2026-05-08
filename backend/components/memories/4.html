@@ -1,0 +1,423 @@
+<!-- Component: mem_books_001 
+ Type: memories 
+ Aesthetic: Literary / Chapter Pages / Aged Book 
+ Obsession: Books 
+ Tone: nostalgic, intimate, cinematic 
+ Occasion: both 
+ Variables: --RECIPIENT_NAME-- --MEMORY_1-- --MEMORY_2-- --MEMORY_3-- --PHOTO_1-- --MEMORY_CAPTION_1-- --MEMORY_CAPTION_2-- -->
+<style>
+  /* ── mem_books_001 ── */
+  .mb001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg, #0d0b08);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body, 'Georgia, serif');
+    cursor: default;
+  }
+
+  .mb001-paper-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        color-mix(in srgb, var(--text, #e8dfc8) 3%, transparent) 28px,
+        color-mix(in srgb, var(--text, #e8dfc8) 3%, transparent) 29px
+      );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .mb001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, color-mix(in srgb, var(--bg, #0d0b08) 85%, transparent) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .mb001-corner {
+    position: absolute;
+    width: clamp(40px, 7vw, 80px);
+    height: clamp(40px, 7vw, 80px);
+    border-color: color-mix(in srgb, var(--accent, #b8955a) 35%, transparent);
+    border-style: solid;
+    border-width: 0;
+    z-index: 3;
+    opacity: 0;
+  }
+  .mb001-corner-tl { top: clamp(16px, 3vw, 36px); left: clamp(16px, 3vw, 36px); border-top-width: 1.5px; border-left-width: 1.5px; }
+  .mb001-corner-tr { top: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); border-top-width: 1.5px; border-right-width: 1.5px; }
+  .mb001-corner-bl { bottom: clamp(16px, 3vw, 36px); left: clamp(16px, 3vw, 36px); border-bottom-width: 1.5px; border-left-width: 1.5px; }
+  .mb001-corner-br { bottom: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+  .mb001-book {
+    position: relative;
+    z-index: 4;
+    width: clamp(300px, 90vw, 820px);
+    height: clamp(400px, 88vh, 700px);
+    display: flex;
+    align-items: stretch;
+    box-shadow:
+      -8px 0 24px color-mix(in srgb, #000 60%, transparent),
+      8px 0 24px color-mix(in srgb, #000 40%, transparent),
+      0 24px 60px color-mix(in srgb, #000 70%, transparent);
+  }
+
+  .mb001-page-left {
+    flex: 1;
+    background: linear-gradient(
+      105deg,
+      color-mix(in srgb, var(--accent, #b8955a) 6%, #1a1510) 0%,
+      #17130e 40%,
+      #1a1510 100%
+    );
+    border-right: 2px solid color-mix(in srgb, var(--accent, #b8955a) 18%, transparent);
+    padding: clamp(24px, 4vw, 52px) clamp(20px, 3.5vw, 44px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 2vh, 22px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mb001-page-left::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 24px; height: 100%;
+    background: linear-gradient(to left, color-mix(in srgb, #000 40%, transparent), transparent);
+    pointer-events: none;
+  }
+
+  .mb001-page-right {
+    flex: 1;
+    background: linear-gradient(
+      255deg,
+      color-mix(in srgb, var(--accent, #b8955a) 5%, #181410) 0%,
+      #161210 60%,
+      #181410 100%
+    );
+    padding: clamp(24px, 4vw, 52px) clamp(20px, 3.5vw, 44px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 2vh, 22px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mb001-chapter-label {
+    font-family: var(--font-heading, 'Palatino Linotype, Palatino, Book Antiqua, serif');
+    font-size: clamp(9px, 1.1vw, 13px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent, #b8955a) 70%, transparent);
+    opacity: 0;
+    margin-bottom: clamp(4px, 0.8vh, 10px);
+  }
+
+  .mb001-recipient {
+    font-family: var(--font-heading, 'Palatino Linotype, Palatino, Book Antiqua, serif');
+    font-size: clamp(22px, 4vw, 52px);
+    font-style: italic;
+    color: var(--text, #e8dfc8);
+    line-height: 1.1;
+    opacity: 0;
+    margin-bottom: clamp(6px, 1.2vh, 14px);
+  }
+
+  .mb001-ornament {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    margin-bottom: clamp(6px, 1.2vh, 14px);
+  }
+  .mb001-ornament-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, color-mix(in srgb, var(--accent, #b8955a) 50%, transparent), transparent);
+  }
+  .mb001-ornament-diamond {
+    width: 6px; height: 6px;
+    background: var(--accent, #b8955a);
+    transform: rotate(45deg);
+    opacity: 0.7;
+  }
+
+  .mb001-memory {
+    font-family: var(--font-body, 'Georgia, serif');
+    font-size: clamp(11px, 1.4vw, 15px);
+    color: color-mix(in srgb, var(--text, #e8dfc8) 75%, transparent);
+    line-height: 1.85;
+    font-style: italic;
+    opacity: 0;
+    position: relative;
+    padding-left: clamp(12px, 2vw, 20px);
+    border-left: 1.5px solid color-mix(in srgb, var(--accent, #b8955a) 30%, transparent);
+  }
+
+  .mb001-memory::before {
+    content: '"';
+    position: absolute;
+    left: clamp(2px, 0.5vw, 6px);
+    top: -4px;
+    font-size: clamp(22px, 3vw, 34px);
+    color: color-mix(in srgb, var(--accent, #b8955a) 35%, transparent);
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+
+  .mb001-photo-wrap {
+    flex: 1;
+    position: relative;
+    opacity: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent, #b8955a) 20%, transparent);
+  }
+
+  .mb001-photo-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: sepia(40%) contrast(0.9) brightness(0.85);
+    display: block;
+  }
+
+  .mb001-constellation {
+    width: 100%; height: 100%;
+    position: relative;
+    background: radial-gradient(ellipse at 30% 40%, color-mix(in srgb, var(--accent, #b8955a) 8%, transparent) 0%, transparent 65%);
+  }
+
+  .mb001-constellation svg {
+    width: 100%; height: 100%;
+    position: absolute; inset: 0;
+  }
+
+  .mb001-caption {
+    font-size: clamp(9px, 1vw, 11px);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent, #b8955a) 55%, transparent);
+    opacity: 0;
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  .mb001-pagenum {
+    font-family: var(--font-heading, 'Palatino Linotype, Palatino, Book Antiqua, serif');
+    font-size: clamp(9px, 1vw, 12px);
+    color: color-mix(in srgb, var(--text, #e8dfc8) 30%, transparent);
+    text-align: center;
+    opacity: 0;
+    margin-top: auto;
+  }
+
+  .mb001-dust {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .mb001-dust-particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent, #b8955a) 60%, transparent);
+    opacity: 0;
+  }
+
+  .mb001-cursor-glow {
+    position: fixed;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent, #b8955a) 6%, transparent), transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 6;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  @media (max-width: 600px) {
+    .mb001-book {
+      flex-direction: column;
+      height: clamp(500px, 92vh, 780px);
+    }
+    .mb001-page-left {
+      border-right: none;
+      border-bottom: 2px solid color-mix(in srgb, var(--accent, #b8955a) 18%, transparent);
+    }
+  }
+</style>
+<div class="mb001-root" id="mb001-root">
+  <div class="mb001-paper-overlay"></div>
+  <div class="mb001-vignette"></div>
+  <div class="mb001-corner mb001-corner-tl"></div>
+  <div class="mb001-corner mb001-corner-tr"></div>
+  <div class="mb001-corner mb001-corner-bl"></div>
+  <div class="mb001-corner mb001-corner-br"></div>
+  <div class="mb001-cursor-glow" id="mb001-cursor-glow"></div>
+  <div class="mb001-dust" id="mb001-dust"></div>
+  <div class="mb001-book" id="mb001-book">
+    <div class="mb001-page-left">
+      <div class="mb001-chapter-label" id="mb001-chap-label">Chapter III — Remembered Moments</div>
+      <div class="mb001-recipient" id="mb001-recipient">--RECIPIENT_NAME--</div>
+      <div class="mb001-ornament" id="mb001-orn1">
+        <div class="mb001-ornament-line"></div>
+        <div class="mb001-ornament-diamond"></div>
+        <div class="mb001-ornament-line"></div>
+      </div>
+      <div class="mb001-memory" id="mb001-mem1">--MEMORY_1--</div>
+      <div class="mb001-memory" id="mb001-mem2">--MEMORY_2--</div>
+      <div class="mb001-memory" id="mb001-mem3">--MEMORY_3--</div>
+      <div class="mb001-pagenum" id="mb001-pnum1">— iii —</div>
+    </div>
+    <div class="mb001-page-right">
+      <div class="mb001-chapter-label" id="mb001-chap-label-r">The Evidence</div>
+      <div class="mb001-ornament" id="mb001-orn2">
+        <div class="mb001-ornament-line"></div>
+        <div class="mb001-ornament-diamond"></div>
+        <div class="mb001-ornament-line"></div>
+      </div>
+      <div class="mb001-photo-wrap" id="mb001-photo-wrap">
+        <div class="mb001-constellation" id="mb001-constellation">
+          <svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" id="mb001-svg"></svg>
+        </div>
+        <img class="mb001-photo-img" id="mb001-photo-img" src="--PHOTO_1--" alt="Memory" style="display:none; position:absolute; inset:0;" />
+      </div>
+      <div class="mb001-caption" id="mb001-cap1">--MEMORY_CAPTION_1--</div>
+      <div class="mb001-caption" id="mb001-cap2">--MEMORY_CAPTION_2--</div>
+      <div class="mb001-pagenum" id="mb001-pnum2">— iv —</div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const SECTION_INDEX = 3;
+
+  (function() {
+    const photoSrc = '--PHOTO_1--';
+    const img = document.getElementById('mb001-photo-img');
+    const constellation = document.getElementById('mb001-constellation');
+    if (photoSrc && photoSrc !== 'NONE' && !photoSrc.startsWith('--')) {
+      img.style.display = 'block';
+      constellation.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      constellation.style.display = 'block';
+      const svg = document.getElementById('mb001-svg');
+      const stars = [[40,60],[90,30],[140,70],[200,40],[250,80],[170,130],[110,160],[60,140],[220,170],[280,130],[150,200],[80,200]];
+      const edges = [[0,1],[1,2],[2,3],[3,4],[4,9],[9,8],[8,5],[5,6],[6,7],[7,0],[5,10],[10,11],[11,6],[2,5],[3,9]];
+      edges.forEach(([a,b]) => {
+        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('x1',stars[a][0]); line.setAttribute('y1',stars[a][1]);
+        line.setAttribute('x2',stars[b][0]); line.setAttribute('y2',stars[b][1]);
+        line.setAttribute('stroke','rgba(184,149,90,0.18)'); line.setAttribute('stroke-width','0.8');
+        svg.appendChild(line);
+      });
+      stars.forEach(([x,y],i) => {
+        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx',x); c.setAttribute('cy',y);
+        c.setAttribute('r', i%3===0 ? 2.5 : 1.5);
+        c.setAttribute('fill','rgba(184,149,90,0.75)');
+        c.setAttribute('class','mb001-star-dot');
+        svg.appendChild(c);
+      });
+    }
+  })();
+
+  const dustContainer = document.getElementById('mb001-dust');
+  const particles = [];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'mb001-dust-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    dustContainer.appendChild(p);
+    particles.push(p);
+  }
+
+  const cursorGlow = document.getElementById('mb001-cursor-glow');
+  const root = document.getElementById('mb001-root');
+  root.addEventListener('mousemove', function(e) {
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top = e.clientY + 'px';
+  });
+  root.addEventListener('mouseenter', () => { cursorGlow.style.opacity = '1'; });
+  root.addEventListener('mouseleave', () => { cursorGlow.style.opacity = '0'; });
+
+  function startAmbientDust() {
+    particles.forEach((p, i) => {
+      gsap.set(p, { opacity: 0, y: 0 });
+      gsap.to(p, {
+        opacity: Math.random() * 0.6 + 0.15,
+        y: -(Math.random() * 60 + 20),
+        x: (Math.random() - 0.5) * 30,
+        duration: Math.random() * 4 + 3,
+        delay: i * 0.4,
+        repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+    });
+  }
+
+  function startStarPulse() {
+    const stars = document.querySelectorAll('.mb001-star-dot');
+    stars.forEach((s, i) => {
+      gsap.to(s, {
+        opacity: 0.2, scale: 0.5,
+        duration: Math.random() * 2 + 1.5,
+        delay: i * 0.18, repeat: -1, yoyo: true,
+        ease: 'sine.inOut', transformOrigin: 'center center'
+      });
+    });
+  }
+
+  const book = document.getElementById('mb001-book');
+  root.addEventListener('mousemove', function(e) {
+    const rect = root.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const rx = ((e.clientX - cx) / rect.width) * 5;
+    const ry = -((e.clientY - cy) / rect.height) * 4;
+    gsap.to(book, { rotateY: rx, rotateX: ry, duration: 1.2, ease: 'power2.out', transformPerspective: 1000, transformOrigin: 'center center' });
+  });
+  root.addEventListener('mouseleave', function() {
+    gsap.to(book, { rotateY: 0, rotateX: 0, duration: 1.4, ease: 'power2.out' });
+  });
+
+  document.addEventListener('glitch:enter', function(e) {
+    if (e.detail.index !== SECTION_INDEX) return;
+
+    gsap.set(['#mb001-recipient','#mb001-chap-label','#mb001-chap-label-r'], { y: 16 });
+    gsap.set(['#mb001-mem1','#mb001-mem2','#mb001-mem3'], { x: -10 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.to(['.mb001-corner-tl','.mb001-corner-tr','.mb001-corner-bl','.mb001-corner-br'], { opacity: 1, duration: 0.8, stagger: 0.12 }, 0);
+    gsap.set('#mb001-book', { opacity: 0, scale: 0.92, y: 30 });
+    tl.to('#mb001-book', { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'expo.out' }, 0.2);
+    tl.to('#mb001-chap-label',   { opacity: 1, y: 0, duration: 0.7 }, 0.7);
+    tl.to('#mb001-recipient',    { opacity: 1, y: 0, duration: 0.8 }, 0.9);
+    tl.to('#mb001-orn1',         { opacity: 1, duration: 0.5 }, 1.1);
+    tl.to('#mb001-mem1',         { opacity: 1, x: 0, duration: 0.7 }, 1.25);
+    tl.to('#mb001-mem2',         { opacity: 1, x: 0, duration: 0.7 }, 1.45);
+    tl.to('#mb001-mem3',         { opacity: 1, x: 0, duration: 0.7 }, 1.65);
+    tl.to('#mb001-pnum1',        { opacity: 1, duration: 0.5 }, 1.9);
+    tl.to('#mb001-chap-label-r', { opacity: 1, duration: 0.6 }, 1.0);
+    tl.to('#mb001-orn2',         { opacity: 1, duration: 0.5 }, 1.15);
+    tl.to('#mb001-photo-wrap',   { opacity: 1, duration: 0.9 }, 1.3);
+    tl.to('#mb001-cap1',         { opacity: 1, duration: 0.5 }, 1.8);
+    tl.to('#mb001-cap2',         { opacity: 1, duration: 0.5 }, 1.95);
+    tl.to('#mb001-pnum2',        { opacity: 1, duration: 0.5 }, 2.1);
+    tl.call(startAmbientDust, [], 2.2);
+    tl.call(startStarPulse, [], 2.5);
+  });
+})();
+</script>

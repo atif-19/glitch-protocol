@@ -1,0 +1,590 @@
+<!--
+  Component: wsi_cinema_001
+  Type: who_she_is
+  Aesthetic: Cinematic
+  Obsession: Film Credits / Celluloid / Cinematic Grandeur
+  Tone: epic, reverent, filmic
+  Occasion: birthday, apology, both
+  Variables: --RECIPIENT_NAME-- --PERSONALITY-- --DETAIL_1-- --DETAIL_2-- --DETAIL_3--
+-->
+<style>
+  /* wsi-cin-001 — root */
+  .wsi-cin-001-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+
+  /* Film grain overlay — animated noise */
+  .wsi-cin-001-grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.032;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    animation: wsi-cin-001-grain-shift 0.12s steps(1) infinite;
+  }
+  @keyframes wsi-cin-001-grain-shift {
+    0%   { transform: translate(0, 0); }
+    10%  { transform: translate(-3%, -4%); }
+    20%  { transform: translate(5%, 2%); }
+    30%  { transform: translate(-2%, 6%); }
+    40%  { transform: translate(4%, -3%); }
+    50%  { transform: translate(-5%, 1%); }
+    60%  { transform: translate(2%, -5%); }
+    70%  { transform: translate(-4%, 3%); }
+    80%  { transform: translate(3%, 4%); }
+    90%  { transform: translate(-1%, -2%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* Letterbox bars — top and bottom cinematic crop */
+  .wsi-cin-001-bar-top,
+  .wsi-cin-001-bar-bot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: color-mix(in srgb, var(--bg) 96%, var(--text));
+    z-index: 6;
+    transform: scaleY(0);
+  }
+  .wsi-cin-001-bar-top {
+    top: 0;
+    height: clamp(32px, 7vh, 72px);
+    transform-origin: top center;
+  }
+  .wsi-cin-001-bar-bot {
+    bottom: 0;
+    height: clamp(32px, 7vh, 72px);
+    transform-origin: bottom center;
+  }
+
+  /* Vertical light leak — left edge */
+  .wsi-cin-001-light-leak {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: clamp(3px, 0.4vw, 6px);
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 55%, transparent) 30%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 60%,
+      transparent 100%
+    );
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Vignette overlay */
+  .wsi-cin-001-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 45%,
+      color-mix(in srgb, var(--bg) 55%, transparent) 100%
+    );
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+  }
+
+  /* Film sprocket holes — decorative left strip */
+  .wsi-cin-001-sprocket-strip {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: clamp(20px, 3vw, 36px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: clamp(32px, 7vh, 72px) 0;
+    align-items: center;
+    z-index: 7;
+    opacity: 0;
+  }
+  .wsi-cin-001-sprocket {
+    width: clamp(8px, 1.1vw, 13px);
+    height: clamp(8px, 1.1vw, 13px);
+    border: 1.5px solid color-mix(in srgb, var(--text) 20%, transparent);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    flex-shrink: 0;
+  }
+
+  /* Right sprocket strip mirror */
+  .wsi-cin-001-sprocket-strip-r {
+    left: auto;
+    right: 0;
+  }
+
+  /* Frame counter — top letterbox text */
+  .wsi-cin-001-frame-counter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: clamp(32px, 7vh, 72px);
+    z-index: 8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(28px, 5vw, 60px);
+    pointer-events: none;
+    opacity: 0;
+  }
+  .wsi-cin-001-frame-text {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.85vw, 10px);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 38%, transparent);
+  }
+  .wsi-cin-001-frame-num {
+    font-family: var(--font-heading);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  /* Bottom letterbox — director line */
+  .wsi-cin-001-director-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: clamp(32px, 7vh, 72px);
+    z-index: 8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .wsi-cin-001-director-text {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.85vw, 10px);
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 32%, transparent);
+  }
+
+  /* Main content */
+  .wsi-cin-001-layout {
+    position: relative;
+    z-index: 10;
+    width: clamp(300px, 78vw, 820px);
+    padding: 0 clamp(28px, 5vw, 64px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* "Starring" credit label */
+  .wsi-cin-001-credit-label {
+    font-family: var(--font-body);
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 40%, transparent);
+    margin: 0 0 clamp(8px, 1.4vh, 18px);
+    opacity: 0;
+  }
+
+  /* Name — massive credit card style */
+  .wsi-cin-001-name-wrap {
+    overflow: hidden;
+    margin: 0 0 clamp(6px, 1vh, 14px);
+  }
+  .wsi-cin-001-name {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: clamp(40px, 9.5vw, 118px);
+    line-height: 0.92;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin: 0;
+    display: block;
+    transform: translateY(108%);
+  }
+
+  /* Accent rule — widescreen style */
+  .wsi-cin-001-rule-wrap {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.8vw, 22px);
+    width: 100%;
+    margin: clamp(10px, 1.8vh, 22px) 0;
+    opacity: 0;
+  }
+  .wsi-cin-001-rule-line {
+    flex: 1;
+    height: 1px;
+    background: color-mix(in srgb, var(--text) 16%, transparent);
+  }
+  .wsi-cin-001-rule-accent {
+    width: clamp(20px, 3.5vw, 46px);
+    height: clamp(2px, 0.3vh, 4px);
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Personality — italic credit billing */
+  .wsi-cin-001-personality {
+    font-family: var(--font-body);
+    font-size: clamp(13px, 1.85vw, 20px);
+    font-style: italic;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--text) 62%, transparent);
+    margin: 0 0 clamp(20px, 3.5vh, 48px);
+    opacity: 0;
+    max-width: 58ch;
+  }
+
+  /* Credit block — film billing style */
+  .wsi-cin-001-credits {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.8vh, 22px);
+    width: 100%;
+  }
+
+  .wsi-cin-001-credit-row {
+    display: grid;
+    grid-template-columns: clamp(80px, 14vw, 170px) 1px 1fr;
+    gap: clamp(10px, 1.8vw, 22px);
+    align-items: center;
+    opacity: 0;
+    cursor: default;
+  }
+
+  /* Role label — left column */
+  .wsi-cin-001-role {
+    font-family: var(--font-body);
+    font-size: clamp(7px, 0.82vw, 10px);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 55%, transparent);
+    text-align: right;
+    transition: color 0.28s ease;
+  }
+
+  /* Vertical separator */
+  .wsi-cin-001-credit-sep {
+    height: clamp(24px, 3.5vh, 42px);
+    width: 1px;
+    background: color-mix(in srgb, var(--text) 14%, transparent);
+    transition: background 0.28s ease;
+  }
+
+  /* Credit detail text */
+  .wsi-cin-001-credit-text {
+    font-family: var(--font-body);
+    font-size: clamp(12px, 1.55vw, 16px);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--text) 68%, transparent);
+    transition: color 0.28s ease;
+  }
+
+  .wsi-cin-001-credit-row:hover .wsi-cin-001-role {
+    color: var(--accent);
+  }
+  .wsi-cin-001-credit-row:hover .wsi-cin-001-credit-sep {
+    background: var(--accent);
+  }
+  .wsi-cin-001-credit-row:hover .wsi-cin-001-credit-text {
+    color: var(--text);
+  }
+
+  /* Cursor — film reel follower */
+  .wsi-cin-001-reel {
+    position: fixed;
+    width: clamp(18px, 2.4vw, 30px);
+    height: clamp(18px, 2.4vw, 30px);
+    pointer-events: none;
+    z-index: 999;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+</style>
+<div class="wsi-cin-001-root" id="wsi-cin-001-root">
+  <!-- Film grain -->
+  <div class="wsi-cin-001-grain"></div>
+  <!-- Vignette -->
+  <div class="wsi-cin-001-vignette" id="wsi-cin-001-vignette"></div>
+  <!-- Light leak -->
+  <div class="wsi-cin-001-light-leak" id="wsi-cin-001-light-leak"></div>
+  <!-- Letterbox bars -->
+  <div class="wsi-cin-001-bar-top" id="wsi-cin-001-bar-top"></div>
+  <div class="wsi-cin-001-bar-bot" id="wsi-cin-001-bar-bot"></div>
+  <!-- Sprocket strips -->
+  <div class="wsi-cin-001-sprocket-strip" id="wsi-cin-001-sprocket-l">
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+  </div>
+  <div class="wsi-cin-001-sprocket-strip wsi-cin-001-sprocket-strip-r" id="wsi-cin-001-sprocket-r">
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+    <div class="wsi-cin-001-sprocket"></div>
+  </div>
+  <!-- Frame counter in top bar -->
+  <div class="wsi-cin-001-frame-counter" id="wsi-cin-001-frame-counter">
+    <span class="wsi-cin-001-frame-text">the glitch protocol</span>
+    <span class="wsi-cin-001-frame-num" id="wsi-cin-001-frame-num">000</span>
+    <span class="wsi-cin-001-frame-text">feature presentation</span>
+  </div>
+  <!-- Director credit in bottom bar -->
+  <div class="wsi-cin-001-director-line" id="wsi-cin-001-director-line">
+    <span class="wsi-cin-001-director-text">a portrait — observed with great care</span>
+  </div>
+  <!-- Cursor reel SVG -->
+<svg class="wsi-cin-001-reel" id="wsi-cin-001-reel"
+ viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+<circle cx="15" cy="15" r="13" stroke="var(--accent)" stroke-width="1.2" fill="none" opacity="0.7"/>
+<circle cx="15" cy="15" r="4" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.7"/>
+<circle cx="15" cy="6"  r="2.2" fill="var(--accent)" opacity="0.55"/>
+<circle cx="15" cy="24" r="2.2" fill="var(--accent)" opacity="0.55"/>
+<circle cx="6"  cy="15" r="2.2" fill="var(--accent)" opacity="0.55"/>
+<circle cx="24" cy="15" r="2.2" fill="var(--accent)" opacity="0.55"/>
+</svg>
+  <!-- Main layout -->
+  <div class="wsi-cin-001-layout">
+<!-- Starring label -->
+<p class="wsi-cin-001-credit-label" id="wsi-cin-001-credit-label">
+  — starring —
+</p>
+
+<!-- Name -->
+<div class="wsi-cin-001-name-wrap">
+  <span class="wsi-cin-001-name" id="wsi-cin-001-name">--RECIPIENT_NAME--</span>
+</div>
+
+<!-- Rule -->
+<div class="wsi-cin-001-rule-wrap" id="wsi-cin-001-rule-wrap">
+  <div class="wsi-cin-001-rule-line"></div>
+  <div class="wsi-cin-001-rule-accent"></div>
+  <div class="wsi-cin-001-rule-line"></div>
+</div>
+
+<!-- Personality -->
+<p class="wsi-cin-001-personality" id="wsi-cin-001-personality">--PERSONALITY--</p>
+
+<!-- Credit rows -->
+<div class="wsi-cin-001-credits">
+
+  <div class="wsi-cin-001-credit-row" id="wsi-cin-001-cr1">
+    <span class="wsi-cin-001-role">known for</span>
+    <div class="wsi-cin-001-credit-sep"></div>
+    <span class="wsi-cin-001-credit-text">--DETAIL_1--</span>
+  </div>
+
+  <div class="wsi-cin-001-credit-row" id="wsi-cin-001-cr2">
+    <span class="wsi-cin-001-role">acclaimed for</span>
+    <div class="wsi-cin-001-credit-sep"></div>
+    <span class="wsi-cin-001-credit-text">--DETAIL_2--</span>
+  </div>
+
+  <div class="wsi-cin-001-credit-row" id="wsi-cin-001-cr3">
+    <span class="wsi-cin-001-role">remembered for</span>
+    <div class="wsi-cin-001-credit-sep"></div>
+    <span class="wsi-cin-001-credit-text">--DETAIL_3--</span>
+  </div>
+
+</div></div>
+</div>
+<script>
+(function () {
+
+  /* ─── Cursor reel follower ─── */
+  var reel = document.getElementById('wsi-cin-001-reel');
+  var rx = 0, ry = 0, mx = 0, my = 0;
+  var reelVisible = false;
+
+  document.addEventListener('mousemove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    if (!reelVisible) {
+      reelVisible = true;
+      gsap.to(reel, { opacity: 1, duration: 0.5 });
+    }
+  });
+
+  /* Lag follow + continuous spin */
+  (function followReel() {
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    reel.style.left = rx + 'px';
+    reel.style.top  = ry + 'px';
+    requestAnimationFrame(followReel);
+  })();
+
+  gsap.to(reel, {
+    rotation: 360,
+    transformOrigin: '50% 50%',
+    duration: 3.5,
+    ease: 'none',
+    repeat: -1
+  });
+
+  /* ─── Frame counter tick ─── */
+  var frameEl = document.getElementById('wsi-cin-001-frame-num');
+  var frameCount = 0;
+  function tickFrame() {
+    frameCount = (frameCount + 1) % 1000;
+    frameEl.textContent = String(frameCount).padStart(3, '0');
+    setTimeout(tickFrame, 42);
+  }
+
+  /* ─── Main entrance ─── */
+  document.addEventListener('glitch:enter', function (e) {
+    if (e.detail.index !== 2) return;
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1 — Letterbox bars slam in */
+    tl.to('#wsi-cin-001-bar-top', {
+      scaleY: 1, duration: 0.38, ease: 'power4.out'
+    }, 0);
+    tl.to('#wsi-cin-001-bar-bot', {
+      scaleY: 1, duration: 0.38, ease: 'power4.out'
+    }, 0.04);
+
+    /* 2 — Vignette fades in */
+    tl.to('#wsi-cin-001-vignette', { opacity: 1, duration: 0.8 }, 0.1);
+
+    /* 3 — Sprocket strips appear */
+    tl.to(
+      ['#wsi-cin-001-sprocket-l', '#wsi-cin-001-sprocket-r'],
+      { opacity: 1, duration: 0.45, stagger: 0.1 },
+      0.3
+    );
+
+    /* 4 — Frame counter + director line */
+    tl.to('#wsi-cin-001-frame-counter', { opacity: 1, duration: 0.35 }, 0.42);
+    tl.to('#wsi-cin-001-director-line', { opacity: 1, duration: 0.35 }, 0.5);
+
+    /* 5 — Light leak bleeds in */
+    tl.to('#wsi-cin-001-light-leak', { opacity: 1, duration: 1.2 }, 0.35);
+
+    /* 6 — Starring credit label */
+    tl.to('#wsi-cin-001-credit-label', { opacity: 1, duration: 0.4 }, 0.55);
+
+    /* 7 — Name rises cinematic */
+    tl.to('#wsi-cin-001-name', {
+      y: '0%', duration: 0.78, ease: 'power4.out'
+    }, 0.72);
+
+    /* 8 — Rule expands */
+    tl.fromTo('#wsi-cin-001-rule-wrap',
+      { scaleX: 0, transformOrigin: 'center' },
+      { scaleX: 1, opacity: 1, duration: 0.55, ease: 'power2.inOut' },
+      1.1
+    );
+
+    /* 9 — Personality */
+    gsap.set('#wsi-cin-001-personality', { y: 14 });
+    tl.to('#wsi-cin-001-personality', { opacity: 1, y: 0, duration: 0.65 }, 1.28);
+
+    /* 10 — Credit rows stagger */
+    gsap.set(
+      ['#wsi-cin-001-cr1','#wsi-cin-001-cr2','#wsi-cin-001-cr3'],
+      { x: -20 }
+    );
+    tl.to(
+      ['#wsi-cin-001-cr1','#wsi-cin-001-cr2','#wsi-cin-001-cr3'],
+      { opacity: 1, x: 0, duration: 0.46, stagger: 0.16 },
+      1.55
+    );
+
+    /* 11 — Start frame counter */
+    tl.call(tickFrame, [], 0.5);
+
+    /* ─── Idle: light leak pulses ─── */
+    tl.call(function () {
+      gsap.to('#wsi-cin-001-light-leak', {
+        opacity: 0.4,
+        duration: 3.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }, [], 1.8);
+
+    /* ─── Idle: vignette breathes ─── */
+    tl.call(function () {
+      gsap.to('#wsi-cin-001-vignette', {
+        opacity: 0.65,
+        duration: 5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: sprocket holes micro-pulse ─── */
+    tl.call(function () {
+      var holes = document.querySelectorAll('.wsi-cin-001-sprocket');
+      holes.forEach(function (h, i) {
+        gsap.to(h, {
+          opacity: 0.12 + Math.random() * 0.3,
+          duration: 0.8 + Math.random() * 1.4,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.1
+        });
+      });
+    }, [], 2.0);
+
+    /* ─── Idle: name subtle float ─── */
+    tl.call(function () {
+      gsap.to('#wsi-cin-001-name', {
+        y: -4,
+        duration: 4.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }, [], 2.2);
+
+    /* ─── Idle: rule accent pulse ─── */
+    tl.call(function () {
+      gsap.to('.wsi-cin-001-rule-accent', {
+        scaleX: 0.7,
+        transformOrigin: 'center',
+        duration: 2.2,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }, [], 2.0);
+
+  }); /* end glitch:enter */
+
+})();
+</script>
