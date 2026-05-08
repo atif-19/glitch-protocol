@@ -90,13 +90,6 @@ const birthdayQuestions = [
     placeholder: 'She makes everyone feel like the most important person in the room.',
   },
   {
-    id: 'photos',
-    label: 'Any photos? (optional)',
-    sublabel: 'Up to 3. Skip if you want.',
-    type: 'photo',
-    optional: true,
-  },
-  {
     id: 'memories',
     label: 'Inside moments — things only you two know?',
     sublabel: 'Three if you can.',
@@ -246,6 +239,7 @@ const apologyQuestions = [
       { value: 'dreamy', label: '🌙 Dreamy', desc: 'Soft, emotional, floaty' },
       { value: 'cinematic', label: '🎬 Cinematic', desc: 'Dramatic, bold, filmy' },
       { value: 'minimal', label: '🤍 Minimal', desc: 'Clean, quiet, intentional' },
+      { value: 'playful', label: '✨ Playful', desc: 'Fun, colourful, light' },
     ]
   }
 ]

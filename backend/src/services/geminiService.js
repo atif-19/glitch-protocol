@@ -9,13 +9,13 @@ async function callGeminiJSON(systemPrompt, userMessage, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const completion = await groq.chat.completions.create({
-        model: 'openai/gpt-oss-120b',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: systemPrompt + '\nReturn ONLY valid JSON. No markdown. No explanation.' },
           { role: 'user', content: userMessage }
         ],
         temperature: 0.7,
-        max_tokens: 2048,
+        max_tokens: 4096,
         response_format: { type: 'json_object' } // forces JSON mode
       })
 
