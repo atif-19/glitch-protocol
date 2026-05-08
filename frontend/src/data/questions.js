@@ -1,120 +1,251 @@
-// questions.js
-// All 14 questions for the form flow
-// Each question has: id, label, question, type, placeholder/options
-// 'showFor' means the question only appears for that occasion
-// No showFor = appears for both occasions
+// src/data/questions.js
 
 export function getQuestions(occasion) {
-  const all = [
-    {
-      id: 'recipient_name',
-      label: 'Question 1',
-      question: "What's her name? And what is she to you?",
-      type: 'text',
-      placeholder: 'e.g. Zara, my girlfriend',
-    },
-    {
-      id: 'obsession',
-      label: 'Question 2',
-      question: 'What is she completely obsessed with?',
-      type: 'text',
-      placeholder: 'e.g. Harry Potter, Taylor Swift, dark academia...',
-    },
-    {
-      id: 'favorites',
-      label: 'Question 3',
-      question: 'Her favorite color, a song she loves, and her aesthetic in one word.',
-      type: 'text',
-      placeholder: 'e.g. deep purple, The 1 by Taylor Swift, vintage',
-    },
-    {
-      id: 'personality',
-      label: 'Question 4',
-      question: 'Describe her personality in one honest sentence.',
-      type: 'text',
-      placeholder: 'e.g. she is quiet but notices absolutely everything',
-    },
-    {
-      id: 'inside_moments',
-      label: 'Question 5',
-      question: 'Three inside moments — things only you two would understand.',
-      type: 'textarea',
-      placeholder: 'e.g. the library on third floor every tuesday, the mango ice cream incident, her laugh when she tries not to laugh...',
-    },
-    {
-      id: 'first_memory',
-      label: 'Question 6',
-      question: 'What is your first real memory of her?',
-      type: 'textarea',
-      placeholder: 'The moment you knew she was different.',
-    },
-    {
-      id: 'small_things',
-      label: 'Question 7',
-      question: 'Small things you quietly notice about her.',
-      type: 'textarea',
-      placeholder: 'e.g. she always orders the same coffee, she hums when she reads, the way she tucks her hair...',
-    },
-    {
-      id: 'meaning',
-      label: 'Question 8',
-      question: 'What does she mean to you? Say it like no one is reading.',
-      type: 'textarea',
-      placeholder: 'This becomes the emotional core of the entire page.',
-    },
-    // Apology only
-    {
-      id: 'scenario',
-      label: 'Question 9',
-      question: 'What happened? What are you sorry for?',
-      type: 'textarea',
-      placeholder: 'Be honest. The AI will turn it into something she will remember.',
-      showFor: 'apology',
-    },
-    // Birthday only
-    {
-      id: 'birthday_ask',
-      label: 'Question 9',
-      question: 'The cute ask or plan. What do you want to happen after she reads this?',
-      type: 'textarea',
-      placeholder: 'e.g. I want to take her to that rooftop place she has been talking about.',
-      showFor: 'birthday',
-    },
-    {
-      id: 'unsaid_thing',
-      label: 'Question 10',
-      question: 'One thing you have never said to her directly.',
-      type: 'text',
-      placeholder: 'This becomes the hidden message she unlocks at the end.',
-    },
-    {
-      id: 'vibe',
-      label: 'Question 11',
-      question: 'What vibe should the page have?',
-      type: 'cards',
-      options: [
-        { value: 'dreamy', label: 'Dreamy', emoji: '🌙', description: 'Soft, hazy, emotional' },
-        { value: 'cinematic', label: 'Cinematic', emoji: '🎬', description: 'Bold, dramatic, intense' },
-        { value: 'playful', label: 'Playful', emoji: '✨', description: 'Light, fun, warm' },
-        { value: 'minimal', label: 'Minimal', emoji: '🤍', description: 'Clean, quiet, powerful' },
-      ]
-    },
-    {
-      id: 'photos',
-      label: 'Question 12',
-      question: 'Add up to 3 photos of her (optional but makes it personal).',
-      type: 'text',
-      placeholder: 'Skip for now — type "skip" or paste an image URL',
-    },
-    {
-      id: 'song',
-      label: 'Question 13',
-      question: "Her favorite song — or the one that reminds you of her.",
-      type: 'text',
-      placeholder: 'e.g. Cornelia Street by Taylor Swift',
-    },
-  ]
-
-  // Filter out questions that don't belong to the current occasion
-  return all.filter(q => !q.showFor || q.showFor === occasion)
+  if (occasion === 'bro') return broQuestions
+  if (occasion === 'birthday') return birthdayQuestions
+  if (occasion === 'apology') return apologyQuestions
+  return []
 }
+
+// ─── BRO MODE — 5 questions only ─────────────────────────────────────────────
+
+const broQuestions = [
+  {
+    id: 'recipient_name',
+    label: "What's his name?",
+    sublabel: 'First name is fine.',
+    type: 'text',
+    placeholder: "Rahul, Yash, Dev...",
+  },
+  {
+    id: 'obsession',
+    label: "What is he actually obsessed with?",
+    sublabel: 'The thing he brings up in every conversation.',
+    type: 'text',
+    placeholder: "FIFA, gym, bikes, cricket, coding, F1...",
+  },
+  {
+    id: 'roast',
+    label: "One thing he does that everyone clocks but he thinks is cool?",
+    sublabel: 'This goes on the page. Keep it real.',
+    type: 'textarea',
+    placeholder: "Acts like he doesn't care about his hair but spends 20 mins on it...",
+  },
+  {
+    id: 'real_talk',
+    label: "One thing you'd never say to his face but actually mean?",
+    sublabel: "This is the one real moment on the page. Don't overthink it.",
+    type: 'textarea',
+    placeholder: "He's genuinely the most reliable person I know...",
+  },
+  {
+    id: 'vibe',
+    label: "What's the vibe?",
+    sublabel: 'This controls the tone of the whole page.',
+    type: 'cards',
+    options: [
+      { value: 'full_roast', label: '🔥 Full Roast', desc: '90% jokes, one gut punch at the end' },
+      { value: 'mostly_roast', label: '😏 Mostly Roast', desc: 'Funny but lands somewhere real' },
+      { value: 'wholesome', label: '🤝 Actually Wholesome', desc: 'Still has jokes but genuinely hits' },
+    ]
+  }
+]
+
+// ─── BIRTHDAY — your existing 14 questions ───────────────────────────────────
+
+const birthdayQuestions = [
+  {
+    id: 'recipient_name',
+    label: "What's her name?",
+    sublabel: 'First name only is fine.',
+    type: 'text',
+    placeholder: 'Zara, Priya, Aisha...',
+  },
+  {
+    id: 'relationship',
+    label: 'Your relationship?',
+    sublabel: 'How do you know each other.',
+    type: 'text',
+    placeholder: 'Best friend, girlfriend, sister...',
+  },
+  {
+    id: 'obsession',
+    label: 'What is she obsessed with?',
+    sublabel: 'The most important answer. Be specific.',
+    type: 'text',
+    placeholder: 'Harry Potter, Taylor Swift, dark academia...',
+  },
+  {
+    id: 'favorites',
+    label: 'Favorite color, aesthetic, song, movie, food?',
+    sublabel: 'As many as you know.',
+    type: 'textarea',
+    placeholder: 'Blue, vintage, Anti-Hero, Interstellar, pasta...',
+  },
+  {
+    id: 'personality',
+    label: 'Her personality in one honest sentence?',
+    sublabel: 'Not a compliment — an observation.',
+    type: 'textarea',
+    placeholder: 'She makes everyone feel like the most important person in the room.',
+  },
+  {
+    id: 'photos',
+    label: 'Any photos? (optional)',
+    sublabel: 'Up to 3. Skip if you want.',
+    type: 'photo',
+    optional: true,
+  },
+  {
+    id: 'memories',
+    label: 'Inside moments — things only you two know?',
+    sublabel: 'Three if you can.',
+    type: 'textarea',
+    placeholder: 'The auto ride back from the fest, the 2am call when she was scared...',
+  },
+  {
+    id: 'first_memory',
+    label: 'First memory of her?',
+    sublabel: 'The very first one.',
+    type: 'textarea',
+    placeholder: 'She was laughing at something and I remember thinking...',
+  },
+  {
+    id: 'small_things',
+    label: 'Small things you quietly notice about her?',
+    sublabel: 'The things she does without realising.',
+    type: 'textarea',
+    placeholder: 'The way she tucks her hair, how she always checks if everyone ate...',
+  },
+  {
+    id: 'meaning',
+    label: 'What does she mean to you?',
+    sublabel: 'The emotional core of the whole page.',
+    type: 'textarea',
+    placeholder: 'Be honest. No one else is reading this except her.',
+  },
+  {
+    id: 'birthday_ask',
+    label: 'The cute ask or plan?',
+    sublabel: 'What do you actually want on her birthday.',
+    type: 'textarea',
+    placeholder: 'I just want one day where you let me do everything...',
+  },
+  {
+    id: 'unsaid_thing',
+    label: 'One thing never said directly?',
+    sublabel: 'This is the hidden reveal at the end.',
+    type: 'text',
+    placeholder: "You're the reason I try harder.",
+  },
+  {
+    id: 'song',
+    label: "Her song?",
+    sublabel: 'The one that plays at the end of her page.',
+    type: 'text',
+    placeholder: 'Cornfield Chase, Lover, Tum Se Hi...',
+  },
+  {
+    id: 'vibe',
+    label: "Overall vibe?",
+    sublabel: 'Controls the visual energy of the whole page.',
+    type: 'cards',
+    options: [
+      { value: 'dreamy', label: '🌙 Dreamy', desc: 'Soft, emotional, floaty' },
+      { value: 'cinematic', label: '🎬 Cinematic', desc: 'Dramatic, bold, filmy' },
+      { value: 'playful', label: '✨ Playful', desc: 'Fun, colourful, light' },
+      { value: 'minimal', label: '🤍 Minimal', desc: 'Clean, quiet, intentional' },
+    ]
+  }
+]
+
+// ─── APOLOGY — your existing questions ───────────────────────────────────────
+
+const apologyQuestions = [
+  {
+    id: 'recipient_name',
+    label: "What's her name?",
+    sublabel: 'First name only.',
+    type: 'text',
+    placeholder: 'Zara, Priya, Aisha...',
+  },
+  {
+    id: 'relationship',
+    label: 'Your relationship?',
+    type: 'text',
+    placeholder: 'Girlfriend, best friend, sister...',
+  },
+  {
+    id: 'obsession',
+    label: 'What is she obsessed with?',
+    sublabel: 'Drives the entire visual theme.',
+    type: 'text',
+    placeholder: 'Taylor Swift, Studio Ghibli, dark academia...',
+  },
+  {
+    id: 'favorites',
+    label: 'Favorite color, aesthetic, song?',
+    type: 'textarea',
+    placeholder: 'Purple, cottagecore, All Too Well...',
+  },
+  {
+    id: 'personality',
+    label: 'Her personality in one honest sentence?',
+    type: 'textarea',
+    placeholder: 'She feels everything deeply and never shows it.',
+  },
+  {
+    id: 'memories',
+    label: 'Three inside moments only you two know?',
+    type: 'textarea',
+    placeholder: 'The argument on the terrace, the makeup call at midnight...',
+  },
+  {
+    id: 'first_memory',
+    label: 'Your first memory of her?',
+    type: 'textarea',
+    placeholder: 'Before everything got complicated...',
+  },
+  {
+    id: 'small_things',
+    label: 'Small things you quietly notice about her?',
+    type: 'textarea',
+    placeholder: 'How she goes quiet when she\'s hurt instead of saying it...',
+  },
+  {
+    id: 'meaning',
+    label: 'What does she mean to you?',
+    type: 'textarea',
+    placeholder: 'Honest. Real. No performance.',
+  },
+  {
+    id: 'scenario',
+    label: "What happened and what are you sorry for?",
+    sublabel: 'This is The Moment section — be specific.',
+    type: 'textarea',
+    placeholder: 'I said something I didn\'t mean when I was frustrated and...',
+  },
+  {
+    id: 'unsaid_thing',
+    label: 'One thing never said directly?',
+    sublabel: 'The hidden reveal.',
+    type: 'text',
+    placeholder: "I'm scared of losing you.",
+  },
+  {
+    id: 'song',
+    label: "Her song?",
+    type: 'text',
+    placeholder: 'The one that reminds you of her.',
+  },
+  {
+    id: 'vibe',
+    label: "Overall vibe?",
+    type: 'cards',
+    options: [
+      { value: 'dreamy', label: '🌙 Dreamy', desc: 'Soft, emotional, floaty' },
+      { value: 'cinematic', label: '🎬 Cinematic', desc: 'Dramatic, bold, filmy' },
+      { value: 'minimal', label: '🤍 Minimal', desc: 'Clean, quiet, intentional' },
+    ]
+  }
+]

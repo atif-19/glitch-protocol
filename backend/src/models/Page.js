@@ -17,7 +17,7 @@ const pageSchema = new mongoose.Schema({
   },
   occasion: {
     type: String,
-    enum: ['birthday', 'apology'],
+    enum: ['birthday', 'apology','bro'], // added 'bro' for bro mode
     required: true
   },
   obsession: String,

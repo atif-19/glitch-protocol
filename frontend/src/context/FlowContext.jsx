@@ -4,6 +4,7 @@
 // answers — all 14 form answers
 // generatedUrl — the final link returned after generation
 
+// FlowContext.jsx
 import { createContext, useContext, useState } from 'react'
 
 const FlowContext = createContext(null)
@@ -14,17 +15,16 @@ export function FlowProvider({ children }) {
   const [generatedUrl, setGeneratedUrl] = useState(null)
   const [generatedSlug, setGeneratedSlug] = useState(null)
 
-  // Update a single answer by question key
   function updateAnswer(key, value) {
     setAnswers(prev => ({ ...prev, [key]: value }))
   }
 
-  // Reset everything — used if user wants to start over
   function resetFlow() {
     setOccasion(null)
     setAnswers({})
     setGeneratedUrl(null)
     setGeneratedSlug(null)
+    localStorage.removeItem('glitch_answers')
   }
 
   return (
@@ -40,7 +40,6 @@ export function FlowProvider({ children }) {
   )
 }
 
-// Custom hook — any component calls useFlow() to get access to everything
 export function useFlow() {
   const context = useContext(FlowContext)
   if (!context) throw new Error('useFlow must be used inside FlowProvider')
