@@ -81,10 +81,11 @@ export default function AgentLoader({
   const [isGenerating, setIsGenerating] = useState(true)
   const [serverSlow, setServerSlow] = useState(false)
   const [allDone, setAllDone] = useState(false)
+  const [apiDone, setApiDone] = useState(false)       // ✅ state instead of ref for triggering effects
   const startTimeRef = useRef(Date.now())
   const intervalRef = useRef(null)
   const apiResultRef = useRef(null)
-  const apiDoneRef = useRef(false)
+  const completionFiredRef = useRef(false)            // ✅ prevents onComplete firing twice
 
   // Start the generation API call
   useEffect(() => {
@@ -92,8 +93,7 @@ export default function AgentLoader({
       generateFunction()
         .then(result => {
           apiResultRef.current = result
-          apiDoneRef.current = true
-          checkComplete()
+          setApiDone(true)                            // ✅ triggers useEffect below
         })
         .catch(err => {
           if (onError) onError(err)
@@ -109,13 +109,11 @@ export default function AgentLoader({
         if (next < AGENTS.length) {
           return next
         }
-        // All phases animated
         clearInterval(intervalRef.current)
         return prev
       })
     }
 
-    // Start phase animation
     const phaseDuration = AGENTS[0].duration
     intervalRef.current = setInterval(runPhases, phaseDuration)
 
@@ -132,7 +130,7 @@ export default function AgentLoader({
   // Check for slow server
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!apiDoneRef.current && isGenerating) {
+      if (!apiDone && isGenerating) {
         setServerSlow(true)
       }
     }, 12000)
@@ -140,25 +138,28 @@ export default function AgentLoader({
     return () => clearTimeout(timer)
   }, [isGenerating])
 
-  // Check if everything is complete
-  function checkComplete() {
+  // ✅ THE FIX: both triggers (phase change AND api done) now correctly re-run this
+  // phase is read directly from state, not a stale closure
+  // apiDone is state so it actually triggers this effect
+  useEffect(() => {
+    if (completionFiredRef.current) return
+    if (!apiDone) return
+    if (phase < AGENTS.length - 1) return
+
+    completionFiredRef.current = true
+
     const elapsed = Date.now() - startTimeRef.current
     const timeLeft = Math.max(0, minDisplayTime - elapsed)
 
-    if (apiDoneRef.current && phase >= AGENTS.length - 1) {
-      setTimeout(() => {
-        setAllDone(true)
-        setIsGenerating(false)
-        if (onComplete) {
-          setTimeout(() => onComplete(apiResultRef.current), 800)
-        }
-      }, timeLeft)
-    }
-  }
+    setTimeout(() => {
+      setAllDone(true)
+      setIsGenerating(false)
+      if (onComplete) {
+        setTimeout(() => onComplete(apiResultRef.current), 800)
+      }
+    }, timeLeft)
 
-  useEffect(() => {
-    checkComplete()
-  }, [phase, apiDoneRef.current])
+  }, [phase, apiDone])  // ✅ both are real state values now
 
   const currentAgent = AGENTS[phase] || AGENTS[AGENTS.length - 1]
   const IconComponent = currentAgent.icon
@@ -217,7 +218,6 @@ export default function AgentLoader({
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          {/* Spinning CPU icon */}
           <motion.div
             className="inline-flex items-center justify-center mb-6"
             animate={{ rotate: 360 }}
@@ -302,7 +302,6 @@ export default function AgentLoader({
                         ? `bg-${agent.color}-500/10 border border-${agent.color}-500/30`
                         : 'bg-zinc-900 border border-zinc-800'
                     }`}>
-                      {/* Scanning line animation */}
                       {isCurrent && (
                         <motion.div
                           className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent"
@@ -324,7 +323,6 @@ export default function AgentLoader({
                         <AgentIcon className="w-6 h-6 text-zinc-600" />
                       )}
 
-                      {/* Floating particles for current agent */}
                       {isCurrent && agent.particles.map((particle, j) => (
                         <motion.span
                           key={j}
@@ -437,7 +435,7 @@ export default function AgentLoader({
 
         {/* Server slow message */}
         <AnimatePresence>
-          {serverSlow && !apiDoneRef.current && (
+          {serverSlow && !apiDone && (
             <motion.div
               className="text-center p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 mb-6"
               initial={{ opacity: 0, y: 10 }}
